@@ -2,7 +2,12 @@ import raw from '../assets/kanjivg/strokes.json'
 import type { GlyphRef } from './schema'
 
 export type BBox = readonly [number, number, number, number]
-export type Stroke = { readonly d: string; readonly bbox: BBox }
+export type Stroke = {
+  readonly d: string
+  readonly bbox: BBox
+  /** 書く順に並んだ、通り道の点(書き取りの判定に使う) */
+  readonly pts: readonly (readonly [number, number])[]
+}
 
 /** KanjiVG の座標系は 109 x 109 */
 export const GLYPH_SIZE = 109

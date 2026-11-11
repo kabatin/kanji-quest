@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { KanjiGlyph, type GlyphLayer } from '../../components/KanjiGlyph'
+import { KText } from '../../components/KText'
 import { PartCard, type CardState } from '../../components/PartCard'
 import { PartIcon } from '../../components/PartIcon'
 import { getPart } from '../../data/parts'
 import type { Layout } from '../../data/schema'
 import { refsViewBox } from '../../data/strokes'
-import type { Question } from '../../lib/quiz'
+import type { KumiQuestion } from '../../lib/quiz'
 import { useFeedback } from '../../lib/useFeedback'
 import { voiceId } from '../../lib/voice'
 
@@ -22,7 +23,7 @@ const MERGE_FROM: Record<Layout, { fixed: { x: number; y: number }; answer: { x:
 }
 
 type Props = {
-  readonly question: Question
+  readonly question: KumiQuestion
   /** 絵と名前のヒントを見せるか */
   readonly showHint: boolean
   /** カードの枠をなくすか */
@@ -88,7 +89,9 @@ export function Kumiawase({ question, showHint, plain = false, onSolved }: Props
       <button type="button" className="kumi__goal" onClick={() => say(goalClip, goalLabel)} aria-label={`${goal.label} を つくろう`}>
         <PartIcon id={goal.icon} className="kumi__goal-icon" />
         <span className="kumi__goal-label">{goal.label}</span>
-        <span className="kumi__goal-text">を つくろう 🔊</span>
+        <span className="kumi__goal-text">
+          <KText text="を {作|つく}ろう" /> 🔊
+        </span>
       </button>
       <div className="kumi__fixed">
         <PartCard part={fixedPart} showHint={showHint} plain={plain}>

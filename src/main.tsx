@@ -3,6 +3,10 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import './styles/cards.css'
 import './styles/screens.css'
+import './styles/home.css'
+import './styles/play.css'
+import './styles/game.css'
+import './styles/boss.css'
 import App from './App.tsx'
 
 const root = document.getElementById('root')

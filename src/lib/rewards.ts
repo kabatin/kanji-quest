@@ -1,12 +1,25 @@
+/*
+ * ごほうびの量。6年生まで(1026字・およそ 200ステージ)続けても、
+ * コインが あまりすぎず、きせかえ を少しずつ集められるように決めている。
+ *   1字: まなぶ 5 + かく 3 / ボス 1体 30 / そつぎょうしけん 300 / まいにち およそ 50
+ */
 export const XP_LEARN_NEW = 20
-export const XP_LEARN_AGAIN = 5
-export const COINS_LEARN_NEW = 10
-export const COINS_LEARN_AGAIN = 2
-export const COINS_STAGE_FIRST_CLEAR = 50
-export const COINS_PERFECT_BONUS = 10
+export const XP_LEARN_AGAIN = 3
+export const COINS_LEARN_NEW = 5
+export const COINS_LEARN_AGAIN = 0
 
-export const XP_WRITE = 10
-export const COINS_WRITE_FIRST = 5
+export const XP_WRITE_FIRST = 10
+export const XP_WRITE_AGAIN = 2
+export const COINS_WRITE_FIRST = 3
+
+export const XP_BOSS_CLEAR = 100
+export const COINS_BOSS_CLEAR = 30
+export const XP_EXAM_CLEAR = 500
+export const COINS_EXAM_CLEAR = 300
+/** クリアできなかったとき・れんしゅうのときも、がんばった分だけ少しもらえる */
+export const XP_BOSS_TRY = 10
+
+export const COINS_PERFECT_BONUS = 3
 
 /**
  * 漢字ごとの はんこ。3種類あり、どれを先に取ってもよい。
@@ -15,7 +28,7 @@ export const COINS_WRITE_FIRST = 5
 export const STAMPS = { learn: 1, write: 2, quiz: 4 } as const
 export type StampKind = keyof typeof STAMPS
 export const STAMP_KINDS: readonly StampKind[] = ['learn', 'write', 'quiz']
-export const STAMP_LABEL: Record<StampKind, string> = { learn: 'まなぶ', write: 'かく', quiz: 'とく' }
+export const STAMP_LABEL: Record<StampKind, string> = { learn: '{学|まな}ぶ', write: '{書|か}く', quiz: 'とく' }
 
 export function hasStamp(mask: number | undefined, kind: StampKind): boolean {
   return ((mask ?? 0) & STAMPS[kind]) !== 0
@@ -29,7 +42,7 @@ export function stampCount(mask: number | undefined): number {
 export const QUIZ_STAMP_MIN_LEVEL = 2
 
 /** ログインボーナス(コイン)。7日でひとまわりし、7日目がいちばん多い。 */
-export const LOGIN_BONUS = [20, 20, 30, 30, 40, 40, 100] as const
+export const LOGIN_BONUS = [5, 5, 10, 10, 15, 15, 30] as const
 
 export function loginBonusFor(streakCount: number): number {
   return LOGIN_BONUS[(Math.max(streakCount, 1) - 1) % LOGIN_BONUS.length]
@@ -68,15 +81,35 @@ export function rankOf(summary: QuizSummary): Rank {
   return 'dekita'
 }
 
-const STARS_BY_RANK: Record<Rank, number> = { kanpeki: 3, sugoi: 2, dekita: 1 }
+const SCORE_PER_COIN = 20
+const SCORE_PER_XP = 3
 
-/** ステージの まとめ でもらえる星(1〜3)。クリアすれば必ず1つはもらえる。 */
-export function stageStarsFor(summary: QuizSummary): number {
-  return STARS_BY_RANK[rankOf(summary)]
-}
-
-const SCORE_PER_COIN = 5
-
+/** チャレンジでもらえるコイン。何回でも遊べるので、少なめにしている。 */
 export function quizCoins(summary: QuizSummary): number {
   return Math.floor(summary.score / SCORE_PER_COIN) + (rankOf(summary) === 'kanpeki' ? COINS_PERFECT_BONUS : 0)
+}
+
+/** チャレンジでもらえる経験値。 */
+export function quizXp(summary: QuizSummary): number {
+  return Math.floor(summary.score / SCORE_PER_XP)
+}
+
+/** ボスの種類ごとの ごほうび(はじめて たおしたとき) */
+export type BossKind = 'stage' | 'exam'
+
+export const BOSS_REWARD: Record<BossKind, { readonly xp: number; readonly coins: number }> = {
+  stage: { xp: XP_BOSS_CLEAR, coins: COINS_BOSS_CLEAR },
+  exam: { xp: XP_EXAM_CLEAR, coins: COINS_EXAM_CLEAR },
+}
+
+/** 1日に ちょうせん できる回数 */
+export const BOSS_TRIES_PER_DAY: Record<BossKind, number> = { stage: 3, exam: 2 }
+
+export const BOSS_CLEAR_SCORE = 100
+
+/** ボスの点数。全部の問題を まちがえずに できたときだけ 100点になる。 */
+export function bossScore(perfect: number, total: number): number {
+  if (total <= 0) return 0
+  if (perfect >= total) return BOSS_CLEAR_SCORE
+  return Math.min(Math.round((perfect / total) * BOSS_CLEAR_SCORE), BOSS_CLEAR_SCORE - 1)
 }

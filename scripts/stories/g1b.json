@@ -1,0 +1,358 @@
+{
+  "人": {
+    "kind": "naritachi",
+    "caption": "ひとが よこを むいて たって いる かたち。",
+    "speech": "ひとが、よこをむいて、たっているよ。うでを、まえに、のばしている。ひと。",
+    "actors": [{ "part": "whole", "picture": "🧍", "motion": "walk" }],
+    "source": "https://ja.wiktionary.org/wiki/人",
+    "note": ""
+  },
+  "水": {
+    "kind": "naritachi",
+    "caption": "まんなかに ながれ。りょうがわに しぶき。",
+    "speech": "まんなかを、みずが、ながれるよ。りょうがわに、しぶきが、とぶ。みず。",
+    "actors": [{ "part": "whole", "picture": "drop", "motion": "sway" }],
+    "source": "https://ja.wiktionary.org/wiki/水",
+    "note": "水の流れをかたどった象形。両がわの点を「しぶき」と言いかえた。"
+  },
+  "正": {
+    "kind": "oboekata",
+    "caption": "あしが せんに むかって まっすぐ すすむ。",
+    "speech": "うえに、せんが、いっぽん。あしが、せんにむかって、まっすぐ、すすむよ。ただしい。",
+    "actors": [
+      { "part": "一", "picture": "line", "motion": "still" },
+      { "part": "止", "picture": "🦶", "motion": "rise" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/正",
+    "note": "下の「止」が足の形なのは確か。上はもと四角や丸の形で、「目じるしへまっすぐ進む」という教材で一般的な説明は、いまの研究では否定されている(止が意味・丁が音の形声で、もとは「行く」の意)。そのため覚え方あつかい。"
+  },
+  "生": {
+    "kind": "naritachi",
+    "caption": "つちから くさの めが でて きた。",
+    "speech": "つちから、くさのめが、でてきたよ。ぐんぐん、のびる。うまれる。",
+    "actors": [{ "part": "whole", "picture": "🌱", "motion": "grow" }],
+    "source": "https://ja.wiktionary.org/wiki/生",
+    "note": ""
+  },
+  "青": {
+    "kind": "oboekata",
+    "caption": "くさの めと いどの みず。どちらも あおい。",
+    "speech": "うえは、くさのめ。したは、いどの、きれいなみず。どちらも、あおいよ。あお。",
+    "actors": [{ "part": "whole", "picture": "🌱", "motion": "grow" }],
+    "source": "https://ja.wiktionary.org/wiki/青",
+    "note": "上が「生(草の芽)」、下が「井(井戸)」にあたる形なのは確か。ただし、どちらも音を表すだけとする説もあり、色の意味と結びつける説明は教材向けの解釈なので覚え方あつかい。"
+  },
+  "夕": {
+    "kind": "naritachi",
+    "caption": "ゆうがた、そらに みかづきが でて きた。",
+    "speech": "ゆうがた、そらに、みかづきが、でてきたよ。つきの、かたち。ゆう。",
+    "actors": [{ "part": "whole", "picture": "moon", "motion": "rise" }],
+    "source": "https://ja.wiktionary.org/wiki/夕",
+    "note": "もとは「月」と同じ三日月の形。"
+  },
+  "石": {
+    "kind": "oboekata",
+    "caption": "がけの したに いしが ころん。",
+    "speech": "がけの、したに、いしが、ころんと、おちているよ。いし。",
+    "actors": [{ "part": "whole", "picture": "🪨", "motion": "drop" }],
+    "source": "https://ja.wiktionary.org/wiki/石",
+    "note": "「がけ(厂)の下の石(口)」は説文解字いらい教材で一般的な説明。甲骨文字からは、石の板の形(厂)に口を足した字とされ、がけ説は否定されているので覚え方あつかい。"
+  },
+  "赤": {
+    "kind": "naritachi",
+    "caption": "ひが おおきく もえて いる。あかい。",
+    "speech": "ひが、おおきく、もえているよ。まっかな、いろ。あか。",
+    "actors": [{ "part": "whole", "picture": "🔥", "motion": "grow" }],
+    "source": "https://ja.wiktionary.org/wiki/赤",
+    "note": "「大」と「火」を合わせた字。"
+  },
+  "千": {
+    "kind": "oboekata",
+    "caption": "ひとに よこぼうを 1ぽん たして、せん。",
+    "speech": "ひとの、かたちに、よこぼうを、いっぽん、たすよ。とても、おおきな、かず。せん。",
+    "actors": [{ "part": "whole", "picture": "🧍", "motion": "still" }],
+    "source": "https://ja.wiktionary.org/wiki/千",
+    "note": "「人」に「一」を足した形なのは字源どおり。ただし「人」は音を借りただけで、人の意味はないため覚え方あつかい。"
+  },
+  "川": {
+    "kind": "naritachi",
+    "caption": "きしの あいだを みずが ながれる。",
+    "speech": "きしと、きしの、あいだを、みずが、ながれるよ。さんぼんの、すじ。かわ。",
+    "actors": [{ "part": "whole", "picture": "wave", "motion": "sway" }],
+    "source": "https://ja.wiktionary.org/wiki/川",
+    "note": ""
+  },
+  "先": {
+    "kind": "naritachi",
+    "caption": "ひとの うえに あし。あしが さきに でる。",
+    "speech": "ひとの、うえに、あしが、あるよ。あしが、まえに、でる。さき。",
+    "actors": [{ "part": "whole", "picture": "👣", "motion": "walk" }],
+    "source": "https://ja.wiktionary.org/wiki/先",
+    "note": "足(止)と人を合わせた字。上の部分が足の形。"
+  },
+  "早": {
+    "kind": "oboekata",
+    "caption": "おひさまが じゅうじの うえに のぼる。",
+    "speech": "あさ、おひさまが、じゅうじの、しるしの、うえに、のぼるよ。はやい。",
+    "actors": [
+      { "part": "日", "picture": "sun", "motion": "rise" },
+      { "part": "十", "picture": "➕", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/早",
+    "note": "「日」が意味を表すのは確か。下の部分はもと音を表す別の字(棗)で、「十」ではない。形からの覚え方。"
+  },
+  "草": {
+    "kind": "naritachi",
+    "caption": "うえは くさの しるし。したは おとの しるし。",
+    "speech": "うえは、くさの、しるし。かぜに、ゆれる。したは、おとの、しるしだよ。くさ。",
+    "actors": [
+      { "part": "艹", "picture": "grass", "motion": "sway" },
+      { "part": "早", "picture": "♪", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/草",
+    "note": "形声文字。「早」は「そう」という音を表すだけ。"
+  },
+  "足": {
+    "kind": "oboekata",
+    "caption": "まるい ひざの したに あしあと。",
+    "speech": "うえは、まるい、ひざ。したは、あるく、あしあとだよ。あし。",
+    "actors": [
+      { "part": "口", "picture": "🦵", "motion": "still" },
+      { "part": "龰", "picture": "🦶", "motion": "walk" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/足",
+    "note": "下の部分(止)が足の形なのは確か。上の「口」をひざとするのは教材で一般的な説明だが、別の字の一部が残ったものとする説もあり、覚え方あつかい。"
+  },
+  "村": {
+    "kind": "naritachi",
+    "caption": "きの ある ところ、むら。みぎは おとの しるし。",
+    "speech": "きの、あるところに、ひとが、あつまるよ。みぎは、おとの、しるし。むら。",
+    "actors": [
+      { "part": "木", "picture": "tree", "motion": "sway" },
+      { "part": "寸", "picture": "♪", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/村",
+    "note": "形声文字。「寸」は音を表すだけ。「人があつまる」は「むら」の意味をおぎなった言い方。"
+  },
+  "大": {
+    "kind": "naritachi",
+    "caption": "ひとが てと あしを おおきく ひろげた。",
+    "speech": "ひとが、りょうてと、りょうあしを、ひろげたよ。おおきい。",
+    "actors": [{ "part": "whole", "picture": "🧍", "motion": "grow" }],
+    "source": "https://ja.wiktionary.org/wiki/大",
+    "note": ""
+  },
+  "男": {
+    "kind": "naritachi",
+    "caption": "たんぼで ちからを だして はたらく。",
+    "speech": "たんぼで、ちからをだして、つちを、たがやすよ。おとこ。",
+    "actors": [
+      { "part": "田", "picture": "🌾", "motion": "still" },
+      { "part": "力", "picture": "💪", "motion": "shake" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/男",
+    "note": "田をすき(力)でたがやす様子。「力」は、もとは土をほる道具の形とされる。"
+  },
+  "竹": {
+    "kind": "naritachi",
+    "caption": "たけの はが たれて ゆれる。",
+    "speech": "たけの、はが、したに、たれているよ。かぜで、ゆれる。たけ。",
+    "actors": [{ "part": "whole", "picture": "🎋", "motion": "sway" }],
+    "source": "https://ja.wiktionary.org/wiki/竹",
+    "note": "たれさがった竹の葉の形。"
+  },
+  "中": {
+    "kind": "naritachi",
+    "caption": "ぼうが しかくの まんなかを とおる。",
+    "speech": "ぼうが、いっぽん。しかくの、まんなかを、とおるよ。なか。",
+    "actors": [{ "part": "whole", "picture": "🎯", "motion": "enter" }],
+    "source": "https://ja.wiktionary.org/wiki/中",
+    "note": "たて棒のまんなかに印をつけた形。旗ざおの形とする説もある。"
+  },
+  "虫": {
+    "kind": "naritachi",
+    "caption": "ちいさな いきものが くねくね うごく。",
+    "speech": "ちいさな、いきものが、くねくね、うごくよ。むし。",
+    "actors": [{ "part": "whole", "picture": "🐛", "motion": "sway" }],
+    "source": "https://ja.wiktionary.org/wiki/虫",
+    "note": "小さな生きものの形とする説を採った。教材では「へび(まむし)の形」とすることが多いが、その説は近年否定されている。"
+  },
+  "町": {
+    "kind": "naritachi",
+    "caption": "たんぼの あいだの みち。みぎは おとの しるし。",
+    "speech": "たんぼの、あいだの、みち。みぎは、おとの、しるしだよ。まち。",
+    "actors": [
+      { "part": "田", "picture": "🌾", "motion": "still" },
+      { "part": "丁", "picture": "♪", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/町",
+    "note": "形声文字。もとは田のあぜ道の意味。「丁」は音を表す。"
+  },
+  "天": {
+    "kind": "naritachi",
+    "caption": "ひとの あたまの うえに せん。そこが てん。",
+    "speech": "てを、ひろげた、ひと。あたまの、うえに、せんが、いっぽん。いちばん、うえだよ。てん。",
+    "actors": [
+      { "part": "一", "picture": "line", "motion": "drop" },
+      { "part": "大", "picture": "🧍", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/天",
+    "note": "人の頭を大きく強調した形で、もとは「あたま・てっぺん」の意。上の線は頭にあたる。「一と大の組み合わせ」という説文解字の分析は否定されているが、頭のいちばん上を示すという点は共通するので成り立ちあつかいにした。"
+  },
+  "田": {
+    "kind": "naritachi",
+    "caption": "しかくい たんぼを みちで 4つに くぎった。",
+    "speech": "しかくい、たんぼ。あぜみちで、よっつに、くぎったよ。た。",
+    "actors": [{ "part": "whole", "picture": "🌾", "motion": "still" }],
+    "source": "https://ja.wiktionary.org/wiki/田",
+    "note": ""
+  },
+  "土": {
+    "kind": "naritachi",
+    "caption": "じめんの うえに つちが もりあがった。",
+    "speech": "じめんの、うえに、つちが、もりあがっているよ。つち。",
+    "actors": [{ "part": "whole", "picture": "🟤", "motion": "rise" }],
+    "source": "https://ja.wiktionary.org/wiki/土",
+    "note": "地面の上の土のかたまりの形。土から芽が出る形とする古い説もある。"
+  },
+  "二": {
+    "kind": "naritachi",
+    "caption": "ぼうが 2ほん。うえが みじかく したが ながい。",
+    "speech": "ぼうが、にほん。うえが、みじかくて、したが、ながいよ。に。",
+    "actors": [{ "part": "whole", "picture": "line", "motion": "drop" }],
+    "source": "https://ja.wiktionary.org/wiki/二",
+    "note": "横棒を2本かさねて数を表した字。"
+  },
+  "日": {
+    "kind": "naritachi",
+    "caption": "まるい おひさまが しかくく なった。",
+    "speech": "まるい、おひさまが、ぴかぴか、ひかるよ。まるが、しかくく、なった。ひ。",
+    "actors": [{ "part": "whole", "picture": "sun", "motion": "shine" }],
+    "source": "https://ja.wiktionary.org/wiki/日",
+    "note": ""
+  },
+  "入": {
+    "kind": "oboekata",
+    "caption": "いえの いりぐちの かたち。なかに はいる。",
+    "speech": "さんかくの、いりぐち。そこから、なかに、はいるよ。はいる。",
+    "actors": [{ "part": "whole", "picture": "🚪", "motion": "enter" }],
+    "source": "https://ja.wiktionary.org/wiki/入",
+    "note": "字源は定説なし(入り口の形とする説、入ることを示す記号とする説)。教材で一般的な入り口説を使ったが、確かではないので覚え方あつかい。"
+  },
+  "年": {
+    "kind": "oboekata",
+    "caption": "みのった いねを ひとが かついで あるく。",
+    "speech": "みのった、いねを、ひとが、かついで、あるくよ。いねが、みのると、いちねん。とし。",
+    "actors": [{ "part": "whole", "picture": "🌾", "motion": "walk" }],
+    "source": "https://ja.wiktionary.org/wiki/年",
+    "note": "もとは稲(禾)と人を合わせた字で、「みのり」の意味だったのは確か。「人が稲をかつぐ姿」は教材で一般的だが、人は音を表すだけとする説が有力なので覚え方あつかい。"
+  },
+  "白": {
+    "kind": "oboekata",
+    "caption": "どんぐりの からを むくと なかは まっしろ。",
+    "speech": "どんぐりの、からを、むくよ。なかは、まっしろ。しろ。",
+    "actors": [{ "part": "whole", "picture": "🌰", "motion": "shine" }],
+    "source": "https://ja.wiktionary.org/wiki/白",
+    "note": "字源は定説なし(どんぐりの実、頭の骨、日の光、入れ物など諸説)。子ども向け教材で見かけるどんぐり説を、覚え方として使った。"
+  },
+  "八": {
+    "kind": "naritachi",
+    "caption": "2ほんの せんが みぎと ひだりに わかれる。",
+    "speech": "にほんの、せんが、みぎと、ひだりに、わかれるよ。はち。",
+    "actors": [{ "part": "whole", "picture": "↔️", "motion": "grow" }],
+    "source": "https://ja.wiktionary.org/wiki/八",
+    "note": "二つに分かれる線の形。もとは「わかれる」の意味で、音を借りて数の8に使うようになった。"
+  },
+  "百": {
+    "kind": "naritachi",
+    "caption": "うえに ぼうが 1ぽん。したの しろは おとの しるし。",
+    "speech": "うえに、ぼうが、いっぽん。したの、しろは、おとの、しるしだよ。ひゃく。",
+    "actors": [
+      { "part": "一", "picture": "line", "motion": "drop" },
+      { "part": "白", "picture": "♪", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/百",
+    "note": "形声文字。「一」が数を、「白」が「ひゃく」に近い音を表す。"
+  },
+  "文": {
+    "kind": "naritachi",
+    "caption": "ひとの むねに もようが かいて ある。",
+    "speech": "ひとの、むねに、もようが、かいてあるよ。もようから、もじに、なった。ぶん。",
+    "actors": [{ "part": "whole", "picture": "🧍", "motion": "still" }],
+    "source": "https://ja.wiktionary.org/wiki/文",
+    "note": "体に模様(いれずみ)のある人の形。「いれずみ」を「もよう」と言いかえた。"
+  },
+  "木": {
+    "kind": "naritachi",
+    "caption": "きの かたち。みきと えだと ねっこ。",
+    "speech": "きが、いっぽん、たっているよ。みきと、えだと、ねっこ。き。",
+    "actors": [{ "part": "whole", "picture": "tree", "motion": "grow" }],
+    "source": "https://ja.wiktionary.org/wiki/木",
+    "note": ""
+  },
+  "本": {
+    "kind": "naritachi",
+    "caption": "きの ねもとに しるしを 1ぽん。",
+    "speech": "きの、ねもとに、しるしを、いっぽん、つけるよ。ここが、ねもと。ほん。",
+    "actors": [
+      { "part": "木", "picture": "tree", "motion": "still" },
+      { "part": "一", "picture": "line", "motion": "enter" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/本",
+    "note": "木の根もとに印をつけた字。もとは「ね・もと」の意味。"
+  },
+  "名": {
+    "kind": "oboekata",
+    "caption": "くらい ゆうがた、くちで なまえを いう。",
+    "speech": "ゆうがたは、くらくて、かおが、みえない。くちで、なまえを、いうよ。な。",
+    "actors": [
+      { "part": "夕", "picture": "moon", "motion": "rise" },
+      { "part": "口", "picture": "👄", "motion": "shake" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/名",
+    "note": "説文解字いらい教材で一般的な説明だが、こじつけ気味とされる。月の光を表す字を借りたとする説、肉と口とする説(白川)などがあり、覚え方あつかい。"
+  },
+  "目": {
+    "kind": "naritachi",
+    "caption": "めの かたち。よこむきの めを たてに した。",
+    "speech": "めの、かたち。よこむきの、めを、たてに、したよ。め。",
+    "actors": [{ "part": "whole", "picture": "👁️", "motion": "still" }],
+    "source": "https://ja.wiktionary.org/wiki/目",
+    "note": ""
+  },
+  "立": {
+    "kind": "naritachi",
+    "caption": "ひとが じめんの うえに たって いる。",
+    "speech": "ひとが、りょうあしを、ひらいて、じめんの、うえに、たっているよ。たつ。",
+    "actors": [{ "part": "whole", "picture": "🧍", "motion": "rise" }],
+    "source": "https://ja.wiktionary.org/wiki/立",
+    "note": "人(大)と地面(一)を合わせた字。"
+  },
+  "力": {
+    "kind": "naritachi",
+    "caption": "つちを ほる どうぐ。ちからを いれて ほる。",
+    "speech": "つちを、ほる、どうぐの、かたち。ちからを、いれて、ほるよ。ちから。",
+    "actors": [{ "part": "whole", "picture": "⛏️", "motion": "shake" }],
+    "source": "https://ja.wiktionary.org/wiki/力",
+    "note": "土をほる農具(すき)の形とする説を採った。教材では「力こぶを出したうでの形」とすることも多いが、甲骨文字からは農具説が有力。"
+  },
+  "林": {
+    "kind": "naritachi",
+    "caption": "きが 2ほん ならんで、はやし。",
+    "speech": "きが、いっぽん。となりに、もういっぽん。きが、ならんで、はやし。",
+    "actors": [
+      { "part": "木", "picture": "tree", "motion": "still" },
+      { "part": "木", "picture": "tree", "motion": "walk" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/林",
+    "note": ""
+  },
+  "六": {
+    "kind": "oboekata",
+    "caption": "やねの ある いえの かたちに にて いる。",
+    "speech": "やねの、ある、いえの、かたちに、にているよ。ろく。",
+    "actors": [{ "part": "whole", "picture": "🏠", "motion": "still" }],
+    "source": "https://ja.wiktionary.org/wiki/六",
+    "note": "字源は不明(音を借りた字とされる)。家・穴ぐらの形とする説があり、教材でも屋根の形と教えることが多いので、形の覚え方として使った。"
+  }
+}

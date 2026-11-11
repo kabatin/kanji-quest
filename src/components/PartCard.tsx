@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { GlyphRef, Part } from '../data/schema'
 import { refsViewBox } from '../data/strokes'
+import { useLearnedSet } from '../lib/useKanjiText'
 import { KanjiGlyph } from './KanjiGlyph'
 import { PartIcon } from './PartIcon'
 
@@ -24,6 +25,9 @@ const KIND_LABEL = { imi: 'いみ', oto: 'おと' } as const
 
 /** 部位1つを表すカード。絵(いみ)+ 形 + 名前。onSelect があれば押せる。 */
 export function PartCard({ part, glyph = part.glyph, showHint, plain = false, state = 'idle', onSelect, children }: Props) {
+  const learned = useLearnedSet()
+  // 部位が「もう覚えた漢字」そのものなら、ひらがなの名前のかわりに漢字で出す
+  const name = learned.has(part.id) ? part.id : part.label
   const className = ['part-card', `part-card--${part.kind}`, `is-${state}`, plain ? 'part-card--plain' : '']
     .filter(Boolean)
     .join(' ')
@@ -46,7 +50,7 @@ export function PartCard({ part, glyph = part.glyph, showHint, plain = false, st
       {showHint && (
         <span className="part-card__label">
           <small>{KIND_LABEL[part.kind]}</small>
-          {part.label}
+          <span className={name === part.id ? 'ktext__kanji' : undefined}>{name}</span>
         </span>
       )}
     </>

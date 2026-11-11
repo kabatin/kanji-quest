@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { TopBar } from '../../components/Hud'
 import { useProgress, type Settings } from '../../store/progress'
 
 const TOGGLES: readonly { key: keyof Settings; label: string }[] = [
@@ -24,12 +25,7 @@ export function SettingsScreen({ onHome }: Props) {
 
   return (
     <div className="screen settings">
-      <header className="bar">
-        <button type="button" className="btn" onClick={onHome}>
-          ← ずかん
-        </button>
-        <h1>せってい</h1>
-      </header>
+      <TopBar onBack={onHome} backLabel="ホーム" title="せってい" />
       <ul className="settings__list">
         {TOGGLES.map(({ key, label }) => (
           <li key={key}>

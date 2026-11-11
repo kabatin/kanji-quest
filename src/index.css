@@ -1,37 +1,57 @@
 :root {
-  --bg: #faf5e9;
-  --ink: #2b2a33;
-  --muted: #7a7682;
-  --line: #e4dcc8;
+  /* 藍(すみ)・空・若葉・山吹・朱(はんこ)・紙 */
+  --ai: #27336b;
+  --ai-soft: #5b6699;
+  --sky: #dff2fb;
+  --wakaba: #58b56b;
+  --wakaba-dark: #3a8f4f;
+  --yamabuki: #ffc233;
+  --yamabuki-dark: #d99a00;
+  --shu: #e8452c;
+  --paper: #fffdf7;
+  --line: #cfe0ec;
+  --line-dark: #a9c3d6;
+
+  /* 部位の色: いみ = 緑がかった青、おと = だいだい */
   --imi: #0f8f7d;
   --imi-bg: #ddf3ee;
   --oto: #d9731a;
   --oto-bg: #fce9d4;
-  --primary: #2f6fde;
+  --ink: var(--ai);
+  --muted: var(--ai-soft);
+  --pale: #c9d4de;
   --danger: #c8452f;
-  --pale: #cfc8b8;
-  --radius: 20px;
+  --radius: 22px;
 
-  /* カードの見た目(スキン)で変わる値 */
+  /* カードの見た目(きせかえ)で変わる値 */
   --card-bg: #ffffff;
-  --card-border: #e4dcc8;
+  --card-border: var(--line);
 
-  font-family: 'BIZ UDPGothic', 'Hiragino Maru Gothic ProN', 'Yu Gothic UI', 'Meiryo', sans-serif;
+  --font-body: 'Zen Maru Gothic', 'BIZ UDPGothic', 'Hiragino Maru Gothic ProN', 'Yu Gothic UI', sans-serif;
+  --font-display: 'Mochiy Pop One', 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', sans-serif;
+
+  font-family: var(--font-body);
+  font-weight: 700;
   font-size: 18px;
   line-height: 1.5;
-  color: var(--ink);
-  background: var(--bg);
+  color: var(--ai);
+  background: var(--sky);
   -webkit-font-smoothing: antialiased;
 }
 
 [data-skin='sora'] {
-  --card-bg: linear-gradient(180deg, #dff1ff 0%, #ffffff 70%);
-  --card-border: #9ccbf0;
+  --card-bg: linear-gradient(180deg, #d3ecff 0%, #ffffff 70%);
+  --card-border: #8cc3ee;
 }
 
 [data-skin='kin'] {
-  --card-bg: linear-gradient(135deg, #fff8dc 0%, #ffe59a 100%);
+  --card-bg: linear-gradient(135deg, #fff8dc 0%, #ffe08a 100%);
   --card-border: #d9a91f;
+}
+
+[data-skin='yozora'] {
+  --card-bg: linear-gradient(160deg, #e2deff 0%, #ffffff 75%);
+  --card-border: #6c63c7;
 }
 
 * {
@@ -48,26 +68,29 @@ body {
 
 body {
   margin: 0;
-  background: var(--bg);
+  background: linear-gradient(180deg, #cfeaf8 0%, #eef9ff 60%, #f6fcf3 100%);
   overscroll-behavior: none;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
 }
 
-#root {
+#root,
+.app {
   height: 100%;
 }
 
 h1,
 h2,
 p,
-ul {
+ul,
+ol {
   margin: 0;
   padding: 0;
 }
 
-ul {
+ul,
+ol {
   list-style: none;
 }
 
@@ -82,89 +105,384 @@ button {
 button:focus-visible,
 input:focus-visible,
 a:focus-visible {
-  outline: 4px solid var(--primary);
+  outline: 4px solid var(--ai);
   outline-offset: 3px;
 }
 
-.app {
-  height: 100%;
-}
-
 .screen {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   height: 100%;
   /* 中身が画面に収まらないときだけ、この中でスクロールする */
   overflow-y: auto;
   overscroll-behavior: contain;
   max-width: 1180px;
   margin: 0 auto;
-  padding: 16px 24px 24px;
+  padding: 14px 22px 20px;
 }
 
+/* 上の帯 */
 .bar {
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 64px;
-  flex-wrap: wrap;
+  min-height: 60px;
+  flex-shrink: 0;
 }
 
-.bar h1 {
-  font-size: 1.6rem;
+.bar__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.55rem;
+  letter-spacing: 0.04em;
+}
+
+.bar__spacer {
+  flex: 1;
 }
 
 .bar__step,
 .bar__score,
 .bar__time {
-  font-size: 1.3rem;
-  font-weight: 700;
-  padding: 6px 16px;
+  font-size: 1.2rem;
+  padding: 5px 16px;
   border-radius: 999px;
-  background: #ffffff;
+  background: var(--paper);
   border: 3px solid var(--line);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
+/* ボタン */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 56px;
+  min-height: 54px;
   padding: 0 20px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  background: #ffffff;
-  border: 3px solid var(--line);
-  border-radius: 16px;
-  box-shadow: 0 4px 0 var(--line);
+  font-size: 1.15rem;
+  white-space: nowrap;
+  background: var(--paper);
+  border: 3px solid var(--line-dark);
+  border-radius: 18px;
+  box-shadow: 0 5px 0 var(--line-dark);
+  transition: transform 0.06s;
 }
 
-.btn:active {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 var(--line);
+.btn:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 var(--line-dark);
+}
+
+.btn:disabled {
+  opacity: 0.35;
 }
 
 .btn--primary {
-  background: var(--primary);
-  border-color: #1f4fa8;
-  box-shadow: 0 4px 0 #1f4fa8;
-  color: #ffffff;
+  background: var(--yamabuki);
+  border-color: var(--yamabuki-dark);
+  box-shadow: 0 5px 0 var(--yamabuki-dark);
+}
+
+.btn--primary:active:not(:disabled) {
+  box-shadow: 0 1px 0 var(--yamabuki-dark);
 }
 
 .btn--danger {
   background: var(--danger);
   border-color: #8f2e1e;
-  box-shadow: 0 4px 0 #8f2e1e;
+  box-shadow: 0 5px 0 #8f2e1e;
   color: #ffffff;
 }
 
 .btn--big {
-  min-height: 72px;
-  padding: 0 36px;
-  font-size: 1.6rem;
+  min-height: 70px;
+  padding: 0 34px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.45rem;
+  border-radius: 22px;
+}
+
+.btn--round {
+  width: 54px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 1.3rem;
+}
+
+.chip {
+  min-width: 104px;
+}
+
+.chip.is-selected {
+  background: var(--ai);
+  border-color: #141c47;
+  box-shadow: 0 5px 0 #141c47;
+  color: #ffffff;
+}
+
+/* コイン・レベル・れんぞく日数 */
+.coin {
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff3b0 0 18%, var(--yamabuki) 20% 62%, var(--yamabuki-dark) 64%);
+  border: 2px solid #b97e00;
+  vertical-align: -0.2em;
+}
+
+.hud-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 16px;
+  background: var(--paper);
+  border: 3px solid var(--line-dark);
+  border-radius: 999px;
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 16px 4px 4px;
+  background: var(--paper);
+  border: 3px solid var(--line-dark);
+  border-radius: 999px;
+}
+
+.level-badge__num {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--ai);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.level-badge__num small {
+  font-family: var(--font-body);
+  font-size: 0.5rem;
+  font-weight: 700;
+}
+
+.level-badge__bar {
+  width: 130px;
+  height: 14px;
+  border-radius: 999px;
+  background: #e3ecf3;
+  overflow: hidden;
+}
+
+.level-badge__bar span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--wakaba), #8fd89e);
+  transition: width 0.5s;
+}
+
+/* はんこ */
+.stamps {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.stamp {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.stamp__seal {
+  display: grid;
+  place-items: center;
+  width: 1.9em;
+  height: 1.9em;
+  border: 2px dashed var(--line-dark);
+  border-radius: 28%;
+  color: transparent;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.stamp.is-on .stamp__seal {
+  border: 2px solid var(--shu);
+  background: var(--shu);
+  color: #ffffff;
+  transform: rotate(-6deg);
+}
+
+.stamp.is-on {
+  color: var(--shu);
+}
+
+/* もらえたもの */
+.gains {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.gains li {
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: var(--paper);
+  border: 3px solid var(--line);
+  font-size: 1.1rem;
+}
+
+.gains .gains__level {
+  background: var(--ai);
+  border-color: #141c47;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 400;
+}
+
+.gains .gains__stamps {
+  border-color: var(--shu);
+}
+
+.gains__stamps strong {
+  font-size: 1.3rem;
+  letter-spacing: 0.1em;
+}
+
+/* すすみぐあい(ものがたり・くみあわせ・かく) */
+.steps {
+  display: flex;
+  gap: 6px;
+}
+
+.steps li {
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.steps li.is-now {
+  background: var(--ai);
+  color: #ffffff;
+}
+
+/* ページ送り */
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.pager .btn {
+  min-width: 92px;
+  font-size: 1.4rem;
+}
+
+.pager__page {
+  min-width: 80px;
+  text-align: center;
+  font-size: 1.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 紙ふぶき */
+.burst {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+}
+
+.burst__piece {
+  position: absolute;
+  width: 14px;
+  height: 20px;
+  border-radius: 4px;
+  opacity: 0;
+  animation: burst 1.5s ease-out forwards;
+}
+
+@keyframes burst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), calc(var(--dy) + 18vmin)) rotate(var(--spin));
+  }
+}
+
+/* まんなかに出る まど */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(20, 28, 71, 0.55);
+}
+
+.modal__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 760px;
+  padding: 28px 32px;
+  background: var(--paper);
+  border: 4px solid var(--ai);
+  border-radius: 32px;
+  text-align: center;
+}
+
+.modal__panel h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.8rem;
+}
+
+.modal__lead {
+  color: var(--shu);
+  font-size: 1.3rem;
+}
+
+/* 覚えたので漢字で表示されるようになった ことば */
+.ktext__kanji {
+  color: var(--wakaba-dark);
+}
+
+.chip.is-selected .ktext__kanji,
+.steps li.is-now .ktext__kanji {
+  color: #c9f2d2;
 }
 
 /* 漢字の画 */
@@ -191,7 +509,7 @@ a:focus-visible {
 }
 
 .glyph-ink path {
-  stroke: var(--ink);
+  stroke: var(--ai);
 }
 
 .glyph-pale path {
@@ -199,8 +517,8 @@ a:focus-visible {
 }
 
 .glyph-slot {
-  fill: rgba(43, 42, 51, 0.05);
-  stroke: #a59d8a;
+  fill: rgba(39, 51, 107, 0.06);
+  stroke: var(--ai-soft);
   stroke-width: 1.5;
   stroke-dasharray: 4 3;
 }

@@ -1,0 +1,420 @@
+{
+  "東": {
+    "kind": "oboekata",
+    "caption": "きの むこうから おひさまが のぼる。ひがし。",
+    "speech": "きのむこうから、おひさまがのぼる。おひさまがのぼるほうが、ひがし。",
+    "actors": [
+      { "part": "木", "picture": "tree", "motion": "still" },
+      { "part": "日", "picture": "sun", "motion": "rise" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/東",
+    "note": "「木の向こうに日」は説文解字以来の伝統的な説明で、子ども向け教材でも一般的。ただし近年の研究では、両端をしばった袋の形を音だけ借りた字とされるため、覚え方として扱った。"
+  },
+  "答": {
+    "kind": "oboekata",
+    "caption": "たけの ふだに かいた へんじが ぴったり あう。",
+    "speech": "たけのふだに、へんじをかく。きかれたことに、ぴったりあう。こたえ。",
+    "actors": [
+      { "part": "竹", "picture": "🎋", "motion": "still" },
+      { "part": "合", "picture": "🧩", "motion": "rise" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/答",
+    "note": "もとは「荅」という字から分かれた字で、竹と合の組み合わせに意味があるかは説が割れる。竹のふだ(竹簡)がぴったり合う、という教材でよく使われる説明を覚え方とした。"
+  },
+  "頭": {
+    "kind": "naritachi",
+    "caption": "あたまの なかま。まめは トウの おとの パーツ。",
+    "speech": "おおきなあたまのかたちが、あたまのしるし。ひだりのまめは、おとのパーツ。あたま。",
+    "actors": [
+      { "part": "頁", "picture": "👤", "motion": "grow" },
+      { "part": "豆", "picture": "♪", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/頭",
+    "note": "形声文字。頁が意味(あたま)、豆は音(トウ・ズ)を表す。PART_ROWS では豆は imi(まめ)だが、字源上は音の部位なので ♪ とした。"
+  },
+  "同": {
+    "kind": "naritachi",
+    "caption": "おなじ ふとさの つつが ぴったり かさなる。",
+    "speech": "つつと、つつを、かさねる。ふとさが、ぴったり。どちらも、おなじ。",
+    "actors": [
+      { "part": "whole", "picture": "🥫", "motion": "drop" }
+    ],
+    "source": "https://okjiten.jp/kanji378.html",
+    "note": "つつ(筒)の形という点は複数の情報源で共通。「同じ太さの筒が合う」から「おなじ」とする説と、筒の字の音を借りただけとする説がある。"
+  },
+  "道": {
+    "kind": "oboekata",
+    "caption": "あたまを まえに むけて みちを すすむ。",
+    "speech": "あたまを、まえにむけて、てくてくすすむ。ひとがとおるところが、みち。",
+    "actors": [
+      { "part": "⻌", "picture": "🛣️", "motion": "still" },
+      { "part": "首", "picture": "👤", "motion": "walk" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/道",
+    "note": "しんにょう(みち・すすむ)は意味の部位。首を「あたまを向けて進む」と読む会意説は伝統的だが、首は音だけを表すとする説が有力で、ほかに古代の儀式に結びつける説もある。日本語の読みでは音のヒントにならないため、覚え方とした。"
+  },
+  "読": {
+    "kind": "naritachi",
+    "caption": "ことばを こえに だして、ほんを よむ。",
+    "speech": "ことばのなかまだよ。みぎがわは、おとのパーツ。こえにだして、ほんを、よむ。",
+    "actors": [
+      { "part": "言", "picture": "💬", "motion": "grow" },
+      { "part": "売", "picture": "♪", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/讀",
+    "note": "旧字「讀」は言(意味)+賣(音)の形声文字。右がわは「うる」の意味ではなく音だけを表す。"
+  },
+  "内": {
+    "kind": "naritachi",
+    "caption": "いえの いりぐちから なかに はいる。うち。",
+    "speech": "いえのいりぐちから、なかにはいる。はいったところが、うち。",
+    "actors": [
+      { "part": "冂", "picture": "🏠", "motion": "still" },
+      { "part": "人", "picture": "🚶", "motion": "enter" }
+    ],
+    "source": "https://okjiten.jp/kanji236.html",
+    "note": "中の部分はもとは「入」(はいる)。アプリの部位は「人」なので、人が入ってくる絵にした。外わくは家・建物の形。"
+  },
+  "南": {
+    "kind": "oboekata",
+    "caption": "あたたかい こやで くさの めが のびる。みなみ。",
+    "speech": "あたたかいこやのなかで、くさのめが、ぐんぐんのびる。あたたかいほうが、みなみ。",
+    "actors": [
+      { "part": "whole", "picture": "🌱", "motion": "grow" }
+    ],
+    "source": "https://okjiten.jp/kanji150.html",
+    "note": "説が大きく割れる字(草と器の形を借りた説、楽器の形の説、草木の芽と暖かい風・小屋の説など)。子ども向けに「あたたかい所で芽がのびる」という覚え方にした。"
+  },
+  "肉": {
+    "kind": "naritachi",
+    "caption": "きりわけた おにくの かたち。なかに すじが 2ほん。",
+    "speech": "きりわけた、おにくのかたち。なかのせんは、おにくのすじ。にく。",
+    "actors": [
+      { "part": "whole", "picture": "🥩", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/肉",
+    "note": "切った肉のかたまりの象形。中の線をすじとするのは子ども向けの言いかえ。"
+  },
+  "馬": {
+    "kind": "naritachi",
+    "caption": "たてがみを なびかせて はしる うまの かたち。",
+    "speech": "たてがみを、なびかせて、はしるうまのかたち。よこのせんが、たてがみだよ。うま。",
+    "actors": [
+      { "part": "whole", "picture": "🐎", "motion": "walk" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/馬",
+    "note": "馬の象形。下の四つの点を「四本のあし」とする説明は古い字形に合わないという指摘があるため、たてがみだけにふれた。"
+  },
+  "売": {
+    "kind": "naritachi",
+    "caption": "かった ものを みせの そとに だして、うる。",
+    "speech": "かったものを、みせのそとにだす。ほしいひとに、わたして、うる。",
+    "actors": [
+      { "part": "whole", "picture": "📦", "motion": "walk" }
+    ],
+    "source": "https://okjiten.jp/kanji234.html",
+    "note": "旧字「賣」は出+買(買ったものを出す=うる)。今の「売」はその略した形なので、字の形そのものから出・買は読み取れない。"
+  },
+  "買": {
+    "kind": "naritachi",
+    "caption": "あみに かいを あつめる。かいは むかしの おかね。",
+    "speech": "あみで、かいをあつめる。かいは、むかしのおかね。おかねで、ものを、かう。",
+    "actors": [
+      { "part": "罒", "picture": "🕸️", "motion": "drop" },
+      { "part": "貝", "picture": "🐚", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/買",
+    "note": "貝(お金)が意味の部位。上のあみ(网)は意味もふくむとする説と、音だけを表すとする説がある。"
+  },
+  "麦": {
+    "kind": "naritachi",
+    "caption": "むぎの ほの したに あし。あしで ふむ むぎ。",
+    "speech": "むぎのほと、したにあしのかたち。あしでふむと、つよくそだつ。むぎ。",
+    "actors": [
+      { "part": "whole", "picture": "🌾", "motion": "sway" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/麥",
+    "note": "旧字「麥」は麦の穂(來)+足(夊)。足を「麦ふみ」と見るのは子ども向けによくある説明で、もとは「くる」を表す字だったものが「来」と入れかわったとする説もある。"
+  },
+  "半": {
+    "kind": "naritachi",
+    "caption": "おおきな うしを まんなかで 2つに わける。",
+    "speech": "おおきなうしを、まんなかで、ふたつにわける。ひとつぶんが、はんぶん。はん。",
+    "actors": [
+      { "part": "whole", "picture": "🐄", "motion": "still" }
+    ],
+    "source": "https://okjiten.jp/kanji348.html",
+    "note": "八(わける)+牛の会意文字。"
+  },
+  "番": {
+    "kind": "naritachi",
+    "caption": "たんぼに たねを じゅんばんに まく。ばん。",
+    "speech": "たんぼに、たねを、ぱらぱらまく。ひとつずつ、じゅんばんに。ばん。",
+    "actors": [
+      { "part": "釆", "picture": "🌱", "motion": "drop" },
+      { "part": "田", "picture": "🌾", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/番",
+    "note": "もとは田に種をまく意味の字で、のちに「かわるがわる・順番」の意味に使われた。上の釆は音も表す。釆をけものの足あとの形とする説もある。"
+  },
+  "父": {
+    "kind": "naritachi",
+    "caption": "てに おのを もって はたらく おとうさん。",
+    "speech": "てに、おのをもって、はたらくひと。いえをまもる、おとうさん。ちち。",
+    "actors": [
+      { "part": "whole", "picture": "🪓", "motion": "rise" }
+    ],
+    "source": "https://okjiten.jp/kanji27.html",
+    "note": "手に何かを持つ形という点は共通。持っているものは、おの・むち・ぼうなど説があり、音を借りて「ちち」に使ったとする説もある。"
+  },
+  "風": {
+    "kind": "oboekata",
+    "caption": "ふねの ほが かぜを うけて ふくらむ。",
+    "speech": "ふねのほが、かぜをうけて、ふくらむ。ほのなかに、むしがいっぴき。かぜ。",
+    "actors": [
+      { "part": "whole", "picture": "⛵", "motion": "sway" }
+    ],
+    "source": "https://okjiten.jp/kanji100.html",
+    "note": "外がわ(凡)を風を受ける帆と見る説明を使った。外がわは音を表すだけとする説、中の虫は鳥(鳳)のかざり羽が変わったものとする説などがあり、定まらないので覚え方とした。"
+  },
+  "分": {
+    "kind": "naritachi",
+    "caption": "かたなで ものを 2つに きって、わける。",
+    "speech": "かたなで、すぱっときる。みぎとひだり、ふたつに、わける。",
+    "actors": [
+      { "part": "八", "picture": "↔️", "motion": "grow" },
+      { "part": "刀", "picture": "🗡️", "motion": "rise" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/分",
+    "note": "八(左右にわかれる)+刀の会意文字。"
+  },
+  "聞": {
+    "kind": "naritachi",
+    "caption": "もんの そとの おとを みみで きく。",
+    "speech": "もんのむこうから、おとがする。みみをちかづけて、よくきく。",
+    "actors": [
+      { "part": "門", "picture": "gate", "motion": "still" },
+      { "part": "耳", "picture": "👂", "motion": "enter" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/聞",
+    "note": "耳が意味の部位。門は音(モン・ブン)を表す部位で、「門のところで聞く」は意味もかねると見る辞典の説明を子ども向けにしたもの。門を音だけとする説もある。"
+  },
+  "米": {
+    "kind": "naritachi",
+    "caption": "いねの ほに こめの つぶが ならんで いる。",
+    "speech": "いねのほに、ちいさなつぶが、たくさんならぶ。つぶのひとつひとつが、こめ。",
+    "actors": [
+      { "part": "whole", "picture": "🌾", "motion": "sway" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/米",
+    "note": "こめのつぶの象形。まんなかの線は、穂のじくとする説と、ふるいとする説がある。"
+  },
+  "歩": {
+    "kind": "naritachi",
+    "caption": "みぎあし ひだりあし。あしあとが 2つで、あるく。",
+    "speech": "みぎあし、ひだりあし。あしあとが、ふたつならぶ。まえにすすんで、あるく。",
+    "actors": [
+      { "part": "止", "picture": "🦶", "motion": "walk" },
+      { "part": "少", "picture": "👣", "motion": "walk" }
+    ],
+    "source": "https://okjiten.jp/kanji213.html",
+    "note": "左右の足あとを上下にならべた象形。下の「少」は「すくない」ではなく、もとはもう一方の足あとの形。"
+  },
+  "母": {
+    "kind": "naritachi",
+    "caption": "あかちゃんに おちちを あげる おかあさん。",
+    "speech": "すわって、あかちゃんをだっこするひと。ふたつのてんは、おちち。はは。",
+    "actors": [
+      { "part": "whole", "picture": "🤱", "motion": "sway" }
+    ],
+    "source": "https://okjiten.jp/kanji28.html",
+    "note": "ひざまずいた女の人の形に点を二つ加えた字。点を乳と見るのが教材では一般的だが、「女」と区別するためのしるしにすぎないとする説もある。"
+  },
+  "方": {
+    "kind": "oboekata",
+    "caption": "つちを たがやす すきの かたち。おす ほうへ。",
+    "speech": "つちをたがやす、すきのかたち。おしたほうへ、まっすぐすすむ。ほう。",
+    "actors": [
+      { "part": "whole", "picture": "⛏️", "motion": "walk" }
+    ],
+    "source": "https://okjiten.jp/kanji379.html",
+    "note": "字源は定説がない(農具のすき、舟、ほかの字の変形など)。すきの形という説をもとに、「おした方へ進む」は覚えやすくするために足した。"
+  },
+  "北": {
+    "kind": "naritachi",
+    "caption": "ふたりが せなかを むけあう。せなかの ほうが きた。",
+    "speech": "ふたりが、せなかをむけあう。おひさまに、せなかをむけたほうが、きた。",
+    "actors": [
+      { "part": "whole", "picture": "👥", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/北",
+    "note": "二人が背中を向け合った形(もとは「そむく」の意味)。方角の「きた」は、日に背を向ける方とする説明と、音を借りただけとする説明がある。"
+  },
+  "毎": {
+    "kind": "oboekata",
+    "caption": "かみかざりを つけた おかあさん。まいにち つける。",
+    "speech": "かみかざりをつけた、おかあさんのかたち。まいにち、きれいにつけるよ。まい。",
+    "actors": [
+      { "part": "whole", "picture": "👩", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/每",
+    "note": "「母」の上にかざりの線を加えた字という点は字源どおり。「〜ごと・まい」の意味は音を借りたものなので、「毎日つける」は覚え方として足した。"
+  },
+  "妹": {
+    "kind": "naritachi",
+    "caption": "おんなのこの なかま。みぎは マイの おと。",
+    "speech": "おんなのこのなかまだよ。みぎがわは、まいのおとのパーツ。とししたの、いもうと。",
+    "actors": [
+      { "part": "女", "picture": "👧", "motion": "walk" },
+      { "part": "未", "picture": "♪", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/妹",
+    "note": "形声文字。女が意味、未は音(マイ)。未に「まだ若い」の意味もあるとする辞典もある。"
+  },
+  "万": {
+    "kind": "naritachi",
+    "caption": "むかしは サソリの え。かずの まんに かりたよ。",
+    "speech": "むかしは、さそりのえ。おとがおなじだったから、かずにかりた。まん。",
+    "actors": [
+      { "part": "whole", "picture": "🦂", "motion": "walk" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/萬",
+    "note": "旧字「萬」はサソリの象形で、音を借りて数の一万に使った。今の「万」は萬の略した形(別の字の影響もある)で、形そのものはサソリに似ていない。"
+  },
+  "明": {
+    "kind": "naritachi",
+    "caption": "おひさまと おつきさま。ならんで ひかって、あかるい。",
+    "speech": "おひさまと、おつきさま。ふたつならんで、ぴかぴかひかる。とても、あかるい。",
+    "actors": [
+      { "part": "日", "picture": "sun", "motion": "shine" },
+      { "part": "月", "picture": "moon", "motion": "shine" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/明",
+    "note": "日+月の会意は古い字形にあり、教材でも一般的。今の字形は「まど+月」(まどからさす月あかり)の字が変わったものとする説もある。"
+  },
+  "鳴": {
+    "kind": "naritachi",
+    "caption": "とりが くちを あけて コケコッコー。なく。",
+    "speech": "にわとりが、くちをおおきくあけて、こけこっこー。とりが、なく。",
+    "actors": [
+      { "part": "口", "picture": "👄", "motion": "grow" },
+      { "part": "鳥", "picture": "🐔", "motion": "shake" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/鳴",
+    "note": "口+鳥の会意文字。古い字形の鳥はおんどりの形。"
+  },
+  "毛": {
+    "kind": "naritachi",
+    "caption": "ふさふさ はえた けの かたち。",
+    "speech": "どうぶつのからだに、ふさふさはえている。ながくのびた、けのかたち。け。",
+    "actors": [
+      { "part": "whole", "picture": "🐑", "motion": "sway" }
+    ],
+    "source": "https://okjiten.jp/kanji228.html",
+    "note": "生えた毛の象形とするのが辞典・教材で一般的。草の形を借りた字とする新しい説もある。"
+  },
+  "門": {
+    "kind": "naritachi",
+    "caption": "2まいの とびらが ならぶ もんの かたち。",
+    "speech": "みぎとひだりに、とびらがにまい。ぱたんとひらく、もんのかたち。もん。",
+    "actors": [
+      { "part": "whole", "picture": "gate", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/門",
+    "note": ""
+  },
+  "夜": {
+    "kind": "naritachi",
+    "caption": "ひとの わきに おつきさまが でる。よる。",
+    "speech": "うでをひろげたひとの、わきのしたに、おつきさま。つきがでたら、よる。",
+    "actors": [
+      { "part": "whole", "picture": "moon", "motion": "rise" }
+    ],
+    "source": "https://okjiten.jp/kanji155.html",
+    "note": "月(夕)が意味の部位。人がうでを広げた形(亦)は音を表す部位で、意味もかねるかは説が分かれる。今の字形では月も人もかなり形が変わっている。"
+  },
+  "野": {
+    "kind": "naritachi",
+    "caption": "さとの まわりに ひろがる のはら。みぎは おと。",
+    "speech": "たんぼと、つちがある、さと。そのまわりに、ひろいのはら。みぎは、おとのパーツ。の。",
+    "actors": [
+      { "part": "里", "picture": "🏡", "motion": "grow" },
+      { "part": "予", "picture": "♪", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/野",
+    "note": "予は音の部位。里+予とするのは伝統的な説明で、もとは林+土の字に音の予が加わり、形が変わったとする説もある。"
+  },
+  "友": {
+    "kind": "naritachi",
+    "caption": "てと てを つないで、なかよし。とも。",
+    "speech": "ひとりのてと、もうひとりのて。てとてをつないで、なかよし。とも。",
+    "actors": [
+      { "part": "whole", "picture": "🤝", "motion": "grow" }
+    ],
+    "source": "https://okjiten.jp/kanji40.html",
+    "note": "手(又)を二つならべた形。手を取り合う意味とするのが一般的だが、又は音を表すだけとする説もある。"
+  },
+  "用": {
+    "kind": "oboekata",
+    "caption": "とっての ついた おけの かたち。つかう どうぐ。",
+    "speech": "とってのついた、おけのかたち。みずをくむのにつかう、どうぐだよ。よう。",
+    "actors": [
+      { "part": "whole", "picture": "🪣", "motion": "sway" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/用",
+    "note": "説が割れる字(とってのあるおけ・筒、かね、木を組んださく など)。おけの形の説をもとにし、「つかう道具」は覚えやすくするために足した(意味は音を借りたものとされる)。"
+  },
+  "曜": {
+    "kind": "naritachi",
+    "caption": "おひさまが ぴかぴか ひかる。みぎは ヨウの おと。",
+    "speech": "おひさまが、ぴかぴかひかる。みぎがわは、おとのパーツ。にちようびの、よう。",
+    "actors": [
+      { "part": "日", "picture": "sun", "motion": "shine" },
+      { "part": "翟", "picture": "♪", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/曜",
+    "note": "形声文字。日が意味(ひかる・かがやく)、翟は音(ヨウ)。翟を「きじの羽がかがやく」と意味づける説明もあるが、音の部位として紹介した。"
+  },
+  "来": {
+    "kind": "naritachi",
+    "caption": "むぎの かたちから できたよ。むぎが やって くる。",
+    "speech": "みのなった、むぎのかたち。むぎは、てんからきた、おくりもの。くる。",
+    "actors": [
+      { "part": "whole", "picture": "🌾", "motion": "sway" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/來",
+    "note": "麦の穂の象形という点は共通。「くる」の意味は音を借りたものとする説が有力で、「麦は天から来たおくりもの」は説文解字にもとづく昔からの説明。"
+  },
+  "里": {
+    "kind": "naritachi",
+    "caption": "たんぼと つちが ある ところに ひとが すむ。",
+    "speech": "うえに、たんぼ。したに、つち。たんぼのあるところに、ひとがすむ。さと。",
+    "actors": [
+      { "part": "whole", "picture": "🏡", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/里",
+    "note": "田+土の会意文字。人が住む土地を表す。"
+  },
+  "理": {
+    "kind": "naritachi",
+    "caption": "たまを みがいて すじを だす。みぎは リの おと。",
+    "speech": "いしをみがいて、きれいなすじをだす。たまのなかま。みぎは、おとのパーツ。り。",
+    "actors": [
+      { "part": "王", "picture": "💎", "motion": "shine" },
+      { "part": "里", "picture": "♪", "motion": "still" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/理",
+    "note": "形声文字。左の王は「おうさま」ではなく玉(きれいな石)で、玉をみがいてすじを出す意味。里は音(リ)。"
+  },
+  "話": {
+    "kind": "oboekata",
+    "caption": "ことばを したに のせて、はなす。",
+    "speech": "くちからでる、ことば。したを、ぺらぺらうごかして、はなす。",
+    "actors": [
+      { "part": "言", "picture": "💬", "motion": "still" },
+      { "part": "舌", "picture": "👅", "motion": "sway" }
+    ],
+    "source": "https://ja.wiktionary.org/wiki/話",
+    "note": "言が意味の部位。右がわは今は「舌」と同じ形だが、もとは別の字(音を表す部位)とされる。舌を動かして話す、は形からの覚え方。"
+  }
+}

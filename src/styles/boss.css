@@ -1,0 +1,480 @@
+/* ───────── ボス ───────── */
+.boss-monster {
+  display: block;
+  overflow: visible;
+}
+
+.boss-monster__body {
+  transform-origin: 60px 100px;
+  animation: boss-float 2.6s ease-in-out infinite;
+}
+
+.boss-monster[data-mood='hit'] .boss-monster__body {
+  animation: boss-hit 0.5s ease-in-out;
+  filter: brightness(1.9);
+}
+
+.boss-monster[data-mood='laugh'] .boss-monster__body {
+  animation: boss-laugh 0.4s ease-in-out 2;
+}
+
+.boss-monster[data-mood='down'] .boss-monster__body {
+  animation: none;
+  transform: rotate(-14deg) translateY(6px);
+  opacity: 0.75;
+}
+
+@keyframes boss-float {
+  50% {
+    transform: translateY(-4px) scale(1.02, 0.98);
+  }
+}
+
+@keyframes boss-hit {
+  20% {
+    transform: translateX(-8px) rotate(-6deg);
+  }
+  60% {
+    transform: translateX(8px) rotate(6deg);
+  }
+}
+
+@keyframes boss-laugh {
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+.try-pips {
+  display: inline-flex;
+  gap: 6px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+.try-pips span {
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--shu);
+  border-radius: 50%;
+}
+
+.try-pips .is-on {
+  background: var(--shu);
+}
+
+/* ステージ画面の ボス */
+.stage__cleared {
+  padding: 2px 16px;
+  background: var(--shu);
+  border-radius: 999px;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 400;
+  transform: rotate(-4deg);
+}
+
+.stage__boss {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 112px;
+  padding: 8px 22px;
+  background: rgba(255, 253, 247, 0.92);
+  border: 4px solid var(--ai);
+  border-radius: 28px;
+}
+
+.stage__boss.is-locked .stage__monster {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
+.stage__monster {
+  width: 92px;
+  flex-shrink: 0;
+}
+
+.stage__boss-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.stage__boss-name {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.35rem;
+}
+
+.stage__boss .stage__rest {
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: 1.05rem;
+}
+
+/* ぼうけん: そつぎょうしけん */
+.map-node--exam .map-node__disc {
+  width: 104px;
+  height: 104px;
+  padding: 10px;
+  background: #2b2350;
+  border-color: var(--yamabuki);
+  box-shadow: 0 7px 0 var(--yamabuki-dark);
+}
+
+.map-node--exam.is-locked .map-node__disc {
+  background: #8d99a8;
+  border-color: #6b7686;
+  box-shadow: 0 7px 0 #6b7686;
+}
+
+.map-node--exam.is-locked .boss-monster {
+  filter: grayscale(1) brightness(0.6);
+}
+
+.map-node--exam .map-node__kanji {
+  white-space: nowrap;
+}
+
+.map-node .map-node__stars {
+  color: #ffffff;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.map-node.is-cleared .map-node__stars {
+  background: var(--shu);
+}
+
+/* ボス: はじまり */
+.boss-intro__body,
+.boss-result {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 28px;
+}
+
+.boss-intro__stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 24px 12px;
+  background: radial-gradient(circle at 50% 42%, #5a4a9a 0%, #2b2350 70%);
+  border: 5px solid var(--ai);
+  border-radius: 36px;
+}
+
+.boss-intro[data-king='true'] .boss-intro__stage {
+  background: radial-gradient(circle at 50% 42%, #9a3a4a 0%, #2b1230 72%);
+}
+
+.boss-intro__monster {
+  width: min(42vh, 300px);
+}
+
+.boss-intro__name {
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 2rem;
+  letter-spacing: 0.06em;
+}
+
+.boss-intro__cleared {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  padding: 6px 18px;
+  border: 5px solid var(--shu);
+  border-radius: 16px;
+  background: var(--paper);
+  color: var(--shu);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.4rem;
+  transform: rotate(8deg);
+}
+
+.boss-intro__side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.boss-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.boss-rules li {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--paper);
+  border: 3px solid var(--line);
+  border-radius: 18px;
+  font-size: 1.02rem;
+  line-height: 1.4;
+}
+
+.boss-rules li > span:first-child {
+  font-size: 1.6rem;
+  text-align: center;
+}
+
+.boss-rules strong,
+.boss-intro__tries strong {
+  color: var(--shu);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.3em;
+}
+
+.boss-intro__tries {
+  font-size: 1.15rem;
+}
+
+.boss-intro__reward,
+.boss-intro__note {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.boss-intro__actions,
+.boss-result__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+/* ボス: たたかい */
+.boss-run__bar {
+  gap: 10px;
+}
+
+.boss-run__monster {
+  width: 62px;
+  flex-shrink: 0;
+}
+
+.boss-hp {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px;
+  background: #2b2350;
+  border-radius: 999px;
+  color: #ffffff;
+}
+
+.boss-hp__name {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.05rem;
+  white-space: nowrap;
+}
+
+.boss-hp__bar {
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.boss-hp__bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #ff7a4d, var(--shu));
+  border-radius: 999px;
+  transition: width 0.5s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.boss-hp__num {
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.boss-run__round {
+  padding: 5px 14px;
+  background: var(--ai);
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+/* ボス: けっか */
+.boss-result__main,
+.boss-result__side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.boss-result__monster {
+  width: min(32vh, 230px);
+}
+
+.boss-result__score {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.boss-result__score strong {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 4.2rem;
+}
+
+.boss-result[data-won='true'] .boss-result__score strong {
+  color: var(--shu);
+}
+
+.boss-result__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.7rem;
+}
+
+.boss-result__lead {
+  color: var(--muted);
+}
+
+.boss-result__missed {
+  padding: 10px 16px;
+  background: var(--paper);
+  border: 3px solid var(--line);
+  border-radius: 20px;
+}
+
+.boss-result__missed h2 {
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.boss-result__missed div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.boss-result__char {
+  min-width: 58px;
+  padding: 0;
+  font-size: 1.7rem;
+}
+
+.boss-result__actions {
+  min-width: 320px;
+}
+
+.boss-result__tomorrow {
+  padding: 10px 16px;
+  background: #fff6cf;
+  border-radius: 18px;
+}
+
+/* ぜんぶの部位をえらぶ */
+.parts-pick {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.parts-pick__count {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.4rem;
+  color: var(--muted);
+}
+
+.parts-pick__choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 190px));
+  gap: 14px;
+  width: 100%;
+  justify-content: center;
+}
+
+.parts-pick .part-card {
+  --glyph-size: 96px;
+  min-height: 150px;
+}
+
+/* なりたちの話から えらぶ */
+.kumi__goal--story {
+  flex-direction: column;
+  gap: 2px;
+  max-width: 860px;
+  padding: 10px 28px;
+  border-radius: 28px;
+  text-align: center;
+}
+
+.kumi__goal-story {
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+/* かく: テスト(ボス)のとき */
+.kaku__goal {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 4px 24px 4px 14px;
+  background: #fff6cf;
+  border: 4px solid var(--yamabuki-dark);
+  border-radius: 999px;
+}
+
+.kaku__goal-icon {
+  width: 56px;
+  height: 56px;
+}
+
+.kaku__goal-label {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.7rem;
+}
+
+.kaku__note {
+  min-height: 1.6em;
+  color: var(--shu);
+  font-size: 1.15rem;
+}
+
+.kaku[data-model='false'] .kaku__board {
+  border-style: dashed;
+}
+
+@media (max-width: 760px) {
+  .boss-intro__body,
+  .boss-result {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+}

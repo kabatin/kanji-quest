@@ -1,10 +1,10 @@
-import { GrowTree } from '../../components/GrowTree'
+import { TopBar } from '../../components/Hud'
 import { KanjiGlyph } from '../../components/KanjiGlyph'
 import { PartIcon } from '../../components/PartIcon'
+import { Stamps } from '../../components/Stamps'
 import { GRADES, kanjiOfGrade } from '../../data/kanji'
 import type { Grade } from '../../data/schema'
 import { fullGlyph } from '../../data/strokes'
-import { growthStage } from '../../lib/score'
 import { useProgress } from '../../store/progress'
 
 /** 1ページに並べる数(5列 x 4行)。スクロールなしで1画面に収める。 */
@@ -16,15 +16,13 @@ type Props = {
   readonly view: ZukanView
   readonly onView: (view: ZukanView) => void
   readonly onOpen: (char: string) => void
-  readonly onChallenge: () => void
-  readonly onReward: () => void
-  readonly onSettings: () => void
+  readonly onBack: () => void
 }
 
-/** ホーム: 漢字のずかん。学年ごと・ページごとに見る。覚えた字は色がつく。 */
-export function Zukan({ view, onView, onOpen, onChallenge, onReward, onSettings }: Props) {
+/** 漢字のずかん。学年ごと・ページごとに見る。覚えた字は色がつき、はんこが並ぶ。 */
+export function Zukan({ view, onView, onOpen, onBack }: Props) {
   const learned = useProgress((s) => s.learned)
-  const points = useProgress((s) => s.points)
+  const stamps = useProgress((s) => s.stamps)
 
   const all = kanjiOfGrade(view.grade)
   const pageCount = Math.ceil(all.length / PAGE_SIZE)
@@ -34,7 +32,7 @@ export function Zukan({ view, onView, onOpen, onChallenge, onReward, onSettings 
 
   return (
     <div className="screen zukan">
-      <header className="bar">
+      <TopBar onBack={onBack} backLabel="ホーム" title="ずかん">
         <div className="zukan__tabs" role="tablist" aria-label="がくねん">
           {GRADES.map((grade) => (
             <button
@@ -42,7 +40,7 @@ export function Zukan({ view, onView, onOpen, onChallenge, onReward, onSettings 
               type="button"
               role="tab"
               aria-selected={grade === view.grade}
-              className={`btn zukan__tab ${grade === view.grade ? 'is-selected' : ''}`}
+              className={`btn chip ${grade === view.grade ? 'is-selected' : ''}`}
               onClick={() => onView({ grade, page: 0 })}
             >
               {grade}ねんせい
@@ -52,17 +50,7 @@ export function Zukan({ view, onView, onOpen, onChallenge, onReward, onSettings 
         <span className="zukan__count">
           {learnedCount} / {all.length}
         </span>
-        <button type="button" className="btn zukan__reward" onClick={onReward} aria-label={`ごほうび ${points} ポイント`}>
-          <GrowTree stage={growthStage(points)} className="zukan__tree" />
-          {points} ポイント
-        </button>
-        <button type="button" className="btn btn--primary" onClick={onChallenge}>
-          チャレンジ
-        </button>
-        <button type="button" className="btn" onClick={onSettings} aria-label="せってい">
-          ⚙
-        </button>
-      </header>
+      </TopBar>
       <ul className="zukan__grid">
         {shown.map((kanji) => {
           const isLearned = learned.includes(kanji.char)
@@ -76,23 +64,17 @@ export function Zukan({ view, onView, onOpen, onChallenge, onReward, onSettings 
               >
                 <KanjiGlyph layers={[{ glyph: fullGlyph(kanji.char), tone: isLearned ? 'ink' : 'pale' }]} label={kanji.char} />
                 <PartIcon id={kanji.icon} className="zukan-card__icon" />
-                {isLearned && <span className="zukan-card__star">★</span>}
+                <Stamps mask={stamps[kanji.char]} className="zukan-card__stamps" />
               </button>
             </li>
           )
         })}
       </ul>
-      <nav className="zukan__pager" aria-label="ページ">
-        <button
-          type="button"
-          className="btn"
-          disabled={page === 0}
-          onClick={() => onView({ grade: view.grade, page: page - 1 })}
-          aria-label="まえの ページ"
-        >
+      <nav className="pager" aria-label="ページ">
+        <button type="button" className="btn" disabled={page === 0} onClick={() => onView({ grade: view.grade, page: page - 1 })} aria-label="まえの ページ">
           ◀
         </button>
-        <span className="zukan__page">
+        <span className="pager__page">
           {page + 1} / {pageCount}
         </span>
         <button

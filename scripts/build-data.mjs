@@ -3,12 +3,13 @@
 //   (SVG は node scripts/fetch-kanjivg.mjs <フォルダ> で取得できる)
 // 出力: src/assets/kanjivg/strokes.json, src/data/generated/{kanji,parts}.json, src/data/narration.json
 // scripts/stories/*.json があれば、そこに書かれた「成り立ちの物語」を説明として使う。
+// scripts/stories-markup/*.json があれば、物語の文の {漢字|よみ} の印(覚えた漢字を漢字で出すためのもの)も取り込む。
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { strokeData } from './build-strokes.mjs'
 import { ALL, GRADE1 } from './kanji-list.mjs'
-import { COMPOUNDS, KANJI_ROWS, NARRATION_OVERRIDES, PART_ROWS } from './kanji-source.mjs'
+import { COMPOUNDS, KANJI_ROWS, NARRATION_OVERRIDES, PART_ROWS, PICTURE_FIXES } from './kanji-source.mjs'
 import { loadKanjiVG } from './kvg-structure.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -95,9 +96,9 @@ const MOTIONS = ['still', 'lean-left', 'lean-right', 'drop', 'rise', 'enter', 's
 const KANJI_CHAR = /[\u3400-\u9fff]/
 const SPEECH_OK = /^[\u3041-\u309f\u30a0-\u30ff、。\s]+$/
 
-/** scripts/stories/*.json を全部読んで、漢字 → 物語 の表にする。 */
-function loadStories() {
-  const dir = join(root, 'scripts', 'stories')
+/** フォルダの *.json を全部読んで、漢字 → 中身 の表にする。 */
+function loadStories(folder = 'stories') {
+  const dir = join(root, 'scripts', folder)
   if (!existsSync(dir)) return new Map()
   const files = readdirSync(dir).filter((f) => f.endsWith('.json')).sort()
   return new Map(files.flatMap((file) => Object.entries(JSON.parse(readFileSync(join(dir, file), 'utf8')))))
@@ -119,7 +120,7 @@ function storyProblem(story, row, expectedParts) {
 }
 
 /** 自動で作った説明に、物語(あれば)と、アニメーションに出す絵をつける。 */
-function withStory(char, row, steps, partById, base, stories, problems) {
+function withStory(char, row, steps, partById, base, stories, markups, problems) {
   const last = steps[steps.length - 1]
   const expectedParts = last ? [last.fixed, last.answer] : ['whole']
   const defaultActors = last
@@ -133,8 +134,15 @@ function withStory(char, row, steps, partById, base, stories, problems) {
     problems.push(`${char}: ${problem}`)
     return fallback
   }
-  const actors = story.actors.map(({ part, picture, motion }) => ({ part, picture, motion }))
-  return { ...base, kind: story.kind, speech: story.speech, caption: story.caption, actors }
+  // 印つきの文は、印をはずすと元の文と同じで、使っている漢字が収録ずみのときだけ使う
+  const markup = markups.get(char)
+  const markupOk =
+    typeof markup === 'string' &&
+    markup.replace(/\{([^|{}]+)\|([^|{}]+)\}/g, '$2') === story.caption &&
+    [...markup.matchAll(/\{([^|{}]+)\|/g)].every((m) => [...m[1]].every((c) => !KANJI_CHAR.test(c) || ALL.includes(c)))
+  if (markup !== undefined && !markupOk) problems.push(`${char}: 印つきの文が元の文と合わない`)
+  const actors = story.actors.map(({ part, picture, motion }) => ({ part, picture: PICTURE_FIXES[`${char}:${part}`] ?? picture, motion }))
+  return { ...base, kind: story.kind, speech: story.speech, caption: markupOk ? markup : story.caption, actors }
 }
 
 function narrationOf(char, row, steps, partById) {
@@ -204,12 +212,13 @@ function main() {
     return { char, grade: GRADE1.includes(char) ? 1 : 2, yomi: row.yomi, icon: row.icon, pattern: patternOf(steps), parts, steps }
   })
   const stories = loadStories()
+  const markups = loadStories('stories-markup')
   const problems = []
   const narration = Object.fromEntries(
     ALL.map((char) => {
       const steps = compounds.get(char) ?? []
       const base = narrationOf(char, rows.get(char), steps, partById)
-      return [char, withStory(char, rows.get(char), steps, partById, base, stories, problems)]
+      return [char, withStory(char, rows.get(char), steps, partById, base, stories, markups, problems)]
     }),
   )
 

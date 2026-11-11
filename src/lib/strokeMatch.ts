@@ -51,3 +51,13 @@ export function matchStroke(drawn: readonly Point[], target: readonly Point[]): 
   const average = user.reduce((sum, p, i) => sum + distance(p, target[i]), 0) / user.length
   return average <= AVERAGE_TOLERANCE
 }
+
+/** ok = 合っている / order = 形は合っているが書き順がちがう(あとの画を先に書いた) / shape = 形がちがう */
+export type StrokeJudge = 'ok' | 'order' | 'shape'
+
+/** 書いた線を、次に書くはずの画と、そのあとの画に てらし合わせる。 */
+export function judgeStroke(drawn: readonly Point[], targets: readonly (readonly Point[])[], nextIndex: number): StrokeJudge {
+  const next = targets[nextIndex]
+  if (next && matchStroke(drawn, next)) return 'ok'
+  return targets.slice(nextIndex + 1).some((target) => matchStroke(drawn, target)) ? 'order' : 'shape'
+}

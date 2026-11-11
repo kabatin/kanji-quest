@@ -1,79 +1,84 @@
-import { Fragment } from 'react'
+import { Burst } from '../../components/Burst'
 import { KanjiGlyph, type GlyphLayer } from '../../components/KanjiGlyph'
-import { PartIcon } from '../../components/PartIcon'
+import { KText } from '../../components/KText'
+import { Stamps } from '../../components/Stamps'
+import { getNarration } from '../../data/narration'
 import { getPart } from '../../data/parts'
 import type { Kanji } from '../../data/schema'
 import { fullGlyph } from '../../data/strokes'
-import { getNarration } from '../../data/narration'
 import { useFeedback } from '../../lib/useFeedback'
 import { voiceId } from '../../lib/voice'
+import { useProgress, type LearnGain, type WriteGain } from '../../store/progress'
 import { Nakama } from '../nakama/Nakama'
+import type { NextAction } from './Learn'
 
 type Props = {
   readonly kanji: Kanji
-  readonly gained: number
-  readonly showHint: boolean
+  readonly learnGain: LearnGain
+  /** 書く練習を「あとで」にしたときは null */
+  readonly writeGain: WriteGain | null
   readonly onOpen: (char: string) => void
-  readonly onHome: () => void
+  readonly onWrite: () => void
+  readonly onStory: () => void
+  readonly next: NextAction
 }
 
 /** できあがった漢字を、部位ごとに色分けして描くための層を作る。 */
 function resultLayers(kanji: Kanji): GlyphLayer[] {
   const last = kanji.steps[kanji.steps.length - 1]
-  if (!last) return [{ glyph: fullGlyph(kanji.char), tone: 'imi' }]
+  if (!last) return [{ glyph: fullGlyph(kanji.char), tone: 'ink' }]
   return [
     { glyph: last.fixedGlyph, tone: getPart(last.fixed).kind },
     { glyph: last.answerGlyph, tone: getPart(last.answer).kind },
   ]
 }
 
-/** 学び終えた画面: 色分けした漢字、「絵 + 絵 = 絵」の式、読み、なかま。 */
-export function KanjiResult({ kanji, gained, showHint, onOpen, onHome }: Props) {
+/** 学びおえた画面: 漢字、はんこ、もらえたもの、なかま、つぎの行き先。 */
+export function KanjiResult({ kanji, learnGain, writeGain, onOpen, onWrite, onStory, next }: Props) {
   const { say } = useFeedback()
-  const last = kanji.steps[kanji.steps.length - 1]
-  const equation = last ? [getPart(last.fixed), getPart(last.answer)] : []
+  const mask = useProgress((s) => s.stamps[kanji.char])
+  const xp = learnGain.xp + (writeGain?.xp ?? 0)
+  const coins = learnGain.coins + (writeGain?.coins ?? 0)
+  const levelAfter = writeGain?.levelAfter ?? learnGain.levelAfter
+  const leveledUp = levelAfter > learnGain.levelBefore
 
   return (
     <div className="result">
+      {(learnGain.isNew || leveledUp) && <Burst />}
       <div className="result__main">
         <button type="button" className="result__kanji" onClick={() => say(voiceId.word(kanji.char), kanji.yomi)} aria-label={`${kanji.yomi} を きく`}>
           <KanjiGlyph layers={resultLayers(kanji)} label={kanji.char} />
           <span className="result__yomi">🔊 {kanji.yomi}</span>
         </button>
-        {showHint && (
-          <div className="result__equation" data-testid="equation">
-            {equation.map((part, i) => (
-              <Fragment key={`${part.id}-${i}`}>
-                {i > 0 && <span className="result__op">＋</span>}
-                <span className={`result__term result__term--${part.kind}`}>
-                  {part.icon ? <PartIcon id={part.icon} /> : <span className="result__oto">♪</span>}
-                  <small>{part.label}</small>
-                </span>
-              </Fragment>
-            ))}
-            {equation.length > 0 && <span className="result__op">＝</span>}
-            <span className="result__term result__term--answer">
-              <PartIcon id={kanji.icon} />
-              <small>{kanji.yomi}</small>
-            </span>
-          </div>
-        )}
-        <button
-          type="button"
-          className="result__explain"
-          onClick={() => say(voiceId.explain(kanji.char), kanji.yomi)}
-          aria-label="せつめい を きく"
-        >
-          <span aria-hidden="true">🔊</span>
-          {getNarration(kanji.char).caption}
+        <Stamps mask={mask} withLabel className="result__stamps" />
+        <button type="button" className="result__explain" onClick={onStory} aria-label="ものがたり を もういちど みる">
+          <span aria-hidden="true">▶</span>
+          <span>
+            <KText text={getNarration(kanji.char).caption} />
+          </span>
         </button>
-        <p className="result__points">＋{gained} ポイント</p>
       </div>
       <div className="result__side">
+        <ul className="gains">
+          <li className="gains__xp">けいけんち ＋{xp}</li>
+          {coins > 0 && (
+            <li className="gains__coin">
+              <span className="coin" aria-hidden="true" /> ＋{coins}
+            </li>
+          )}
+          {leveledUp && <li className="gains__level">レベル {levelAfter} に アップ！</li>}
+        </ul>
         <Nakama kanji={kanji} onOpen={onOpen} />
-        <button type="button" className="btn btn--primary btn--big" onClick={onHome}>
-          ずかんへ
-        </button>
+        <div className="result__actions">
+          {!writeGain && (
+            <button type="button" className="btn" onClick={onWrite}>
+              ✍ <KText text="{書|か}いてみる" />
+            </button>
+          )}
+          <button type="button" className="btn btn--primary btn--big" onClick={next.onNext}>
+            {next.label}
+          </button>
+        </div>
       </div>
     </div>
   )

@@ -468,6 +468,22 @@ export const PART_ROWS = `
 翟 よう oto
 `
 
+/**
+ * 物語の絵の差しかえ。「漢字:部位」→ 絵。
+ * 調べた物語では「棒・線」に手描きの line(くねくねの線)が使われているが、
+ * まっすぐな棒のほうが字の形に合うので、棒の絵(bar)に差しかえる。
+ */
+export const PICTURE_FIXES = {
+  '一:whole': 'bar',
+  '二:whole': 'bar2',
+  '三:whole': 'bar3',
+  '正:一': 'bar',
+  '天:一': 'bar',
+  '百:一': 'bar',
+  '本:一': 'bar',
+  '引:丨': 'barv',
+}
+
 /** 自動で作る説明のかわりに使う、手で書いた成り立ちの説明。speech は音声用、caption は画面用。 */
 export const NARRATION_OVERRIDES = {
   木: { speech: '木の形からできた漢字だよ。みきと、えだと、ねっこ。き。', caption: 'きの かたちから できたよ。みきと えだと ねっこ。' },

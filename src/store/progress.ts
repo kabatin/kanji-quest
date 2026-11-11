@@ -5,23 +5,29 @@ import { levelInfo } from '../lib/level'
 import { dailyMissions, EMPTY_COUNTERS, isMissionDone, type Counters } from '../lib/missions'
 import type { ChallengeScope } from '../lib/quiz'
 import {
+  BOSS_REWARD,
+  BOSS_TRIES_PER_DAY,
+  bossScore,
   COINS_LEARN_AGAIN,
   COINS_LEARN_NEW,
-  COINS_STAGE_FIRST_CLEAR,
   COINS_WRITE_FIRST,
   hasStamp,
   loginBonusFor,
   QUIZ_STAMP_MIN_LEVEL,
   quizCoins,
-  stageStarsFor,
+  quizXp,
   STAMPS,
+  XP_BOSS_TRY,
   XP_LEARN_AGAIN,
   XP_LEARN_NEW,
-  XP_WRITE,
+  XP_WRITE_AGAIN,
+  XP_WRITE_FIRST,
+  type BossKind,
   type QuizSummary,
 } from '../lib/rewards'
 import { DEFAULT_QUESTION_COUNT, isBetter, type Best, type Level } from '../lib/score'
 import { canBuy, DEFAULT_EQUIPPED, DEFAULT_OWNED, findItem, type Equipped } from '../lib/shop'
+import { isCleared, triesLeft, type Clears, type Tries } from '../lib/stages'
 
 export type Settings = {
   readonly sound: boolean
@@ -45,8 +51,12 @@ type ProgressData = {
   readonly xp: number
   /** きせかえに使えるコイン */
   readonly coins: number
-  /** ステージの まとめ でとった星(1〜3) */
-  readonly stageStars: Readonly<Record<string, number>>
+  /** たおした ボス(ステージ・そつぎょうしけん) */
+  readonly clears: Clears
+  /** その日に ボスへ ちょうせん した回数 */
+  readonly tries: Tries
+  /** ホームで「レベルアップ」を見せおわったレベル */
+  readonly seenLevel: number
   readonly streak: { readonly count: number; readonly lastDay: string }
   readonly loginBonus: LoginBonus | null
   readonly daily: Daily
@@ -73,12 +83,29 @@ export type QuizGain = Gain & {
   readonly improved: boolean
   /** 新しく「とく」の はんこ をもらった漢字 */
   readonly newStamps: readonly string[]
-  /** ステージの まとめ でとった星。まとめ でなければ 0 */
-  readonly stageStars: number
-  readonly stageFirstClear: boolean
 }
 
-export type QuizContext = { readonly level: Level; readonly bestKey?: string; readonly stageId?: string }
+export type QuizContext = { readonly level: Level; readonly bestKey?: string }
+
+/** ボスとの たたかい1回ぶんの結果 */
+export type BossResult = {
+  /** ステージの id、または そつぎょうしけん の id */
+  readonly id: string
+  readonly kind: BossKind
+  /** まちがえずに できた問題の数 */
+  readonly perfect: number
+  readonly total: number
+  /** れんしゅう(回数をつかわない。たおしたことにも ならない) */
+  readonly practice: boolean
+}
+
+export type BossGain = Gain & {
+  readonly score: number
+  /** 100点で たおせたか */
+  readonly cleared: boolean
+  /** はじめて たおしたか(ごほうびが多い) */
+  readonly firstClear: boolean
+}
 
 type ProgressActions = {
   /** その日はじめて開いたときに呼ぶ。れんぞく日数と ログインボーナス を用意する。 */
@@ -87,6 +114,11 @@ type ProgressActions = {
   completeKanji: (char: string, today?: string) => LearnGain
   completeWriting: (char: string, today?: string) => WriteGain
   finishQuiz: (summary: QuizSummary, context: QuizContext, today?: string) => QuizGain
+  /** ボスに ちょうせん する(その日の回数を1つ使う)。もう回数がなければ false。 */
+  startBoss: (id: string, kind: BossKind, today?: string) => boolean
+  finishBoss: (result: BossResult, today?: string) => BossGain
+  /** ホームで「レベルアップ」を見せおわったことを覚える */
+  markLevelSeen: () => void
   claimMission: (id: string, today?: string) => number
   buy: (itemId: string) => boolean
   equip: (itemId: string) => void
@@ -102,7 +134,9 @@ const INITIAL: ProgressData = {
   stamps: {},
   xp: 0,
   coins: 0,
-  stageStars: {},
+  clears: {},
+  tries: { day: '', used: {} },
+  seenLevel: 1,
   streak: { count: 0, lastDay: '' },
   loginBonus: null,
   daily: { day: '', counters: EMPTY_COUNTERS, claimed: [] },
@@ -124,6 +158,7 @@ const addCounters = (daily: Daily, patch: Partial<Counters>): Daily => ({
   counters: {
     learn: daily.counters.learn + (patch.learn ?? 0),
     learnNew: daily.counters.learnNew + (patch.learnNew ?? 0),
+    write: daily.counters.write + (patch.write ?? 0),
     challenge: daily.counters.challenge + (patch.challenge ?? 0),
     firstTry: daily.counters.firstTry + (patch.firstTry ?? 0),
     maxCombo: Math.max(daily.counters.maxCombo, patch.maxCombo ?? 0),
@@ -139,10 +174,26 @@ const gainOf = (xpBefore: number, xp: number, coins: number): Gain => ({
 })
 
 type OldState = { learned?: string[]; points?: number; skin?: string; settings?: Settings; challenge?: ChallengeOptions }
+type V3State = Partial<Omit<ProgressData, 'clears' | 'tries' | 'seenLevel'>> & { stageStars?: Record<string, number> }
 
-/** 前の形式(ポイント制)の保存データを、今の形式に直す。学んだ漢字とポイントは引き継ぐ。 */
+export const STORAGE_VERSION = 4
+
+/** 1つ前の形式(まとめ の星)を今の形式に直す。星をとっていたステージは、ボスを たおしたことにする。 */
+function fromV3(old: V3State): ProgressData {
+  const { stageStars = {}, ...rest } = old
+  return {
+    ...INITIAL,
+    ...rest,
+    daily: { ...INITIAL.daily, ...rest.daily, counters: { ...EMPTY_COUNTERS, ...rest.daily?.counters } },
+    clears: Object.fromEntries(Object.keys(stageStars).map((id) => [id, rest.streak?.lastDay ?? ''])),
+    seenLevel: levelInfo(rest.xp ?? 0).level,
+  }
+}
+
+/** 前の形式の保存データを、今の形式に直す。学んだ漢字・経験値・コインは引き継ぐ。 */
 function migrate(persisted: unknown, version: number): ProgressData {
-  if (version >= 3) return persisted as ProgressData
+  if (version >= STORAGE_VERSION) return persisted as ProgressData
+  if (version === 3) return fromV3((persisted ?? {}) as V3State)
   const old = (persisted ?? {}) as OldState
   const learned = old.learned ?? []
   const skinId = `skin:${old.skin ?? 'kami'}`
@@ -153,6 +204,7 @@ function migrate(persisted: unknown, version: number): ProgressData {
     stamps: Object.fromEntries(learned.map((char) => [char, STAMPS.learn])),
     xp: old.points ?? 0,
     coins: old.points ?? 0,
+    seenLevel: levelInfo(old.points ?? 0).level,
     owned: hasSkin ? [...new Set([...DEFAULT_OWNED, skinId])] : DEFAULT_OWNED,
     equipped: hasSkin ? { ...DEFAULT_EQUIPPED, skin: skinId } : DEFAULT_EQUIPPED,
     settings: old.settings ?? INITIAL.settings,
@@ -200,47 +252,67 @@ export const useProgress = create<ProgressState>()(
       completeWriting: (char, today = dayKey()) => {
         const before = get()
         const isNew = !hasStamp(before.stamps[char], 'write')
-        const gain = gainOf(before.xp, XP_WRITE, isNew ? COINS_WRITE_FIRST : 0)
+        const gain = gainOf(before.xp, isNew ? XP_WRITE_FIRST : XP_WRITE_AGAIN, isNew ? COINS_WRITE_FIRST : 0)
         set((state) => ({
           stamps: { ...state.stamps, [char]: (state.stamps[char] ?? 0) | STAMPS.write },
           xp: state.xp + gain.xp,
           coins: state.coins + gain.coins,
-          daily: dailyFor(state.daily, today),
+          daily: addCounters(dailyFor(state.daily, today), { write: 1 }),
         }))
         return { ...gain, isNew }
       },
 
       finishQuiz: (summary, context, today = dayKey()) => {
         const before = get()
-        const stars = context.stageId ? stageStarsFor(summary) : 0
-        const stageFirstClear = context.stageId !== undefined && (before.stageStars[context.stageId] ?? 0) === 0
         const improved = context.bestKey !== undefined && isBetter(summary, before.bests[context.bestKey])
         // 「とく」の はんこ は、もう学んだ漢字を、ヒントの少ない設定で1回で正解したときにもらえる
         const newStamps =
           context.level >= QUIZ_STAMP_MIN_LEVEL
             ? [...new Set(summary.firstTryChars)].filter((c) => before.learned.includes(c) && !hasStamp(before.stamps[c], 'quiz'))
             : []
-        const gain = gainOf(before.xp, summary.score, quizCoins(summary) + (stageFirstClear ? COINS_STAGE_FIRST_CLEAR : 0))
+        const gain = gainOf(before.xp, quizXp(summary), quizCoins(summary))
         set((state) => ({
           xp: state.xp + gain.xp,
           coins: state.coins + gain.coins,
           stamps: { ...state.stamps, ...Object.fromEntries(newStamps.map((c) => [c, (state.stamps[c] ?? 0) | STAMPS.quiz])) },
-          stageStars: context.stageId
-            ? { ...state.stageStars, [context.stageId]: Math.max(state.stageStars[context.stageId] ?? 0, stars) }
-            : state.stageStars,
           bests:
             improved && context.bestKey
               ? { ...state.bests, [context.bestKey]: { score: summary.score, timeMs: summary.timeMs } }
               : state.bests,
           daily: addCounters(dailyFor(state.daily, today), {
-            challenge: context.stageId ? 0 : 1,
-            stage: context.stageId ? 1 : 0,
+            challenge: 1,
             firstTry: summary.firstTry,
             maxCombo: summary.maxCombo,
           }),
         }))
-        return { ...gain, improved, newStamps, stageStars: stars, stageFirstClear }
+        return { ...gain, improved, newStamps }
       },
+
+      startBoss: (id, kind, today = dayKey()) => {
+        const { tries } = get()
+        if (triesLeft(tries, id, BOSS_TRIES_PER_DAY[kind], today) <= 0) return false
+        const used = tries.day === today ? tries.used : {}
+        set({ tries: { day: today, used: { ...used, [id]: (used[id] ?? 0) + 1 } } })
+        return true
+      },
+
+      finishBoss: (result, today = dayKey()) => {
+        const before = get()
+        const score = bossScore(result.perfect, result.total)
+        const cleared = !result.practice && result.perfect >= result.total && result.total > 0
+        const firstClear = cleared && !isCleared(before.clears, result.id)
+        const reward = BOSS_REWARD[result.kind]
+        const gain = gainOf(before.xp, firstClear ? reward.xp : XP_BOSS_TRY, firstClear ? reward.coins : 0)
+        set((state) => ({
+          xp: state.xp + gain.xp,
+          coins: state.coins + gain.coins,
+          clears: firstClear ? { ...state.clears, [result.id]: today } : state.clears,
+          daily: addCounters(dailyFor(state.daily, today), { stage: cleared ? 1 : 0 }),
+        }))
+        return { ...gain, score, cleared, firstClear }
+      },
+
+      markLevelSeen: () => set((state) => ({ seenLevel: levelInfo(state.xp).level })),
 
       claimMission: (id, today = dayKey()) => {
         const daily = dailyFor(get().daily, today)
@@ -252,19 +324,20 @@ export const useProgress = create<ProgressState>()(
 
       buy: (itemId) => {
         const item = findItem(itemId)
-        const { owned, coins } = get()
-        if (!item || !canBuy(item, owned, coins)) return false
+        const { owned, coins, xp } = get()
+        if (!item || !canBuy(item, owned, coins, levelInfo(xp).level)) return false
         set((state) => ({
           coins: state.coins - item.price,
           owned: [...state.owned, item.id],
-          equipped: { ...state.equipped, [item.kind]: item.id },
+          // かざり は持っているだけで しまに おかれる。ほかは、買ったらすぐ身につける
+          equipped: item.kind === 'deco' ? state.equipped : { ...state.equipped, [item.kind]: item.id },
         }))
         return true
       },
 
       equip: (itemId) => {
         const item = findItem(itemId)
-        if (!item || !get().owned.includes(itemId)) return
+        if (!item || item.kind === 'deco' || !get().owned.includes(itemId)) return
         set((state) => ({ equipped: { ...state.equipped, [item.kind]: item.id } }))
       },
 
@@ -272,6 +345,6 @@ export const useProgress = create<ProgressState>()(
       updateSettings: (patch) => set((state) => ({ settings: { ...state.settings, ...patch } })),
       reset: () => set({ ...INITIAL }),
     }),
-    { name: STORAGE_KEY, version: 3, migrate },
+    { name: STORAGE_KEY, version: STORAGE_VERSION, migrate },
   ),
 )

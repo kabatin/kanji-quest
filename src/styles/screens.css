@@ -1,49 +1,14 @@
-/* ずかん(ホーム) */
+/* ずかん */
 .zukan__tabs {
   display: flex;
   gap: 8px;
-  margin-right: auto;
-}
-
-.zukan__tab.is-selected {
-  background: #fff6cf;
-  border-color: #f0c93d;
-  box-shadow: 0 4px 0 #f0c93d;
-}
-
-.zukan__pager {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-.zukan__pager .btn {
-  min-width: 96px;
-  font-size: 1.5rem;
-}
-
-.zukan__pager .btn:disabled {
-  opacity: 0.3;
-}
-
-.zukan__page {
-  min-width: 80px;
-  text-align: center;
-  font-size: 1.3rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
+  margin-left: 8px;
 }
 
 .zukan__count {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.2rem;
   color: var(--muted);
-}
-
-.zukan__tree {
-  width: 40px;
-  height: 40px;
+  font-variant-numeric: tabular-nums;
 }
 
 .zukan__grid {
@@ -61,11 +26,8 @@
 
 .zukan-card {
   position: relative;
-  display: grid;
-  place-items: center;
   width: 100%;
   height: calc(100% - 6px);
-  padding: 8px;
   background: var(--card-bg);
   border: 4px solid var(--card-border);
   border-radius: var(--radius);
@@ -89,69 +51,25 @@
   position: absolute;
   right: 6px;
   bottom: 6px;
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
 }
 
-.zukan-card__star {
+.zukan-card__stamps {
   position: absolute;
   top: 6px;
-  left: 12px;
-  font-size: 1.6rem;
-  color: #f5a623;
+  left: 8px;
+  gap: 3px;
+  font-size: 0.8rem;
 }
 
-/* なりたち */
-.naritachi {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-.naritachi__stage {
-  position: relative;
-  width: min(52vh, 380px);
-  aspect-ratio: 1;
-  background: #ffffff;
-  border: 4px solid var(--line);
-  border-radius: 32px;
-}
-
-.naritachi__layer {
-  position: absolute;
-  inset: 24px;
-}
-
-.naritachi__layer svg {
-  width: 100%;
-  height: 100%;
-}
-
-.naritachi__dots {
-  display: flex;
-  gap: 12px;
-}
-
-.naritachi__dots span {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--line);
-}
-
-.naritachi__dots span.is-on {
-  background: var(--primary);
-}
-
-/* できあがり + なかま */
+/* 学びおえた画面 + なかま */
 .result {
   flex: 1;
+  min-height: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 28px;
   align-items: center;
 }
 
@@ -160,18 +78,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .result__kanji {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
   width: min(34vh, 250px);
   padding: 12px;
-  background: #ffffff;
-  border: 4px solid var(--line);
+  background: var(--paper);
+  border: 4px solid var(--line-dark);
   border-radius: 32px;
 }
 
@@ -181,56 +98,18 @@
 }
 
 .result__yomi {
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
 }
 
-.result__equation {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.result__stamps {
+  gap: 14px;
+  font-size: 1.25rem;
 }
 
-.result__term {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 92px;
-  padding: 8px;
-  border-radius: 16px;
-  background: #ffffff;
-  border: 3px solid var(--line);
-  font-weight: 700;
-}
-
-.result__term svg {
-  width: 60px;
-  height: 60px;
-}
-
-.result__term--imi {
-  border-color: var(--imi);
-  background: var(--imi-bg);
-}
-
-.result__term--oto {
-  border-color: var(--oto);
-  background: var(--oto-bg);
-}
-
-.result__oto {
-  display: grid;
-  place-items: center;
-  width: 60px;
-  height: 60px;
-  font-size: 2rem;
-  color: var(--oto);
-}
-
-.result__op {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--muted);
+.result__stamps .stamp {
+  font-size: 0.9rem;
 }
 
 .result__explain {
@@ -244,33 +123,34 @@
   border: 3px solid #f0c93d;
   border-radius: 18px;
   font-size: 1.05rem;
-  font-weight: 700;
   text-align: left;
 }
 
-.result__points {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--primary);
+.result__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
 }
 
 .nakama {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
 }
 
 .nakama__title {
-  font-size: 1.4rem;
+  font-size: 1.15rem;
+  color: var(--muted);
 }
 
 .nakama__group {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px;
-  background: #ffffff;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.75);
   border: 3px solid var(--line);
   border-radius: var(--radius);
 }
@@ -279,8 +159,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 72px;
-  font-weight: 700;
+  min-width: 64px;
+  font-size: 0.95rem;
 }
 
 .nakama__part--imi {
@@ -292,14 +172,14 @@
 }
 
 .nakama__icon {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
 }
 
 .nakama__list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .nakama__kanji {
@@ -307,8 +187,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 84px;
-  min-height: 100px;
+  width: 68px;
+  min-height: 82px;
   background: var(--card-bg);
   border: 3px solid var(--card-border);
   border-radius: 16px;
@@ -316,31 +196,18 @@
 }
 
 .nakama__char {
-  font-size: 2.2rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: 1.9rem;
+  line-height: 1.15;
 }
 
-.nakama__kanji--soon {
-  background: transparent;
-  border-style: dashed;
-  box-shadow: none;
-  color: var(--muted);
-}
-
-.nakama__kanji--soon small {
-  font-size: 0.75rem;
-}
-
-/* チャレンジ */
-.challenge__menu,
-.challenge__result {
+/* チャレンジのメニュー */
+.challenge__menu {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 20px;
 }
 
 .challenge__option {
@@ -351,23 +218,8 @@
 
 .challenge__option-label {
   min-width: 72px;
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 1.15rem;
   color: var(--muted);
-}
-
-.chip {
-  min-width: 112px;
-}
-
-.chip.is-selected {
-  background: #fff6cf;
-  border-color: #f0c93d;
-  box-shadow: 0 4px 0 #f0c93d;
-}
-
-.chip:disabled {
-  opacity: 0.35;
 }
 
 .challenge__levels {
@@ -380,7 +232,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   padding: 20px 16px;
   background: var(--card-bg);
   border: 4px solid var(--card-border);
@@ -388,92 +240,31 @@
   box-shadow: 0 6px 0 var(--card-border);
 }
 
+.level-card:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--card-border);
+}
+
 .level-card__stars {
   font-size: 2rem;
-  color: #f5a623;
+  color: var(--yamabuki);
+  -webkit-text-stroke: 1.5px var(--yamabuki-dark);
 }
 
 .level-card__label {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.4rem;
 }
 
 .level-card__best {
   color: var(--muted);
+  font-size: 0.95rem;
 }
 
-.challenge__score {
-  font-size: 4rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.challenge__time {
-  font-size: 1.5rem;
+.challenge__note {
   color: var(--muted);
-}
-
-.challenge__actions {
-  display: flex;
-  gap: 16px;
-}
-
-/* ごほうび */
-.reward__body {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 32px;
-  align-items: center;
-}
-
-.reward__tree {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  font-size: 1.3rem;
-  font-weight: 700;
-  text-align: center;
-}
-
-.reward__tree-svg {
-  width: min(44vh, 320px);
-}
-
-.reward__skins {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.reward__skin-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.skin-choice {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 10px;
-  background: transparent;
-  border: 4px solid transparent;
-  border-radius: 28px;
-}
-
-.skin-choice.is-selected {
-  border-color: var(--primary);
-}
-
-.skin-choice:disabled {
-  opacity: 0.45;
-}
-
-.skin-choice__label {
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 0.95rem;
 }
 
 /* せってい */
@@ -488,69 +279,39 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 72px;
+  min-height: 68px;
   padding: 0 24px;
-  font-size: 1.3rem;
-  font-weight: 700;
-  background: #ffffff;
+  font-size: 1.25rem;
+  background: var(--paper);
   border: 3px solid var(--line);
   border-radius: var(--radius);
 }
 
 .toggle input {
-  width: 36px;
-  height: 36px;
-  accent-color: var(--primary);
+  width: 34px;
+  height: 34px;
+  accent-color: var(--ai);
 }
 
 .settings__reset {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-weight: 700;
 }
 
 .settings__credit {
   margin-top: auto;
   font-size: 0.85rem;
+  font-weight: 500;
   color: var(--muted);
 }
 
 @media (max-width: 760px) {
-
-  .result,
-  .reward__body {
+  .result {
     grid-template-columns: 1fr;
   }
 
-  .challenge__option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.challenge__option-label {
-  min-width: 72px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--muted);
-}
-
-.chip {
-  min-width: 112px;
-}
-
-.chip.is-selected {
-  background: #fff6cf;
-  border-color: #f0c93d;
-  box-shadow: 0 4px 0 #f0c93d;
-}
-
-.chip:disabled {
-  opacity: 0.35;
-}
-
-.challenge__levels {
+  .challenge__levels {
     grid-template-columns: 1fr;
     width: 100%;
   }

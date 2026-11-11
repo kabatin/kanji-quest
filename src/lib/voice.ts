@@ -1,4 +1,5 @@
 import manifest from '../assets/voice-manifest.json'
+import { audioContext } from './sound'
 import { speak } from './speech'
 
 const CLIPS: ReadonlySet<string> = new Set(manifest.clips)
@@ -14,8 +15,42 @@ export const voiceId = {
 
 export type VoiceResult = 'clip' | 'speech' | 'none'
 
+/** 画面をはなれたとき、音声が消えていくまでの時間 */
+export const VOICE_FADE_MS = 450
+const FADE_STEPS = 9
+
 // iPad では、一度タップで再生した Audio 要素でないと自動再生できないので、1つを使い回す
 let player: HTMLAudioElement | undefined
+// iPad は Audio 要素の音量を変えられないので、音量は Web Audio の GainNode で下げる
+let gain: GainNode | undefined
+let fadeTimer: ReturnType<typeof setInterval> | undefined
+
+/** 音声を GainNode につなぐ(1回だけ)。AudioContext が動いていないうちは つながない(音が出なくなるため)。 */
+function connectGain(element: HTMLAudioElement): void {
+  if (gain) return
+  const ctx = audioContext()
+  if (!ctx || ctx.state !== 'running' || typeof ctx.createMediaElementSource !== 'function') return
+  try {
+    const node = ctx.createGain()
+    ctx.createMediaElementSource(element).connect(node)
+    node.connect(ctx.destination)
+    gain = node
+  } catch {
+    // つなげない環境では、Audio 要素の音量で代わりにする
+    gain = undefined
+  }
+}
+
+function setVolume(element: HTMLAudioElement, volume: number): void {
+  if (gain) gain.gain.value = volume
+  else element.volume = volume
+}
+
+function cancelFade(): void {
+  if (fadeTimer !== undefined) clearInterval(fadeTimer)
+  fadeTimer = undefined
+  if (player) setVolume(player, 1)
+}
 
 /**
  * 事前に作った音声を再生する。クリップがないときはブラウザの読み上げで代わりに読む。
@@ -27,6 +62,10 @@ export function playVoice(clipId: string, fallbackText: string, enabled: boolean
     return speak(fallbackText, true) ? 'speech' : 'none'
   }
   player ??= new Audio()
+  cancelFade()
+  connectGain(player)
+  const ctx = gain ? audioContext() : undefined
+  if (ctx && ctx.state !== 'running') void ctx.resume()
   player.src = `${import.meta.env.BASE_URL}voice/${clipId}.mp3`
   player.play()?.catch((error: unknown) => {
     // 次の音声に切り替わって中断されたとき(AbortError)などは何もしない。
@@ -34,4 +73,24 @@ export function playVoice(clipId: string, fallbackText: string, enabled: boolean
     if (error instanceof DOMException && error.name === 'NotSupportedError') speak(fallbackText, true)
   })
   return 'clip'
+}
+
+/**
+ * 流れている音声を止める。ぶつっと切らずに、少しの時間をかけて小さくしてから止める。
+ * 画面をはなれるとき(もどる など)に呼ぶ。
+ */
+export function stopVoice(fadeMs: number = VOICE_FADE_MS): void {
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel()
+  const element = player
+  if (!element || element.paused || fadeTimer !== undefined) return
+  let step = 0
+  fadeTimer = setInterval(() => {
+    step += 1
+    if (step < FADE_STEPS) {
+      setVolume(element, 1 - step / FADE_STEPS)
+      return
+    }
+    element.pause()
+    cancelFade()
+  }, fadeMs / FADE_STEPS)
 }

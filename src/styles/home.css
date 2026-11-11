@@ -1,0 +1,526 @@
+/* マイページ */
+.home {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 育つ森の景色 */
+.forest {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.forest__sky {
+  fill: #a9dcf5;
+}
+
+.forest[data-sky='yuu'] .forest__sky {
+  fill: #ffb27a;
+}
+
+.forest[data-sky='yoru'] .forest__sky {
+  fill: #1c2460;
+}
+
+.forest__sun {
+  fill: #ffd95a;
+}
+
+.forest[data-sky='yuu'] .forest__sun {
+  fill: #ff6b3d;
+}
+
+.forest__hill--far {
+  fill: #a8dba0;
+}
+
+.forest__hill--mid {
+  fill: #7cc97f;
+}
+
+.forest__hill--near {
+  fill: #58b56b;
+}
+
+.forest__tree circle {
+  fill: #2f8f4a;
+}
+
+.forest[data-sky='yoru'] .forest__hill--far {
+  fill: #33528a;
+}
+
+.forest[data-sky='yoru'] .forest__hill--mid {
+  fill: #2a6a6c;
+}
+
+.forest[data-sky='yoru'] .forest__hill--near {
+  fill: #1f5a4a;
+}
+
+.forest[data-sky='yoru'] .forest__tree circle {
+  fill: #154a38;
+}
+
+.forest__clouds {
+  animation: drift 40s linear infinite alternate;
+}
+
+@keyframes drift {
+  to {
+    transform: translateX(80px);
+  }
+}
+
+.home__hud {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px 0;
+}
+
+/* きょうのミッション */
+.missions {
+  align-self: start;
+  padding: 14px;
+  background: rgba(255, 253, 247, 0.94);
+  border: 4px solid var(--ai);
+  border-radius: 26px;
+}
+
+.missions__title {
+  margin-bottom: 10px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.15rem;
+  text-align: center;
+}
+
+.missions__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mission {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'label claim'
+    'bar claim';
+  align-items: center;
+  gap: 6px 10px;
+  padding: 8px 10px;
+  background: #ffffff;
+  border: 3px solid var(--line);
+  border-radius: 16px;
+}
+
+.mission.is-done {
+  border-color: var(--yamabuki-dark);
+  background: #fff6cf;
+}
+
+.mission.is-claimed {
+  opacity: 0.6;
+}
+
+.mission__label {
+  grid-area: label;
+  font-size: 0.92rem;
+  line-height: 1.3;
+}
+
+.mission__bar {
+  grid-area: bar;
+  height: 10px;
+  border-radius: 999px;
+  background: #e3ecf3;
+  overflow: hidden;
+}
+
+.mission__bar span {
+  display: block;
+  height: 100%;
+  background: var(--wakaba);
+  border-radius: 999px;
+}
+
+.mission__claim {
+  grid-area: claim;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 72px;
+  min-height: 48px;
+  padding: 0 10px;
+  justify-content: center;
+  background: var(--yamabuki);
+  border: 3px solid var(--yamabuki-dark);
+  border-radius: 14px;
+  box-shadow: 0 4px 0 var(--yamabuki-dark);
+}
+
+.mission__claim:disabled {
+  background: #eef2f5;
+  border-color: var(--line);
+  box-shadow: none;
+  color: var(--muted);
+}
+
+.mission.is-done .mission__claim {
+  animation: nudge 1.2s ease-in-out infinite;
+}
+
+@keyframes nudge {
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.mission__seal {
+  grid-area: claim;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  justify-self: center;
+  border: 3px solid var(--shu);
+  border-radius: 50%;
+  color: var(--shu);
+  transform: rotate(-10deg);
+}
+
+/* まんなか: ふきだし・すみまる・つづきから */
+.home__bubble {
+  position: relative;
+  max-width: 100%;
+  padding: 10px 22px;
+  white-space: nowrap;
+  background: var(--paper);
+  border: 4px solid var(--ai);
+  border-radius: 24px;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.home__bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  width: 20px;
+  height: 20px;
+  background: var(--paper);
+  border-right: 4px solid var(--ai);
+  border-bottom: 4px solid var(--ai);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+@keyframes bob {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.cta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: min(100%, 460px);
+  min-height: 104px;
+  padding: 10px 22px 10px 14px;
+  background: var(--yamabuki);
+  border: 5px solid var(--ai);
+  border-radius: 30px;
+  box-shadow: 0 9px 0 var(--ai);
+  text-align: left;
+}
+
+.cta:active {
+  transform: translateY(7px);
+  box-shadow: 0 2px 0 var(--ai);
+}
+
+.cta__kanji {
+  display: grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  flex-shrink: 0;
+  background: var(--paper);
+  border: 4px solid var(--ai);
+  border-radius: 20px;
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.cta__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+.cta__text small {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.cta__go {
+  font-size: 1.8rem;
+  animation: go 1s ease-in-out infinite;
+}
+
+@keyframes go {
+  50% {
+    transform: translateX(6px);
+  }
+}
+
+/* メニュー */
+/* ログインボーナス */
+.bonus-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.bonus-days li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 78px;
+  padding: 10px 6px;
+  background: #ffffff;
+  border: 3px solid var(--line);
+  border-radius: 16px;
+  font-size: 1.1rem;
+}
+
+.bonus-days li small {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.bonus-days li.is-past {
+  opacity: 0.45;
+}
+
+.bonus-days li.is-today {
+  background: #fff6cf;
+  border-color: var(--yamabuki-dark);
+  transform: scale(1.08);
+}
+
+/* ぼうけん */
+.map__area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-shrink: 0;
+}
+
+.map__name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 300px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.7rem;
+  line-height: 1.25;
+}
+
+.map__name small {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.map__field {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  border: 4px solid var(--ai);
+  border-radius: 32px;
+  background: linear-gradient(180deg, #bfe8c2 0%, #8fd39a 100%);
+  overflow: hidden;
+}
+
+.map[data-theme='oka'] .map__field {
+  background: linear-gradient(180deg, #fff1b8 0%, #c9e48f 100%);
+}
+
+.map[data-theme='mizube'] .map__field {
+  background: linear-gradient(180deg, #bde6f7 0%, #7fc8e8 100%);
+}
+
+.map[data-theme='kumo'] .map__field {
+  background: linear-gradient(180deg, #d9ecff 0%, #ffffff 100%);
+}
+
+.map[data-theme='hoshi'] .map__field {
+  background: linear-gradient(180deg, #2b3577 0%, #6a5fb5 100%);
+}
+
+.map[data-theme='shiro'] .map__field {
+  background: linear-gradient(180deg, #ffd9c4 0%, #ffb49a 100%);
+}
+
+.map__path {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.map__path path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 2.2;
+  stroke-dasharray: 0.4 3.4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-width: 12px;
+  stroke-dasharray: 2px 26px;
+}
+
+.map-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  background: none;
+  border: none;
+  transform: translate(-50%, -50%);
+}
+
+.map-node__disc {
+  display: grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  background: var(--paper);
+  border: 5px solid var(--ai);
+  border-radius: 50%;
+  box-shadow: 0 7px 0 var(--ai);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.9rem;
+}
+
+.map-node:active:not(:disabled) .map-node__disc {
+  transform: translateY(5px);
+  box-shadow: 0 2px 0 var(--ai);
+}
+
+.map-node.is-cleared .map-node__disc {
+  background: var(--yamabuki);
+}
+
+.map-node.is-locked .map-node__disc {
+  background: #d7dee6;
+  border-color: #8d99a8;
+  box-shadow: 0 7px 0 #8d99a8;
+  font-size: 1.5rem;
+}
+
+.map-node__kanji {
+  margin-top: 8px;
+  padding: 1px 10px;
+  background: rgba(255, 253, 247, 0.92);
+  border-radius: 999px;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+}
+
+.map-node.is-locked .map-node__kanji {
+  opacity: 0.5;
+}
+
+.map-node__stars {
+  padding: 0 8px;
+  background: rgba(39, 51, 107, 0.82);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.9rem;
+}
+
+.map-node__stars .is-on {
+  color: var(--yamabuki);
+}
+
+.map-node.is-open .map-node__stars {
+  color: #ffffff;
+  font-size: 0.8rem;
+}
+
+.map-node__mascot {
+  position: absolute;
+  top: -58px;
+  width: 64px;
+  animation: bob 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ステージ */
+.stage__cards {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.stage-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 8px;
+  background: var(--card-bg);
+  border: 4px solid var(--card-border);
+  border-radius: 26px;
+  box-shadow: 0 7px 0 var(--card-border);
+}
+
+.stage-card:active {
+  transform: translateY(5px);
+  box-shadow: 0 2px 0 var(--card-border);
+}
+
+.stage-card.is-next {
+  border-color: var(--ai);
+  box-shadow: 0 7px 0 var(--ai);
+  animation: nudge 1.6s ease-in-out infinite;
+}
+
+.stage-card__icon {
+  width: 56px;
+  height: 56px;
+}
+
+.stage-card__glyph {
+  width: min(100%, 130px);
+  aspect-ratio: 1;
+}
+
+.stage-card__yomi {
+  font-size: 1.15rem;
+}

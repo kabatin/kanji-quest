@@ -1,0 +1,671 @@
+/* クイズの上の帯 */
+.quiz__pips {
+  display: flex;
+  gap: 5px;
+  max-width: 300px;
+  flex-wrap: wrap;
+}
+
+.quiz__pips span {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid var(--line-dark);
+}
+
+.quiz__pips .is-done {
+  background: var(--wakaba);
+  border-color: var(--wakaba-dark);
+}
+
+.quiz__pips .is-now {
+  background: var(--yamabuki);
+  border-color: var(--yamabuki-dark);
+  transform: scale(1.25);
+}
+
+.quiz__combo {
+  padding: 4px 16px;
+  background: var(--shu);
+  border-radius: 999px;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.15rem;
+  animation: pop 0.45s ease-out;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.5);
+  }
+  60% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* えらび: 絵と読みから漢字をえらぶ */
+.erabi {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+}
+
+.erabi__choices {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 200px));
+  gap: 18px;
+}
+
+.erabi-card {
+  aspect-ratio: 1;
+  padding: 16px;
+  background: var(--card-bg);
+  border: 4px solid var(--card-border);
+  border-radius: 28px;
+  box-shadow: 0 7px 0 var(--card-border);
+}
+
+.erabi-card:active:not(:disabled) {
+  transform: translateY(5px);
+  box-shadow: 0 2px 0 var(--card-border);
+}
+
+.erabi-card.is-wrong {
+  opacity: 0.3;
+  animation: shake 0.35s;
+}
+
+.erabi-card.is-right {
+  border-color: var(--wakaba-dark);
+  box-shadow: 0 7px 0 var(--wakaba-dark);
+  background: #e6f7e9;
+  animation: pop 0.45s ease-out;
+}
+
+/* クイズの結果 */
+.quiz-result {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 24px;
+}
+
+.quiz-result__main,
+.quiz-result__side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ランクは、朱色の大きな はんこ で見せる */
+.quiz-result__seal {
+  display: grid;
+  place-items: center;
+  width: 250px;
+  height: 250px;
+  border: 10px solid var(--shu);
+  border-radius: 50%;
+  outline: 4px solid var(--shu);
+  outline-offset: 8px;
+  color: var(--shu);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 3rem;
+  transform: rotate(-9deg);
+  animation: stamp 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+
+@keyframes stamp {
+  0% {
+    opacity: 0;
+    transform: rotate(-9deg) scale(2.4);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(-9deg) scale(1);
+  }
+}
+
+.quiz-result__score {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.quiz-result__facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 18px;
+  color: var(--muted);
+}
+
+.quiz-result__facts .quiz-result__best {
+  color: var(--shu);
+}
+
+.quiz-result__mascot {
+  width: min(26vh, 190px);
+}
+
+.quiz-result__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  min-width: 300px;
+}
+
+/* ものがたり */
+.story {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 28px;
+}
+
+.story__stage {
+  width: min(66vh, 500px);
+  aspect-ratio: 1;
+  padding: 18px;
+  background: var(--paper);
+  border: 5px solid var(--ai);
+  border-radius: 36px;
+  box-shadow: 0 9px 0 var(--ai);
+}
+
+.story__svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* 絵は、足もと(下のまんなか)を軸にして動かす。「もたれる」が自然に見える */
+.story__actor {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.story__stroke {
+  fill: none;
+  stroke-width: 5.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.story__stroke--imi {
+  stroke: var(--imi);
+}
+
+.story__stroke--oto {
+  stroke: var(--oto);
+}
+
+.story__stroke--ink {
+  stroke: var(--ai);
+}
+
+.story__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.story__kind {
+  padding: 2px 14px;
+  border-radius: 999px;
+  background: var(--ai);
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.story__kind--oboekata {
+  background: var(--ai-soft);
+}
+
+.story__caption {
+  font-size: 1.75rem;
+  line-height: 1.6;
+}
+
+.story__yomi {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 2.6rem;
+  color: var(--shu);
+  animation: pop 0.45s ease-out;
+}
+
+.story__actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* かく(書き取り) */
+.kaku {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 28px;
+}
+
+.kaku__board {
+  width: min(68vh, 520px);
+  aspect-ratio: 1;
+  background: var(--paper);
+  border: 5px solid var(--ai);
+  border-radius: 36px;
+  box-shadow: 0 9px 0 var(--ai);
+  overflow: hidden;
+}
+
+.kaku__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* 指でなぞるとき、ブラウザのスクロールや拡大に取られないようにする */
+  touch-action: none;
+}
+
+.kaku__svg path,
+.kaku__svg polyline {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.kaku__grid {
+  stroke: var(--line);
+  stroke-width: 0.6;
+  stroke-dasharray: 2 2;
+}
+
+.kaku__ghost {
+  stroke: #e3eaf0;
+  stroke-width: 5.5;
+}
+
+.kaku__stroke {
+  stroke-width: 5.5;
+}
+
+.kaku__stroke--imi {
+  stroke: var(--imi);
+}
+
+.kaku__stroke--oto {
+  stroke: var(--oto);
+}
+
+.kaku__stroke--ink {
+  stroke: var(--ai);
+}
+
+.kaku__hint {
+  stroke: var(--yamabuki-dark);
+  stroke-width: 3;
+}
+
+.kaku__start circle {
+  fill: var(--shu);
+}
+
+.kaku__start text {
+  fill: #ffffff;
+  font-size: 6px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.kaku__drawing {
+  stroke: var(--ai);
+  stroke-width: 4.5;
+  opacity: 0.75;
+}
+
+.kaku__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.kaku__lead {
+  font-size: 1.6rem;
+}
+
+.kaku__count {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 2rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.kaku__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* パーツずかん */
+.parts__body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 18px;
+}
+
+.parts__left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+.parts__grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.parts__grid li {
+  min-height: 0;
+}
+
+.parts-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'glyph label'
+    'glyph count';
+  align-items: center;
+  column-gap: 8px;
+  width: 100%;
+  height: calc(100% - 5px);
+  padding: 6px 10px;
+  background: var(--card-bg);
+  border: 4px solid var(--card-border);
+  border-radius: 20px;
+  box-shadow: 0 5px 0 var(--card-border);
+  text-align: left;
+}
+
+.parts-card.is-selected {
+  border-color: var(--ai);
+  box-shadow: 0 5px 0 var(--ai);
+}
+
+.parts-card.is-hidden {
+  display: grid;
+  place-items: center;
+  grid-template-areas: none;
+  grid-template-columns: 1fr;
+  background: rgba(255, 255, 255, 0.4);
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.parts-card__glyph {
+  grid-area: glyph;
+  width: 58px;
+  height: 58px;
+}
+
+.parts-card__label {
+  grid-area: label;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.parts-card__count {
+  grid-area: count;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.parts-card__unknown {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.8rem;
+  color: var(--line-dark);
+}
+
+.parts__detail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  background: var(--paper);
+  border: 4px solid var(--ai);
+  border-radius: 28px;
+  overflow-y: auto;
+}
+
+.parts__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border-radius: 20px;
+  background: var(--imi-bg);
+  color: var(--imi);
+}
+
+.parts__head--oto {
+  background: var(--oto-bg);
+  color: var(--oto);
+}
+
+.parts__head small {
+  display: block;
+  font-size: 0.85rem;
+}
+
+.parts__head strong {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.7rem;
+}
+
+.parts__icon {
+  width: 64px;
+  height: 64px;
+}
+
+.parts__note {
+  font-size: 2.6rem;
+}
+
+.parts__lead,
+.parts__empty {
+  color: var(--muted);
+}
+
+.parts__empty {
+  margin: auto;
+  text-align: center;
+  font-size: 1.15rem;
+}
+
+.parts__users {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.parts-user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 6px 2px;
+  background: #ffffff;
+  border: 3px solid var(--line);
+  border-radius: 16px;
+  color: var(--pale);
+}
+
+.parts-user.is-learned {
+  color: var(--ai);
+  border-color: var(--line-dark);
+}
+
+.parts-user__char {
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.parts-user small {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+/* きせかえ */
+.shop__body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 22px;
+  align-items: center;
+}
+
+.shop__me {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 20px;
+  background: var(--paper);
+  border: 4px solid var(--ai);
+  border-radius: 30px;
+  text-align: center;
+}
+
+.shop__mascot {
+  width: 210px;
+}
+
+.shop__level {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+
+.shop__grow {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.shop__main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.shop__tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.shop__items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+}
+
+.shop-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 12px 8px;
+  background: #ffffff;
+  border: 4px solid var(--line);
+  border-radius: 24px;
+  box-shadow: 0 6px 0 var(--line);
+}
+
+.shop-item.is-on {
+  border-color: var(--ai);
+  box-shadow: 0 6px 0 var(--ai);
+}
+
+.shop-item:disabled {
+  opacity: 0.45;
+}
+
+.shop-item__mascot {
+  width: 104px;
+}
+
+.shop-item__sky {
+  width: 104px;
+  height: 104px;
+  border-radius: 20px;
+  border: 3px solid var(--line-dark);
+}
+
+.shop-item__card {
+  width: 110px;
+}
+
+.shop-item__card .part-card {
+  --glyph-size: 60px;
+  min-height: 104px;
+}
+
+.shop-item__label {
+  font-size: 1.1rem;
+}
+
+.shop-item__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 12px;
+  border-radius: 999px;
+  background: #eef4f8;
+  font-size: 0.95rem;
+}
+
+.shop-item.is-on .shop-item__state {
+  background: var(--ai);
+  color: #ffffff;
+}
+
+@media (max-width: 760px) {
+  .story,
+  .kaku,
+  .quiz-result,
+  .parts__body,
+  .shop__body {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .erabi__choices {
+    grid-template-columns: repeat(2, minmax(0, 180px));
+  }
+}

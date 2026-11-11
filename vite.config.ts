@@ -10,7 +10,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/main.tsx', 'src/test/**', 'src/**/*.test.{ts,tsx}', 'src/vite-env.d.ts'],
+      // islandScene.ts は WebGL で描く部分で、テストの環境(jsdom)では動かせない。画面の確認は Playwright で行う
+      exclude: ['src/main.tsx', 'src/test/**', 'src/**/*.test.{ts,tsx}', 'src/vite-env.d.ts', 'src/features/home/scene/islandScene.ts'],
       thresholds: { lines: 80, statements: 80, functions: 80, branches: 70 },
     },
   },

@@ -2,13 +2,13 @@
  "一": {
   "word": "いち",
   "goals": [],
-  "speech": "いち。",
-  "caption": "いち",
-  "kind": "oboekata",
+  "speech": "よこに、ぼうが、いっぽん。ひとつの、しるし。いち。",
+  "caption": "ぼうが {1本|1ぽん}。{数|かず}の {一|いち}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "1️⃣",
+    "picture": "bar",
     "motion": "grow"
    }
   ]
@@ -18,14 +18,14 @@
   "goals": [
    "みぎを、つくろう。"
   ],
-  "speech": "てと、くちで、みぎ。",
-  "caption": "て と くち で、みぎ。",
+  "speech": "ごはんを、くちに、はこぶ、て。その、てが、ある、ほう。みぎ。",
+  "caption": "ごはんを {口|くち}に はこぶ {手|て}。{右|みぎ}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "ナ",
     "picture": "✋",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "口",
@@ -37,42 +37,42 @@
  "雨": {
   "word": "あめ",
   "goals": [],
-  "speech": "あめのかたちからできた、かんじだよ。あめ。",
-  "caption": "あめの かたちから できたよ。",
+  "speech": "そらの、くもから、しずくが、ぽつぽつ、おちてくる。あめ。",
+  "caption": "{空|そら}の {雲|くも}から しずくが ぽつぽつ。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "rain",
-    "motion": "grow"
+    "motion": "drop"
    }
   ]
  },
  "円": {
   "word": "えん",
   "goals": [],
-  "speech": "えん。",
-  "caption": "えん",
+  "speech": "まるい、おかねが、ぴかり。まるい、かたちの、こと。えん。",
+  "caption": "{丸|まる}い お{金|かね}が ぴかり。{丸|まる}い {形|かたち}、{円|えん}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "💴",
-    "motion": "grow"
+    "picture": "🪙",
+    "motion": "shine"
    }
   ]
  },
  "王": {
   "word": "おう",
   "goals": [],
-  "speech": "おう。",
-  "caption": "おう",
-  "kind": "oboekata",
+  "speech": "おおきな、おのは、つよい、しるし。おのを、もつ、ひとが、おうさま。おう。",
+  "caption": "{大|おお}きな おのは {強|つよ}い しるし。おのを もつ {王|おう}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "👑",
-    "motion": "grow"
+    "picture": "🪓",
+    "motion": "shine"
    }
   ]
  },
@@ -81,47 +81,47 @@
   "goals": [
    "おとを、つくろう。"
   ],
-  "speech": "たつと、ひで、おと。",
-  "caption": "たつ と ひ で、おと。",
+  "speech": "あさひが、のぼる。たって、うたうと、こえが、ひびく。おと。",
+  "caption": "{朝日|あさひ}が のぼる。{立|た}って {歌|うた}うと {音|おと}が ひびく。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "立",
     "picture": "🧍",
-    "motion": "still"
+    "motion": "shake"
    },
    {
     "part": "日",
     "picture": "sun",
-    "motion": "still"
+    "motion": "rise"
    }
   ]
  },
  "下": {
   "word": "した",
   "goals": [],
-  "speech": "した。",
-  "caption": "した",
-  "kind": "oboekata",
+  "speech": "よこの、せんを、ひく。その、したに、しるしを、つける。した。",
+  "caption": "よこせんの {下|した}に しるしを つける。{下|した}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "⬇️",
-    "motion": "grow"
+    "motion": "drop"
    }
   ]
  },
  "火": {
   "word": "ひ",
   "goals": [],
-  "speech": "ひのかたちからできた、かんじだよ。ひ。",
-  "caption": "ひの かたちから できたよ。",
+  "speech": "たきぎが、めらめら、もえる。ゆれる、ほのおの、かたち。ひ。",
+  "caption": "めらめら もえる ほのおの {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🔥",
-    "motion": "grow"
+    "motion": "sway"
    }
   ]
  },
@@ -130,14 +130,14 @@
   "goals": [
    "はなを、つくろう。"
   ],
-  "speech": "くさかんむりは、草のしるし。草にさく、はな。したは、おとのパーツだよ。",
-  "caption": "くさかんむりは くさの しるし。くさに さく、はな。",
+  "speech": "くさが、のびて、つぼみが、ひらく。したは、おとの、しるし。はな。",
+  "caption": "{草|くさ}から つぼみが ひらく。{花|はな}。{下|した}は {音|おと}の しるし。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "艹",
     "picture": "grass",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "化",
@@ -149,56 +149,56 @@
  "貝": {
   "word": "かい",
   "goals": [],
-  "speech": "かいのかたちからできた、かんじだよ。かい。",
-  "caption": "かいの かたちから できたよ。",
+  "speech": "うみで、ひろった、かいがら。むかしは、おかねの、かわりだった。かい。",
+  "caption": "{海|うみ}の かいがらの {形|かたち}。むかしは お{金|かね}だった。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🐚",
-    "motion": "grow"
+    "motion": "shine"
    }
   ]
  },
  "学": {
   "word": "まなぶ",
   "goals": [],
-  "speech": "まなぶ。",
-  "caption": "まなぶ",
-  "kind": "oboekata",
+  "speech": "やねの、したに、こどもが、あつまる。てを、とって、おそわる。まなぶ。",
+  "caption": "やねの {下|した}で {子|こ}どもが {教|おそ}わる。{学|まな}ぶ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🎒",
-    "motion": "grow"
+    "picture": "🧒",
+    "motion": "enter"
    }
   ]
  },
  "気": {
   "word": "き",
   "goals": [],
-  "speech": "き。",
-  "caption": "き",
-  "kind": "oboekata",
+  "speech": "ごはんを、たくと、ゆげが、ゆらゆら、のぼる。めに、みえにくい、もの。き。",
+  "caption": "ごはんを たくと ゆげが ゆらゆら のぼる。{気|き}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "💨",
-    "motion": "grow"
+    "picture": "♨️",
+    "motion": "rise"
    }
   ]
  },
  "九": {
   "word": "きゅう",
   "goals": [],
-  "speech": "きゅう。",
-  "caption": "きゅう",
-  "kind": "oboekata",
+  "speech": "うでを、ぐっと、まげた、かたち。その、じを、かりて、かずに、した。きゅう。",
+  "caption": "うでを ぐっと まげた {形|かたち}。{数|かず}の {九|きゅう}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "9️⃣",
-    "motion": "grow"
+    "picture": "💪",
+    "motion": "shake"
    }
   ]
  },
@@ -207,14 +207,14 @@
   "goals": [
    "やすむを、つくろう。"
   ],
-  "speech": "人が、木のそばで、ひとやすみ。やすむ。",
-  "caption": "ひとが きの そばで ひとやすみ。やすむ。",
+  "speech": "ひとが、きに、もたれて、ひとやすみ。やすむ。",
+  "caption": "{人|ひと}が {木|き}に もたれて ひと{休|やす}み。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "亻",
     "picture": "🧍",
-    "motion": "still"
+    "motion": "lean-right"
    },
    {
     "part": "木",
@@ -228,33 +228,33 @@
   "goals": [
    "たまを、つくろう。"
   ],
-  "speech": "おうと、てんで、たま。",
-  "caption": "おう と てん で、たま。",
-  "kind": "oboekata",
+  "speech": "きれいな、いしを、ひもで、つなぐ。てんを、ひとつ、つけて、めじるし。たま。",
+  "caption": "ひもで つないだ きれいな {石|いし}。{点|てん}が めじるし。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "王",
-    "picture": "👑",
-    "motion": "still"
+    "picture": "📿",
+    "motion": "shine"
    },
    {
     "part": "丶",
     "picture": "⚫",
-    "motion": "still"
+    "motion": "drop"
    }
   ]
  },
  "金": {
   "word": "かね",
   "goals": [],
-  "speech": "かね。",
-  "caption": "かね",
-  "kind": "oboekata",
+  "speech": "つちの、なかに、ちいさな、つぶ。ほると、きらきら、ひかる。かね。",
+  "caption": "{土|つち}の {中|なか}で つぶが きらきら {光|ひか}る。{金|かね}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "💰",
-    "motion": "grow"
+    "picture": "sparkle",
+    "motion": "shine"
    }
   ]
  },
@@ -263,18 +263,18 @@
   "goals": [
    "そらを、つくろう。"
   ],
-  "speech": "あなと、こうで、そら。",
-  "caption": "あな と こう で、そら。",
-  "kind": "oboekata",
+  "speech": "あなの、なかは、からっぽ。みあげると、うえも、ひろくて、からっぽ。そら。",
+  "caption": "あなの {中|なか}は {空|から}っぽ。{上|うえ}も {空|から}っぽ、{空|そら}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "穴",
     "picture": "🕳️",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "工",
-    "picture": "🔨",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -282,14 +282,14 @@
  "月": {
   "word": "つき",
   "goals": [],
-  "speech": "みかづきの形からできた漢字だよ。つき。",
-  "caption": "みかづきの かたちから できたよ。",
+  "speech": "よるの、そらに、かけた、つきが、ひかる。みかづきの、かたち。つき。",
+  "caption": "かけた {月|つき}の {形|かたち}。{夜|よる}に {光|ひか}る。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "moon",
-    "motion": "grow"
+    "motion": "shine"
    }
   ]
  },
@@ -298,19 +298,19 @@
   "goals": [
    "いぬを、つくろう。"
   ],
-  "speech": "おおきいと、てんで、いぬ。",
-  "caption": "おおきい と てん で、いぬ。",
-  "kind": "oboekata",
+  "speech": "いぬを、よこから、みた、かたち。てんは、ぴんと、たった、みみ。いぬ。",
+  "caption": "{犬|いぬ}を よこから {見|み}た {形|かたち}。{点|てん}は {耳|みみ}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "大",
-    "picture": "🐘",
+    "picture": "🐕",
     "motion": "still"
    },
    {
     "part": "丶",
-    "picture": "⚫",
-    "motion": "still"
+    "picture": "👂",
+    "motion": "shake"
    }
   ]
  },
@@ -319,32 +319,32 @@
   "goals": [
    "みるを、つくろう。"
   ],
-  "speech": "めと、あしで、みる。",
-  "caption": "め と あし で、みる。",
-  "kind": "oboekata",
+  "speech": "おおきな、めの、したに、あし。ひとが、めを、あけて、じっと。みる。",
+  "caption": "{大|おお}きな {目|め}に {足|あし}が ついた。{人|ひと}が {見|み}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "目",
     "picture": "👁️",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "儿",
     "picture": "🦵",
-    "motion": "still"
+    "motion": "walk"
    }
   ]
  },
  "五": {
   "word": "ご",
   "goals": [],
-  "speech": "ご。",
-  "caption": "ご",
+  "speech": "うえの、せんと、したの、せん。あいだで、ななめの、せんが、まじわる。ご。",
+  "caption": "{上|うえ}と {下|した}の {線|せん}の {間|あいだ}に ばってん。{五|ご}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "5️⃣",
+    "picture": "❌",
     "motion": "grow"
    }
   ]
@@ -352,8 +352,8 @@
  "口": {
   "word": "くち",
   "goals": [],
-  "speech": "くちのかたちからできた、かんじだよ。くち。",
-  "caption": "くちの かたちから できたよ。",
+  "speech": "あーんと、おおきく、あけた、くち。その、かたち。くち。",
+  "caption": "あーんと あけた {口|くち}の {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
@@ -368,18 +368,18 @@
   "goals": [
    "こうを、つくろう。"
   ],
-  "speech": "きと、まじわるで、こう。",
-  "caption": "き と まじわる で、こう。",
-  "kind": "oboekata",
+  "speech": "きを、くんで、たてた、まなびや。みぎは、おとの、しるし。こう。",
+  "caption": "{木|き}で たてた まなびや。{右|みぎ}は {音|おと}の しるし。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "木",
     "picture": "tree",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "交",
-    "picture": "🔀",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -389,14 +389,14 @@
   "goals": [
    "ひだりを、つくろう。"
   ],
-  "speech": "てと、こうで、ひだり。",
-  "caption": "て と こう で、ひだり。",
+  "speech": "どうぐを、しっかり、もつ、て。その、てが、ある、ほう。ひだり。",
+  "caption": "どうぐを しっかり もつ {手|て}。{左|ひだり}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "ナ",
     "picture": "✋",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "工",
@@ -408,13 +408,13 @@
  "三": {
   "word": "さん",
   "goals": [],
-  "speech": "さん。",
-  "caption": "さん",
-  "kind": "oboekata",
+  "speech": "よこに、ぼうが、さんぼん、ならぶ。みっつの、しるし。さん。",
+  "caption": "ぼうが {3本|3ぼん}。{数|かず}の {三|さん}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "3️⃣",
+    "picture": "bar3",
     "motion": "grow"
    }
   ]
@@ -422,56 +422,56 @@
  "山": {
   "word": "やま",
   "goals": [],
-  "speech": "やまのかたちからできた、かんじだよ。やま。",
-  "caption": "やまの かたちから できたよ。",
+  "speech": "たかい、みねが、みっつ、ならぶ。まんなかが、いちばん、たかい。やま。",
+  "caption": "{三|みっ}つの みねが ならぶ {山|やま}の {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "⛰️",
-    "motion": "grow"
+    "motion": "rise"
    }
   ]
  },
  "子": {
   "word": "こ",
   "goals": [],
-  "speech": "このかたちからできた、かんじだよ。こ。",
-  "caption": "この かたちから できたよ。",
+  "speech": "あたまの、おおきな、あかちゃん。りょうてを、ひろげて、いる。こ。",
+  "caption": "{頭|あたま}の {大|おお}きな {赤|あか}ちゃんが {手|て}を {広|ひろ}げる。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "👶",
-    "motion": "grow"
+    "motion": "sway"
    }
   ]
  },
  "四": {
   "word": "よん",
   "goals": [],
-  "speech": "よん。",
-  "caption": "よん",
+  "speech": "しかくの、かどを、かぞえよう。いち、に、さん、し。かどは、よっつ。よん。",
+  "caption": "{四角|しかく}の {角|かど}を {数|かぞ}えると 4つ。{四|よん}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "4️⃣",
-    "motion": "grow"
+    "picture": "⬜",
+    "motion": "still"
    }
   ]
  },
  "糸": {
   "word": "いと",
   "goals": [],
-  "speech": "いとのかたちからできた、かんじだよ。いと。",
-  "caption": "いとの かたちから できたよ。",
+  "speech": "まゆから、ほそい、いとを、とる。ねじって、たばねた、かたち。いと。",
+  "caption": "{細|ほそ}い {糸|いと}を ねじって たばねた {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "thread",
-    "motion": "grow"
+    "motion": "sway"
    }
   ]
  },
@@ -480,9 +480,9 @@
   "goals": [
    "じを、つくろう。"
   ],
-  "speech": "やねと、こで、じ。",
-  "caption": "やね と こ で、じ。",
-  "kind": "oboekata",
+  "speech": "やねの、したで、こどもが、そだつ。こどもの、ように、ふえて、いく。じ。",
+  "caption": "やねの {下|した}で {子|こ}どもが そだつ。{字|じ}も ふえる。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "宀",
@@ -492,57 +492,57 @@
    {
     "part": "子",
     "picture": "👶",
-    "motion": "still"
+    "motion": "grow"
    }
   ]
  },
  "耳": {
   "word": "みみ",
   "goals": [],
-  "speech": "みみのかたちからできた、かんじだよ。みみ。",
-  "caption": "みみの かたちから できたよ。",
+  "speech": "おとを、きく、みみ。ひとの、みみの、かたち。みみ。",
+  "caption": "{音|おと}を {聞|き}く {人|ひと}の {耳|みみ}の {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "👂",
-    "motion": "grow"
+    "motion": "shake"
    }
   ]
  },
  "七": {
   "word": "なな",
   "goals": [],
-  "speech": "なな。",
-  "caption": "なな",
-  "kind": "oboekata",
+  "speech": "よこの、ぼうを、たての、せんで、すぱっと、きる。その、じを、かりた。なな。",
+  "caption": "よこの ぼうを たての {線|せん}で {切|き}る。{七|なな}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "7️⃣",
-    "motion": "grow"
+    "picture": "✂️",
+    "motion": "drop"
    }
   ]
  },
  "車": {
   "word": "くるま",
   "goals": [],
-  "speech": "くるまのかたちからできた、かんじだよ。くるま。",
-  "caption": "くるまの かたちから できたよ。",
+  "speech": "くるまを、うえから、みた、かたち。りょうがわに、わ。まんなかに、はこ。くるま。",
+  "caption": "{上|うえ}から {見|み}た {車|くるま}。わが 2つ、まん{中|なか}に はこ。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🚗",
-    "motion": "grow"
+    "picture": "🛞",
+    "motion": "walk"
    }
   ]
  },
  "手": {
   "word": "て",
   "goals": [],
-  "speech": "てのかたちからできた、かんじだよ。て。",
-  "caption": "ての かたちから できたよ。",
+  "speech": "ごほんの、ゆびを、ぱっと、ひろげる。ての、かたち。て。",
+  "caption": "{5本|5ほん}の ゆびを {広|ひろ}げた {手|て}の {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
@@ -555,13 +555,13 @@
  "十": {
   "word": "じゅう",
   "goals": [],
-  "speech": "じゅう。",
-  "caption": "じゅう",
+  "speech": "ぼうを、じっぽん、あつめて、ひとつに、たばねる。まとまりの、しるし。じゅう。",
+  "caption": "ぼうを {10本|10ぽん} たばねて 1つに。{十|じゅう}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "🔟",
+    "picture": "➕",
     "motion": "grow"
    }
   ]
@@ -569,56 +569,56 @@
  "出": {
   "word": "でる",
   "goals": [],
-  "speech": "でる。",
-  "caption": "でる",
-  "kind": "oboekata",
+  "speech": "あなの、なかから、あしが、そとへ、ふみだす。でる。",
+  "caption": "あなから {足|あし}が {外|そと}へ ふみ{出|だ}す。{出|で}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🚪",
-    "motion": "grow"
+    "picture": "👣",
+    "motion": "rise"
    }
   ]
  },
  "女": {
   "word": "おんな",
   "goals": [],
-  "speech": "おんなのかたちからできた、かんじだよ。おんな。",
-  "caption": "おんなの かたちから できたよ。",
+  "speech": "ひざを、ついて、てを、まえに、かさねる。その、すがた。おんな。",
+  "caption": "ひざを ついて {手|て}を かさねる {女|おんな}の {人|ひと}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "👩",
-    "motion": "grow"
+    "motion": "still"
    }
   ]
  },
  "小": {
   "word": "ちいさい",
   "goals": [],
-  "speech": "ちいさい。",
-  "caption": "ちいさい",
-  "kind": "oboekata",
+  "speech": "ちいさな、つぶが、みっつ、ぱらぱら。すなつぶ、みたい。ちいさい。",
+  "caption": "{小|ちい}さな つぶが 3つ ぱらぱら。{小|ちい}さい。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🐜",
-    "motion": "grow"
+    "picture": "⚫",
+    "motion": "drop"
    }
   ]
  },
  "上": {
   "word": "うえ",
   "goals": [],
-  "speech": "うえ。",
-  "caption": "うえ",
-  "kind": "oboekata",
+  "speech": "よこの、せんを、ひく。その、うえに、しるしを、つける。うえ。",
+  "caption": "よこせんの {上|うえ}に しるしを つける。{上|うえ}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "⬆️",
-    "motion": "grow"
+    "motion": "rise"
    }
   ]
  },
@@ -627,47 +627,47 @@
   "goals": [
    "もりを、つくろう。"
   ],
-  "speech": "木が三本あつまって、もり。はやしよりも、もっと木がたくさん。",
-  "caption": "きが 3ぼん あつまって、もり。はやしより もっと たくさん。",
+  "speech": "きが、いっぽん。そこに、はやしが、くわわる。きが、たくさん。もり。",
+  "caption": "{木|き}が {3本|3ぼん} あつまって こんもり。{森|もり}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "木",
     "picture": "tree",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "林",
     "picture": "trees2",
-    "motion": "still"
+    "motion": "rise"
    }
   ]
  },
  "人": {
   "word": "ひと",
   "goals": [],
-  "speech": "ひとのかたちからできた、かんじだよ。ひと。",
-  "caption": "ひとの かたちから できたよ。",
+  "speech": "ひとが、よこをむいて、たっているよ。うでを、まえに、のばしている。ひと。",
+  "caption": "{人|ひと}が よこを むいて {立|た}って いる {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🧍",
-    "motion": "grow"
+    "motion": "walk"
    }
   ]
  },
  "水": {
   "word": "みず",
   "goals": [],
-  "speech": "みずのかたちからできた、かんじだよ。みず。",
-  "caption": "みずの かたちから できたよ。",
+  "speech": "まんなかを、みずが、ながれるよ。りょうがわに、しぶきが、とぶ。みず。",
+  "caption": "まん{中|なか}に ながれ。りょうがわに しぶき。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "drop",
-    "motion": "grow"
+    "motion": "sway"
    }
   ]
  },
@@ -676,28 +676,28 @@
   "goals": [
    "ただしいを、つくろう。"
   ],
-  "speech": "いちと、とまるで、ただしい。",
-  "caption": "いち と とまる で、ただしい。",
+  "speech": "うえに、せんが、いっぽん。あしが、せんにむかって、まっすぐ、すすむよ。ただしい。",
+  "caption": "{足|あし}が {線|せん}に むかって まっすぐ すすむ。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "一",
-    "picture": "1️⃣",
+    "picture": "bar",
     "motion": "still"
    },
    {
     "part": "止",
-    "picture": "🛑",
-    "motion": "still"
+    "picture": "🦶",
+    "motion": "rise"
    }
   ]
  },
  "生": {
   "word": "うまれる",
   "goals": [],
-  "speech": "うまれる。",
-  "caption": "うまれる",
-  "kind": "oboekata",
+  "speech": "つちから、くさのめが、でてきたよ。ぐんぐん、のびる。うまれる。",
+  "caption": "{土|つち}から {草|くさ}の めが {出|で}て きた。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
@@ -709,13 +709,13 @@
  "青": {
   "word": "あお",
   "goals": [],
-  "speech": "あお。",
-  "caption": "あお",
+  "speech": "うえは、くさのめ。したは、いどの、きれいなみず。どちらも、あおいよ。あお。",
+  "caption": "{草|くさ}の めと いどの {水|みず}。どちらも {青|あお}い。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "🔵",
+    "picture": "🌱",
     "motion": "grow"
    }
   ]
@@ -723,41 +723,41 @@
  "夕": {
   "word": "ゆう",
   "goals": [],
-  "speech": "ゆう。",
-  "caption": "ゆう",
-  "kind": "oboekata",
+  "speech": "ゆうがた、そらに、みかづきが、でてきたよ。つきの、かたち。ゆう。",
+  "caption": "{夕方|ゆうがた}、{空|そら}に {三日月|みかづき}が {出|で}て きた。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🌆",
-    "motion": "grow"
+    "picture": "moon",
+    "motion": "rise"
    }
   ]
  },
  "石": {
   "word": "いし",
   "goals": [],
-  "speech": "いし。",
-  "caption": "いし",
+  "speech": "がけの、したに、いしが、ころんと、おちているよ。いし。",
+  "caption": "がけの {下|した}に {石|いし}が ころん。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
     "picture": "🪨",
-    "motion": "grow"
+    "motion": "drop"
    }
   ]
  },
  "赤": {
   "word": "あか",
   "goals": [],
-  "speech": "あか。",
-  "caption": "あか",
-  "kind": "oboekata",
+  "speech": "ひが、おおきく、もえているよ。まっかな、いろ。あか。",
+  "caption": "{火|ひ}が {大|おお}きく もえて いる。{赤|あか}い。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🔴",
+    "picture": "🔥",
     "motion": "grow"
    }
   ]
@@ -765,42 +765,42 @@
  "千": {
   "word": "せん",
   "goals": [],
-  "speech": "せん。",
-  "caption": "せん",
+  "speech": "ひとの、かたちに、よこぼうを、いっぽん、たすよ。とても、おおきな、かず。せん。",
+  "caption": "{人|ひと}に よこぼうを {1本|1ぽん} {足|た}して、{千|せん}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "🧮",
-    "motion": "grow"
+    "picture": "🧍",
+    "motion": "still"
    }
   ]
  },
  "川": {
   "word": "かわ",
   "goals": [],
-  "speech": "かわのかたちからできた、かんじだよ。かわ。",
-  "caption": "かわの かたちから できたよ。",
+  "speech": "きしと、きしの、あいだを、みずが、ながれるよ。さんぼんの、すじ。かわ。",
+  "caption": "きしの {間|あいだ}を {水|みず}が ながれる。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🏞️",
-    "motion": "grow"
+    "picture": "wave",
+    "motion": "sway"
    }
   ]
  },
  "先": {
   "word": "さき",
   "goals": [],
-  "speech": "さき。",
-  "caption": "さき",
-  "kind": "oboekata",
+  "speech": "ひとの、うえに、あしが、あるよ。あしが、まえに、でる。さき。",
+  "caption": "{人|ひと}の {上|うえ}に {足|あし}。{足|あし}が {先|さき}に {出|で}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "➡️",
-    "motion": "grow"
+    "picture": "👣",
+    "motion": "walk"
    }
   ]
  },
@@ -809,18 +809,18 @@
   "goals": [
    "はやいを、つくろう。"
   ],
-  "speech": "ひと、じゅうで、はやい。",
-  "caption": "ひ と じゅう で、はやい。",
+  "speech": "あさ、おひさまが、じゅうじの、しるしの、うえに、のぼるよ。はやい。",
+  "caption": "お{日|ひ}さまが {十字|じゅうじ}の {上|うえ}に のぼる。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "日",
     "picture": "sun",
-    "motion": "still"
+    "motion": "rise"
    },
    {
     "part": "十",
-    "picture": "🔟",
+    "picture": "➕",
     "motion": "still"
    }
   ]
@@ -830,18 +830,18 @@
   "goals": [
    "くさを、つくろう。"
   ],
-  "speech": "くさと、はやいで、くさ。",
-  "caption": "くさ と はやい で、くさ。",
-  "kind": "oboekata",
+  "speech": "うえは、くさの、しるし。かぜに、ゆれる。したは、おとの、しるしだよ。くさ。",
+  "caption": "{上|うえ}は {草|くさ}の しるし。{下|した}は {音|おと}の しるし。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "艹",
     "picture": "grass",
-    "motion": "still"
+    "motion": "sway"
    },
    {
     "part": "早",
-    "picture": "⏰",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -851,19 +851,19 @@
   "goals": [
    "あしを、つくろう。"
   ],
-  "speech": "くちと、あしで、あし。",
-  "caption": "くち と あし で、あし。",
+  "speech": "うえは、まるい、ひざ。したは、あるく、あしあとだよ。あし。",
+  "caption": "{丸|まる}い ひざの {下|した}に あしあと。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "口",
-    "picture": "👄",
+    "picture": "🦵",
     "motion": "still"
    },
    {
     "part": "龰",
     "picture": "🦶",
-    "motion": "still"
+    "motion": "walk"
    }
   ]
  },
@@ -872,14 +872,14 @@
   "goals": [
    "むらを、つくろう。"
   ],
-  "speech": "きと、「すん」のおとで、むら。",
-  "caption": "き と 「すん」の おと で、むら。",
-  "kind": "oboekata",
+  "speech": "きの、あるところに、ひとが、あつまるよ。みぎは、おとの、しるし。むら。",
+  "caption": "{木|き}の ある ところ、{村|むら}。{右|みぎ}は {音|おと}の しるし。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "木",
     "picture": "tree",
-    "motion": "still"
+    "motion": "sway"
    },
    {
     "part": "寸",
@@ -891,13 +891,13 @@
  "大": {
   "word": "おおきい",
   "goals": [],
-  "speech": "人が、りょうてと、りょうあしを、ひろげたかたち。おおきい。",
-  "caption": "ひとが てと あしを ひろげた かたち。おおきい。",
+  "speech": "ひとが、りょうてと、りょうあしを、ひろげたよ。おおきい。",
+  "caption": "{人|ひと}が {手|て}と {足|あし}を {大|おお}きく {広|ひろ}げた。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🐘",
+    "picture": "🧍",
     "motion": "grow"
    }
   ]
@@ -907,8 +907,8 @@
   "goals": [
    "おとこを、つくろう。"
   ],
-  "speech": "たんぼで、ちからをだしてはたらく、おとこ。",
-  "caption": "たんぼで ちからを だす、おとこ。",
+  "speech": "たんぼで、ちからをだして、つちを、たがやすよ。おとこ。",
+  "caption": "{田|た}んぼで {力|ちから}を {出|だ}して はたらく。",
   "kind": "naritachi",
   "actors": [
    {
@@ -919,49 +919,49 @@
    {
     "part": "力",
     "picture": "💪",
-    "motion": "still"
+    "motion": "shake"
    }
   ]
  },
  "竹": {
   "word": "たけ",
   "goals": [],
-  "speech": "たけのかたちからできた、かんじだよ。たけ。",
-  "caption": "たけの かたちから できたよ。",
+  "speech": "たけの、はが、したに、たれているよ。かぜで、ゆれる。たけ。",
+  "caption": "{竹|たけ}の はが たれて ゆれる。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🎋",
-    "motion": "grow"
+    "motion": "sway"
    }
   ]
  },
  "中": {
   "word": "なか",
   "goals": [],
-  "speech": "なか。",
-  "caption": "なか",
-  "kind": "oboekata",
+  "speech": "ぼうが、いっぽん。しかくの、まんなかを、とおるよ。なか。",
+  "caption": "ぼうが {四角|しかく}の まん{中|なか}を {通|とお}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🎯",
-    "motion": "grow"
+    "motion": "enter"
    }
   ]
  },
  "虫": {
   "word": "むし",
   "goals": [],
-  "speech": "むしのかたちからできた、かんじだよ。むし。",
-  "caption": "むしの かたちから できたよ。",
+  "speech": "ちいさな、いきものが、くねくね、うごくよ。むし。",
+  "caption": "{小|ちい}さな {生|い}きものが くねくね うごく。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🐛",
-    "motion": "grow"
+    "motion": "sway"
    }
   ]
  },
@@ -970,9 +970,9 @@
   "goals": [
    "まちを、つくろう。"
   ],
-  "speech": "たと、「ちょう」のおとで、まち。",
-  "caption": "た と 「ちょう」の おと で、まち。",
-  "kind": "oboekata",
+  "speech": "たんぼの、あいだの、みち。みぎは、おとの、しるしだよ。まち。",
+  "caption": "{田|た}んぼの {間|あいだ}の {道|みち}。{右|みぎ}は {音|おと}の しるし。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "田",
@@ -991,18 +991,18 @@
   "goals": [
    "てんを、つくろう。"
   ],
-  "speech": "いちと、おおきいで、てん。",
-  "caption": "いち と おおきい で、てん。",
-  "kind": "oboekata",
+  "speech": "てを、ひろげた、ひと。あたまの、うえに、せんが、いっぽん。いちばん、うえだよ。てん。",
+  "caption": "{人|ひと}の {頭|あたま}の {上|うえ}に {線|せん}。そこが {天|てん}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "一",
-    "picture": "1️⃣",
-    "motion": "still"
+    "picture": "bar",
+    "motion": "drop"
    },
    {
     "part": "大",
-    "picture": "🐘",
+    "picture": "🧍",
     "motion": "still"
    }
   ]
@@ -1010,111 +1010,111 @@
  "田": {
   "word": "た",
   "goals": [],
-  "speech": "たのかたちからできた、かんじだよ。た。",
-  "caption": "たの かたちから できたよ。",
+  "speech": "しかくい、たんぼ。あぜみちで、よっつに、くぎったよ。た。",
+  "caption": "{四角|しかく}い {田|た}んぼを {道|みち}で 4つに くぎった。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🌾",
-    "motion": "grow"
+    "motion": "still"
    }
   ]
  },
  "土": {
   "word": "つち",
   "goals": [],
-  "speech": "つちのかたちからできた、かんじだよ。つち。",
-  "caption": "つちの かたちから できたよ。",
+  "speech": "じめんの、うえに、つちが、もりあがっているよ。つち。",
+  "caption": "じめんの {上|うえ}に {土|つち}が もり{上|あ}がった。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🟤",
-    "motion": "grow"
+    "motion": "rise"
    }
   ]
  },
  "二": {
   "word": "に",
   "goals": [],
-  "speech": "に。",
-  "caption": "に",
-  "kind": "oboekata",
+  "speech": "ぼうが、にほん。うえが、みじかくて、したが、ながいよ。に。",
+  "caption": "ぼうが {2本|2ほん}。{上|うえ}が みじかく {下|した}が {長|なが}い。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "2️⃣",
-    "motion": "grow"
+    "picture": "bar2",
+    "motion": "drop"
    }
   ]
  },
  "日": {
   "word": "ひ",
   "goals": [],
-  "speech": "おひさまの形からできた漢字だよ。まるい太陽が、しかくくなったんだ。ひ。",
-  "caption": "おひさまの かたちから できたよ。まるが しかくに なったんだ。",
+  "speech": "まるい、おひさまが、ぴかぴか、ひかるよ。まるが、しかくく、なった。ひ。",
+  "caption": "{丸|まる}い お{日|ひ}さまが {四角|しかく}く なった。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "sun",
-    "motion": "grow"
+    "motion": "shine"
    }
   ]
  },
  "入": {
   "word": "はいる",
   "goals": [],
-  "speech": "はいる。",
-  "caption": "はいる",
+  "speech": "さんかくの、いりぐち。そこから、なかに、はいるよ。はいる。",
+  "caption": "{家|いえ}の {入|い}り{口|ぐち}の {形|かたち}。{中|なか}に {入|はい}る。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "📥",
-    "motion": "grow"
+    "picture": "🚪",
+    "motion": "enter"
    }
   ]
  },
  "年": {
   "word": "とし",
   "goals": [],
-  "speech": "とし。",
-  "caption": "とし",
+  "speech": "みのった、いねを、ひとが、かついで、あるくよ。いねが、みのると、いちねん。とし。",
+  "caption": "みのった いねを {人|ひと}が かついで {歩|ある}く。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "🎍",
-    "motion": "grow"
+    "picture": "🌾",
+    "motion": "walk"
    }
   ]
  },
  "白": {
   "word": "しろ",
   "goals": [],
-  "speech": "しろ。",
-  "caption": "しろ",
+  "speech": "どんぐりの、からを、むくよ。なかは、まっしろ。しろ。",
+  "caption": "どんぐりの からを むくと {中|なか}は まっ{白|しろ}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "white",
-    "motion": "grow"
+    "picture": "🌰",
+    "motion": "shine"
    }
   ]
  },
  "八": {
   "word": "はち",
   "goals": [],
-  "speech": "はち。",
-  "caption": "はち",
-  "kind": "oboekata",
+  "speech": "にほんの、せんが、みぎと、ひだりに、わかれるよ。はち。",
+  "caption": "{2本|2ほん}の {線|せん}が {右|みぎ}と {左|ひだり}に {分|わ}かれる。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "8️⃣",
+    "picture": "↔️",
     "motion": "grow"
    }
   ]
@@ -1124,18 +1124,18 @@
   "goals": [
    "ひゃくを、つくろう。"
   ],
-  "speech": "いちと、しろで、ひゃく。",
-  "caption": "いち と しろ で、ひゃく。",
-  "kind": "oboekata",
+  "speech": "うえに、ぼうが、いっぽん。したの、しろは、おとの、しるしだよ。ひゃく。",
+  "caption": "{上|うえ}に ぼうが {1本|1ぽん}。{下|した}の {白|しろ}は {音|おと}の しるし。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "一",
-    "picture": "1️⃣",
-    "motion": "still"
+    "picture": "bar",
+    "motion": "drop"
    },
    {
     "part": "白",
-    "picture": "white",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -1143,22 +1143,22 @@
  "文": {
   "word": "ぶん",
   "goals": [],
-  "speech": "ぶん。",
-  "caption": "ぶん",
-  "kind": "oboekata",
+  "speech": "ひとの、むねに、もようが、かいてあるよ。もようから、もじに、なった。ぶん。",
+  "caption": "{人|ひと}の むねに もようが かいて ある。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "📝",
-    "motion": "grow"
+    "picture": "🧍",
+    "motion": "still"
    }
   ]
  },
  "木": {
   "word": "き",
   "goals": [],
-  "speech": "木の形からできた漢字だよ。みきと、えだと、ねっこ。き。",
-  "caption": "きの かたちから できたよ。みきと えだと ねっこ。",
+  "speech": "きが、いっぽん、たっているよ。みきと、えだと、ねっこ。き。",
+  "caption": "{木|き}の {形|かたち}。みきと えだと ねっこ。",
   "kind": "naritachi",
   "actors": [
    {
@@ -1173,9 +1173,9 @@
   "goals": [
    "ほんを、つくろう。"
   ],
-  "speech": "きと、いちで、ほん。",
-  "caption": "き と いち で、ほん。",
-  "kind": "oboekata",
+  "speech": "きの、ねもとに、しるしを、いっぽん、つけるよ。ここが、ねもと。ほん。",
+  "caption": "{木|き}の ねもとに しるしを {1本|1ぽん}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "木",
@@ -1184,8 +1184,8 @@
    },
    {
     "part": "一",
-    "picture": "1️⃣",
-    "motion": "still"
+    "picture": "bar",
+    "motion": "enter"
    }
   ]
  },
@@ -1194,61 +1194,61 @@
   "goals": [
    "なを、つくろう。"
   ],
-  "speech": "ゆうと、くちで、な。",
-  "caption": "ゆう と くち で、な。",
+  "speech": "ゆうがたは、くらくて、かおが、みえない。くちで、なまえを、いうよ。な。",
+  "caption": "くらい {夕方|ゆうがた}、{口|くち}で {名前|なまえ}を {言|い}う。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "夕",
-    "picture": "🌆",
-    "motion": "still"
+    "picture": "moon",
+    "motion": "rise"
    },
    {
     "part": "口",
     "picture": "👄",
-    "motion": "still"
+    "motion": "shake"
    }
   ]
  },
  "目": {
   "word": "め",
   "goals": [],
-  "speech": "めのかたちからできた、かんじだよ。め。",
-  "caption": "めの かたちから できたよ。",
+  "speech": "めの、かたち。よこむきの、めを、たてに、したよ。め。",
+  "caption": "{目|め}の {形|かたち}。よこむきの {目|め}を たてに した。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "👁️",
-    "motion": "grow"
+    "motion": "still"
    }
   ]
  },
  "立": {
   "word": "たつ",
   "goals": [],
-  "speech": "たつ。",
-  "caption": "たつ",
-  "kind": "oboekata",
+  "speech": "ひとが、りょうあしを、ひらいて、じめんの、うえに、たっているよ。たつ。",
+  "caption": "{人|ひと}が じめんの {上|うえ}に {立|た}って いる。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🧍",
-    "motion": "grow"
+    "motion": "rise"
    }
   ]
  },
  "力": {
   "word": "ちから",
   "goals": [],
-  "speech": "ちからのかたちからできた、かんじだよ。ちから。",
-  "caption": "ちからの かたちから できたよ。",
+  "speech": "つちを、ほる、どうぐの、かたち。ちからを、いれて、ほるよ。ちから。",
+  "caption": "{土|つち}を ほる どうぐ。{力|ちから}を {入|い}れて ほる。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "💪",
-    "motion": "grow"
+    "picture": "⛏️",
+    "motion": "shake"
    }
   ]
  },
@@ -1257,8 +1257,8 @@
   "goals": [
    "はやしを、つくろう。"
   ],
-  "speech": "木が二本ならんで、はやし。木がたくさんあるところだよ。",
-  "caption": "きが 2ほん ならんで、はやし。",
+  "speech": "きが、いっぽん。となりに、もういっぽん。きが、ならんで、はやし。",
+  "caption": "{木|き}が {2本|2ほん} ならんで、{林|はやし}。",
   "kind": "naritachi",
   "actors": [
    {
@@ -1269,21 +1269,21 @@
    {
     "part": "木",
     "picture": "tree",
-    "motion": "still"
+    "motion": "walk"
    }
   ]
  },
  "六": {
   "word": "ろく",
   "goals": [],
-  "speech": "ろく。",
-  "caption": "ろく",
+  "speech": "やねの、ある、いえの、かたちに、にているよ。ろく。",
+  "caption": "やねの ある {家|いえ}の {形|かたち}に にて いる。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "6️⃣",
-    "motion": "grow"
+    "picture": "🏠",
+    "motion": "still"
    }
   ]
  },
@@ -1292,9 +1292,9 @@
   "goals": [
    "ひくを、つくろう。"
   ],
-  "speech": "ゆみと、ぼうで、ひく。",
-  "caption": "ゆみ と ぼう で、ひく。",
-  "kind": "oboekata",
+  "speech": "ゆみに、まっすぐな つる。ぐいっと、ひっぱるよ。ひく。",
+  "caption": "{弓|ゆみ}の つるを ぐいっと {引|ひ}く。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "弓",
@@ -1303,8 +1303,8 @@
    },
    {
     "part": "丨",
-    "picture": "📏",
-    "motion": "still"
+    "picture": "barv",
+    "motion": "walk"
    }
   ]
  },
@@ -1313,19 +1313,19 @@
   "goals": [
    "はねを、つくろう。"
   ],
-  "speech": "はねと、はねで、はね。",
-  "caption": "はね と はね で、はね。",
+  "speech": "とりの はねが、にまい ならんで、ぱたぱた。はね。",
+  "caption": "{鳥|とり}の {羽|はね}が 2まい ならんだ {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "习",
     "picture": "🪶",
-    "motion": "still"
+    "motion": "sway"
    },
    {
     "part": "习",
     "picture": "🪶",
-    "motion": "still"
+    "motion": "sway"
    }
   ]
  },
@@ -1334,19 +1334,19 @@
   "goals": [
    "くもを、つくろう。"
   ],
-  "speech": "雨のしたに、もくもくのくも。雨をふらせる、くも。",
-  "caption": "あめの したに もくもく。あめを ふらせる、くも。",
+  "speech": "もくもくが、そらへ のぼる。やがて、あめを ふらせるよ。くも。",
+  "caption": "もくもく のぼって {雨|あめ}を ふらせる {雲|くも}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "雨",
     "picture": "rain",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "云",
     "picture": "cloud",
-    "motion": "still"
+    "motion": "rise"
    }
   ]
  },
@@ -1355,9 +1355,9 @@
   "goals": [
    "えんを、つくろう。"
   ],
-  "speech": "かこいと、「えん」のおとで、えん。",
-  "caption": "かこい と 「えん」の おと で、えん。",
-  "kind": "oboekata",
+  "speech": "ぐるりと かこった、にわや はたけ。なかは、えんの おと。えん。",
+  "caption": "かこいの {中|なか}の にわ。エンの {音|おと}が つく。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "囗",
@@ -1367,7 +1367,7 @@
    {
     "part": "袁",
     "picture": "♪",
-    "motion": "still"
+    "motion": "enter"
    }
   ]
  },
@@ -1376,14 +1376,14 @@
   "goals": [
    "とおいを、つくろう。"
   ],
-  "speech": "みちと、「えん」のおとで、とおい。",
-  "caption": "みち と 「えん」の おと で、とおい。",
-  "kind": "oboekata",
+  "speech": "みちを、ずっと ずっと あるいて いく。えんの おとが つくよ。とおい。",
+  "caption": "{道|みち}が ずっと つづく。エンの {音|おと}が つく。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "⻌",
     "picture": "🛣️",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "袁",
@@ -1397,14 +1397,14 @@
   "goals": [
    "なにを、つくろう。"
   ],
-  "speech": "ひとと、「か」のおとで、なに。",
-  "caption": "ひと と 「か」の おと で、なに。",
-  "kind": "oboekata",
+  "speech": "にもつを かついだ ひとが、あるいて くる。それ、なあに。なに。",
+  "caption": "にもつを かつぐ {人|ひと}の {絵|え}。カの {音|おと}が つく。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "亻",
     "picture": "🧍",
-    "motion": "still"
+    "motion": "walk"
    },
    {
     "part": "可",
@@ -1418,14 +1418,14 @@
   "goals": [
    "かを、つくろう。"
   ],
-  "speech": "いねと、ますで、か。",
-  "caption": "いね と ます で、か。",
-  "kind": "oboekata",
+  "speech": "いねを、ますに いれて はかる。しゅるいごとに わけるよ。か。",
+  "caption": "いねを ますで はかって {分|わ}ける。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "禾",
     "picture": "🌾",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "斗",
@@ -1437,14 +1437,14 @@
  "夏": {
   "word": "なつ",
   "goals": [],
-  "speech": "なつ。",
-  "caption": "なつ",
-  "kind": "oboekata",
+  "speech": "ひとの あたまの うえに、おひさまが ぎらぎら。あつい きせつ。なつ。",
+  "caption": "{頭|あたま}の {上|うえ}に ぎらぎら お{日|ひ}さま。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🌻",
-    "motion": "grow"
+    "picture": "sun",
+    "motion": "shine"
    }
   ]
  },
@@ -1453,8 +1453,8 @@
   "goals": [
    "いえを、つくろう。"
   ],
-  "speech": "やねのしたに、ぶた。むかしは、いえで、ぶたをかっていたんだ。いえ。",
-  "caption": "やねの したに ぶた。むかしの いえ。",
+  "speech": "やねの したに、ぶたが はいって くる。みんなで くらす ところ。いえ。",
+  "caption": "やねの {下|した}で ぶたも いっしょに くらす。",
   "kind": "naritachi",
   "actors": [
    {
@@ -1465,7 +1465,7 @@
    {
     "part": "豕",
     "picture": "🐖",
-    "motion": "still"
+    "motion": "enter"
    }
   ]
  },
@@ -1474,14 +1474,14 @@
   "goals": [
    "うたを、つくろう。"
   ],
-  "speech": "あくびと、「か」のおとで、うた。",
-  "caption": "あくび と 「か」の おと で、うた。",
-  "kind": "oboekata",
+  "speech": "おおきく くちを あけて、こえを だす。かの おとが つくよ。うた。",
+  "caption": "{口|くち}を {大|おお}きく あけて {歌|うた}う。カの {音|おと}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "欠",
-    "picture": "🥱",
-    "motion": "still"
+    "picture": "😮",
+    "motion": "sway"
    },
    {
     "part": "哥",
@@ -1493,14 +1493,14 @@
  "画": {
   "word": "が",
   "goals": [],
-  "speech": "が。",
-  "caption": "が",
-  "kind": "oboekata",
+  "speech": "ふでを もって、せんを ひく。しかくく くぎって、えを かくよ。が。",
+  "caption": "ふでで {線|せん}を {引|ひ}いて くぎりを かく。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🖼️",
-    "motion": "grow"
+    "picture": "🖌️",
+    "motion": "sway"
    }
   ]
  },
@@ -1509,19 +1509,19 @@
   "goals": [
    "まわるを、つくろう。"
   ],
-  "speech": "かこいと、くちで、まわる。",
-  "caption": "かこい と くち で、まわる。",
-  "kind": "oboekata",
+  "speech": "みずが、ぐるぐる うずを まく。そとも、なかも、ぐるぐる。まわる。",
+  "caption": "{水|みず}が ぐるぐる うずを まく {形|かたち}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "囗",
-    "picture": "⬜",
-    "motion": "still"
+    "picture": "🌀",
+    "motion": "sway"
    },
    {
     "part": "口",
-    "picture": "👄",
-    "motion": "still"
+    "picture": "🌀",
+    "motion": "enter"
    }
   ]
  },
@@ -1530,18 +1530,18 @@
   "goals": [
    "あうを、つくろう。"
   ],
-  "speech": "ひとと、くもで、あう。",
-  "caption": "ひと と くも で、あう。",
-  "kind": "oboekata",
+  "speech": "なべの うえに、ふたが おりて くる。ぴったり、かさなった。あう。",
+  "caption": "ふたが なべに ぴったり あう。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "人",
-    "picture": "🧍",
-    "motion": "still"
+    "picture": "🔺",
+    "motion": "drop"
    },
    {
     "part": "云",
-    "picture": "cloud",
+    "picture": "🍲",
     "motion": "still"
    }
   ]
@@ -1551,14 +1551,14 @@
   "goals": [
    "うみを、つくろう。"
   ],
-  "speech": "さんずいは、水のしるし。水がたくさんあるところ、うみ。みぎがわは、おとのパーツだよ。",
-  "caption": "さんずいは みずの しるし。みずが たくさん、うみ。",
+  "speech": "みずが、いっぱい あつまって、ひろがる。かいの おとが つくよ。うみ。",
+  "caption": "{水|みず}が どこまでも {広|ひろ}がる。カイの {音|おと}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "氵",
-    "picture": "drop",
-    "motion": "still"
+    "picture": "wave",
+    "motion": "sway"
    },
    {
     "part": "毎",
@@ -1572,18 +1572,18 @@
   "goals": [
    "えを、つくろう。"
   ],
-  "speech": "いとと、あうで、え。",
-  "caption": "いと と あう で、え。",
-  "kind": "oboekata",
+  "speech": "あかや あおの いとで、きれいな もようを ぬう。えの おとが つくよ。え。",
+  "caption": "いろいろな {糸|いと}で もようを ぬう。エの {音|おと}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "糸",
     "picture": "thread",
-    "motion": "still"
+    "motion": "sway"
    },
    {
     "part": "会",
-    "picture": "🤝",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -1593,27 +1593,27 @@
   "goals": [
    "そとを、つくろう。"
   ],
-  "speech": "ゆうと、うらないで、そと。",
-  "caption": "ゆう と うらない で、そと。",
+  "speech": "ゆうがた、つきが でた。そとに でて、うらないを するよ。そと。",
+  "caption": "{夕方|ゆうがた} {外|そと}に {出|で}て うらないを する。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "夕",
-    "picture": "🌆",
-    "motion": "still"
+    "picture": "moon",
+    "motion": "rise"
    },
    {
     "part": "卜",
     "picture": "🔮",
-    "motion": "still"
+    "motion": "shine"
    }
   ]
  },
  "角": {
   "word": "つの",
   "goals": [],
-  "speech": "つののかたちからできた、かんじだよ。つの。",
-  "caption": "つのの かたちから できたよ。",
+  "speech": "どうぶつの あたまに はえた、かたい つの。その かたちだよ。つの。",
+  "caption": "どうぶつの かたい {角|つの}の {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
@@ -1626,14 +1626,14 @@
  "楽": {
   "word": "たのしい",
   "goals": [],
-  "speech": "たのしい。",
-  "caption": "たのしい",
-  "kind": "oboekata",
+  "speech": "きに、いとを はった がっき。ぽろんと ならすと、うきうき。たのしい。",
+  "caption": "{木|き}に {糸|いと}を はった がっき。{鳴|な}らすと {楽|たの}しい。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🎶",
-    "motion": "grow"
+    "picture": "🎸",
+    "motion": "shake"
    }
   ]
  },
@@ -1642,18 +1642,18 @@
   "goals": [
    "かつを、つくろう。"
   ],
-  "speech": "みずと、したで、かつ。",
-  "caption": "みず と した で、かつ。",
-  "kind": "oboekata",
+  "speech": "みずが、ざあざあ、いきおいよく ながれる。げんき いっぱい。かつ。",
+  "caption": "{水|みず}が {元気|げんき}に ながれる。カツの {音|おと}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "氵",
-    "picture": "drop",
-    "motion": "still"
+    "picture": "wave",
+    "motion": "sway"
    },
    {
     "part": "舌",
-    "picture": "👅",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -1663,8 +1663,8 @@
   "goals": [
    "あいだを、つくろう。"
   ],
-  "speech": "門のあいだから、おひさまが見える。あいだ。",
-  "caption": "もんの あいだから おひさまが みえる。あいだ。",
+  "speech": "もんの すきまから、ひかりが はいって くる。あいて いる ところ。あいだ。",
+  "caption": "{門|もん}の すき{間|ま}から {光|ひかり}が さしこむ。",
   "kind": "naritachi",
   "actors": [
    {
@@ -1675,7 +1675,7 @@
    {
     "part": "日",
     "picture": "sun",
-    "motion": "still"
+    "motion": "enter"
    }
   ]
  },
@@ -1684,8 +1684,8 @@
   "goals": [
    "まるを、つくろう。"
   ],
-  "speech": "きゅうと、てんで、まる。",
-  "caption": "きゅう と てん で、まる。",
+  "speech": "きゅうの よこに、まるい たまが、ころんと おちて きた。まる。",
+  "caption": "9の よこに {丸|まる}い {玉|たま}が ころん。",
   "kind": "oboekata",
   "actors": [
    {
@@ -1696,7 +1696,7 @@
    {
     "part": "丶",
     "picture": "⚫",
-    "motion": "still"
+    "motion": "drop"
    }
   ]
  },
@@ -1705,8 +1705,8 @@
   "goals": [
    "いわを、つくろう。"
   ],
-  "speech": "山にある、大きな石。いわ。",
-  "caption": "やまに ある おおきな いし。いわ。",
+  "speech": "やまの うえに、ごろんと、おおきな いし。いわ。",
+  "caption": "{山|やま}に ごろんと {大|おお}きな {石|いし}が ある。",
   "kind": "naritachi",
   "actors": [
    {
@@ -1717,7 +1717,7 @@
    {
     "part": "石",
     "picture": "🪨",
-    "motion": "still"
+    "motion": "drop"
    }
   ]
  },
@@ -1726,9 +1726,9 @@
   "goals": [
    "かおを、つくろう。"
   ],
-  "speech": "あたまと、「がん」のおとで、かお。",
-  "caption": "あたま と 「がん」の おと で、かお。",
-  "kind": "oboekata",
+  "speech": "あたまの、まえの ところ。めや はなが あるよ。がんの おとが つく。かお。",
+  "caption": "{頭|あたま}の {前|まえ}の ところ。ガンの {音|おと}が つく。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "頁",
@@ -1747,19 +1747,19 @@
   "goals": [
    "きを、つくろう。"
   ],
-  "speech": "みずと、「き」のおとで、き。",
-  "caption": "みず と 「き」の おと で、き。",
-  "kind": "oboekata",
+  "speech": "みずが、ぐらぐら あつく なる。ゆげが、ふわふわ のぼるよ。き。",
+  "caption": "{水|みず}が あつく なって ゆげが のぼる。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "氵",
     "picture": "drop",
-    "motion": "still"
+    "motion": "shake"
    },
    {
     "part": "气",
-    "picture": "♪",
-    "motion": "still"
+    "picture": "💨",
+    "motion": "rise"
    }
   ]
  },
@@ -1768,9 +1768,9 @@
   "goals": [
    "しるすを、つくろう。"
   ],
-  "speech": "いうと、「き」のおとで、しるす。",
-  "caption": "いう と 「き」の おと で、しるす。",
-  "kind": "oboekata",
+  "speech": "きいた ことばを、わすれないように、かいて おく。きの おとが つくよ。しるす。",
+  "caption": "ことばを {書|か}いて のこす。キの {音|おと}が つく。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "言",
@@ -1789,75 +1789,75 @@
   "goals": [
    "かえるを、つくろう。"
   ],
-  "speech": "かたなと、ほうきで、かえる。",
-  "caption": "かたな と ほうき で、かえる。",
+  "speech": "てくてく、あるいて いく。ほうきの ある、じぶんの いえに つくよ。かえる。",
+  "caption": "ほうきの ある {家|いえ}へ {歩|ある}いて {帰|かえ}る。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "刂",
-    "picture": "🗡️",
-    "motion": "still"
+    "picture": "👣",
+    "motion": "walk"
    },
    {
     "part": "帚",
     "picture": "🧹",
-    "motion": "still"
+    "motion": "sway"
    }
   ]
  },
  "弓": {
   "word": "ゆみ",
   "goals": [],
-  "speech": "ゆみのかたちからできた、かんじだよ。ゆみ。",
-  "caption": "ゆみの かたちから できたよ。",
+  "speech": "やを とばす どうぐ。ぐにゃりと まがった、その かたちだよ。ゆみ。",
+  "caption": "ぐにゃりと まがった {弓|ゆみ}の {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🏹",
-    "motion": "grow"
+    "motion": "shake"
    }
   ]
  },
  "牛": {
   "word": "うし",
   "goals": [],
-  "speech": "うしのかたちからできた、かんじだよ。うし。",
-  "caption": "うしの かたちから できたよ。",
+  "speech": "まえから みた、うしの あたま。うえに、つのが にほん。うし。",
+  "caption": "{角|つの}の ある {牛|うし}の {頭|あたま}の {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🐄",
-    "motion": "grow"
+    "picture": "🐮",
+    "motion": "still"
    }
   ]
  },
  "魚": {
   "word": "さかな",
   "goals": [],
-  "speech": "さかなのかたちからできた、かんじだよ。さかな。",
-  "caption": "さかなの かたちから できたよ。",
+  "speech": "うえが あたま。まんなかが うろこ。したが おびれ。すいすい およぐ。さかな。",
+  "caption": "{頭|あたま}と うろこと おびれ。{魚|さかな}の {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🐟",
-    "motion": "grow"
+    "motion": "sway"
    }
   ]
  },
  "京": {
   "word": "きょう",
   "goals": [],
-  "speech": "きょう。",
-  "caption": "きょう",
-  "kind": "oboekata",
+  "speech": "たかい ところに たつ、おおきな たてもの。みやこの しるしだよ。きょう。",
+  "caption": "{高|たか}い ところに たつ {大|おお}きな たてもの。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🏯",
-    "motion": "grow"
+    "motion": "rise"
    }
   ]
  },
@@ -1866,19 +1866,19 @@
   "goals": [
    "つよいを、つくろう。"
   ],
-  "speech": "ゆみと、むしで、つよい。",
-  "caption": "ゆみ と むし で、つよい。",
+  "speech": "ぴんと はった ゆみ。かたい からの むし。どっちも、まけないよ。つよい。",
+  "caption": "ぴんと はった {弓|ゆみ}と かたい {虫|むし}。{強|つよ}い。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "弓",
     "picture": "🏹",
-    "motion": "still"
+    "motion": "shake"
    },
    {
     "part": "虽",
-    "picture": "🐛",
-    "motion": "still"
+    "picture": "🐞",
+    "motion": "walk"
    }
   ]
  },
@@ -1887,18 +1887,18 @@
   "goals": [
    "おしえるを、つくろう。"
   ],
-  "speech": "むちと、「こう」のおとで、おしえる。",
-  "caption": "むち と 「こう」の おと で、おしえる。",
-  "kind": "oboekata",
+  "speech": "せんせいが、ぼうを ふって、こどもに まなばせる。おしえる。",
+  "caption": "ぼうを もった {先生|せんせい}が {子|こ}どもに {教|おし}える。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "攵",
     "picture": "🪄",
-    "motion": "still"
+    "motion": "sway"
    },
    {
     "part": "孝",
-    "picture": "♪",
+    "picture": "👦",
     "motion": "still"
    }
   ]
@@ -1908,18 +1908,18 @@
   "goals": [
    "ちかいを、つくろう。"
   ],
-  "speech": "みちと、おので、ちかい。",
-  "caption": "みち と おの で、ちかい。",
-  "kind": "oboekata",
+  "speech": "みちを、ちょっと あるけば、すぐ つくよ。きんの おとが つく。ちかい。",
+  "caption": "{道|みち}を {少|すこ}し {歩|ある}けば つく。キンの {音|おと}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "⻌",
-    "picture": "🛣️",
-    "motion": "still"
+    "picture": "🚶",
+    "motion": "walk"
    },
    {
     "part": "斤",
-    "picture": "🪓",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -1929,14 +1929,14 @@
   "goals": [
    "あにを、つくろう。"
   ],
-  "speech": "くちと、あしで、あに。",
-  "caption": "くち と あし で、あに。",
-  "kind": "oboekata",
+  "speech": "あしの うえに、おおきな くち。みんなに こえを かける、としうえの ひと。あに。",
+  "caption": "{大|おお}きな {口|くち}で みんなに {話|はな}す {人|ひと}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "口",
     "picture": "👄",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "儿",
@@ -1950,18 +1950,18 @@
   "goals": [
    "かたちを、つくろう。"
   ],
-  "speech": "かざりと、「けい」のおとで、かたち。",
-  "caption": "かざり と 「けい」の おと で、かたち。",
-  "kind": "oboekata",
+  "speech": "しかくい わくに、きれいな もようを つける。すがたが できたよ。かたち。",
+  "caption": "わくに もようを つけて {形|かたち}を {作|つく}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "彡",
     "picture": "✨",
-    "motion": "still"
+    "motion": "shine"
    },
    {
     "part": "开",
-    "picture": "♪",
+    "picture": "🔲",
     "motion": "still"
    }
   ]
@@ -1971,9 +1971,9 @@
   "goals": [
    "はかるを、つくろう。"
   ],
-  "speech": "いうと、じゅうで、はかる。",
-  "caption": "いう と じゅう で、はかる。",
-  "kind": "oboekata",
+  "speech": "いち、に、さんと、こえに だして かぞえる。じゅうで ひとまとめ。はかる。",
+  "caption": "{声|こえ}に {出|だ}して 10まで {数|かぞ}える。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "言",
@@ -1983,7 +1983,7 @@
    {
     "part": "十",
     "picture": "🔟",
-    "motion": "still"
+    "motion": "grow"
    }
   ]
  },
@@ -1992,14 +1992,14 @@
   "goals": [
    "もとを、つくろう。"
   ],
-  "speech": "にと、あしで、もと。",
-  "caption": "に と あし で、もと。",
-  "kind": "oboekata",
+  "speech": "ひとの からだの、いちばん うえは あたま。ここが はじまりだよ。もと。",
+  "caption": "{足|あし}の {上|うえ}に {頭|あたま}。{体|からだ}の はじまり。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "二",
-    "picture": "2️⃣",
-    "motion": "still"
+    "picture": "🙂",
+    "motion": "grow"
    },
    {
     "part": "儿",
@@ -2011,14 +2011,14 @@
  "言": {
   "word": "いう",
   "goals": [],
-  "speech": "いう。",
-  "caption": "いう",
-  "kind": "oboekata",
+  "speech": "したに くち。そこから、ことばが つぎつぎ でて くるよ。いう。",
+  "caption": "{口|くち}から ことばが {出|で}て くる {形|かたち}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "💬",
-    "motion": "grow"
+    "motion": "rise"
    }
   ]
  },
@@ -2027,9 +2027,9 @@
   "goals": [
    "はらを、つくろう。"
   ],
-  "speech": "がけと、いずみで、はら。",
-  "caption": "がけ と いずみ で、はら。",
-  "kind": "oboekata",
+  "speech": "がけの したから、みずが わきでる。かわの はじまりだよ。はら。",
+  "caption": "がけの {下|した}から いずみが わき{出|で}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "厂",
@@ -2039,21 +2039,21 @@
    {
     "part": "泉",
     "picture": "spring",
-    "motion": "still"
+    "motion": "rise"
    }
   ]
  },
  "戸": {
   "word": "と",
   "goals": [],
-  "speech": "とのかたちからできた、かんじだよ。と。",
-  "caption": "との かたちから できたよ。",
+  "speech": "もんの とびらの、かたほうだけ。ぱたんと ひらく、その かたちだよ。と。",
+  "caption": "かたほうだけ ひらく とびらの {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🚪",
-    "motion": "grow"
+    "motion": "sway"
    }
   ]
  },
@@ -2062,14 +2062,14 @@
   "goals": [
    "ふるいを、つくろう。"
   ],
-  "speech": "じゅうと、くちで、ふるい。",
-  "caption": "じゅう と くち で、ふるい。",
+  "speech": "むかしの はなしが、くちから くちへ、じゅっかいも つたわった。とても むかしの はなし。ふるい。",
+  "caption": "{口|くち}から {口|くち}へ {10回|10かい} つたわった。{古|ふる}い {話|はなし}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "十",
     "picture": "🔟",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "口",
@@ -2081,28 +2081,28 @@
  "午": {
   "word": "ご",
   "goals": [],
-  "speech": "ご。",
-  "caption": "ご",
-  "kind": "oboekata",
+  "speech": "もちを つく、きねの かたちから できたよ。おひるの じかんを あらわす。ご。",
+  "caption": "もちを つく きねの {形|かたち}。お{昼|ひる}を あらわす ご。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🕛",
-    "motion": "grow"
+    "picture": "🔨",
+    "motion": "drop"
    }
   ]
  },
  "後": {
   "word": "うしろ",
   "goals": [],
-  "speech": "うしろ。",
-  "caption": "うしろ",
-  "kind": "oboekata",
+  "speech": "みちを あるく あしに、ひもが からまった。みんなより おくれて しまう。うしろ。",
+  "caption": "{足|あし}に ひもが からんで おくれる。みんなの {後|うし}ろ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🔙",
-    "motion": "grow"
+    "picture": "👣",
+    "motion": "walk"
    }
   ]
  },
@@ -2111,14 +2111,14 @@
   "goals": [
    "ごを、つくろう。"
   ],
-  "speech": "いうと、「ご」のおとで、ご。",
-  "caption": "いう と 「ご」の おと で、ご。",
-  "kind": "oboekata",
+  "speech": "ひだりは、ことばを いう しるし。みぎは、ごの おとの しるし。ことばで かたる。ご。",
+  "caption": "ことばを {言|い}う なかま。ごの {音|おと}が つくよ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "言",
     "picture": "💬",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "吾",
@@ -2130,14 +2130,14 @@
  "工": {
   "word": "こう",
   "goals": [],
-  "speech": "こう。",
-  "caption": "こう",
-  "kind": "oboekata",
+  "speech": "だいくさんが つかう、どうぐの かたちから できたよ。ものを つくる しごと。こう。",
+  "caption": "{大工|だいく}さんの どうぐの {形|かたち}。ものを {作|つく}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🔨",
-    "motion": "grow"
+    "picture": "📐",
+    "motion": "drop"
    }
   ]
  },
@@ -2146,18 +2146,18 @@
   "goals": [
    "こうを、つくろう。"
   ],
-  "speech": "はちと、「む」のおとで、こう。",
-  "caption": "はち と 「む」の おと で、こう。",
+  "speech": "ひとりじめの はこを、ぱかっと ひらく。みんなの ものに する。こう。",
+  "caption": "ひとりじめの はこを ぱかっと ひらく。みんなの もの。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "八",
-    "picture": "8️⃣",
-    "motion": "still"
+    "picture": "👐",
+    "motion": "grow"
    },
    {
     "part": "厶",
-    "picture": "♪",
+    "picture": "🎁",
     "motion": "still"
    }
   ]
@@ -2167,14 +2167,14 @@
   "goals": [
    "ひろいを、つくろう。"
   ],
-  "speech": "やねと、「む」のおとで、ひろい。",
-  "caption": "やね と 「む」の おと で、ひろい。",
-  "kind": "oboekata",
+  "speech": "おおきな やねの したは、ひろびろ。なかの かたちは、おとの しるし。ひろい。",
+  "caption": "{大|おお}きな やねの {下|した}。{中|なか}は ひろびろ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "广",
     "picture": "🛖",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "厶",
@@ -2188,33 +2188,33 @@
   "goals": [
    "まじわるを、つくろう。"
   ],
-  "speech": "ふたと、ちちで、まじわる。",
-  "caption": "ふた と ちち で、まじわる。",
-  "kind": "oboekata",
+  "speech": "ひとが、あしを ばってんに くんで たっている。あしと あしが、まじわる。",
+  "caption": "{人|ひと}が {足|あし}を {組|く}んで {立|た}つ。{足|あし}が {交|まじ}わる。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "亠",
-    "picture": "🎩",
+    "picture": "🧍",
     "motion": "still"
    },
    {
     "part": "父",
-    "picture": "👨",
-    "motion": "still"
+    "picture": "🦵",
+    "motion": "sway"
    }
   ]
  },
  "光": {
   "word": "ひかり",
   "goals": [],
-  "speech": "ひかり。",
-  "caption": "ひかり",
-  "kind": "oboekata",
+  "speech": "ひとが、あたまの うえに、ひを かかげている。あたりを てらす。ひかり。",
+  "caption": "{人|ひと}が {頭|あたま}の {上|うえ}に {火|ひ}を かかげる。ぴかぴか。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "💡",
-    "motion": "grow"
+    "picture": "🔥",
+    "motion": "shine"
    }
   ]
  },
@@ -2223,14 +2223,14 @@
   "goals": [
    "かんがえるを、つくろう。"
   ],
-  "speech": "としよりと、「こう」のおとで、かんがえる。",
-  "caption": "としより と 「こう」の おと で、かんがえる。",
+  "speech": "ながいきの おとしよりは、ものしり。したは、こうの おとの しるし。じっくり、かんがえる。",
+  "caption": "つえを ついた おとしより。じっくり {考|かんが}える。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "耂",
     "picture": "👴",
-    "motion": "still"
+    "motion": "sway"
    },
    {
     "part": "丂",
@@ -2244,47 +2244,47 @@
   "goals": [
    "いくを、つくろう。"
   ],
-  "speech": "みちと、みちで、いく。",
-  "caption": "みち と みち で、いく。",
-  "kind": "oboekata",
+  "speech": "みちと みちが であう、じゅうじろの かたち。ひとが あるいて、いく。",
+  "caption": "{道|みち}と {道|みち}が {出会|であ}う じゅうじろ。{人|ひと}が {行|い}く。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "彳",
-    "picture": "🚶",
-    "motion": "still"
+    "picture": "🛣️",
+    "motion": "walk"
    },
    {
     "part": "亍",
     "picture": "🛣️",
-    "motion": "still"
+    "motion": "rise"
    }
   ]
  },
  "高": {
   "word": "たかい",
   "goals": [],
-  "speech": "たかい。",
-  "caption": "たかい",
-  "kind": "oboekata",
+  "speech": "やねの ある、たかい たてものの かたちから できたよ。みあげるほど、たかい。",
+  "caption": "{高|たか}い たてものの {形|かたち}。{空|そら}まで とどきそう。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🗼",
-    "motion": "grow"
+    "picture": "🏯",
+    "motion": "rise"
    }
   ]
  },
  "黄": {
   "word": "き",
   "goals": [],
-  "speech": "き。",
-  "caption": "き",
-  "kind": "oboekata",
+  "speech": "むかしの ひとが、こしに さげた、きいろい たまの かたち。ゆらゆら ゆれる。き。",
+  "caption": "こしに さげた {黄色|きいろ}い {玉|たま}の {形|かたち}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🟡",
-    "motion": "grow"
+    "motion": "sway"
    }
   ]
  },
@@ -2293,18 +2293,18 @@
   "goals": [
    "あうを、つくろう。"
   ],
-  "speech": "やねと、くちで、あう。",
-  "caption": "やね と くち で、あう。",
-  "kind": "oboekata",
+  "speech": "いれものに、うえから ふたを かぶせる。ぴったり、あう。",
+  "caption": "いれものに ふたを かぶせる。ぴったり {合|あ}う。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "亼",
     "picture": "🔺",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "口",
-    "picture": "👄",
+    "picture": "🥣",
     "motion": "still"
    }
   ]
@@ -2312,13 +2312,13 @@
  "谷": {
   "word": "たに",
   "goals": [],
-  "speech": "たに。",
-  "caption": "たに",
-  "kind": "oboekata",
+  "speech": "やまと やまの あいだが、ふかく われている。そこから みずが ながれでる。たに。",
+  "caption": "{山|やま}と {山|やま}の {間|あいだ}。{水|みず}が ながれでる {谷|たに}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🏔️",
+    "picture": "🏞️",
     "motion": "grow"
    }
   ]
@@ -2328,8 +2328,8 @@
   "goals": [
    "くにを、つくろう。"
   ],
-  "speech": "かこいと、たまで、くに。",
-  "caption": "かこい と たま で、くに。",
+  "speech": "かこいの なかに、たいせつな たからの たま。みんなで まもる。くに。",
+  "caption": "かこいの {中|なか}に たからの {玉|たま}。まもる {国|くに}。",
   "kind": "oboekata",
   "actors": [
    {
@@ -2340,7 +2340,7 @@
    {
     "part": "玉",
     "picture": "🔮",
-    "motion": "still"
+    "motion": "enter"
    }
   ]
  },
@@ -2349,47 +2349,47 @@
   "goals": [
    "くろを、つくろう。"
   ],
-  "speech": "さとと、ひで、くろ。",
-  "caption": "さと と ひ で、くろ。",
-  "kind": "oboekata",
+  "speech": "したで、ひが もえる。うえの けむだしに、すすが ついて、まっくろ。くろ。",
+  "caption": "{火|ひ}が もえて けむだしに すすが つく。まっくろ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "里",
-    "picture": "🏡",
-    "motion": "still"
+    "picture": "⚫",
+    "motion": "grow"
    },
    {
     "part": "灬",
     "picture": "🔥",
-    "motion": "still"
+    "motion": "sway"
    }
   ]
  },
  "今": {
   "word": "いま",
   "goals": [],
-  "speech": "いま。",
-  "caption": "いま",
+  "speech": "ふたを、ぱたんと かぶせて つかまえる。いま、この ときを のがさない。いま。",
+  "caption": "ふたを ぱたんと かぶせる。{今|いま} この {時|とき}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "⌚",
-    "motion": "grow"
+    "picture": "🍲",
+    "motion": "drop"
    }
   ]
  },
  "才": {
   "word": "さい",
   "goals": [],
-  "speech": "さい。",
-  "caption": "さい",
+  "speech": "つちから、ちいさな めが でてきた。これから のびる ちからが ある。さい。",
+  "caption": "{土|つち}から めが ちょこんと {出|で}た。のびる {力|ちから}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "🎂",
-    "motion": "grow"
+    "picture": "🌱",
+    "motion": "rise"
    }
   ]
  },
@@ -2398,18 +2398,18 @@
   "goals": [
    "ほそいを、つくろう。"
   ],
-  "speech": "いとと、たで、ほそい。",
-  "caption": "いと と た で、ほそい。",
-  "kind": "oboekata",
+  "speech": "ひだりは、いと。ほそくて ながい。みぎは、さいの おとの しるし。ほそい。",
+  "caption": "{糸|いと}は {細|ほそ}くて {長|なが}い。さいの {音|おと}が つくよ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "糸",
     "picture": "thread",
-    "motion": "still"
+    "motion": "sway"
    },
    {
     "part": "田",
-    "picture": "🌾",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -2419,14 +2419,14 @@
   "goals": [
    "つくるを、つくろう。"
   ],
-  "speech": "ひとと、「さく」のおとで、つくる。",
-  "caption": "ひと と 「さく」の おと で、つくる。",
-  "kind": "oboekata",
+  "speech": "ひとが、てを うごかして、ものを つくる。みぎは、さくの おとの しるし。つくる。",
+  "caption": "{人|ひと}が {手|て}を うごかして ものを {作|つく}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "亻",
     "picture": "🧍",
-    "motion": "still"
+    "motion": "walk"
    },
    {
     "part": "乍",
@@ -2438,28 +2438,28 @@
  "算": {
   "word": "さん",
   "goals": [],
-  "speech": "さん。",
-  "caption": "さん",
-  "kind": "oboekata",
+  "speech": "たけの ぼうを、りょうてで ならべて、かずを かぞえる。けいさんの、さん。",
+  "caption": "{竹|たけ}の ぼうを ならべて {数|かず}を {数|かぞ}える。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🧮",
-    "motion": "grow"
+    "picture": "🎋",
+    "motion": "drop"
    }
   ]
  },
  "止": {
   "word": "とまる",
   "goals": [],
-  "speech": "とまる。",
-  "caption": "とまる",
-  "kind": "oboekata",
+  "speech": "あしあとの かたちから できたよ。あるいてきた あしが、ぴたっと、とまる。",
+  "caption": "あしあとの {形|かたち}。{足|あし}が ぴたっと {止|と}まる。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🛑",
-    "motion": "grow"
+    "picture": "👣",
+    "motion": "walk"
    }
   ]
  },
@@ -2468,33 +2468,33 @@
   "goals": [
    "いちを、つくろう。"
   ],
-  "speech": "ふたと、ぬので、いち。",
-  "caption": "ふた と ぬの で、いち。",
+  "speech": "やねの したに、ぬのの はたを たてた。ものを うる ひとが あつまる。いち。",
+  "caption": "やねの {下|した}に ぬのの はた。{人|ひと}が あつまる {市|いち}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "亠",
-    "picture": "🎩",
+    "picture": "⛺",
     "motion": "still"
    },
    {
     "part": "巾",
-    "picture": "🧣",
-    "motion": "still"
+    "picture": "🚩",
+    "motion": "sway"
    }
   ]
  },
  "矢": {
   "word": "や",
   "goals": [],
-  "speech": "やのかたちからできた、かんじだよ。や。",
-  "caption": "やの かたちから できたよ。",
+  "speech": "ゆみで とばす、やの かたちから できたよ。さきが とがって、うしろに はね。や。",
+  "caption": "{矢|や}の {形|かたち}。とがった {先|さき}と {羽|はね}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🏹",
-    "motion": "grow"
+    "motion": "walk"
    }
   ]
  },
@@ -2503,18 +2503,18 @@
   "goals": [
    "あねを、つくろう。"
   ],
-  "speech": "おんなと、いちで、あね。",
-  "caption": "おんな と いち で、あね。",
-  "kind": "oboekata",
+  "speech": "ひだりは、おんなの ひと。みぎは、しの おとの しるし。としうえの きょうだい。あね。",
+  "caption": "{女|おんな}の {人|ひと}の なかま。しの {音|おと}が つくよ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "女",
     "picture": "👩",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "市",
-    "picture": "🏪",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -2524,19 +2524,19 @@
   "goals": [
    "おもうを、つくろう。"
   ],
-  "speech": "たと、こころで、おもう。",
-  "caption": "た と こころ で、おもう。",
-  "kind": "oboekata",
+  "speech": "うえは、あたま。したは、こころ。あたまと こころを つかって、おもう。",
+  "caption": "{頭|あたま}と {心|こころ}で じっと {思|おも}う。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "田",
-    "picture": "🌾",
-    "motion": "still"
+    "picture": "🧠",
+    "motion": "shine"
    },
    {
     "part": "心",
     "picture": "❤️",
-    "motion": "still"
+    "motion": "shake"
    }
   ]
  },
@@ -2545,14 +2545,14 @@
   "goals": [
    "かみを、つくろう。"
   ],
-  "speech": "いとと、「し」のおとで、かみ。",
-  "caption": "いと と 「し」の おと で、かみ。",
-  "kind": "oboekata",
+  "speech": "いとの ように ほそい せんいを あつめて つくる。みぎは、しの おとの しるし。かみ。",
+  "caption": "{糸|いと}の ような せんいで {作|つく}る {紙|かみ}。しの {音|おと}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "糸",
     "picture": "thread",
-    "motion": "still"
+    "motion": "sway"
    },
    {
     "part": "氏",
@@ -2566,8 +2566,8 @@
   "goals": [
    "てらを、つくろう。"
   ],
-  "speech": "つちと、「すん」のおとで、てら。",
-  "caption": "つち と 「すん」の おと で、てら。",
+  "speech": "つちの うえに たつ、おてら。てを あわせて、おまいりする。てら。",
+  "caption": "{土|つち}の {上|うえ}の お{寺|てら}。{手|て}を {合|あ}わせて おまいり。",
   "kind": "oboekata",
   "actors": [
    {
@@ -2577,21 +2577,21 @@
    },
    {
     "part": "寸",
-    "picture": "♪",
-    "motion": "still"
+    "picture": "🙏",
+    "motion": "rise"
    }
   ]
  },
  "自": {
   "word": "じ",
   "goals": [],
-  "speech": "じ。",
-  "caption": "じ",
-  "kind": "oboekata",
+  "speech": "かおの まんなかの、はなの かたちから できたよ。じぶんの いみで つかう。じ。",
+  "caption": "はなの {形|かたち}。{自分|じぶん}の いみで つかうよ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🙋",
+    "picture": "👃",
     "motion": "grow"
    }
   ]
@@ -2601,18 +2601,18 @@
   "goals": [
    "ときを、つくろう。"
   ],
-  "speech": "ひと、てらで、とき。",
-  "caption": "ひ と てら で、とき。",
-  "kind": "oboekata",
+  "speech": "おひさまが うごくと、ときが すすむ。みぎは、じの おとの しるし。とき。",
+  "caption": "お{日|ひ}さまが うごいて {時|とき}が すすむ。じの {音|おと}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "日",
     "picture": "sun",
-    "motion": "still"
+    "motion": "rise"
    },
    {
     "part": "寺",
-    "picture": "🛕",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -2622,14 +2622,14 @@
   "goals": [
    "しつを、つくろう。"
   ],
-  "speech": "やねと、「しつ」のおとで、しつ。",
-  "caption": "やね と 「しつ」の おと で、しつ。",
-  "kind": "oboekata",
+  "speech": "やねの したに ある、へや。したは、しつの おとの しるし。しつ。",
+  "caption": "やねの {下|した}の へや。しつの {音|おと}が つくよ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "宀",
     "picture": "🏠",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "至",
@@ -2643,9 +2643,9 @@
   "goals": [
    "しゃを、つくろう。"
   ],
-  "speech": "かみさまと、つちで、しゃ。",
-  "caption": "かみさま と つち で、しゃ。",
-  "kind": "oboekata",
+  "speech": "つちを もりあげて、とちの かみさまを まつる。かみさまの いる ばしょ。しゃ。",
+  "caption": "もりあげた {土|つち}に かみさまを まつる ばしょ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "礻",
@@ -2655,35 +2655,35 @@
    {
     "part": "土",
     "picture": "🟤",
-    "motion": "still"
+    "motion": "grow"
    }
   ]
  },
  "弱": {
   "word": "よわい",
   "goals": [],
-  "speech": "よわい。",
-  "caption": "よわい",
-  "kind": "oboekata",
+  "speech": "ぐにゃりと まがる、やわらかい ゆみが、ふたつ。やを とおくへ とばせない。よわい。",
+  "caption": "ぐにゃりと まがる {弓|ゆみ}が 2つ。{弱|よわ}い。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🥀",
-    "motion": "grow"
+    "picture": "🏹",
+    "motion": "sway"
    }
   ]
  },
  "首": {
   "word": "くび",
   "goals": [],
-  "speech": "くび。",
-  "caption": "くび",
-  "kind": "oboekata",
+  "speech": "かみのけの はえた、あたまの かたちから できたよ。あたまを ささえる ところ。くび。",
+  "caption": "かみの{毛|け}の {生|は}えた {頭|あたま}の {形|かたち}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🦒",
-    "motion": "grow"
+    "picture": "🧑",
+    "motion": "rise"
    }
   ]
  },
@@ -2692,19 +2692,19 @@
   "goals": [
    "あきを、つくろう。"
   ],
-  "speech": "いねと、ひで、あき。",
-  "caption": "いね と ひ で、あき。",
-  "kind": "oboekata",
+  "speech": "いねが みのった。いねに つく むしを、ひで おいはらう。しゅうかくの きせつ。あき。",
+  "caption": "みのった いね。{虫|むし}を {火|ひ}で おいはらう {秋|あき}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "禾",
     "picture": "🌾",
-    "motion": "still"
+    "motion": "sway"
    },
    {
     "part": "火",
     "picture": "🔥",
-    "motion": "still"
+    "motion": "rise"
    }
   ]
  },
@@ -2713,9 +2713,9 @@
   "goals": [
    "しゅうを、つくろう。"
   ],
-  "speech": "みちと、「しゅう」のおとで、しゅう。",
-  "caption": "みち と 「しゅう」の おと で、しゅう。",
-  "kind": "oboekata",
+  "speech": "みちを ぐるりと、ひとまわり。なのかで、ひとまわりする。しゅう。",
+  "caption": "{道|みち}を ぐるりと ひと{回|まわ}り。{7日|7にち}で {1週|1しゅう}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "⻌",
@@ -2724,22 +2724,22 @@
    },
    {
     "part": "周",
-    "picture": "♪",
-    "motion": "still"
+    "picture": "🔄",
+    "motion": "walk"
    }
   ]
  },
  "春": {
   "word": "はる",
   "goals": [],
-  "speech": "はる。",
-  "caption": "はる",
-  "kind": "oboekata",
+  "speech": "おひさまの ひかりを あびて、くさの めが、にょきにょき のびる。はる。",
+  "caption": "お{日|ひ}さまを あびて {草|くさ}の めが にょきにょき。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🌸",
-    "motion": "grow"
+    "picture": "🌱",
+    "motion": "rise"
    }
   ]
  },
@@ -2748,18 +2748,18 @@
   "goals": [
    "かくを、つくろう。"
   ],
-  "speech": "ふでと、ひで、かく。",
-  "caption": "ふで と ひ で、かく。",
-  "kind": "oboekata",
+  "speech": "ふでを てに もって、もじを かく。したは、おとの しるしで、おひさまでは ないよ。かく。",
+  "caption": "ふでを {手|て}に もって {文字|もじ}を {書|か}く。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "聿",
     "picture": "🖌️",
-    "motion": "still"
+    "motion": "sway"
    },
    {
     "part": "日",
-    "picture": "sun",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -2769,19 +2769,19 @@
   "goals": [
    "すこしを、つくろう。"
   ],
-  "speech": "ちいさいと、ななめで、すこし。",
-  "caption": "ちいさい と ななめ で、すこし。",
-  "kind": "oboekata",
+  "speech": "ちいさい つぶを、ななめに けずりとる。のこったのは、ほんの すこし。",
+  "caption": "{小|ちい}さい つぶを さらに けずる。のこりは {少|すこ}し。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "小",
-    "picture": "🐜",
+    "picture": "🫘",
     "motion": "still"
    },
    {
     "part": "丿",
-    "picture": "〽️",
-    "motion": "still"
+    "picture": "🔪",
+    "motion": "drop"
    }
   ]
  },
@@ -2790,14 +2790,14 @@
   "goals": [
    "ばを、つくろう。"
   ],
-  "speech": "つちと、「じょう」のおとで、ば。",
-  "caption": "つち と 「じょう」の おと で、ば。",
-  "kind": "oboekata",
+  "speech": "つちの、なかまの、かんじ。ひろい、つちの、ばしょ。みぎは、じょうの、おと。ば。",
+  "caption": "{土|つち}の なかま。{広|ひろ}い {土|つち}の ばしょ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "土",
     "picture": "🟤",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "昜",
@@ -2809,27 +2809,27 @@
  "色": {
   "word": "いろ",
   "goals": [],
-  "speech": "いろ。",
-  "caption": "いろ",
+  "speech": "あめの、あとに、にじが、でた。あか、きいろ、あお。いろが、いっぱい。いろ。",
+  "caption": "{雨|あめ}の {後|あと}に にじ。{色|いろ}が いっぱい。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
     "picture": "🌈",
-    "motion": "grow"
+    "motion": "shine"
    }
   ]
  },
  "食": {
   "word": "たべる",
   "goals": [],
-  "speech": "たべる。",
-  "caption": "たべる",
-  "kind": "oboekata",
+  "speech": "うつわに、ごはんが、やまもり。おおきな、くちで、いただきます。たべる。",
+  "caption": "うつわに ごはんが やまもり。{食|た}べる。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🍙",
+    "picture": "🍚",
     "motion": "grow"
    }
   ]
@@ -2837,14 +2837,14 @@
  "心": {
   "word": "こころ",
   "goals": [],
-  "speech": "こころのかたちからできた、かんじだよ。こころ。",
-  "caption": "こころの かたちから できたよ。",
+  "speech": "しんぞうの、かたちから、できたよ。むねで、どきどき、うごく。こころ。",
+  "caption": "しんぞうの {形|かたち}。どきどき うごく。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "❤️",
-    "motion": "grow"
+    "motion": "shake"
    }
   ]
  },
@@ -2853,14 +2853,14 @@
   "goals": [
    "あたらしいを、つくろう。"
   ],
-  "speech": "おのと、「しん」のおとで、あたらしい。",
-  "caption": "おの と 「しん」の おと で、あたらしい。",
-  "kind": "oboekata",
+  "speech": "おのを、ふりおろして、きを、きる。きりたての、きは、きれい。ひだりは、しんの、おと。あたらしい。",
+  "caption": "おので {木|き}を {切|き}る。{切|き}りたては {新|あたら}しい。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "斤",
     "picture": "🪓",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "亲",
@@ -2874,9 +2874,9 @@
   "goals": [
    "おやを、つくろう。"
   ],
-  "speech": "みると、「しん」のおとで、おや。",
-  "caption": "みる と 「しん」の おと で、おや。",
-  "kind": "oboekata",
+  "speech": "みるの、なかまの、かんじ。こどもを、そばで、みまもる。ひだりは、しんの、おと。おや。",
+  "caption": "{見|み}るの なかま。{子|こ}どもを みまもる、{親|おや}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "見",
@@ -2893,9 +2893,9 @@
  "図": {
   "word": "ず",
   "goals": [],
-  "speech": "ず。",
-  "caption": "ず",
-  "kind": "oboekata",
+  "speech": "しかくい、かこいの、なかに、とちの、ようすを、かく。ちずが、できた。ず。",
+  "caption": "かこいの {中|なか}に {土地|とち}を かく。{地図|ちず}の {図|ず}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
@@ -2909,14 +2909,14 @@
   "goals": [
    "かずを、つくろう。"
   ],
-  "speech": "むちと、「すう」のおとで、かず。",
-  "caption": "むち と 「すう」の おと で、かず。",
-  "kind": "oboekata",
+  "speech": "ぼうを、てに、もつ。ひとつ、ふたつと、たたいて、かぞえる。ひだりは、すうの、おと。かず。",
+  "caption": "ぼうを もって {一|ひと}つ {二|ふた}つと {数|かぞ}える。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "攵",
     "picture": "🪄",
-    "motion": "still"
+    "motion": "shake"
    },
    {
     "part": "娄",
@@ -2928,28 +2928,28 @@
  "西": {
   "word": "にし",
   "goals": [],
-  "speech": "にし。",
-  "caption": "にし",
-  "kind": "oboekata",
+  "speech": "とりの、すの、かたち。ゆうがた、とりは、すに、かえる。おひさまが、しずむ、ほう。にし。",
+  "caption": "{鳥|とり}の すの {形|かたち}。{夕方|ゆうがた} すに {帰|かえ}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🌇",
-    "motion": "grow"
+    "picture": "🪺",
+    "motion": "still"
    }
   ]
  },
  "声": {
   "word": "こえ",
   "goals": [],
-  "speech": "こえ。",
-  "caption": "こえ",
-  "kind": "oboekata",
+  "speech": "つるした、いしの、がっきを、たたく。いい、おとが、みみに、とどく。こえ。",
+  "caption": "{石|いし}の がっきを たたく。{耳|みみ}に とどく {音|おと}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "📣",
-    "motion": "grow"
+    "picture": "🔔",
+    "motion": "shake"
    }
   ]
  },
@@ -2958,18 +2958,18 @@
   "goals": [
    "ほしを、つくろう。"
   ],
-  "speech": "ひと、うまれるで、ほし。",
-  "caption": "ひ と うまれる で、ほし。",
-  "kind": "oboekata",
+  "speech": "よぞらで、きらきら、ひかる、ほし。したは、せいの、おと。ほし。",
+  "caption": "{夜空|よぞら}で きらきら {光|ひか}る、{星|ほし}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "日",
-    "picture": "sun",
-    "motion": "still"
+    "picture": "⭐",
+    "motion": "shine"
    },
    {
     "part": "生",
-    "picture": "🌱",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -2979,14 +2979,14 @@
   "goals": [
    "はれを、つくろう。"
   ],
-  "speech": "ひと、あおで、はれ。",
-  "caption": "ひ と あお で、はれ。",
-  "kind": "oboekata",
+  "speech": "あおい、そらに、おひさまが、でた。くもが、なくて、いい、てんき。はれ。",
+  "caption": "{青|あお}い {空|そら}に お{日|ひ}さま。いい {天気|てんき}、{晴|は}れ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "日",
     "picture": "sun",
-    "motion": "still"
+    "motion": "shine"
    },
    {
     "part": "青",
@@ -3000,18 +3000,18 @@
   "goals": [
    "きるを、つくろう。"
   ],
-  "speech": "かたなと、ななで、きる。",
-  "caption": "かたな と なな で、きる。",
-  "kind": "oboekata",
+  "speech": "かたなの、なかまの、かんじ。かたなで、すぱっと、きる。ひだりは、おとの、しるし。きる。",
+  "caption": "{刀|かたな}の なかま。{刀|かたな}で すぱっと {切|き}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "刀",
     "picture": "🗡️",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "七",
-    "picture": "7️⃣",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -3021,19 +3021,19 @@
   "goals": [
    "ゆきを、つくろう。"
   ],
-  "speech": "雨が、手ですくえるようになった、ゆき。",
-  "caption": "あめが てで すくえるように なった、ゆき。",
-  "kind": "naritachi",
+  "speech": "そらから、ふわふわ、おちてくる。てのひらに、そっと、のるよ。ゆき。",
+  "caption": "{空|そら}から ふわふわ。{手|て}に のる、{雪|ゆき}。",
+  "kind": "oboekata",
   "actors": [
    {
     "part": "雨",
     "picture": "rain",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "⺕",
     "picture": "✋",
-    "motion": "still"
+    "motion": "rise"
    }
   ]
  },
@@ -3042,14 +3042,14 @@
   "goals": [
    "ふねを、つくろう。"
   ],
-  "speech": "ふねと、「せん」のおとで、ふね。",
-  "caption": "ふね と 「せん」の おと で、ふね。",
-  "kind": "oboekata",
+  "speech": "みずに、うかぶ、ふね。なみで、ゆらゆら、ゆれる。みぎは、せんの、おと。ふね。",
+  "caption": "{水|みず}に うかぶ {船|ふね}。ゆらゆら ゆれる。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "舟",
     "picture": "⛵",
-    "motion": "still"
+    "motion": "sway"
    },
    {
     "part": "㕣",
@@ -3064,18 +3064,18 @@
    "いずみを、つくろう。",
    "せんを、つくろう。"
   ],
-  "speech": "糸のように、ほそく、ながくつづく、せん。みぎがわは、いずみ。しろと、水で、いずみだよ。",
-  "caption": "いとの ように ほそく ながい、せん。しろと みずで、いずみ。",
+  "speech": "いとの、ように、ほそく、ながく、のびる。みぎの、いずみは、せんの、おと。せん。",
+  "caption": "{糸|いと}の ように {細|ほそ}く {長|なが}く のびる、{線|せん}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "糸",
     "picture": "thread",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "泉",
-    "picture": "spring",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -3083,14 +3083,14 @@
  "前": {
   "word": "まえ",
   "goals": [],
-  "speech": "まえ。",
-  "caption": "まえ",
-  "kind": "oboekata",
+  "speech": "ふねに、あしを、のせる。ふねは、すいすい、まえへ、すすむ。まえ。",
+  "caption": "{船|ふね}に {足|あし}を のせる。{前|まえ}へ すすむ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "⏩",
-    "motion": "grow"
+    "picture": "⛵",
+    "motion": "walk"
    }
   ]
  },
@@ -3099,14 +3099,14 @@
   "goals": [
    "くみを、つくろう。"
   ],
-  "speech": "いとと、「そ」のおとで、くみ。",
-  "caption": "いと と 「そ」の おと で、くみ。",
-  "kind": "oboekata",
+  "speech": "いとを、なんぼんも、あわせて、ひもを、あむ。みぎは、おとの、しるし。くみ。",
+  "caption": "{糸|いと}を {何本|なんぼん}も {合|あ}わせて ひもを あむ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "糸",
     "picture": "thread",
-    "motion": "still"
+    "motion": "sway"
    },
    {
     "part": "且",
@@ -3120,19 +3120,19 @@
   "goals": [
    "はしるを、つくろう。"
   ],
-  "speech": "つちと、あしで、はしる。",
-  "caption": "つち と あし で、はしる。",
-  "kind": "oboekata",
+  "speech": "うでを、おおきく、ふる、ひと。したは、あし。びゅんびゅん、かける。はしる。",
+  "caption": "うでを ふる {人|ひと}と、{足|あし}。{走|はし}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "土",
-    "picture": "🟤",
-    "motion": "still"
+    "picture": "🏃",
+    "motion": "walk"
    },
    {
     "part": "龰",
     "picture": "🦶",
-    "motion": "still"
+    "motion": "walk"
    }
   ]
  },
@@ -3141,19 +3141,19 @@
   "goals": [
    "おおいを、つくろう。"
   ],
-  "speech": "ゆうと、ゆうで、おおい。",
-  "caption": "ゆう と ゆう で、おおい。",
-  "kind": "oboekata",
+  "speech": "おにくを、いちまい。そのうえに、もう、いちまい。かさねて、たくさん。おおい。",
+  "caption": "{肉|にく}を 2まい かさねる。たくさんで、{多|おお}い。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "夕",
-    "picture": "🌆",
-    "motion": "still"
+    "picture": "🥩",
+    "motion": "drop"
    },
    {
     "part": "夕",
-    "picture": "🌆",
-    "motion": "still"
+    "picture": "🥩",
+    "motion": "drop"
    }
   ]
  },
@@ -3162,19 +3162,19 @@
   "goals": [
    "ふといを、つくろう。"
   ],
-  "speech": "おおきいと、てんで、ふとい。",
-  "caption": "おおきい と てん で、ふとい。",
-  "kind": "oboekata",
+  "speech": "おおきい、ひとに、てんを、ひとつ、つける。もっと、どっしり。ふとい。",
+  "caption": "{大|おお}きいに {点|てん}を つける。もっと {太|ふと}い。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "大",
-    "picture": "🐘",
-    "motion": "still"
+    "picture": "🧍",
+    "motion": "grow"
    },
    {
     "part": "丶",
     "picture": "⚫",
-    "motion": "still"
+    "motion": "drop"
    }
   ]
  },
@@ -3183,9 +3183,9 @@
   "goals": [
    "からだを、つくろう。"
   ],
-  "speech": "ひとと、ほんで、からだ。",
-  "caption": "ひと と ほん で、からだ。",
-  "kind": "oboekata",
+  "speech": "ひとと、きの、ねもと。ねもとの、ように、ひとを、ささえる。からだ。",
+  "caption": "{木|き}の ねもとの ように {人|ひと}を ささえる {体|からだ}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "亻",
@@ -3194,7 +3194,7 @@
    },
    {
     "part": "本",
-    "picture": "📖",
+    "picture": "tree",
     "motion": "still"
    }
   ]
@@ -3204,18 +3204,18 @@
   "goals": [
    "だいを、つくろう。"
   ],
-  "speech": "「む」のおとと、くちで、だい。",
-  "caption": "「む」の おと と くち で、だい。",
+  "speech": "しかくい、だいが、ある。うえに、さんかくの、つみきを、のせる。だい。",
+  "caption": "{四角|しかく}い {台|だい}に {三角|さんかく}の つみきを のせる。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "厶",
-    "picture": "♪",
-    "motion": "still"
+    "picture": "🔺",
+    "motion": "drop"
    },
    {
     "part": "口",
-    "picture": "👄",
+    "picture": "🟫",
     "motion": "still"
    }
   ]
@@ -3225,14 +3225,14 @@
   "goals": [
    "ちを、つくろう。"
   ],
-  "speech": "つちと、「ち」のおとで、ち。",
-  "caption": "つち と 「ち」の おと で、ち。",
-  "kind": "oboekata",
+  "speech": "つちの、なかまの、かんじ。どこまでも、ひろがる、つち。みぎは、ちの、おと。ち。",
+  "caption": "{土|つち}の なかま。どこまでも {広|ひろ}がる {土|つち}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "土",
     "picture": "🟤",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "也",
@@ -3246,14 +3246,14 @@
   "goals": [
    "いけを、つくろう。"
   ],
-  "speech": "さんずいは、水のしるし。水がたまっているところ、いけ。みぎがわは、おとのパーツだよ。",
-  "caption": "さんずいは みずの しるし。みずが たまって、いけ。",
+  "speech": "さんずいは、みずの、しるし。みずが、たまって、いけ。みぎは、ちの、おと。いけ。",
+  "caption": "さんずいは {水|みず}の しるし。{水|みず}が たまって、{池|いけ}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "氵",
     "picture": "drop",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "也",
@@ -3267,14 +3267,14 @@
   "goals": [
    "しるを、つくろう。"
   ],
-  "speech": "やと、くちで、しる。",
-  "caption": "や と くち で、しる。",
+  "speech": "やが、びゅんと、とぶ。やの、ように、はやく、くちで、こたえる。よく、わかっている。しる。",
+  "caption": "{矢|や}の ように はやく {口|くち}で {答|こた}える。{知|し}る。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "矢",
     "picture": "🏹",
-    "motion": "still"
+    "motion": "walk"
    },
    {
     "part": "口",
@@ -3286,14 +3286,14 @@
  "茶": {
   "word": "ちゃ",
   "goals": [],
-  "speech": "ちゃ。",
-  "caption": "ちゃ",
-  "kind": "oboekata",
+  "speech": "うえは、くさの、しるし。おちゃの、きの、はっぱを、つんで、のむよ。ちゃ。",
+  "caption": "{上|うえ}は {草|くさ}の しるし。はっぱを つんで、お{茶|ちゃ}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🍵",
-    "motion": "grow"
+    "picture": "🌿",
+    "motion": "sway"
    }
   ]
  },
@@ -3302,8 +3302,8 @@
   "goals": [
    "ひるを、つくろう。"
   ],
-  "speech": "ものさしと、ひのでで、ひる。",
-  "caption": "ものさし と ひので で、ひる。",
+  "speech": "ひのでから、おひさまが、ぐんぐん、のぼる。ものさしで、はかると、いちばん、たかい。ひる。",
+  "caption": "お{日|ひ}さまが のぼる。{一番|いちばん} {高|たか}い、{昼|ひる}。",
   "kind": "oboekata",
   "actors": [
    {
@@ -3314,35 +3314,35 @@
    {
     "part": "旦",
     "picture": "🌅",
-    "motion": "still"
+    "motion": "rise"
    }
   ]
  },
  "長": {
   "word": "ながい",
   "goals": [],
-  "speech": "ながい。",
-  "caption": "ながい",
-  "kind": "oboekata",
+  "speech": "かみの、ながい、おじいさんが、つえを、ついて、たっている。ながい。",
+  "caption": "かみの {長|なが}い おじいさんが つえを つく。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🐍",
-    "motion": "grow"
+    "picture": "👴",
+    "motion": "sway"
    }
   ]
  },
  "鳥": {
   "word": "とり",
   "goals": [],
-  "speech": "とりのかたちからできた、かんじだよ。とり。",
-  "caption": "とりの かたちから できたよ。",
+  "speech": "とりの、かたちから、できたよ。くちばしと、はねと、あし。とり。",
+  "caption": "{鳥|とり}の {形|かたち}。くちばしと {羽|はね}と {足|あし}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🐦",
-    "motion": "grow"
+    "motion": "sway"
    }
   ]
  },
@@ -3351,9 +3351,9 @@
   "goals": [
    "あさを、つくろう。"
   ],
-  "speech": "つきと、あさひで、あさ。",
-  "caption": "つき と あさひ で、あさ。",
-  "kind": "oboekata",
+  "speech": "くさの、あいだから、おひさまが、のぼる。そらには、まだ、おつきさま。あさ。",
+  "caption": "{草|くさ}から お{日|ひ}さま。{空|そら}に まだ {月|つき}。{朝|あさ}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "月",
@@ -3363,21 +3363,21 @@
    {
     "part": "𠦝",
     "picture": "🌅",
-    "motion": "still"
+    "motion": "rise"
    }
   ]
  },
  "直": {
   "word": "なおす",
   "goals": [],
-  "speech": "なおす。",
-  "caption": "なおす",
-  "kind": "oboekata",
+  "speech": "めで、まっすぐ、みる。まがった、ものを、まっすぐに、する。なおす。",
+  "caption": "{目|め}で まっすぐ {見|み}る。まっすぐに {直|なお}す。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🔧",
-    "motion": "grow"
+    "picture": "👁️",
+    "motion": "still"
    }
   ]
  },
@@ -3386,14 +3386,14 @@
   "goals": [
    "とおるを、つくろう。"
   ],
-  "speech": "みちと、「つう」のおとで、とおる。",
-  "caption": "みち と 「つう」の おと で、とおる。",
-  "kind": "oboekata",
+  "speech": "みちの、なかまの、かんじ。みちを、まっすぐ、すすんで、とおりぬける。うえは、つうの、おと。とおる。",
+  "caption": "{道|みち}の なかま。{道|みち}を すすんで {通|とお}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "⻌",
     "picture": "🛣️",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "甬",
@@ -3405,14 +3405,14 @@
  "弟": {
   "word": "おとうと",
   "goals": [],
-  "speech": "おとうと。",
-  "caption": "おとうと",
-  "kind": "oboekata",
+  "speech": "ぼうに、ひもを、じゅんばんに、まく。じゅんばんが、あとの、おとこのこ。おとうと。",
+  "caption": "ぼうに ひもを じゅんばんに まく。{弟|おとうと}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "👦",
-    "motion": "grow"
+    "picture": "🪢",
+    "motion": "rise"
    }
   ]
  },
@@ -3421,14 +3421,14 @@
   "goals": [
    "みせを、つくろう。"
   ],
-  "speech": "やねと、「てん」のおとで、みせ。",
-  "caption": "やね と 「てん」の おと で、みせ。",
-  "kind": "oboekata",
+  "speech": "やねの、したに、しなものを、ならべる。なかは、てんの、おと。みせ。",
+  "caption": "やねの {下|した}に しなものを ならべる、{店|みせ}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "广",
     "picture": "🛖",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "占",
@@ -3442,14 +3442,14 @@
   "goals": [
    "てんを、つくろう。"
   ],
-  "speech": "ひと、「てん」のおとで、てん。",
-  "caption": "ひ と 「てん」の おと で、てん。",
-  "kind": "oboekata",
+  "speech": "ひが、もえると、くろい、すすが、つく。ちいさな、くろい、しるし。うえは、てんの、おと。てん。",
+  "caption": "{火|ひ}の {黒|くろ}い すすが ぽつん。{黒|くろ}い {点|てん}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "灬",
     "picture": "🔥",
-    "motion": "still"
+    "motion": "shake"
    },
    {
     "part": "占",
@@ -3463,33 +3463,33 @@
   "goals": [
    "でんを、つくろう。"
   ],
-  "speech": "雨と、いなずま。ぴかっとひかる、でん。",
-  "caption": "あめと いなずま。ぴかっと ひかる、でん。",
+  "speech": "あめの、なかで、いなずまが、ぴかっと、ひかる。かみなりの、ちから。でん。",
+  "caption": "{雨|あめ}の {中|なか}、いなずまが ぴかっと {光|ひか}る。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "雨",
     "picture": "rain",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "电",
     "picture": "⚡",
-    "motion": "still"
+    "motion": "shine"
    }
   ]
  },
  "刀": {
   "word": "かたな",
   "goals": [],
-  "speech": "かたなのかたちからできた、かんじだよ。かたな。",
-  "caption": "かたなの かたちから できたよ。",
+  "speech": "かたなの、かたちから、できたよ。はが、すこし、そっている。かたな。",
+  "caption": "{刀|かたな}の {形|かたち}。はが そって いるよ。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🗡️",
-    "motion": "grow"
+    "motion": "shine"
    }
   ]
  },
@@ -3498,33 +3498,33 @@
   "goals": [
    "ふゆを、つくろう。"
   ],
-  "speech": "あしと、こおりで、ふゆ。",
-  "caption": "あし と こおり で、ふゆ。",
+  "speech": "あしの、したに、こおりが、はる。つるつる、すべる、さむい、きせつ。ふゆ。",
+  "caption": "{足|あし}の {下|した}に こおりが はる。さむい {冬|ふゆ}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "夂",
     "picture": "👣",
-    "motion": "still"
+    "motion": "walk"
    },
    {
     "part": "冫",
     "picture": "🧊",
-    "motion": "still"
+    "motion": "grow"
    }
   ]
  },
  "当": {
   "word": "あたる",
   "goals": [],
-  "speech": "あたる。",
-  "caption": "あたる",
+  "speech": "さんぼんの、やが、まとに、とんでいく。まんなかに、ぴたっと。あたる。",
+  "caption": "{3本|3ぼん}の {矢|や}が まとに とんで、{当|あ}たる。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
     "picture": "🎯",
-    "motion": "grow"
+    "motion": "shake"
    }
   ]
  },
@@ -3533,9 +3533,9 @@
   "goals": [
    "ひがしを、つくろう。"
   ],
-  "speech": "木のむこうから、おひさまがのぼる。ひがし。",
-  "caption": "きの むこうから おひさまが のぼる。ひがし。",
-  "kind": "naritachi",
+  "speech": "きのむこうから、おひさまがのぼる。おひさまがのぼるほうが、ひがし。",
+  "caption": "{木|き}の むこうから お{日|ひ}さまが のぼる。{東|ひがし}。",
+  "kind": "oboekata",
   "actors": [
    {
     "part": "木",
@@ -3545,7 +3545,7 @@
    {
     "part": "日",
     "picture": "sun",
-    "motion": "still"
+    "motion": "rise"
    }
   ]
  },
@@ -3554,8 +3554,8 @@
   "goals": [
    "こたえを、つくろう。"
   ],
-  "speech": "たけと、あうで、こたえ。",
-  "caption": "たけ と あう で、こたえ。",
+  "speech": "たけのふだに、へんじをかく。きかれたことに、ぴったりあう。こたえ。",
+  "caption": "{竹|たけ}の ふだに {書|か}いた へんじが ぴったり {合|あ}う。",
   "kind": "oboekata",
   "actors": [
    {
@@ -3566,7 +3566,7 @@
    {
     "part": "合",
     "picture": "🧩",
-    "motion": "still"
+    "motion": "rise"
    }
   ]
  },
@@ -3575,18 +3575,18 @@
   "goals": [
    "あたまを、つくろう。"
   ],
-  "speech": "あたまと、まめで、あたま。",
-  "caption": "あたま と まめ で、あたま。",
-  "kind": "oboekata",
+  "speech": "おおきなあたまのかたちが、あたまのしるし。ひだりのまめは、おとのパーツ。あたま。",
+  "caption": "{頭|あたま}の なかま。まめは トウの {音|おと}の パーツ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "頁",
     "picture": "👤",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "豆",
-    "picture": "🫘",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -3594,14 +3594,14 @@
  "同": {
   "word": "おなじ",
   "goals": [],
-  "speech": "おなじ。",
-  "caption": "おなじ",
-  "kind": "oboekata",
+  "speech": "つつと、つつを、かさねる。ふとさが、ぴったり。どちらも、おなじ。",
+  "caption": "{同|おな}じ {太|ふと}さの つつが ぴったり かさなる。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "👯",
-    "motion": "grow"
+    "picture": "🥫",
+    "motion": "drop"
    }
   ]
  },
@@ -3610,8 +3610,8 @@
   "goals": [
    "みちを、つくろう。"
   ],
-  "speech": "みちと、くびで、みち。",
-  "caption": "みち と くび で、みち。",
+  "speech": "あたまを、まえにむけて、てくてくすすむ。ひとがとおるところが、みち。",
+  "caption": "{頭|あたま}を {前|まえ}に むけて {道|みち}を すすむ。",
   "kind": "oboekata",
   "actors": [
    {
@@ -3621,8 +3621,8 @@
    },
    {
     "part": "首",
-    "picture": "🦒",
-    "motion": "still"
+    "picture": "👤",
+    "motion": "walk"
    }
   ]
  },
@@ -3631,18 +3631,18 @@
   "goals": [
    "よむを、つくろう。"
   ],
-  "speech": "いうと、うるで、よむ。",
-  "caption": "いう と うる で、よむ。",
-  "kind": "oboekata",
+  "speech": "ことばのなかまだよ。みぎがわは、おとのパーツ。こえにだして、ほんを、よむ。",
+  "caption": "ことばを {声|こえ}に {出|だ}して、{本|ほん}を {読|よ}む。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "言",
     "picture": "💬",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "売",
-    "picture": "🏷️",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -3652,32 +3652,32 @@
   "goals": [
    "うちを、つくろう。"
   ],
-  "speech": "わくと、ひとで、うち。",
-  "caption": "わく と ひと で、うち。",
-  "kind": "oboekata",
+  "speech": "いえのいりぐちから、なかにはいる。はいったところが、うち。",
+  "caption": "{家|いえ}の {入|い}り{口|ぐち}から {中|なか}に {入|はい}る。{内|うち}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "冂",
-    "picture": "🖼️",
+    "picture": "🏠",
     "motion": "still"
    },
    {
     "part": "人",
-    "picture": "🧍",
-    "motion": "still"
+    "picture": "🚶",
+    "motion": "enter"
    }
   ]
  },
  "南": {
   "word": "みなみ",
   "goals": [],
-  "speech": "みなみ。",
-  "caption": "みなみ",
+  "speech": "あたたかいこやのなかで、くさのめが、ぐんぐんのびる。あたたかいほうが、みなみ。",
+  "caption": "あたたかい こやで {草|くさ}の めが のびる。{南|みなみ}。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "🏝️",
+    "picture": "🌱",
     "motion": "grow"
    }
   ]
@@ -3685,42 +3685,42 @@
  "肉": {
   "word": "にく",
   "goals": [],
-  "speech": "にく。",
-  "caption": "にく",
-  "kind": "oboekata",
+  "speech": "きりわけた、おにくのかたち。なかのせんは、おにくのすじ。にく。",
+  "caption": "{切|き}り{分|わ}けた お{肉|にく}の {形|かたち}。{中|なか}に すじが {2本|2ほん}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🥩",
-    "motion": "grow"
+    "motion": "still"
    }
   ]
  },
  "馬": {
   "word": "うま",
   "goals": [],
-  "speech": "うまのかたちからできた、かんじだよ。うま。",
-  "caption": "うまの かたちから できたよ。",
+  "speech": "たてがみを、なびかせて、はしるうまのかたち。よこのせんが、たてがみだよ。うま。",
+  "caption": "たてがみを なびかせて {走|はし}る {馬|うま}の {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🐎",
-    "motion": "grow"
+    "motion": "walk"
    }
   ]
  },
  "売": {
   "word": "うる",
   "goals": [],
-  "speech": "うる。",
-  "caption": "うる",
-  "kind": "oboekata",
+  "speech": "かったものを、みせのそとにだす。ほしいひとに、わたして、うる。",
+  "caption": "{買|か}った ものを {店|みせ}の {外|そと}に {出|だ}して、{売|う}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🏷️",
-    "motion": "grow"
+    "picture": "📦",
+    "motion": "walk"
    }
   ]
  },
@@ -3729,14 +3729,14 @@
   "goals": [
    "かうを、つくろう。"
   ],
-  "speech": "あみと、かいで、かう。",
-  "caption": "あみ と かい で、かう。",
-  "kind": "oboekata",
+  "speech": "あみで、かいをあつめる。かいは、むかしのおかね。おかねで、ものを、かう。",
+  "caption": "あみに {貝|かい}を あつめる。{貝|かい}は むかしの お{金|かね}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "罒",
     "picture": "🕸️",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "貝",
@@ -3748,28 +3748,28 @@
  "麦": {
   "word": "むぎ",
   "goals": [],
-  "speech": "むぎ。",
-  "caption": "むぎ",
-  "kind": "oboekata",
+  "speech": "むぎのほと、したにあしのかたち。あしでふむと、つよくそだつ。むぎ。",
+  "caption": "{麦|むぎ}の ほの {下|した}に {足|あし}。{足|あし}で ふむ {麦|むぎ}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🌾",
-    "motion": "grow"
+    "motion": "sway"
    }
   ]
  },
  "半": {
   "word": "はん",
   "goals": [],
-  "speech": "はん。",
-  "caption": "はん",
-  "kind": "oboekata",
+  "speech": "おおきなうしを、まんなかで、ふたつにわける。ひとつぶんが、はんぶん。はん。",
+  "caption": "{大|おお}きな {牛|うし}を まんなかで 2つに {分|わ}ける。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🌗",
-    "motion": "grow"
+    "picture": "🐄",
+    "motion": "still"
    }
   ]
  },
@@ -3778,14 +3778,14 @@
   "goals": [
    "ばんを、つくろう。"
   ],
-  "speech": "たねと、たで、ばん。",
-  "caption": "たね と た で、ばん。",
-  "kind": "oboekata",
+  "speech": "たんぼに、たねを、ぱらぱらまく。ひとつずつ、じゅんばんに。ばん。",
+  "caption": "{田|た}んぼに たねを じゅんばんに まく。{番|ばん}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "釆",
     "picture": "🌱",
-    "motion": "still"
+    "motion": "drop"
    },
    {
     "part": "田",
@@ -3797,28 +3797,28 @@
  "父": {
   "word": "ちち",
   "goals": [],
-  "speech": "ちち。",
-  "caption": "ちち",
-  "kind": "oboekata",
+  "speech": "てに、おのをもって、はたらくひと。いえをまもる、おとうさん。ちち。",
+  "caption": "{手|て}に おのを もって はたらく お{父|とう}さん。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "👨",
-    "motion": "grow"
+    "picture": "🪓",
+    "motion": "rise"
    }
   ]
  },
  "風": {
   "word": "かぜ",
   "goals": [],
-  "speech": "かぜ。",
-  "caption": "かぜ",
+  "speech": "ふねのほが、かぜをうけて、ふくらむ。ほのなかに、むしがいっぴき。かぜ。",
+  "caption": "{船|ふね}の ほが {風|かぜ}を うけて ふくらむ。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "🍃",
-    "motion": "grow"
+    "picture": "⛵",
+    "motion": "sway"
    }
   ]
  },
@@ -3827,19 +3827,19 @@
   "goals": [
    "わけるを、つくろう。"
   ],
-  "speech": "かたなで、ふたつに、わける。",
-  "caption": "かたなで ふたつに、わける。",
+  "speech": "かたなで、すぱっときる。みぎとひだり、ふたつに、わける。",
+  "caption": "{刀|かたな}で ものを 2つに {切|き}って、{分|わ}ける。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "八",
-    "picture": "8️⃣",
-    "motion": "still"
+    "picture": "↔️",
+    "motion": "grow"
    },
    {
     "part": "刀",
     "picture": "🗡️",
-    "motion": "still"
+    "motion": "rise"
    }
   ]
  },
@@ -3848,8 +3848,8 @@
   "goals": [
    "きくを、つくろう。"
   ],
-  "speech": "門のところで、耳をすまして、きく。",
-  "caption": "もんの ところで みみを すまして、きく。",
+  "speech": "もんのむこうから、おとがする。みみをちかづけて、よくきく。",
+  "caption": "{門|もん}の {外|そと}の {音|おと}を {耳|みみ}で {聞|き}く。",
   "kind": "naritachi",
   "actors": [
    {
@@ -3860,21 +3860,21 @@
    {
     "part": "耳",
     "picture": "👂",
-    "motion": "still"
+    "motion": "enter"
    }
   ]
  },
  "米": {
   "word": "こめ",
   "goals": [],
-  "speech": "こめのかたちからできた、かんじだよ。こめ。",
-  "caption": "こめの かたちから できたよ。",
+  "speech": "いねのほに、ちいさなつぶが、たくさんならぶ。つぶのひとつひとつが、こめ。",
+  "caption": "いねの ほに {米|こめ}の つぶが ならんで いる。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🍚",
-    "motion": "grow"
+    "picture": "🌾",
+    "motion": "sway"
    }
   ]
  },
@@ -3883,75 +3883,75 @@
   "goals": [
    "あるくを、つくろう。"
   ],
-  "speech": "とまると、すこしで、あるく。",
-  "caption": "とまる と すこし で、あるく。",
-  "kind": "oboekata",
+  "speech": "みぎあし、ひだりあし。あしあとが、ふたつならぶ。まえにすすんで、あるく。",
+  "caption": "{右足|みぎあし} {左足|ひだりあし}。あしあとが 2つで、{歩|ある}く。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "止",
-    "picture": "🛑",
-    "motion": "still"
+    "picture": "🦶",
+    "motion": "walk"
    },
    {
     "part": "少",
-    "picture": "🤏",
-    "motion": "still"
+    "picture": "👣",
+    "motion": "walk"
    }
   ]
  },
  "母": {
   "word": "はは",
   "goals": [],
-  "speech": "はは。",
-  "caption": "はは",
-  "kind": "oboekata",
+  "speech": "すわって、あかちゃんをだっこするひと。ふたつのてんは、おちち。はは。",
+  "caption": "{赤|あか}ちゃんに おちちを あげる お{母|かあ}さん。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "👩",
-    "motion": "grow"
+    "picture": "🤱",
+    "motion": "sway"
    }
   ]
  },
  "方": {
   "word": "ほう",
   "goals": [],
-  "speech": "ほう。",
-  "caption": "ほう",
+  "speech": "つちをたがやす、すきのかたち。おしたほうへ、まっすぐすすむ。ほう。",
+  "caption": "{土|つち}を たがやす すきの {形|かたち}。おす {方|ほう}へ。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "🧭",
-    "motion": "grow"
+    "picture": "⛏️",
+    "motion": "walk"
    }
   ]
  },
  "北": {
   "word": "きた",
   "goals": [],
-  "speech": "きた。",
-  "caption": "きた",
-  "kind": "oboekata",
+  "speech": "ふたりが、せなかをむけあう。おひさまに、せなかをむけたほうが、きた。",
+  "caption": "{二人|ふたり}が せなかを むけあう。せなかの {方|ほう}が {北|きた}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🐧",
-    "motion": "grow"
+    "picture": "👥",
+    "motion": "still"
    }
   ]
  },
  "毎": {
   "word": "まい",
   "goals": [],
-  "speech": "まい。",
-  "caption": "まい",
+  "speech": "かみかざりをつけた、おかあさんのかたち。まいにち、きれいにつけるよ。まい。",
+  "caption": "かみかざりを つけた お{母|かあ}さん。{毎日|まいにち} つける。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "🔁",
-    "motion": "grow"
+    "picture": "👩",
+    "motion": "still"
    }
   ]
  },
@@ -3960,14 +3960,14 @@
   "goals": [
    "いもうとを、つくろう。"
   ],
-  "speech": "おんなと、「まい」のおとで、いもうと。",
-  "caption": "おんな と 「まい」の おと で、いもうと。",
-  "kind": "oboekata",
+  "speech": "おんなのこのなかまだよ。みぎがわは、まいのおとのパーツ。とししたの、いもうと。",
+  "caption": "{女|おんな}の{子|こ}の なかま。{右|みぎ}は マイの {音|おと}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "女",
-    "picture": "👩",
-    "motion": "still"
+    "picture": "👧",
+    "motion": "walk"
    },
    {
     "part": "未",
@@ -3979,14 +3979,14 @@
  "万": {
   "word": "まん",
   "goals": [],
-  "speech": "まん。",
-  "caption": "まん",
-  "kind": "oboekata",
+  "speech": "むかしは、さそりのえ。おとがおなじだったから、かずにかりた。まん。",
+  "caption": "むかしは サソリの {絵|え}。{数|かず}の {万|まん}に かりたよ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "💴",
-    "motion": "grow"
+    "picture": "🦂",
+    "motion": "walk"
    }
   ]
  },
@@ -3995,19 +3995,19 @@
   "goals": [
    "あかるいを、つくろう。"
   ],
-  "speech": "おひさまと、おつきさま。どっちもひかって、あかるい。",
-  "caption": "おひさまと おつきさま。どっちも ひかって、あかるい。",
+  "speech": "おひさまと、おつきさま。ふたつならんで、ぴかぴかひかる。とても、あかるい。",
+  "caption": "お{日|ひ}さまと お{月|つき}さま。ならんで {光|ひか}って、{明|あか}るい。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "日",
     "picture": "sun",
-    "motion": "still"
+    "motion": "shine"
    },
    {
     "part": "月",
     "picture": "moon",
-    "motion": "still"
+    "motion": "shine"
    }
   ]
  },
@@ -4016,61 +4016,61 @@
   "goals": [
    "なくを、つくろう。"
   ],
-  "speech": "とりが、くちをあけて、なく。",
-  "caption": "とりが くちを あけて、なく。",
+  "speech": "にわとりが、くちをおおきくあけて、こけこっこー。とりが、なく。",
+  "caption": "{鳥|とり}が {口|くち}を あけて コケコッコー。{鳴|な}く。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "口",
     "picture": "👄",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "鳥",
-    "picture": "🐦",
-    "motion": "still"
+    "picture": "🐔",
+    "motion": "shake"
    }
   ]
  },
  "毛": {
   "word": "け",
   "goals": [],
-  "speech": "けのかたちからできた、かんじだよ。け。",
-  "caption": "けの かたちから できたよ。",
+  "speech": "どうぶつのからだに、ふさふさはえている。ながくのびた、けのかたち。け。",
+  "caption": "ふさふさ {生|は}えた {毛|け}の {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🐑",
-    "motion": "grow"
+    "motion": "sway"
    }
   ]
  },
  "門": {
   "word": "もん",
   "goals": [],
-  "speech": "もんのかたちからできた、かんじだよ。もん。",
-  "caption": "もんの かたちから できたよ。",
+  "speech": "みぎとひだりに、とびらがにまい。ぱたんとひらく、もんのかたち。もん。",
+  "caption": "2まいの とびらが ならぶ {門|もん}の {形|かたち}。",
   "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "gate",
-    "motion": "grow"
+    "motion": "still"
    }
   ]
  },
  "夜": {
   "word": "よる",
   "goals": [],
-  "speech": "よる。",
-  "caption": "よる",
-  "kind": "oboekata",
+  "speech": "うでをひろげたひとの、わきのしたに、おつきさま。つきがでたら、よる。",
+  "caption": "{人|ひと}の わきに お{月|つき}さまが {出|で}る。{夜|よる}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🌙",
-    "motion": "grow"
+    "picture": "moon",
+    "motion": "rise"
    }
   ]
  },
@@ -4079,14 +4079,14 @@
   "goals": [
    "のを、つくろう。"
   ],
-  "speech": "さとと、「よ」のおとで、の。",
-  "caption": "さと と 「よ」の おと で、の。",
-  "kind": "oboekata",
+  "speech": "たんぼと、つちがある、さと。そのまわりに、ひろいのはら。みぎは、おとのパーツ。の。",
+  "caption": "{里|さと}の まわりに {広|ひろ}がる {野原|のはら}。{右|みぎ}は {音|おと}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "里",
     "picture": "🏡",
-    "motion": "still"
+    "motion": "grow"
    },
    {
     "part": "予",
@@ -4098,9 +4098,9 @@
  "友": {
   "word": "とも",
   "goals": [],
-  "speech": "とも。",
-  "caption": "とも",
-  "kind": "oboekata",
+  "speech": "ひとりのてと、もうひとりのて。てとてをつないで、なかよし。とも。",
+  "caption": "{手|て}と {手|て}を つないで、なかよし。{友|とも}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
@@ -4112,14 +4112,14 @@
  "用": {
   "word": "よう",
   "goals": [],
-  "speech": "よう。",
-  "caption": "よう",
+  "speech": "とってのついた、おけのかたち。みずをくむのにつかう、どうぐだよ。よう。",
+  "caption": "とっての ついた おけの {形|かたち}。つかう どうぐ。",
   "kind": "oboekata",
   "actors": [
    {
     "part": "whole",
-    "picture": "📌",
-    "motion": "grow"
+    "picture": "🪣",
+    "motion": "sway"
    }
   ]
  },
@@ -4128,14 +4128,14 @@
   "goals": [
    "ようを、つくろう。"
   ],
-  "speech": "ひと、「よう」のおとで、よう。",
-  "caption": "ひ と 「よう」の おと で、よう。",
-  "kind": "oboekata",
+  "speech": "おひさまが、ぴかぴかひかる。みぎがわは、おとのパーツ。にちようびの、よう。",
+  "caption": "お{日|ひ}さまが ぴかぴか {光|ひか}る。{右|みぎ}は ヨウの {音|おと}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "日",
     "picture": "sun",
-    "motion": "still"
+    "motion": "shine"
    },
    {
     "part": "翟",
@@ -4147,28 +4147,28 @@
  "来": {
   "word": "くる",
   "goals": [],
-  "speech": "くる。",
-  "caption": "くる",
-  "kind": "oboekata",
+  "speech": "みのなった、むぎのかたち。むぎは、てんからきた、おくりもの。くる。",
+  "caption": "{麦|むぎ}の {形|かたち}から できたよ。{麦|むぎ}が やって {来|く}る。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
-    "picture": "🚌",
-    "motion": "grow"
+    "picture": "🌾",
+    "motion": "sway"
    }
   ]
  },
  "里": {
   "word": "さと",
   "goals": [],
-  "speech": "さと。",
-  "caption": "さと",
-  "kind": "oboekata",
+  "speech": "うえに、たんぼ。したに、つち。たんぼのあるところに、ひとがすむ。さと。",
+  "caption": "{田|た}んぼと {土|つち}が ある ところに {人|ひと}が すむ。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "whole",
     "picture": "🏡",
-    "motion": "grow"
+    "motion": "still"
    }
   ]
  },
@@ -4177,18 +4177,18 @@
   "goals": [
    "りを、つくろう。"
   ],
-  "speech": "おうと、さとで、り。",
-  "caption": "おう と さと で、り。",
-  "kind": "oboekata",
+  "speech": "いしをみがいて、きれいなすじをだす。たまのなかま。みぎは、おとのパーツ。り。",
+  "caption": "{玉|たま}を みがいて すじを {出|だ}す。{右|みぎ}は リの {音|おと}。",
+  "kind": "naritachi",
   "actors": [
    {
     "part": "王",
-    "picture": "👑",
-    "motion": "still"
+    "picture": "💎",
+    "motion": "shine"
    },
    {
     "part": "里",
-    "picture": "🏡",
+    "picture": "♪",
     "motion": "still"
    }
   ]
@@ -4198,8 +4198,8 @@
   "goals": [
    "はなすを、つくろう。"
   ],
-  "speech": "いうと、したで、はなす。",
-  "caption": "いう と した で、はなす。",
+  "speech": "くちからでる、ことば。したを、ぺらぺらうごかして、はなす。",
+  "caption": "ことばを したに のせて、{話|はな}す。",
   "kind": "oboekata",
   "actors": [
    {
@@ -4210,7 +4210,7 @@
    {
     "part": "舌",
     "picture": "👅",
-    "motion": "still"
+    "motion": "sway"
    }
   ]
  }

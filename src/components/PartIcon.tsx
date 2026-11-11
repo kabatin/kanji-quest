@@ -34,7 +34,15 @@ const cloud = (y: number, fill: string): ReactNode => (
 )
 
 /** 手描きのアイコン。ここにない名前は、絵文字としてそのまま描く。 */
+const BAR = '#27336b'
+const bars = (ys: readonly number[], widths: readonly number[]): ReactNode =>
+  ys.map((y, i) => <rect key={y} x={54.5 - widths[i] / 2} y={y - 5} width={widths[i]} height="10" rx="5" fill={BAR} />)
+
 const ICONS: Record<string, ReactNode> = {
+  bar: bars([54], [84]),
+  bar2: bars([34, 76], [56, 88]),
+  bar3: bars([24, 54, 86], [62, 50, 92]),
+  barv: <rect x="49.5" y="10" width="10" height="90" rx="5" fill={BAR} />,
   tree: tree(0, 0, 1),
   trees2: (
     <>
@@ -156,12 +164,16 @@ const ICONS: Record<string, ReactNode> = {
   ),
 }
 
-type Props = { readonly id: string; readonly className?: string }
+/** ほかの SVG の中に置くときの位置と大きさ(親の座標) */
+type Box = { readonly x: number; readonly y: number; readonly size: number }
+
+type Props = { readonly id: string; readonly className?: string; readonly box?: Box }
 
 /** 部位や漢字の意味を表す絵(手描きアイコンの名前、または絵文字)。飾りなので読み上げ対象にはしない。 */
-export function PartIcon({ id, className }: Props) {
+export function PartIcon({ id, className, box }: Props) {
+  const placement = box ? { x: box.x, y: box.y, width: box.size, height: box.size } : {}
   return (
-    <svg className={className} viewBox="0 0 109 109" aria-hidden="true" data-icon={id}>
+    <svg className={className} viewBox="0 0 109 109" aria-hidden="true" data-icon={id} {...placement}>
       {ICONS[id] ?? (
         <text x="54.5" y="56" fontSize="82" textAnchor="middle" dominantBaseline="central">
           {id}

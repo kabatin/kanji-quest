@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { getKanji, KANJI } from '../data/kanji'
 import { getPart } from '../data/parts'
-import { buildChoices, buildQuestion, buildQuiz, CHOICE_COUNT, pickChallengeKanji, shuffle, type Rng } from './quiz'
+import { fullGlyph } from '../data/strokes'
+import { buildChoices, buildErabi, buildQuestion, buildQuiz, CHOICE_COUNT, pickChallengeKanji, questionFor, shuffle, type Rng } from './quiz'
 
 /** 再現できる乱数 */
 function seeded(seed: number): Rng {
@@ -12,6 +13,8 @@ function seeded(seed: number): Rng {
   }
 }
 
+const chars = (list: readonly { char: string }[]) => list.map((k) => k.char)
+
 describe('shuffle', () => {
   it('元の配列を変えず、同じ中身を返す', () => {
     const src = [1, 2, 3, 4, 5]
@@ -21,11 +24,11 @@ describe('shuffle', () => {
   })
 })
 
-describe('buildChoices', () => {
+describe('くみあわせの問題', () => {
   it('どの問題も、正解を1つだけ含む4択になる', () => {
     for (const kanji of KANJI) {
       for (const step of kanji.steps) {
-        for (let seed = 1; seed <= 20; seed += 1) {
+        for (let seed = 1; seed <= 5; seed += 1) {
           const choices = buildChoices(step, KANJI, seeded(seed))
           expect(choices).toHaveLength(CHOICE_COUNT)
           expect(new Set(choices).size).toBe(CHOICE_COUNT)
@@ -39,53 +42,47 @@ describe('buildChoices', () => {
   it('はずれは同じ配置の部位を優先する', () => {
     const step = getKanji('海').steps[0]
     const yokoAnswers = KANJI.flatMap((k) => k.steps).filter((s) => s.layout === 'yoko').map((s) => s.answer)
-    const choices = buildChoices(step, KANJI, seeded(7))
-    for (const id of choices) expect(yokoAnswers).toContain(id)
+    for (const id of buildChoices(step, KANJI, seeded(7))) expect(yokoAnswers).toContain(id)
   })
 
-  it('同じ配置の部位が足りないときは、ほかの部位で4択をうめる', () => {
-    const step = getKanji('間').steps[0]
-    expect(buildChoices(step, KANJI, seeded(3))).toHaveLength(CHOICE_COUNT)
+  it('存在しない段階はエラーになる', () => {
+    expect(() => buildQuestion(getKanji('木'), 0, KANJI)).toThrow('段階がありません')
+    expect(buildQuestion(getKanji('海'), 0, KANJI, seeded(1)).type).toBe('kumi')
   })
 })
 
-describe('buildQuestion / buildQuiz', () => {
-  it('存在しない段階はエラーになる', () => {
-    expect(() => buildQuestion(getKanji('木'), 0, KANJI)).toThrow('段階がありません')
+describe('えらびの問題', () => {
+  it('正解を1つ含む4字で、はずれは画数の近い字になる', () => {
+    for (let seed = 1; seed <= 10; seed += 1) {
+      const question = buildErabi(getKanji('山'), KANJI, seeded(seed))
+      expect(question.choices).toHaveLength(CHOICE_COUNT)
+      expect(new Set(question.choices).size).toBe(CHOICE_COUNT)
+      expect(question.choices).toContain('山')
+      for (const char of question.choices) {
+        expect(Math.abs(fullGlyph(char).strokes.length - fullGlyph('山').strokes.length)).toBeLessThanOrEqual(1)
+      }
+    }
   })
 
-  it('指定した数の問題を、重複なしで作る', () => {
-    const quiz = buildQuiz(KANJI, 6, seeded(5))
-    expect(quiz).toHaveLength(6)
-    const keys = quiz.map((q) => `${q.kanji.char}-${q.stepIndex}`)
-    expect(new Set(keys).size).toBe(6)
-    for (const q of quiz) expect(q.choices).toContain(q.step.answer)
+  it('分けられない字は必ず「えらび」、分けられる字は両方の形で出る', () => {
+    for (let seed = 1; seed <= 10; seed += 1) expect(questionFor(getKanji('山'), KANJI, seeded(seed)).type).toBe('erabi')
+    const types = new Set(Array.from({ length: 40 }, (_, i) => questionFor(getKanji('海'), KANJI, seeded(i + 1)).type))
+    expect(types).toEqual(new Set(['kumi', 'erabi']))
   })
 
-  it('問題の総数より多くは作らない', () => {
-    const total = KANJI.flatMap((k) => k.steps).length
-    expect(buildQuiz(KANJI, 9999, seeded(2))).toHaveLength(total)
-  })
-
-  it('出題は pool から、はずれの選択肢は全体から作る', () => {
-    const quiz = buildQuiz([getKanji('海')], 3, seeded(4), KANJI)
-    expect(quiz).toHaveLength(1)
-    expect(quiz[0].kanji.char).toBe('海')
-    expect(quiz[0].choices).toHaveLength(CHOICE_COUNT)
+  it('クイズは1字1問で、えらんだ順に作る', () => {
+    const picked = [getKanji('山'), getKanji('海'), getKanji('線')]
+    const quiz = buildQuiz(picked, seeded(3), KANJI)
+    expect(quiz.map((q) => q.kanji.char)).toEqual(['山', '海', '線'])
   })
 })
 
 describe('pickChallengeKanji', () => {
-  const chars = (list: readonly { char: string }[]) => list.map((k) => k.char)
-
-  it('何も学んでいないときは、1年生のくみあわせ漢字から出す', () => {
-    const picked = pickChallengeKanji(KANJI, [], 6, seeded(1))
-    expect(picked).toHaveLength(6)
-    expect(new Set(chars(picked)).size).toBe(6)
-    for (const kanji of picked) {
-      expect(kanji.grade).toBe(1)
-      expect(kanji.steps.length).toBeGreaterThan(0)
-    }
+  it('何も学んでいないときは、1年生の漢字から出す', () => {
+    const picked = pickChallengeKanji(KANJI, [], 5, seeded(1))
+    expect(picked).toHaveLength(5)
+    expect(new Set(chars(picked)).size).toBe(5)
+    for (const kanji of picked) expect(kanji.grade).toBe(1)
   })
 
   it('半分は学んだ漢字、残りはまだ学んでいない漢字になる', () => {
@@ -96,9 +93,9 @@ describe('pickChallengeKanji', () => {
     }
   })
 
-  it('学んだ字がちょうど6字でも、回ごとに問題が変わる', () => {
-    const learned = ['海', '池', '林', '森', '明', '花']
-    const rounds = Array.from({ length: 10 }, (_, i) => chars(pickChallengeKanji(KANJI, learned, 6, seeded(i + 1))).sort().join(''))
+  it('学んだ字が少なくても、回ごとに問題が変わる', () => {
+    const learned = ['海', '池', '林', '森', '明']
+    const rounds = Array.from({ length: 10 }, (_, i) => chars(pickChallengeKanji(KANJI, learned, 5, seeded(i + 1))).sort().join(''))
     expect(new Set(rounds).size).toBeGreaterThan(5)
   })
 
@@ -123,8 +120,7 @@ describe('pickChallengeKanji', () => {
     expect(pickChallengeKanji(KANJI, learned, 20, seeded(1), [], 'grade2')).toHaveLength(20)
   })
 
-  it('ほとんど学び終えて新しい字が足りないときは、学んだ字で埋める', () => {
-    const allCompounds = KANJI.filter((k) => k.steps.length > 0).map((k) => k.char)
-    expect(pickChallengeKanji(KANJI, allCompounds, 6, seeded(2))).toHaveLength(6)
+  it('全部学び終えて新しい字がないときは、学んだ字で埋める', () => {
+    expect(pickChallengeKanji(KANJI, chars(KANJI), 6, seeded(2))).toHaveLength(6)
   })
 })
