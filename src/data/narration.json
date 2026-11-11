@@ -1,0 +1,4217 @@
+{
+ "一": {
+  "word": "いち",
+  "goals": [],
+  "speech": "いち。",
+  "caption": "いち",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "1️⃣",
+    "motion": "grow"
+   }
+  ]
+ },
+ "右": {
+  "word": "みぎ",
+  "goals": [
+   "みぎを、つくろう。"
+  ],
+  "speech": "てと、くちで、みぎ。",
+  "caption": "て と くち で、みぎ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "ナ",
+    "picture": "✋",
+    "motion": "still"
+   },
+   {
+    "part": "口",
+    "picture": "👄",
+    "motion": "still"
+   }
+  ]
+ },
+ "雨": {
+  "word": "あめ",
+  "goals": [],
+  "speech": "あめのかたちからできた、かんじだよ。あめ。",
+  "caption": "あめの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "rain",
+    "motion": "grow"
+   }
+  ]
+ },
+ "円": {
+  "word": "えん",
+  "goals": [],
+  "speech": "えん。",
+  "caption": "えん",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "💴",
+    "motion": "grow"
+   }
+  ]
+ },
+ "王": {
+  "word": "おう",
+  "goals": [],
+  "speech": "おう。",
+  "caption": "おう",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "👑",
+    "motion": "grow"
+   }
+  ]
+ },
+ "音": {
+  "word": "おと",
+  "goals": [
+   "おとを、つくろう。"
+  ],
+  "speech": "たつと、ひで、おと。",
+  "caption": "たつ と ひ で、おと。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "立",
+    "picture": "🧍",
+    "motion": "still"
+   },
+   {
+    "part": "日",
+    "picture": "sun",
+    "motion": "still"
+   }
+  ]
+ },
+ "下": {
+  "word": "した",
+  "goals": [],
+  "speech": "した。",
+  "caption": "した",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "⬇️",
+    "motion": "grow"
+   }
+  ]
+ },
+ "火": {
+  "word": "ひ",
+  "goals": [],
+  "speech": "ひのかたちからできた、かんじだよ。ひ。",
+  "caption": "ひの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🔥",
+    "motion": "grow"
+   }
+  ]
+ },
+ "花": {
+  "word": "はな",
+  "goals": [
+   "はなを、つくろう。"
+  ],
+  "speech": "くさかんむりは、草のしるし。草にさく、はな。したは、おとのパーツだよ。",
+  "caption": "くさかんむりは くさの しるし。くさに さく、はな。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "艹",
+    "picture": "grass",
+    "motion": "still"
+   },
+   {
+    "part": "化",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "貝": {
+  "word": "かい",
+  "goals": [],
+  "speech": "かいのかたちからできた、かんじだよ。かい。",
+  "caption": "かいの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🐚",
+    "motion": "grow"
+   }
+  ]
+ },
+ "学": {
+  "word": "まなぶ",
+  "goals": [],
+  "speech": "まなぶ。",
+  "caption": "まなぶ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🎒",
+    "motion": "grow"
+   }
+  ]
+ },
+ "気": {
+  "word": "き",
+  "goals": [],
+  "speech": "き。",
+  "caption": "き",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "💨",
+    "motion": "grow"
+   }
+  ]
+ },
+ "九": {
+  "word": "きゅう",
+  "goals": [],
+  "speech": "きゅう。",
+  "caption": "きゅう",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "9️⃣",
+    "motion": "grow"
+   }
+  ]
+ },
+ "休": {
+  "word": "やすむ",
+  "goals": [
+   "やすむを、つくろう。"
+  ],
+  "speech": "人が、木のそばで、ひとやすみ。やすむ。",
+  "caption": "ひとが きの そばで ひとやすみ。やすむ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "亻",
+    "picture": "🧍",
+    "motion": "still"
+   },
+   {
+    "part": "木",
+    "picture": "tree",
+    "motion": "still"
+   }
+  ]
+ },
+ "玉": {
+  "word": "たま",
+  "goals": [
+   "たまを、つくろう。"
+  ],
+  "speech": "おうと、てんで、たま。",
+  "caption": "おう と てん で、たま。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "王",
+    "picture": "👑",
+    "motion": "still"
+   },
+   {
+    "part": "丶",
+    "picture": "⚫",
+    "motion": "still"
+   }
+  ]
+ },
+ "金": {
+  "word": "かね",
+  "goals": [],
+  "speech": "かね。",
+  "caption": "かね",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "💰",
+    "motion": "grow"
+   }
+  ]
+ },
+ "空": {
+  "word": "そら",
+  "goals": [
+   "そらを、つくろう。"
+  ],
+  "speech": "あなと、こうで、そら。",
+  "caption": "あな と こう で、そら。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "穴",
+    "picture": "🕳️",
+    "motion": "still"
+   },
+   {
+    "part": "工",
+    "picture": "🔨",
+    "motion": "still"
+   }
+  ]
+ },
+ "月": {
+  "word": "つき",
+  "goals": [],
+  "speech": "みかづきの形からできた漢字だよ。つき。",
+  "caption": "みかづきの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "moon",
+    "motion": "grow"
+   }
+  ]
+ },
+ "犬": {
+  "word": "いぬ",
+  "goals": [
+   "いぬを、つくろう。"
+  ],
+  "speech": "おおきいと、てんで、いぬ。",
+  "caption": "おおきい と てん で、いぬ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "大",
+    "picture": "🐘",
+    "motion": "still"
+   },
+   {
+    "part": "丶",
+    "picture": "⚫",
+    "motion": "still"
+   }
+  ]
+ },
+ "見": {
+  "word": "みる",
+  "goals": [
+   "みるを、つくろう。"
+  ],
+  "speech": "めと、あしで、みる。",
+  "caption": "め と あし で、みる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "目",
+    "picture": "👁️",
+    "motion": "still"
+   },
+   {
+    "part": "儿",
+    "picture": "🦵",
+    "motion": "still"
+   }
+  ]
+ },
+ "五": {
+  "word": "ご",
+  "goals": [],
+  "speech": "ご。",
+  "caption": "ご",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "5️⃣",
+    "motion": "grow"
+   }
+  ]
+ },
+ "口": {
+  "word": "くち",
+  "goals": [],
+  "speech": "くちのかたちからできた、かんじだよ。くち。",
+  "caption": "くちの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "👄",
+    "motion": "grow"
+   }
+  ]
+ },
+ "校": {
+  "word": "こう",
+  "goals": [
+   "こうを、つくろう。"
+  ],
+  "speech": "きと、まじわるで、こう。",
+  "caption": "き と まじわる で、こう。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "木",
+    "picture": "tree",
+    "motion": "still"
+   },
+   {
+    "part": "交",
+    "picture": "🔀",
+    "motion": "still"
+   }
+  ]
+ },
+ "左": {
+  "word": "ひだり",
+  "goals": [
+   "ひだりを、つくろう。"
+  ],
+  "speech": "てと、こうで、ひだり。",
+  "caption": "て と こう で、ひだり。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "ナ",
+    "picture": "✋",
+    "motion": "still"
+   },
+   {
+    "part": "工",
+    "picture": "🔨",
+    "motion": "still"
+   }
+  ]
+ },
+ "三": {
+  "word": "さん",
+  "goals": [],
+  "speech": "さん。",
+  "caption": "さん",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "3️⃣",
+    "motion": "grow"
+   }
+  ]
+ },
+ "山": {
+  "word": "やま",
+  "goals": [],
+  "speech": "やまのかたちからできた、かんじだよ。やま。",
+  "caption": "やまの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "⛰️",
+    "motion": "grow"
+   }
+  ]
+ },
+ "子": {
+  "word": "こ",
+  "goals": [],
+  "speech": "このかたちからできた、かんじだよ。こ。",
+  "caption": "この かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "👶",
+    "motion": "grow"
+   }
+  ]
+ },
+ "四": {
+  "word": "よん",
+  "goals": [],
+  "speech": "よん。",
+  "caption": "よん",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "4️⃣",
+    "motion": "grow"
+   }
+  ]
+ },
+ "糸": {
+  "word": "いと",
+  "goals": [],
+  "speech": "いとのかたちからできた、かんじだよ。いと。",
+  "caption": "いとの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "thread",
+    "motion": "grow"
+   }
+  ]
+ },
+ "字": {
+  "word": "じ",
+  "goals": [
+   "じを、つくろう。"
+  ],
+  "speech": "やねと、こで、じ。",
+  "caption": "やね と こ で、じ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "宀",
+    "picture": "🏠",
+    "motion": "still"
+   },
+   {
+    "part": "子",
+    "picture": "👶",
+    "motion": "still"
+   }
+  ]
+ },
+ "耳": {
+  "word": "みみ",
+  "goals": [],
+  "speech": "みみのかたちからできた、かんじだよ。みみ。",
+  "caption": "みみの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "👂",
+    "motion": "grow"
+   }
+  ]
+ },
+ "七": {
+  "word": "なな",
+  "goals": [],
+  "speech": "なな。",
+  "caption": "なな",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "7️⃣",
+    "motion": "grow"
+   }
+  ]
+ },
+ "車": {
+  "word": "くるま",
+  "goals": [],
+  "speech": "くるまのかたちからできた、かんじだよ。くるま。",
+  "caption": "くるまの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🚗",
+    "motion": "grow"
+   }
+  ]
+ },
+ "手": {
+  "word": "て",
+  "goals": [],
+  "speech": "てのかたちからできた、かんじだよ。て。",
+  "caption": "ての かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "✋",
+    "motion": "grow"
+   }
+  ]
+ },
+ "十": {
+  "word": "じゅう",
+  "goals": [],
+  "speech": "じゅう。",
+  "caption": "じゅう",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🔟",
+    "motion": "grow"
+   }
+  ]
+ },
+ "出": {
+  "word": "でる",
+  "goals": [],
+  "speech": "でる。",
+  "caption": "でる",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🚪",
+    "motion": "grow"
+   }
+  ]
+ },
+ "女": {
+  "word": "おんな",
+  "goals": [],
+  "speech": "おんなのかたちからできた、かんじだよ。おんな。",
+  "caption": "おんなの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "👩",
+    "motion": "grow"
+   }
+  ]
+ },
+ "小": {
+  "word": "ちいさい",
+  "goals": [],
+  "speech": "ちいさい。",
+  "caption": "ちいさい",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🐜",
+    "motion": "grow"
+   }
+  ]
+ },
+ "上": {
+  "word": "うえ",
+  "goals": [],
+  "speech": "うえ。",
+  "caption": "うえ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "⬆️",
+    "motion": "grow"
+   }
+  ]
+ },
+ "森": {
+  "word": "もり",
+  "goals": [
+   "もりを、つくろう。"
+  ],
+  "speech": "木が三本あつまって、もり。はやしよりも、もっと木がたくさん。",
+  "caption": "きが 3ぼん あつまって、もり。はやしより もっと たくさん。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "木",
+    "picture": "tree",
+    "motion": "still"
+   },
+   {
+    "part": "林",
+    "picture": "trees2",
+    "motion": "still"
+   }
+  ]
+ },
+ "人": {
+  "word": "ひと",
+  "goals": [],
+  "speech": "ひとのかたちからできた、かんじだよ。ひと。",
+  "caption": "ひとの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🧍",
+    "motion": "grow"
+   }
+  ]
+ },
+ "水": {
+  "word": "みず",
+  "goals": [],
+  "speech": "みずのかたちからできた、かんじだよ。みず。",
+  "caption": "みずの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "drop",
+    "motion": "grow"
+   }
+  ]
+ },
+ "正": {
+  "word": "ただしい",
+  "goals": [
+   "ただしいを、つくろう。"
+  ],
+  "speech": "いちと、とまるで、ただしい。",
+  "caption": "いち と とまる で、ただしい。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "一",
+    "picture": "1️⃣",
+    "motion": "still"
+   },
+   {
+    "part": "止",
+    "picture": "🛑",
+    "motion": "still"
+   }
+  ]
+ },
+ "生": {
+  "word": "うまれる",
+  "goals": [],
+  "speech": "うまれる。",
+  "caption": "うまれる",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🌱",
+    "motion": "grow"
+   }
+  ]
+ },
+ "青": {
+  "word": "あお",
+  "goals": [],
+  "speech": "あお。",
+  "caption": "あお",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🔵",
+    "motion": "grow"
+   }
+  ]
+ },
+ "夕": {
+  "word": "ゆう",
+  "goals": [],
+  "speech": "ゆう。",
+  "caption": "ゆう",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🌆",
+    "motion": "grow"
+   }
+  ]
+ },
+ "石": {
+  "word": "いし",
+  "goals": [],
+  "speech": "いし。",
+  "caption": "いし",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🪨",
+    "motion": "grow"
+   }
+  ]
+ },
+ "赤": {
+  "word": "あか",
+  "goals": [],
+  "speech": "あか。",
+  "caption": "あか",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🔴",
+    "motion": "grow"
+   }
+  ]
+ },
+ "千": {
+  "word": "せん",
+  "goals": [],
+  "speech": "せん。",
+  "caption": "せん",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🧮",
+    "motion": "grow"
+   }
+  ]
+ },
+ "川": {
+  "word": "かわ",
+  "goals": [],
+  "speech": "かわのかたちからできた、かんじだよ。かわ。",
+  "caption": "かわの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🏞️",
+    "motion": "grow"
+   }
+  ]
+ },
+ "先": {
+  "word": "さき",
+  "goals": [],
+  "speech": "さき。",
+  "caption": "さき",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "➡️",
+    "motion": "grow"
+   }
+  ]
+ },
+ "早": {
+  "word": "はやい",
+  "goals": [
+   "はやいを、つくろう。"
+  ],
+  "speech": "ひと、じゅうで、はやい。",
+  "caption": "ひ と じゅう で、はやい。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "日",
+    "picture": "sun",
+    "motion": "still"
+   },
+   {
+    "part": "十",
+    "picture": "🔟",
+    "motion": "still"
+   }
+  ]
+ },
+ "草": {
+  "word": "くさ",
+  "goals": [
+   "くさを、つくろう。"
+  ],
+  "speech": "くさと、はやいで、くさ。",
+  "caption": "くさ と はやい で、くさ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "艹",
+    "picture": "grass",
+    "motion": "still"
+   },
+   {
+    "part": "早",
+    "picture": "⏰",
+    "motion": "still"
+   }
+  ]
+ },
+ "足": {
+  "word": "あし",
+  "goals": [
+   "あしを、つくろう。"
+  ],
+  "speech": "くちと、あしで、あし。",
+  "caption": "くち と あし で、あし。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "口",
+    "picture": "👄",
+    "motion": "still"
+   },
+   {
+    "part": "龰",
+    "picture": "🦶",
+    "motion": "still"
+   }
+  ]
+ },
+ "村": {
+  "word": "むら",
+  "goals": [
+   "むらを、つくろう。"
+  ],
+  "speech": "きと、「すん」のおとで、むら。",
+  "caption": "き と 「すん」の おと で、むら。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "木",
+    "picture": "tree",
+    "motion": "still"
+   },
+   {
+    "part": "寸",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "大": {
+  "word": "おおきい",
+  "goals": [],
+  "speech": "人が、りょうてと、りょうあしを、ひろげたかたち。おおきい。",
+  "caption": "ひとが てと あしを ひろげた かたち。おおきい。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🐘",
+    "motion": "grow"
+   }
+  ]
+ },
+ "男": {
+  "word": "おとこ",
+  "goals": [
+   "おとこを、つくろう。"
+  ],
+  "speech": "たんぼで、ちからをだしてはたらく、おとこ。",
+  "caption": "たんぼで ちからを だす、おとこ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "田",
+    "picture": "🌾",
+    "motion": "still"
+   },
+   {
+    "part": "力",
+    "picture": "💪",
+    "motion": "still"
+   }
+  ]
+ },
+ "竹": {
+  "word": "たけ",
+  "goals": [],
+  "speech": "たけのかたちからできた、かんじだよ。たけ。",
+  "caption": "たけの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🎋",
+    "motion": "grow"
+   }
+  ]
+ },
+ "中": {
+  "word": "なか",
+  "goals": [],
+  "speech": "なか。",
+  "caption": "なか",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🎯",
+    "motion": "grow"
+   }
+  ]
+ },
+ "虫": {
+  "word": "むし",
+  "goals": [],
+  "speech": "むしのかたちからできた、かんじだよ。むし。",
+  "caption": "むしの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🐛",
+    "motion": "grow"
+   }
+  ]
+ },
+ "町": {
+  "word": "まち",
+  "goals": [
+   "まちを、つくろう。"
+  ],
+  "speech": "たと、「ちょう」のおとで、まち。",
+  "caption": "た と 「ちょう」の おと で、まち。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "田",
+    "picture": "🌾",
+    "motion": "still"
+   },
+   {
+    "part": "丁",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "天": {
+  "word": "てん",
+  "goals": [
+   "てんを、つくろう。"
+  ],
+  "speech": "いちと、おおきいで、てん。",
+  "caption": "いち と おおきい で、てん。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "一",
+    "picture": "1️⃣",
+    "motion": "still"
+   },
+   {
+    "part": "大",
+    "picture": "🐘",
+    "motion": "still"
+   }
+  ]
+ },
+ "田": {
+  "word": "た",
+  "goals": [],
+  "speech": "たのかたちからできた、かんじだよ。た。",
+  "caption": "たの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🌾",
+    "motion": "grow"
+   }
+  ]
+ },
+ "土": {
+  "word": "つち",
+  "goals": [],
+  "speech": "つちのかたちからできた、かんじだよ。つち。",
+  "caption": "つちの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🟤",
+    "motion": "grow"
+   }
+  ]
+ },
+ "二": {
+  "word": "に",
+  "goals": [],
+  "speech": "に。",
+  "caption": "に",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "2️⃣",
+    "motion": "grow"
+   }
+  ]
+ },
+ "日": {
+  "word": "ひ",
+  "goals": [],
+  "speech": "おひさまの形からできた漢字だよ。まるい太陽が、しかくくなったんだ。ひ。",
+  "caption": "おひさまの かたちから できたよ。まるが しかくに なったんだ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "sun",
+    "motion": "grow"
+   }
+  ]
+ },
+ "入": {
+  "word": "はいる",
+  "goals": [],
+  "speech": "はいる。",
+  "caption": "はいる",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "📥",
+    "motion": "grow"
+   }
+  ]
+ },
+ "年": {
+  "word": "とし",
+  "goals": [],
+  "speech": "とし。",
+  "caption": "とし",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🎍",
+    "motion": "grow"
+   }
+  ]
+ },
+ "白": {
+  "word": "しろ",
+  "goals": [],
+  "speech": "しろ。",
+  "caption": "しろ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "white",
+    "motion": "grow"
+   }
+  ]
+ },
+ "八": {
+  "word": "はち",
+  "goals": [],
+  "speech": "はち。",
+  "caption": "はち",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "8️⃣",
+    "motion": "grow"
+   }
+  ]
+ },
+ "百": {
+  "word": "ひゃく",
+  "goals": [
+   "ひゃくを、つくろう。"
+  ],
+  "speech": "いちと、しろで、ひゃく。",
+  "caption": "いち と しろ で、ひゃく。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "一",
+    "picture": "1️⃣",
+    "motion": "still"
+   },
+   {
+    "part": "白",
+    "picture": "white",
+    "motion": "still"
+   }
+  ]
+ },
+ "文": {
+  "word": "ぶん",
+  "goals": [],
+  "speech": "ぶん。",
+  "caption": "ぶん",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "📝",
+    "motion": "grow"
+   }
+  ]
+ },
+ "木": {
+  "word": "き",
+  "goals": [],
+  "speech": "木の形からできた漢字だよ。みきと、えだと、ねっこ。き。",
+  "caption": "きの かたちから できたよ。みきと えだと ねっこ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "tree",
+    "motion": "grow"
+   }
+  ]
+ },
+ "本": {
+  "word": "ほん",
+  "goals": [
+   "ほんを、つくろう。"
+  ],
+  "speech": "きと、いちで、ほん。",
+  "caption": "き と いち で、ほん。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "木",
+    "picture": "tree",
+    "motion": "still"
+   },
+   {
+    "part": "一",
+    "picture": "1️⃣",
+    "motion": "still"
+   }
+  ]
+ },
+ "名": {
+  "word": "な",
+  "goals": [
+   "なを、つくろう。"
+  ],
+  "speech": "ゆうと、くちで、な。",
+  "caption": "ゆう と くち で、な。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "夕",
+    "picture": "🌆",
+    "motion": "still"
+   },
+   {
+    "part": "口",
+    "picture": "👄",
+    "motion": "still"
+   }
+  ]
+ },
+ "目": {
+  "word": "め",
+  "goals": [],
+  "speech": "めのかたちからできた、かんじだよ。め。",
+  "caption": "めの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "👁️",
+    "motion": "grow"
+   }
+  ]
+ },
+ "立": {
+  "word": "たつ",
+  "goals": [],
+  "speech": "たつ。",
+  "caption": "たつ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🧍",
+    "motion": "grow"
+   }
+  ]
+ },
+ "力": {
+  "word": "ちから",
+  "goals": [],
+  "speech": "ちからのかたちからできた、かんじだよ。ちから。",
+  "caption": "ちからの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "💪",
+    "motion": "grow"
+   }
+  ]
+ },
+ "林": {
+  "word": "はやし",
+  "goals": [
+   "はやしを、つくろう。"
+  ],
+  "speech": "木が二本ならんで、はやし。木がたくさんあるところだよ。",
+  "caption": "きが 2ほん ならんで、はやし。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "木",
+    "picture": "tree",
+    "motion": "still"
+   },
+   {
+    "part": "木",
+    "picture": "tree",
+    "motion": "still"
+   }
+  ]
+ },
+ "六": {
+  "word": "ろく",
+  "goals": [],
+  "speech": "ろく。",
+  "caption": "ろく",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "6️⃣",
+    "motion": "grow"
+   }
+  ]
+ },
+ "引": {
+  "word": "ひく",
+  "goals": [
+   "ひくを、つくろう。"
+  ],
+  "speech": "ゆみと、ぼうで、ひく。",
+  "caption": "ゆみ と ぼう で、ひく。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "弓",
+    "picture": "🏹",
+    "motion": "still"
+   },
+   {
+    "part": "丨",
+    "picture": "📏",
+    "motion": "still"
+   }
+  ]
+ },
+ "羽": {
+  "word": "はね",
+  "goals": [
+   "はねを、つくろう。"
+  ],
+  "speech": "はねと、はねで、はね。",
+  "caption": "はね と はね で、はね。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "习",
+    "picture": "🪶",
+    "motion": "still"
+   },
+   {
+    "part": "习",
+    "picture": "🪶",
+    "motion": "still"
+   }
+  ]
+ },
+ "雲": {
+  "word": "くも",
+  "goals": [
+   "くもを、つくろう。"
+  ],
+  "speech": "雨のしたに、もくもくのくも。雨をふらせる、くも。",
+  "caption": "あめの したに もくもく。あめを ふらせる、くも。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "雨",
+    "picture": "rain",
+    "motion": "still"
+   },
+   {
+    "part": "云",
+    "picture": "cloud",
+    "motion": "still"
+   }
+  ]
+ },
+ "園": {
+  "word": "えん",
+  "goals": [
+   "えんを、つくろう。"
+  ],
+  "speech": "かこいと、「えん」のおとで、えん。",
+  "caption": "かこい と 「えん」の おと で、えん。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "囗",
+    "picture": "⬜",
+    "motion": "still"
+   },
+   {
+    "part": "袁",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "遠": {
+  "word": "とおい",
+  "goals": [
+   "とおいを、つくろう。"
+  ],
+  "speech": "みちと、「えん」のおとで、とおい。",
+  "caption": "みち と 「えん」の おと で、とおい。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "⻌",
+    "picture": "🛣️",
+    "motion": "still"
+   },
+   {
+    "part": "袁",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "何": {
+  "word": "なに",
+  "goals": [
+   "なにを、つくろう。"
+  ],
+  "speech": "ひとと、「か」のおとで、なに。",
+  "caption": "ひと と 「か」の おと で、なに。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "亻",
+    "picture": "🧍",
+    "motion": "still"
+   },
+   {
+    "part": "可",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "科": {
+  "word": "か",
+  "goals": [
+   "かを、つくろう。"
+  ],
+  "speech": "いねと、ますで、か。",
+  "caption": "いね と ます で、か。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "禾",
+    "picture": "🌾",
+    "motion": "still"
+   },
+   {
+    "part": "斗",
+    "picture": "⚖️",
+    "motion": "still"
+   }
+  ]
+ },
+ "夏": {
+  "word": "なつ",
+  "goals": [],
+  "speech": "なつ。",
+  "caption": "なつ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🌻",
+    "motion": "grow"
+   }
+  ]
+ },
+ "家": {
+  "word": "いえ",
+  "goals": [
+   "いえを、つくろう。"
+  ],
+  "speech": "やねのしたに、ぶた。むかしは、いえで、ぶたをかっていたんだ。いえ。",
+  "caption": "やねの したに ぶた。むかしの いえ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "宀",
+    "picture": "🏠",
+    "motion": "still"
+   },
+   {
+    "part": "豕",
+    "picture": "🐖",
+    "motion": "still"
+   }
+  ]
+ },
+ "歌": {
+  "word": "うた",
+  "goals": [
+   "うたを、つくろう。"
+  ],
+  "speech": "あくびと、「か」のおとで、うた。",
+  "caption": "あくび と 「か」の おと で、うた。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "欠",
+    "picture": "🥱",
+    "motion": "still"
+   },
+   {
+    "part": "哥",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "画": {
+  "word": "が",
+  "goals": [],
+  "speech": "が。",
+  "caption": "が",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🖼️",
+    "motion": "grow"
+   }
+  ]
+ },
+ "回": {
+  "word": "まわる",
+  "goals": [
+   "まわるを、つくろう。"
+  ],
+  "speech": "かこいと、くちで、まわる。",
+  "caption": "かこい と くち で、まわる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "囗",
+    "picture": "⬜",
+    "motion": "still"
+   },
+   {
+    "part": "口",
+    "picture": "👄",
+    "motion": "still"
+   }
+  ]
+ },
+ "会": {
+  "word": "あう",
+  "goals": [
+   "あうを、つくろう。"
+  ],
+  "speech": "ひとと、くもで、あう。",
+  "caption": "ひと と くも で、あう。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "人",
+    "picture": "🧍",
+    "motion": "still"
+   },
+   {
+    "part": "云",
+    "picture": "cloud",
+    "motion": "still"
+   }
+  ]
+ },
+ "海": {
+  "word": "うみ",
+  "goals": [
+   "うみを、つくろう。"
+  ],
+  "speech": "さんずいは、水のしるし。水がたくさんあるところ、うみ。みぎがわは、おとのパーツだよ。",
+  "caption": "さんずいは みずの しるし。みずが たくさん、うみ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "氵",
+    "picture": "drop",
+    "motion": "still"
+   },
+   {
+    "part": "毎",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "絵": {
+  "word": "え",
+  "goals": [
+   "えを、つくろう。"
+  ],
+  "speech": "いとと、あうで、え。",
+  "caption": "いと と あう で、え。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "糸",
+    "picture": "thread",
+    "motion": "still"
+   },
+   {
+    "part": "会",
+    "picture": "🤝",
+    "motion": "still"
+   }
+  ]
+ },
+ "外": {
+  "word": "そと",
+  "goals": [
+   "そとを、つくろう。"
+  ],
+  "speech": "ゆうと、うらないで、そと。",
+  "caption": "ゆう と うらない で、そと。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "夕",
+    "picture": "🌆",
+    "motion": "still"
+   },
+   {
+    "part": "卜",
+    "picture": "🔮",
+    "motion": "still"
+   }
+  ]
+ },
+ "角": {
+  "word": "つの",
+  "goals": [],
+  "speech": "つののかたちからできた、かんじだよ。つの。",
+  "caption": "つのの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🦌",
+    "motion": "grow"
+   }
+  ]
+ },
+ "楽": {
+  "word": "たのしい",
+  "goals": [],
+  "speech": "たのしい。",
+  "caption": "たのしい",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🎶",
+    "motion": "grow"
+   }
+  ]
+ },
+ "活": {
+  "word": "かつ",
+  "goals": [
+   "かつを、つくろう。"
+  ],
+  "speech": "みずと、したで、かつ。",
+  "caption": "みず と した で、かつ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "氵",
+    "picture": "drop",
+    "motion": "still"
+   },
+   {
+    "part": "舌",
+    "picture": "👅",
+    "motion": "still"
+   }
+  ]
+ },
+ "間": {
+  "word": "あいだ",
+  "goals": [
+   "あいだを、つくろう。"
+  ],
+  "speech": "門のあいだから、おひさまが見える。あいだ。",
+  "caption": "もんの あいだから おひさまが みえる。あいだ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "門",
+    "picture": "gate",
+    "motion": "still"
+   },
+   {
+    "part": "日",
+    "picture": "sun",
+    "motion": "still"
+   }
+  ]
+ },
+ "丸": {
+  "word": "まる",
+  "goals": [
+   "まるを、つくろう。"
+  ],
+  "speech": "きゅうと、てんで、まる。",
+  "caption": "きゅう と てん で、まる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "九",
+    "picture": "9️⃣",
+    "motion": "still"
+   },
+   {
+    "part": "丶",
+    "picture": "⚫",
+    "motion": "still"
+   }
+  ]
+ },
+ "岩": {
+  "word": "いわ",
+  "goals": [
+   "いわを、つくろう。"
+  ],
+  "speech": "山にある、大きな石。いわ。",
+  "caption": "やまに ある おおきな いし。いわ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "山",
+    "picture": "⛰️",
+    "motion": "still"
+   },
+   {
+    "part": "石",
+    "picture": "🪨",
+    "motion": "still"
+   }
+  ]
+ },
+ "顔": {
+  "word": "かお",
+  "goals": [
+   "かおを、つくろう。"
+  ],
+  "speech": "あたまと、「がん」のおとで、かお。",
+  "caption": "あたま と 「がん」の おと で、かお。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "頁",
+    "picture": "👤",
+    "motion": "still"
+   },
+   {
+    "part": "彦",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "汽": {
+  "word": "き",
+  "goals": [
+   "きを、つくろう。"
+  ],
+  "speech": "みずと、「き」のおとで、き。",
+  "caption": "みず と 「き」の おと で、き。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "氵",
+    "picture": "drop",
+    "motion": "still"
+   },
+   {
+    "part": "气",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "記": {
+  "word": "しるす",
+  "goals": [
+   "しるすを、つくろう。"
+  ],
+  "speech": "いうと、「き」のおとで、しるす。",
+  "caption": "いう と 「き」の おと で、しるす。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "言",
+    "picture": "💬",
+    "motion": "still"
+   },
+   {
+    "part": "己",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "帰": {
+  "word": "かえる",
+  "goals": [
+   "かえるを、つくろう。"
+  ],
+  "speech": "かたなと、ほうきで、かえる。",
+  "caption": "かたな と ほうき で、かえる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "刂",
+    "picture": "🗡️",
+    "motion": "still"
+   },
+   {
+    "part": "帚",
+    "picture": "🧹",
+    "motion": "still"
+   }
+  ]
+ },
+ "弓": {
+  "word": "ゆみ",
+  "goals": [],
+  "speech": "ゆみのかたちからできた、かんじだよ。ゆみ。",
+  "caption": "ゆみの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🏹",
+    "motion": "grow"
+   }
+  ]
+ },
+ "牛": {
+  "word": "うし",
+  "goals": [],
+  "speech": "うしのかたちからできた、かんじだよ。うし。",
+  "caption": "うしの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🐄",
+    "motion": "grow"
+   }
+  ]
+ },
+ "魚": {
+  "word": "さかな",
+  "goals": [],
+  "speech": "さかなのかたちからできた、かんじだよ。さかな。",
+  "caption": "さかなの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🐟",
+    "motion": "grow"
+   }
+  ]
+ },
+ "京": {
+  "word": "きょう",
+  "goals": [],
+  "speech": "きょう。",
+  "caption": "きょう",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🏯",
+    "motion": "grow"
+   }
+  ]
+ },
+ "強": {
+  "word": "つよい",
+  "goals": [
+   "つよいを、つくろう。"
+  ],
+  "speech": "ゆみと、むしで、つよい。",
+  "caption": "ゆみ と むし で、つよい。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "弓",
+    "picture": "🏹",
+    "motion": "still"
+   },
+   {
+    "part": "虽",
+    "picture": "🐛",
+    "motion": "still"
+   }
+  ]
+ },
+ "教": {
+  "word": "おしえる",
+  "goals": [
+   "おしえるを、つくろう。"
+  ],
+  "speech": "むちと、「こう」のおとで、おしえる。",
+  "caption": "むち と 「こう」の おと で、おしえる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "攵",
+    "picture": "🪄",
+    "motion": "still"
+   },
+   {
+    "part": "孝",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "近": {
+  "word": "ちかい",
+  "goals": [
+   "ちかいを、つくろう。"
+  ],
+  "speech": "みちと、おので、ちかい。",
+  "caption": "みち と おの で、ちかい。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "⻌",
+    "picture": "🛣️",
+    "motion": "still"
+   },
+   {
+    "part": "斤",
+    "picture": "🪓",
+    "motion": "still"
+   }
+  ]
+ },
+ "兄": {
+  "word": "あに",
+  "goals": [
+   "あにを、つくろう。"
+  ],
+  "speech": "くちと、あしで、あに。",
+  "caption": "くち と あし で、あに。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "口",
+    "picture": "👄",
+    "motion": "still"
+   },
+   {
+    "part": "儿",
+    "picture": "🦵",
+    "motion": "still"
+   }
+  ]
+ },
+ "形": {
+  "word": "かたち",
+  "goals": [
+   "かたちを、つくろう。"
+  ],
+  "speech": "かざりと、「けい」のおとで、かたち。",
+  "caption": "かざり と 「けい」の おと で、かたち。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "彡",
+    "picture": "✨",
+    "motion": "still"
+   },
+   {
+    "part": "开",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "計": {
+  "word": "はかる",
+  "goals": [
+   "はかるを、つくろう。"
+  ],
+  "speech": "いうと、じゅうで、はかる。",
+  "caption": "いう と じゅう で、はかる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "言",
+    "picture": "💬",
+    "motion": "still"
+   },
+   {
+    "part": "十",
+    "picture": "🔟",
+    "motion": "still"
+   }
+  ]
+ },
+ "元": {
+  "word": "もと",
+  "goals": [
+   "もとを、つくろう。"
+  ],
+  "speech": "にと、あしで、もと。",
+  "caption": "に と あし で、もと。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "二",
+    "picture": "2️⃣",
+    "motion": "still"
+   },
+   {
+    "part": "儿",
+    "picture": "🦵",
+    "motion": "still"
+   }
+  ]
+ },
+ "言": {
+  "word": "いう",
+  "goals": [],
+  "speech": "いう。",
+  "caption": "いう",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "💬",
+    "motion": "grow"
+   }
+  ]
+ },
+ "原": {
+  "word": "はら",
+  "goals": [
+   "はらを、つくろう。"
+  ],
+  "speech": "がけと、いずみで、はら。",
+  "caption": "がけ と いずみ で、はら。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "厂",
+    "picture": "🧗",
+    "motion": "still"
+   },
+   {
+    "part": "泉",
+    "picture": "spring",
+    "motion": "still"
+   }
+  ]
+ },
+ "戸": {
+  "word": "と",
+  "goals": [],
+  "speech": "とのかたちからできた、かんじだよ。と。",
+  "caption": "との かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🚪",
+    "motion": "grow"
+   }
+  ]
+ },
+ "古": {
+  "word": "ふるい",
+  "goals": [
+   "ふるいを、つくろう。"
+  ],
+  "speech": "じゅうと、くちで、ふるい。",
+  "caption": "じゅう と くち で、ふるい。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "十",
+    "picture": "🔟",
+    "motion": "still"
+   },
+   {
+    "part": "口",
+    "picture": "👄",
+    "motion": "still"
+   }
+  ]
+ },
+ "午": {
+  "word": "ご",
+  "goals": [],
+  "speech": "ご。",
+  "caption": "ご",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🕛",
+    "motion": "grow"
+   }
+  ]
+ },
+ "後": {
+  "word": "うしろ",
+  "goals": [],
+  "speech": "うしろ。",
+  "caption": "うしろ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🔙",
+    "motion": "grow"
+   }
+  ]
+ },
+ "語": {
+  "word": "ご",
+  "goals": [
+   "ごを、つくろう。"
+  ],
+  "speech": "いうと、「ご」のおとで、ご。",
+  "caption": "いう と 「ご」の おと で、ご。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "言",
+    "picture": "💬",
+    "motion": "still"
+   },
+   {
+    "part": "吾",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "工": {
+  "word": "こう",
+  "goals": [],
+  "speech": "こう。",
+  "caption": "こう",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🔨",
+    "motion": "grow"
+   }
+  ]
+ },
+ "公": {
+  "word": "こう",
+  "goals": [
+   "こうを、つくろう。"
+  ],
+  "speech": "はちと、「む」のおとで、こう。",
+  "caption": "はち と 「む」の おと で、こう。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "八",
+    "picture": "8️⃣",
+    "motion": "still"
+   },
+   {
+    "part": "厶",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "広": {
+  "word": "ひろい",
+  "goals": [
+   "ひろいを、つくろう。"
+  ],
+  "speech": "やねと、「む」のおとで、ひろい。",
+  "caption": "やね と 「む」の おと で、ひろい。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "广",
+    "picture": "🛖",
+    "motion": "still"
+   },
+   {
+    "part": "厶",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "交": {
+  "word": "まじわる",
+  "goals": [
+   "まじわるを、つくろう。"
+  ],
+  "speech": "ふたと、ちちで、まじわる。",
+  "caption": "ふた と ちち で、まじわる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "亠",
+    "picture": "🎩",
+    "motion": "still"
+   },
+   {
+    "part": "父",
+    "picture": "👨",
+    "motion": "still"
+   }
+  ]
+ },
+ "光": {
+  "word": "ひかり",
+  "goals": [],
+  "speech": "ひかり。",
+  "caption": "ひかり",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "💡",
+    "motion": "grow"
+   }
+  ]
+ },
+ "考": {
+  "word": "かんがえる",
+  "goals": [
+   "かんがえるを、つくろう。"
+  ],
+  "speech": "としよりと、「こう」のおとで、かんがえる。",
+  "caption": "としより と 「こう」の おと で、かんがえる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "耂",
+    "picture": "👴",
+    "motion": "still"
+   },
+   {
+    "part": "丂",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "行": {
+  "word": "いく",
+  "goals": [
+   "いくを、つくろう。"
+  ],
+  "speech": "みちと、みちで、いく。",
+  "caption": "みち と みち で、いく。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "彳",
+    "picture": "🚶",
+    "motion": "still"
+   },
+   {
+    "part": "亍",
+    "picture": "🛣️",
+    "motion": "still"
+   }
+  ]
+ },
+ "高": {
+  "word": "たかい",
+  "goals": [],
+  "speech": "たかい。",
+  "caption": "たかい",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🗼",
+    "motion": "grow"
+   }
+  ]
+ },
+ "黄": {
+  "word": "き",
+  "goals": [],
+  "speech": "き。",
+  "caption": "き",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🟡",
+    "motion": "grow"
+   }
+  ]
+ },
+ "合": {
+  "word": "あう",
+  "goals": [
+   "あうを、つくろう。"
+  ],
+  "speech": "やねと、くちで、あう。",
+  "caption": "やね と くち で、あう。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "亼",
+    "picture": "🔺",
+    "motion": "still"
+   },
+   {
+    "part": "口",
+    "picture": "👄",
+    "motion": "still"
+   }
+  ]
+ },
+ "谷": {
+  "word": "たに",
+  "goals": [],
+  "speech": "たに。",
+  "caption": "たに",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🏔️",
+    "motion": "grow"
+   }
+  ]
+ },
+ "国": {
+  "word": "くに",
+  "goals": [
+   "くにを、つくろう。"
+  ],
+  "speech": "かこいと、たまで、くに。",
+  "caption": "かこい と たま で、くに。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "囗",
+    "picture": "⬜",
+    "motion": "still"
+   },
+   {
+    "part": "玉",
+    "picture": "🔮",
+    "motion": "still"
+   }
+  ]
+ },
+ "黒": {
+  "word": "くろ",
+  "goals": [
+   "くろを、つくろう。"
+  ],
+  "speech": "さとと、ひで、くろ。",
+  "caption": "さと と ひ で、くろ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "里",
+    "picture": "🏡",
+    "motion": "still"
+   },
+   {
+    "part": "灬",
+    "picture": "🔥",
+    "motion": "still"
+   }
+  ]
+ },
+ "今": {
+  "word": "いま",
+  "goals": [],
+  "speech": "いま。",
+  "caption": "いま",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "⌚",
+    "motion": "grow"
+   }
+  ]
+ },
+ "才": {
+  "word": "さい",
+  "goals": [],
+  "speech": "さい。",
+  "caption": "さい",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🎂",
+    "motion": "grow"
+   }
+  ]
+ },
+ "細": {
+  "word": "ほそい",
+  "goals": [
+   "ほそいを、つくろう。"
+  ],
+  "speech": "いとと、たで、ほそい。",
+  "caption": "いと と た で、ほそい。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "糸",
+    "picture": "thread",
+    "motion": "still"
+   },
+   {
+    "part": "田",
+    "picture": "🌾",
+    "motion": "still"
+   }
+  ]
+ },
+ "作": {
+  "word": "つくる",
+  "goals": [
+   "つくるを、つくろう。"
+  ],
+  "speech": "ひとと、「さく」のおとで、つくる。",
+  "caption": "ひと と 「さく」の おと で、つくる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "亻",
+    "picture": "🧍",
+    "motion": "still"
+   },
+   {
+    "part": "乍",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "算": {
+  "word": "さん",
+  "goals": [],
+  "speech": "さん。",
+  "caption": "さん",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🧮",
+    "motion": "grow"
+   }
+  ]
+ },
+ "止": {
+  "word": "とまる",
+  "goals": [],
+  "speech": "とまる。",
+  "caption": "とまる",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🛑",
+    "motion": "grow"
+   }
+  ]
+ },
+ "市": {
+  "word": "いち",
+  "goals": [
+   "いちを、つくろう。"
+  ],
+  "speech": "ふたと、ぬので、いち。",
+  "caption": "ふた と ぬの で、いち。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "亠",
+    "picture": "🎩",
+    "motion": "still"
+   },
+   {
+    "part": "巾",
+    "picture": "🧣",
+    "motion": "still"
+   }
+  ]
+ },
+ "矢": {
+  "word": "や",
+  "goals": [],
+  "speech": "やのかたちからできた、かんじだよ。や。",
+  "caption": "やの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🏹",
+    "motion": "grow"
+   }
+  ]
+ },
+ "姉": {
+  "word": "あね",
+  "goals": [
+   "あねを、つくろう。"
+  ],
+  "speech": "おんなと、いちで、あね。",
+  "caption": "おんな と いち で、あね。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "女",
+    "picture": "👩",
+    "motion": "still"
+   },
+   {
+    "part": "市",
+    "picture": "🏪",
+    "motion": "still"
+   }
+  ]
+ },
+ "思": {
+  "word": "おもう",
+  "goals": [
+   "おもうを、つくろう。"
+  ],
+  "speech": "たと、こころで、おもう。",
+  "caption": "た と こころ で、おもう。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "田",
+    "picture": "🌾",
+    "motion": "still"
+   },
+   {
+    "part": "心",
+    "picture": "❤️",
+    "motion": "still"
+   }
+  ]
+ },
+ "紙": {
+  "word": "かみ",
+  "goals": [
+   "かみを、つくろう。"
+  ],
+  "speech": "いとと、「し」のおとで、かみ。",
+  "caption": "いと と 「し」の おと で、かみ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "糸",
+    "picture": "thread",
+    "motion": "still"
+   },
+   {
+    "part": "氏",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "寺": {
+  "word": "てら",
+  "goals": [
+   "てらを、つくろう。"
+  ],
+  "speech": "つちと、「すん」のおとで、てら。",
+  "caption": "つち と 「すん」の おと で、てら。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "土",
+    "picture": "🟤",
+    "motion": "still"
+   },
+   {
+    "part": "寸",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "自": {
+  "word": "じ",
+  "goals": [],
+  "speech": "じ。",
+  "caption": "じ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🙋",
+    "motion": "grow"
+   }
+  ]
+ },
+ "時": {
+  "word": "とき",
+  "goals": [
+   "ときを、つくろう。"
+  ],
+  "speech": "ひと、てらで、とき。",
+  "caption": "ひ と てら で、とき。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "日",
+    "picture": "sun",
+    "motion": "still"
+   },
+   {
+    "part": "寺",
+    "picture": "🛕",
+    "motion": "still"
+   }
+  ]
+ },
+ "室": {
+  "word": "しつ",
+  "goals": [
+   "しつを、つくろう。"
+  ],
+  "speech": "やねと、「しつ」のおとで、しつ。",
+  "caption": "やね と 「しつ」の おと で、しつ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "宀",
+    "picture": "🏠",
+    "motion": "still"
+   },
+   {
+    "part": "至",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "社": {
+  "word": "しゃ",
+  "goals": [
+   "しゃを、つくろう。"
+  ],
+  "speech": "かみさまと、つちで、しゃ。",
+  "caption": "かみさま と つち で、しゃ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "礻",
+    "picture": "⛩️",
+    "motion": "still"
+   },
+   {
+    "part": "土",
+    "picture": "🟤",
+    "motion": "still"
+   }
+  ]
+ },
+ "弱": {
+  "word": "よわい",
+  "goals": [],
+  "speech": "よわい。",
+  "caption": "よわい",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🥀",
+    "motion": "grow"
+   }
+  ]
+ },
+ "首": {
+  "word": "くび",
+  "goals": [],
+  "speech": "くび。",
+  "caption": "くび",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🦒",
+    "motion": "grow"
+   }
+  ]
+ },
+ "秋": {
+  "word": "あき",
+  "goals": [
+   "あきを、つくろう。"
+  ],
+  "speech": "いねと、ひで、あき。",
+  "caption": "いね と ひ で、あき。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "禾",
+    "picture": "🌾",
+    "motion": "still"
+   },
+   {
+    "part": "火",
+    "picture": "🔥",
+    "motion": "still"
+   }
+  ]
+ },
+ "週": {
+  "word": "しゅう",
+  "goals": [
+   "しゅうを、つくろう。"
+  ],
+  "speech": "みちと、「しゅう」のおとで、しゅう。",
+  "caption": "みち と 「しゅう」の おと で、しゅう。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "⻌",
+    "picture": "🛣️",
+    "motion": "still"
+   },
+   {
+    "part": "周",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "春": {
+  "word": "はる",
+  "goals": [],
+  "speech": "はる。",
+  "caption": "はる",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🌸",
+    "motion": "grow"
+   }
+  ]
+ },
+ "書": {
+  "word": "かく",
+  "goals": [
+   "かくを、つくろう。"
+  ],
+  "speech": "ふでと、ひで、かく。",
+  "caption": "ふで と ひ で、かく。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "聿",
+    "picture": "🖌️",
+    "motion": "still"
+   },
+   {
+    "part": "日",
+    "picture": "sun",
+    "motion": "still"
+   }
+  ]
+ },
+ "少": {
+  "word": "すこし",
+  "goals": [
+   "すこしを、つくろう。"
+  ],
+  "speech": "ちいさいと、ななめで、すこし。",
+  "caption": "ちいさい と ななめ で、すこし。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "小",
+    "picture": "🐜",
+    "motion": "still"
+   },
+   {
+    "part": "丿",
+    "picture": "〽️",
+    "motion": "still"
+   }
+  ]
+ },
+ "場": {
+  "word": "ば",
+  "goals": [
+   "ばを、つくろう。"
+  ],
+  "speech": "つちと、「じょう」のおとで、ば。",
+  "caption": "つち と 「じょう」の おと で、ば。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "土",
+    "picture": "🟤",
+    "motion": "still"
+   },
+   {
+    "part": "昜",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "色": {
+  "word": "いろ",
+  "goals": [],
+  "speech": "いろ。",
+  "caption": "いろ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🌈",
+    "motion": "grow"
+   }
+  ]
+ },
+ "食": {
+  "word": "たべる",
+  "goals": [],
+  "speech": "たべる。",
+  "caption": "たべる",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🍙",
+    "motion": "grow"
+   }
+  ]
+ },
+ "心": {
+  "word": "こころ",
+  "goals": [],
+  "speech": "こころのかたちからできた、かんじだよ。こころ。",
+  "caption": "こころの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "❤️",
+    "motion": "grow"
+   }
+  ]
+ },
+ "新": {
+  "word": "あたらしい",
+  "goals": [
+   "あたらしいを、つくろう。"
+  ],
+  "speech": "おのと、「しん」のおとで、あたらしい。",
+  "caption": "おの と 「しん」の おと で、あたらしい。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "斤",
+    "picture": "🪓",
+    "motion": "still"
+   },
+   {
+    "part": "亲",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "親": {
+  "word": "おや",
+  "goals": [
+   "おやを、つくろう。"
+  ],
+  "speech": "みると、「しん」のおとで、おや。",
+  "caption": "みる と 「しん」の おと で、おや。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "見",
+    "picture": "👀",
+    "motion": "still"
+   },
+   {
+    "part": "亲",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "図": {
+  "word": "ず",
+  "goals": [],
+  "speech": "ず。",
+  "caption": "ず",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🗺️",
+    "motion": "grow"
+   }
+  ]
+ },
+ "数": {
+  "word": "かず",
+  "goals": [
+   "かずを、つくろう。"
+  ],
+  "speech": "むちと、「すう」のおとで、かず。",
+  "caption": "むち と 「すう」の おと で、かず。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "攵",
+    "picture": "🪄",
+    "motion": "still"
+   },
+   {
+    "part": "娄",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "西": {
+  "word": "にし",
+  "goals": [],
+  "speech": "にし。",
+  "caption": "にし",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🌇",
+    "motion": "grow"
+   }
+  ]
+ },
+ "声": {
+  "word": "こえ",
+  "goals": [],
+  "speech": "こえ。",
+  "caption": "こえ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "📣",
+    "motion": "grow"
+   }
+  ]
+ },
+ "星": {
+  "word": "ほし",
+  "goals": [
+   "ほしを、つくろう。"
+  ],
+  "speech": "ひと、うまれるで、ほし。",
+  "caption": "ひ と うまれる で、ほし。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "日",
+    "picture": "sun",
+    "motion": "still"
+   },
+   {
+    "part": "生",
+    "picture": "🌱",
+    "motion": "still"
+   }
+  ]
+ },
+ "晴": {
+  "word": "はれ",
+  "goals": [
+   "はれを、つくろう。"
+  ],
+  "speech": "ひと、あおで、はれ。",
+  "caption": "ひ と あお で、はれ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "日",
+    "picture": "sun",
+    "motion": "still"
+   },
+   {
+    "part": "青",
+    "picture": "🔵",
+    "motion": "still"
+   }
+  ]
+ },
+ "切": {
+  "word": "きる",
+  "goals": [
+   "きるを、つくろう。"
+  ],
+  "speech": "かたなと、ななで、きる。",
+  "caption": "かたな と なな で、きる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "刀",
+    "picture": "🗡️",
+    "motion": "still"
+   },
+   {
+    "part": "七",
+    "picture": "7️⃣",
+    "motion": "still"
+   }
+  ]
+ },
+ "雪": {
+  "word": "ゆき",
+  "goals": [
+   "ゆきを、つくろう。"
+  ],
+  "speech": "雨が、手ですくえるようになった、ゆき。",
+  "caption": "あめが てで すくえるように なった、ゆき。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "雨",
+    "picture": "rain",
+    "motion": "still"
+   },
+   {
+    "part": "⺕",
+    "picture": "✋",
+    "motion": "still"
+   }
+  ]
+ },
+ "船": {
+  "word": "ふね",
+  "goals": [
+   "ふねを、つくろう。"
+  ],
+  "speech": "ふねと、「せん」のおとで、ふね。",
+  "caption": "ふね と 「せん」の おと で、ふね。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "舟",
+    "picture": "⛵",
+    "motion": "still"
+   },
+   {
+    "part": "㕣",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "線": {
+  "word": "せん",
+  "goals": [
+   "いずみを、つくろう。",
+   "せんを、つくろう。"
+  ],
+  "speech": "糸のように、ほそく、ながくつづく、せん。みぎがわは、いずみ。しろと、水で、いずみだよ。",
+  "caption": "いとの ように ほそく ながい、せん。しろと みずで、いずみ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "糸",
+    "picture": "thread",
+    "motion": "still"
+   },
+   {
+    "part": "泉",
+    "picture": "spring",
+    "motion": "still"
+   }
+  ]
+ },
+ "前": {
+  "word": "まえ",
+  "goals": [],
+  "speech": "まえ。",
+  "caption": "まえ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "⏩",
+    "motion": "grow"
+   }
+  ]
+ },
+ "組": {
+  "word": "くみ",
+  "goals": [
+   "くみを、つくろう。"
+  ],
+  "speech": "いとと、「そ」のおとで、くみ。",
+  "caption": "いと と 「そ」の おと で、くみ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "糸",
+    "picture": "thread",
+    "motion": "still"
+   },
+   {
+    "part": "且",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "走": {
+  "word": "はしる",
+  "goals": [
+   "はしるを、つくろう。"
+  ],
+  "speech": "つちと、あしで、はしる。",
+  "caption": "つち と あし で、はしる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "土",
+    "picture": "🟤",
+    "motion": "still"
+   },
+   {
+    "part": "龰",
+    "picture": "🦶",
+    "motion": "still"
+   }
+  ]
+ },
+ "多": {
+  "word": "おおい",
+  "goals": [
+   "おおいを、つくろう。"
+  ],
+  "speech": "ゆうと、ゆうで、おおい。",
+  "caption": "ゆう と ゆう で、おおい。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "夕",
+    "picture": "🌆",
+    "motion": "still"
+   },
+   {
+    "part": "夕",
+    "picture": "🌆",
+    "motion": "still"
+   }
+  ]
+ },
+ "太": {
+  "word": "ふとい",
+  "goals": [
+   "ふといを、つくろう。"
+  ],
+  "speech": "おおきいと、てんで、ふとい。",
+  "caption": "おおきい と てん で、ふとい。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "大",
+    "picture": "🐘",
+    "motion": "still"
+   },
+   {
+    "part": "丶",
+    "picture": "⚫",
+    "motion": "still"
+   }
+  ]
+ },
+ "体": {
+  "word": "からだ",
+  "goals": [
+   "からだを、つくろう。"
+  ],
+  "speech": "ひとと、ほんで、からだ。",
+  "caption": "ひと と ほん で、からだ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "亻",
+    "picture": "🧍",
+    "motion": "still"
+   },
+   {
+    "part": "本",
+    "picture": "📖",
+    "motion": "still"
+   }
+  ]
+ },
+ "台": {
+  "word": "だい",
+  "goals": [
+   "だいを、つくろう。"
+  ],
+  "speech": "「む」のおとと、くちで、だい。",
+  "caption": "「む」の おと と くち で、だい。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "厶",
+    "picture": "♪",
+    "motion": "still"
+   },
+   {
+    "part": "口",
+    "picture": "👄",
+    "motion": "still"
+   }
+  ]
+ },
+ "地": {
+  "word": "ち",
+  "goals": [
+   "ちを、つくろう。"
+  ],
+  "speech": "つちと、「ち」のおとで、ち。",
+  "caption": "つち と 「ち」の おと で、ち。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "土",
+    "picture": "🟤",
+    "motion": "still"
+   },
+   {
+    "part": "也",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "池": {
+  "word": "いけ",
+  "goals": [
+   "いけを、つくろう。"
+  ],
+  "speech": "さんずいは、水のしるし。水がたまっているところ、いけ。みぎがわは、おとのパーツだよ。",
+  "caption": "さんずいは みずの しるし。みずが たまって、いけ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "氵",
+    "picture": "drop",
+    "motion": "still"
+   },
+   {
+    "part": "也",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "知": {
+  "word": "しる",
+  "goals": [
+   "しるを、つくろう。"
+  ],
+  "speech": "やと、くちで、しる。",
+  "caption": "や と くち で、しる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "矢",
+    "picture": "🏹",
+    "motion": "still"
+   },
+   {
+    "part": "口",
+    "picture": "👄",
+    "motion": "still"
+   }
+  ]
+ },
+ "茶": {
+  "word": "ちゃ",
+  "goals": [],
+  "speech": "ちゃ。",
+  "caption": "ちゃ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🍵",
+    "motion": "grow"
+   }
+  ]
+ },
+ "昼": {
+  "word": "ひる",
+  "goals": [
+   "ひるを、つくろう。"
+  ],
+  "speech": "ものさしと、ひのでで、ひる。",
+  "caption": "ものさし と ひので で、ひる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "尺",
+    "picture": "📏",
+    "motion": "still"
+   },
+   {
+    "part": "旦",
+    "picture": "🌅",
+    "motion": "still"
+   }
+  ]
+ },
+ "長": {
+  "word": "ながい",
+  "goals": [],
+  "speech": "ながい。",
+  "caption": "ながい",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🐍",
+    "motion": "grow"
+   }
+  ]
+ },
+ "鳥": {
+  "word": "とり",
+  "goals": [],
+  "speech": "とりのかたちからできた、かんじだよ。とり。",
+  "caption": "とりの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🐦",
+    "motion": "grow"
+   }
+  ]
+ },
+ "朝": {
+  "word": "あさ",
+  "goals": [
+   "あさを、つくろう。"
+  ],
+  "speech": "つきと、あさひで、あさ。",
+  "caption": "つき と あさひ で、あさ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "月",
+    "picture": "moon",
+    "motion": "still"
+   },
+   {
+    "part": "𠦝",
+    "picture": "🌅",
+    "motion": "still"
+   }
+  ]
+ },
+ "直": {
+  "word": "なおす",
+  "goals": [],
+  "speech": "なおす。",
+  "caption": "なおす",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🔧",
+    "motion": "grow"
+   }
+  ]
+ },
+ "通": {
+  "word": "とおる",
+  "goals": [
+   "とおるを、つくろう。"
+  ],
+  "speech": "みちと、「つう」のおとで、とおる。",
+  "caption": "みち と 「つう」の おと で、とおる。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "⻌",
+    "picture": "🛣️",
+    "motion": "still"
+   },
+   {
+    "part": "甬",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "弟": {
+  "word": "おとうと",
+  "goals": [],
+  "speech": "おとうと。",
+  "caption": "おとうと",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "👦",
+    "motion": "grow"
+   }
+  ]
+ },
+ "店": {
+  "word": "みせ",
+  "goals": [
+   "みせを、つくろう。"
+  ],
+  "speech": "やねと、「てん」のおとで、みせ。",
+  "caption": "やね と 「てん」の おと で、みせ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "广",
+    "picture": "🛖",
+    "motion": "still"
+   },
+   {
+    "part": "占",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "点": {
+  "word": "てん",
+  "goals": [
+   "てんを、つくろう。"
+  ],
+  "speech": "ひと、「てん」のおとで、てん。",
+  "caption": "ひ と 「てん」の おと で、てん。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "灬",
+    "picture": "🔥",
+    "motion": "still"
+   },
+   {
+    "part": "占",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "電": {
+  "word": "でん",
+  "goals": [
+   "でんを、つくろう。"
+  ],
+  "speech": "雨と、いなずま。ぴかっとひかる、でん。",
+  "caption": "あめと いなずま。ぴかっと ひかる、でん。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "雨",
+    "picture": "rain",
+    "motion": "still"
+   },
+   {
+    "part": "电",
+    "picture": "⚡",
+    "motion": "still"
+   }
+  ]
+ },
+ "刀": {
+  "word": "かたな",
+  "goals": [],
+  "speech": "かたなのかたちからできた、かんじだよ。かたな。",
+  "caption": "かたなの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🗡️",
+    "motion": "grow"
+   }
+  ]
+ },
+ "冬": {
+  "word": "ふゆ",
+  "goals": [
+   "ふゆを、つくろう。"
+  ],
+  "speech": "あしと、こおりで、ふゆ。",
+  "caption": "あし と こおり で、ふゆ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "夂",
+    "picture": "👣",
+    "motion": "still"
+   },
+   {
+    "part": "冫",
+    "picture": "🧊",
+    "motion": "still"
+   }
+  ]
+ },
+ "当": {
+  "word": "あたる",
+  "goals": [],
+  "speech": "あたる。",
+  "caption": "あたる",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🎯",
+    "motion": "grow"
+   }
+  ]
+ },
+ "東": {
+  "word": "ひがし",
+  "goals": [
+   "ひがしを、つくろう。"
+  ],
+  "speech": "木のむこうから、おひさまがのぼる。ひがし。",
+  "caption": "きの むこうから おひさまが のぼる。ひがし。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "木",
+    "picture": "tree",
+    "motion": "still"
+   },
+   {
+    "part": "日",
+    "picture": "sun",
+    "motion": "still"
+   }
+  ]
+ },
+ "答": {
+  "word": "こたえ",
+  "goals": [
+   "こたえを、つくろう。"
+  ],
+  "speech": "たけと、あうで、こたえ。",
+  "caption": "たけ と あう で、こたえ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "竹",
+    "picture": "🎋",
+    "motion": "still"
+   },
+   {
+    "part": "合",
+    "picture": "🧩",
+    "motion": "still"
+   }
+  ]
+ },
+ "頭": {
+  "word": "あたま",
+  "goals": [
+   "あたまを、つくろう。"
+  ],
+  "speech": "あたまと、まめで、あたま。",
+  "caption": "あたま と まめ で、あたま。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "頁",
+    "picture": "👤",
+    "motion": "still"
+   },
+   {
+    "part": "豆",
+    "picture": "🫘",
+    "motion": "still"
+   }
+  ]
+ },
+ "同": {
+  "word": "おなじ",
+  "goals": [],
+  "speech": "おなじ。",
+  "caption": "おなじ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "👯",
+    "motion": "grow"
+   }
+  ]
+ },
+ "道": {
+  "word": "みち",
+  "goals": [
+   "みちを、つくろう。"
+  ],
+  "speech": "みちと、くびで、みち。",
+  "caption": "みち と くび で、みち。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "⻌",
+    "picture": "🛣️",
+    "motion": "still"
+   },
+   {
+    "part": "首",
+    "picture": "🦒",
+    "motion": "still"
+   }
+  ]
+ },
+ "読": {
+  "word": "よむ",
+  "goals": [
+   "よむを、つくろう。"
+  ],
+  "speech": "いうと、うるで、よむ。",
+  "caption": "いう と うる で、よむ。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "言",
+    "picture": "💬",
+    "motion": "still"
+   },
+   {
+    "part": "売",
+    "picture": "🏷️",
+    "motion": "still"
+   }
+  ]
+ },
+ "内": {
+  "word": "うち",
+  "goals": [
+   "うちを、つくろう。"
+  ],
+  "speech": "わくと、ひとで、うち。",
+  "caption": "わく と ひと で、うち。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "冂",
+    "picture": "🖼️",
+    "motion": "still"
+   },
+   {
+    "part": "人",
+    "picture": "🧍",
+    "motion": "still"
+   }
+  ]
+ },
+ "南": {
+  "word": "みなみ",
+  "goals": [],
+  "speech": "みなみ。",
+  "caption": "みなみ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🏝️",
+    "motion": "grow"
+   }
+  ]
+ },
+ "肉": {
+  "word": "にく",
+  "goals": [],
+  "speech": "にく。",
+  "caption": "にく",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🥩",
+    "motion": "grow"
+   }
+  ]
+ },
+ "馬": {
+  "word": "うま",
+  "goals": [],
+  "speech": "うまのかたちからできた、かんじだよ。うま。",
+  "caption": "うまの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🐎",
+    "motion": "grow"
+   }
+  ]
+ },
+ "売": {
+  "word": "うる",
+  "goals": [],
+  "speech": "うる。",
+  "caption": "うる",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🏷️",
+    "motion": "grow"
+   }
+  ]
+ },
+ "買": {
+  "word": "かう",
+  "goals": [
+   "かうを、つくろう。"
+  ],
+  "speech": "あみと、かいで、かう。",
+  "caption": "あみ と かい で、かう。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "罒",
+    "picture": "🕸️",
+    "motion": "still"
+   },
+   {
+    "part": "貝",
+    "picture": "🐚",
+    "motion": "still"
+   }
+  ]
+ },
+ "麦": {
+  "word": "むぎ",
+  "goals": [],
+  "speech": "むぎ。",
+  "caption": "むぎ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🌾",
+    "motion": "grow"
+   }
+  ]
+ },
+ "半": {
+  "word": "はん",
+  "goals": [],
+  "speech": "はん。",
+  "caption": "はん",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🌗",
+    "motion": "grow"
+   }
+  ]
+ },
+ "番": {
+  "word": "ばん",
+  "goals": [
+   "ばんを、つくろう。"
+  ],
+  "speech": "たねと、たで、ばん。",
+  "caption": "たね と た で、ばん。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "釆",
+    "picture": "🌱",
+    "motion": "still"
+   },
+   {
+    "part": "田",
+    "picture": "🌾",
+    "motion": "still"
+   }
+  ]
+ },
+ "父": {
+  "word": "ちち",
+  "goals": [],
+  "speech": "ちち。",
+  "caption": "ちち",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "👨",
+    "motion": "grow"
+   }
+  ]
+ },
+ "風": {
+  "word": "かぜ",
+  "goals": [],
+  "speech": "かぜ。",
+  "caption": "かぜ",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🍃",
+    "motion": "grow"
+   }
+  ]
+ },
+ "分": {
+  "word": "わける",
+  "goals": [
+   "わけるを、つくろう。"
+  ],
+  "speech": "かたなで、ふたつに、わける。",
+  "caption": "かたなで ふたつに、わける。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "八",
+    "picture": "8️⃣",
+    "motion": "still"
+   },
+   {
+    "part": "刀",
+    "picture": "🗡️",
+    "motion": "still"
+   }
+  ]
+ },
+ "聞": {
+  "word": "きく",
+  "goals": [
+   "きくを、つくろう。"
+  ],
+  "speech": "門のところで、耳をすまして、きく。",
+  "caption": "もんの ところで みみを すまして、きく。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "門",
+    "picture": "gate",
+    "motion": "still"
+   },
+   {
+    "part": "耳",
+    "picture": "👂",
+    "motion": "still"
+   }
+  ]
+ },
+ "米": {
+  "word": "こめ",
+  "goals": [],
+  "speech": "こめのかたちからできた、かんじだよ。こめ。",
+  "caption": "こめの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🍚",
+    "motion": "grow"
+   }
+  ]
+ },
+ "歩": {
+  "word": "あるく",
+  "goals": [
+   "あるくを、つくろう。"
+  ],
+  "speech": "とまると、すこしで、あるく。",
+  "caption": "とまる と すこし で、あるく。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "止",
+    "picture": "🛑",
+    "motion": "still"
+   },
+   {
+    "part": "少",
+    "picture": "🤏",
+    "motion": "still"
+   }
+  ]
+ },
+ "母": {
+  "word": "はは",
+  "goals": [],
+  "speech": "はは。",
+  "caption": "はは",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "👩",
+    "motion": "grow"
+   }
+  ]
+ },
+ "方": {
+  "word": "ほう",
+  "goals": [],
+  "speech": "ほう。",
+  "caption": "ほう",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🧭",
+    "motion": "grow"
+   }
+  ]
+ },
+ "北": {
+  "word": "きた",
+  "goals": [],
+  "speech": "きた。",
+  "caption": "きた",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🐧",
+    "motion": "grow"
+   }
+  ]
+ },
+ "毎": {
+  "word": "まい",
+  "goals": [],
+  "speech": "まい。",
+  "caption": "まい",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🔁",
+    "motion": "grow"
+   }
+  ]
+ },
+ "妹": {
+  "word": "いもうと",
+  "goals": [
+   "いもうとを、つくろう。"
+  ],
+  "speech": "おんなと、「まい」のおとで、いもうと。",
+  "caption": "おんな と 「まい」の おと で、いもうと。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "女",
+    "picture": "👩",
+    "motion": "still"
+   },
+   {
+    "part": "未",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "万": {
+  "word": "まん",
+  "goals": [],
+  "speech": "まん。",
+  "caption": "まん",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "💴",
+    "motion": "grow"
+   }
+  ]
+ },
+ "明": {
+  "word": "あかるい",
+  "goals": [
+   "あかるいを、つくろう。"
+  ],
+  "speech": "おひさまと、おつきさま。どっちもひかって、あかるい。",
+  "caption": "おひさまと おつきさま。どっちも ひかって、あかるい。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "日",
+    "picture": "sun",
+    "motion": "still"
+   },
+   {
+    "part": "月",
+    "picture": "moon",
+    "motion": "still"
+   }
+  ]
+ },
+ "鳴": {
+  "word": "なく",
+  "goals": [
+   "なくを、つくろう。"
+  ],
+  "speech": "とりが、くちをあけて、なく。",
+  "caption": "とりが くちを あけて、なく。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "口",
+    "picture": "👄",
+    "motion": "still"
+   },
+   {
+    "part": "鳥",
+    "picture": "🐦",
+    "motion": "still"
+   }
+  ]
+ },
+ "毛": {
+  "word": "け",
+  "goals": [],
+  "speech": "けのかたちからできた、かんじだよ。け。",
+  "caption": "けの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🐑",
+    "motion": "grow"
+   }
+  ]
+ },
+ "門": {
+  "word": "もん",
+  "goals": [],
+  "speech": "もんのかたちからできた、かんじだよ。もん。",
+  "caption": "もんの かたちから できたよ。",
+  "kind": "naritachi",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "gate",
+    "motion": "grow"
+   }
+  ]
+ },
+ "夜": {
+  "word": "よる",
+  "goals": [],
+  "speech": "よる。",
+  "caption": "よる",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🌙",
+    "motion": "grow"
+   }
+  ]
+ },
+ "野": {
+  "word": "の",
+  "goals": [
+   "のを、つくろう。"
+  ],
+  "speech": "さとと、「よ」のおとで、の。",
+  "caption": "さと と 「よ」の おと で、の。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "里",
+    "picture": "🏡",
+    "motion": "still"
+   },
+   {
+    "part": "予",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "友": {
+  "word": "とも",
+  "goals": [],
+  "speech": "とも。",
+  "caption": "とも",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🤝",
+    "motion": "grow"
+   }
+  ]
+ },
+ "用": {
+  "word": "よう",
+  "goals": [],
+  "speech": "よう。",
+  "caption": "よう",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "📌",
+    "motion": "grow"
+   }
+  ]
+ },
+ "曜": {
+  "word": "よう",
+  "goals": [
+   "ようを、つくろう。"
+  ],
+  "speech": "ひと、「よう」のおとで、よう。",
+  "caption": "ひ と 「よう」の おと で、よう。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "日",
+    "picture": "sun",
+    "motion": "still"
+   },
+   {
+    "part": "翟",
+    "picture": "♪",
+    "motion": "still"
+   }
+  ]
+ },
+ "来": {
+  "word": "くる",
+  "goals": [],
+  "speech": "くる。",
+  "caption": "くる",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🚌",
+    "motion": "grow"
+   }
+  ]
+ },
+ "里": {
+  "word": "さと",
+  "goals": [],
+  "speech": "さと。",
+  "caption": "さと",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "whole",
+    "picture": "🏡",
+    "motion": "grow"
+   }
+  ]
+ },
+ "理": {
+  "word": "り",
+  "goals": [
+   "りを、つくろう。"
+  ],
+  "speech": "おうと、さとで、り。",
+  "caption": "おう と さと で、り。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "王",
+    "picture": "👑",
+    "motion": "still"
+   },
+   {
+    "part": "里",
+    "picture": "🏡",
+    "motion": "still"
+   }
+  ]
+ },
+ "話": {
+  "word": "はなす",
+  "goals": [
+   "はなすを、つくろう。"
+  ],
+  "speech": "いうと、したで、はなす。",
+  "caption": "いう と した で、はなす。",
+  "kind": "oboekata",
+  "actors": [
+   {
+    "part": "言",
+    "picture": "💬",
+    "motion": "still"
+   },
+   {
+    "part": "舌",
+    "picture": "👅",
+    "motion": "still"
+   }
+  ]
+ }
+}

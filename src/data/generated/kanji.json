@@ -1,0 +1,5667 @@
+[
+ {
+  "char": "一",
+  "grade": 1,
+  "yomi": "いち",
+  "icon": "1️⃣",
+  "pattern": "tantai",
+  "parts": [
+   "一"
+  ],
+  "steps": []
+ },
+ {
+  "char": "右",
+  "grade": 1,
+  "yomi": "みぎ",
+  "icon": "👉",
+  "pattern": "jouge",
+  "parts": [
+   "ナ",
+   "口"
+  ],
+  "steps": [
+   {
+    "fixed": "ナ",
+    "answer": "口",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "右",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "右",
+     "strokes": [
+      3,
+      4,
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "雨",
+  "grade": 1,
+  "yomi": "あめ",
+  "icon": "rain",
+  "pattern": "tantai",
+  "parts": [
+   "雨"
+  ],
+  "steps": []
+ },
+ {
+  "char": "円",
+  "grade": 1,
+  "yomi": "えん",
+  "icon": "💴",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "王",
+  "grade": 1,
+  "yomi": "おう",
+  "icon": "👑",
+  "pattern": "tantai",
+  "parts": [
+   "王"
+  ],
+  "steps": []
+ },
+ {
+  "char": "音",
+  "grade": 1,
+  "yomi": "おと",
+  "icon": "🔔",
+  "pattern": "jouge",
+  "parts": [
+   "立",
+   "日"
+  ],
+  "steps": [
+   {
+    "fixed": "立",
+    "answer": "日",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "音",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    "answerGlyph": {
+     "source": "音",
+     "strokes": [
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "下",
+  "grade": 1,
+  "yomi": "した",
+  "icon": "⬇️",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "火",
+  "grade": 1,
+  "yomi": "ひ",
+  "icon": "🔥",
+  "pattern": "tantai",
+  "parts": [
+   "火"
+  ],
+  "steps": []
+ },
+ {
+  "char": "花",
+  "grade": 1,
+  "yomi": "はな",
+  "icon": "flower",
+  "pattern": "jouge",
+  "parts": [
+   "艹",
+   "化"
+  ],
+  "steps": [
+   {
+    "fixed": "艹",
+    "answer": "化",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "花",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "花",
+     "strokes": [
+      4,
+      5,
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "貝",
+  "grade": 1,
+  "yomi": "かい",
+  "icon": "🐚",
+  "pattern": "tantai",
+  "parts": [
+   "貝"
+  ],
+  "steps": []
+ },
+ {
+  "char": "学",
+  "grade": 1,
+  "yomi": "まなぶ",
+  "icon": "🎒",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "気",
+  "grade": 1,
+  "yomi": "き",
+  "icon": "💨",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "九",
+  "grade": 1,
+  "yomi": "きゅう",
+  "icon": "9️⃣",
+  "pattern": "tantai",
+  "parts": [
+   "九"
+  ],
+  "steps": []
+ },
+ {
+  "char": "休",
+  "grade": 1,
+  "yomi": "やすむ",
+  "icon": "😴",
+  "pattern": "sayuu",
+  "parts": [
+   "亻",
+   "木"
+  ],
+  "steps": [
+   {
+    "fixed": "亻",
+    "answer": "木",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "休",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "休",
+     "strokes": [
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "玉",
+  "grade": 1,
+  "yomi": "たま",
+  "icon": "🔮",
+  "pattern": "kakomu",
+  "parts": [
+   "王",
+   "丶",
+   "玉"
+  ],
+  "steps": [
+   {
+    "fixed": "王",
+    "answer": "丶",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "玉",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "玉",
+     "strokes": [
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "金",
+  "grade": 1,
+  "yomi": "かね",
+  "icon": "💰",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "空",
+  "grade": 1,
+  "yomi": "そら",
+  "icon": "🌤️",
+  "pattern": "jouge",
+  "parts": [
+   "穴",
+   "工"
+  ],
+  "steps": [
+   {
+    "fixed": "穴",
+    "answer": "工",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "空",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    "answerGlyph": {
+     "source": "空",
+     "strokes": [
+      6,
+      7,
+      8
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "月",
+  "grade": 1,
+  "yomi": "つき",
+  "icon": "moon",
+  "pattern": "tantai",
+  "parts": [
+   "月"
+  ],
+  "steps": []
+ },
+ {
+  "char": "犬",
+  "grade": 1,
+  "yomi": "いぬ",
+  "icon": "🐕",
+  "pattern": "kakomu",
+  "parts": [
+   "大",
+   "丶"
+  ],
+  "steps": [
+   {
+    "fixed": "大",
+    "answer": "丶",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "犬",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "犬",
+     "strokes": [
+      4
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "見",
+  "grade": 1,
+  "yomi": "みる",
+  "icon": "👀",
+  "pattern": "jouge",
+  "parts": [
+   "目",
+   "儿",
+   "見"
+  ],
+  "steps": [
+   {
+    "fixed": "目",
+    "answer": "儿",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "見",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    "answerGlyph": {
+     "source": "見",
+     "strokes": [
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "五",
+  "grade": 1,
+  "yomi": "ご",
+  "icon": "5️⃣",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "口",
+  "grade": 1,
+  "yomi": "くち",
+  "icon": "👄",
+  "pattern": "tantai",
+  "parts": [
+   "口"
+  ],
+  "steps": []
+ },
+ {
+  "char": "校",
+  "grade": 1,
+  "yomi": "こう",
+  "icon": "🏫",
+  "pattern": "sayuu",
+  "parts": [
+   "木",
+   "交"
+  ],
+  "steps": [
+   {
+    "fixed": "木",
+    "answer": "交",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "校",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "校",
+     "strokes": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "左",
+  "grade": 1,
+  "yomi": "ひだり",
+  "icon": "👈",
+  "pattern": "jouge",
+  "parts": [
+   "ナ",
+   "工"
+  ],
+  "steps": [
+   {
+    "fixed": "ナ",
+    "answer": "工",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "左",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "左",
+     "strokes": [
+      3,
+      4,
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "三",
+  "grade": 1,
+  "yomi": "さん",
+  "icon": "3️⃣",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "山",
+  "grade": 1,
+  "yomi": "やま",
+  "icon": "⛰️",
+  "pattern": "tantai",
+  "parts": [
+   "山"
+  ],
+  "steps": []
+ },
+ {
+  "char": "子",
+  "grade": 1,
+  "yomi": "こ",
+  "icon": "👶",
+  "pattern": "tantai",
+  "parts": [
+   "子"
+  ],
+  "steps": []
+ },
+ {
+  "char": "四",
+  "grade": 1,
+  "yomi": "よん",
+  "icon": "4️⃣",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "糸",
+  "grade": 1,
+  "yomi": "いと",
+  "icon": "thread",
+  "pattern": "tantai",
+  "parts": [
+   "糸"
+  ],
+  "steps": []
+ },
+ {
+  "char": "字",
+  "grade": 1,
+  "yomi": "じ",
+  "icon": "🔤",
+  "pattern": "jouge",
+  "parts": [
+   "宀",
+   "子"
+  ],
+  "steps": [
+   {
+    "fixed": "宀",
+    "answer": "子",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "字",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "字",
+     "strokes": [
+      4,
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "耳",
+  "grade": 1,
+  "yomi": "みみ",
+  "icon": "👂",
+  "pattern": "tantai",
+  "parts": [
+   "耳"
+  ],
+  "steps": []
+ },
+ {
+  "char": "七",
+  "grade": 1,
+  "yomi": "なな",
+  "icon": "7️⃣",
+  "pattern": "tantai",
+  "parts": [
+   "七"
+  ],
+  "steps": []
+ },
+ {
+  "char": "車",
+  "grade": 1,
+  "yomi": "くるま",
+  "icon": "🚗",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "手",
+  "grade": 1,
+  "yomi": "て",
+  "icon": "✋",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "十",
+  "grade": 1,
+  "yomi": "じゅう",
+  "icon": "🔟",
+  "pattern": "tantai",
+  "parts": [
+   "十"
+  ],
+  "steps": []
+ },
+ {
+  "char": "出",
+  "grade": 1,
+  "yomi": "でる",
+  "icon": "🚪",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "女",
+  "grade": 1,
+  "yomi": "おんな",
+  "icon": "👩",
+  "pattern": "tantai",
+  "parts": [
+   "女"
+  ],
+  "steps": []
+ },
+ {
+  "char": "小",
+  "grade": 1,
+  "yomi": "ちいさい",
+  "icon": "🐜",
+  "pattern": "tantai",
+  "parts": [
+   "小"
+  ],
+  "steps": []
+ },
+ {
+  "char": "上",
+  "grade": 1,
+  "yomi": "うえ",
+  "icon": "⬆️",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "森",
+  "grade": 1,
+  "yomi": "もり",
+  "icon": "trees3",
+  "pattern": "kurikaeshi",
+  "parts": [
+   "木",
+   "林"
+  ],
+  "steps": [
+   {
+    "fixed": "木",
+    "answer": "林",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "森",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "森",
+     "strokes": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "人",
+  "grade": 1,
+  "yomi": "ひと",
+  "icon": "🧍",
+  "pattern": "tantai",
+  "parts": [
+   "人"
+  ],
+  "steps": []
+ },
+ {
+  "char": "水",
+  "grade": 1,
+  "yomi": "みず",
+  "icon": "drop",
+  "pattern": "tantai",
+  "parts": [
+   "水"
+  ],
+  "steps": []
+ },
+ {
+  "char": "正",
+  "grade": 1,
+  "yomi": "ただしい",
+  "icon": "⭕",
+  "pattern": "jouge",
+  "parts": [
+   "一",
+   "止"
+  ],
+  "steps": [
+   {
+    "fixed": "一",
+    "answer": "止",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "正",
+     "strokes": [
+      1
+     ]
+    },
+    "answerGlyph": {
+     "source": "正",
+     "strokes": [
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "生",
+  "grade": 1,
+  "yomi": "うまれる",
+  "icon": "🌱",
+  "pattern": "tantai",
+  "parts": [
+   "生"
+  ],
+  "steps": []
+ },
+ {
+  "char": "青",
+  "grade": 1,
+  "yomi": "あお",
+  "icon": "🔵",
+  "pattern": "tantai",
+  "parts": [
+   "青"
+  ],
+  "steps": []
+ },
+ {
+  "char": "夕",
+  "grade": 1,
+  "yomi": "ゆう",
+  "icon": "🌆",
+  "pattern": "tantai",
+  "parts": [
+   "夕"
+  ],
+  "steps": []
+ },
+ {
+  "char": "石",
+  "grade": 1,
+  "yomi": "いし",
+  "icon": "🪨",
+  "pattern": "tantai",
+  "parts": [
+   "石"
+  ],
+  "steps": []
+ },
+ {
+  "char": "赤",
+  "grade": 1,
+  "yomi": "あか",
+  "icon": "🔴",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "千",
+  "grade": 1,
+  "yomi": "せん",
+  "icon": "🧮",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "川",
+  "grade": 1,
+  "yomi": "かわ",
+  "icon": "🏞️",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "先",
+  "grade": 1,
+  "yomi": "さき",
+  "icon": "➡️",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "早",
+  "grade": 1,
+  "yomi": "はやい",
+  "icon": "⏰",
+  "pattern": "jouge",
+  "parts": [
+   "日",
+   "十",
+   "早"
+  ],
+  "steps": [
+   {
+    "fixed": "日",
+    "answer": "十",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "早",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "早",
+     "strokes": [
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "草",
+  "grade": 1,
+  "yomi": "くさ",
+  "icon": "grass",
+  "pattern": "jouge",
+  "parts": [
+   "艹",
+   "早"
+  ],
+  "steps": [
+   {
+    "fixed": "艹",
+    "answer": "早",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "草",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "草",
+     "strokes": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "足",
+  "grade": 1,
+  "yomi": "あし",
+  "icon": "🦶",
+  "pattern": "jouge",
+  "parts": [
+   "口",
+   "龰"
+  ],
+  "steps": [
+   {
+    "fixed": "口",
+    "answer": "龰",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "足",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "足",
+     "strokes": [
+      4,
+      5,
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "村",
+  "grade": 1,
+  "yomi": "むら",
+  "icon": "🏘️",
+  "pattern": "sayuu",
+  "parts": [
+   "木",
+   "寸"
+  ],
+  "steps": [
+   {
+    "fixed": "木",
+    "answer": "寸",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "村",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "村",
+     "strokes": [
+      5,
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "大",
+  "grade": 1,
+  "yomi": "おおきい",
+  "icon": "🐘",
+  "pattern": "tantai",
+  "parts": [
+   "大"
+  ],
+  "steps": []
+ },
+ {
+  "char": "男",
+  "grade": 1,
+  "yomi": "おとこ",
+  "icon": "👨",
+  "pattern": "jouge",
+  "parts": [
+   "田",
+   "力"
+  ],
+  "steps": [
+   {
+    "fixed": "田",
+    "answer": "力",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "男",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    "answerGlyph": {
+     "source": "男",
+     "strokes": [
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "竹",
+  "grade": 1,
+  "yomi": "たけ",
+  "icon": "🎋",
+  "pattern": "tantai",
+  "parts": [
+   "竹"
+  ],
+  "steps": []
+ },
+ {
+  "char": "中",
+  "grade": 1,
+  "yomi": "なか",
+  "icon": "🎯",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "虫",
+  "grade": 1,
+  "yomi": "むし",
+  "icon": "🐛",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "町",
+  "grade": 1,
+  "yomi": "まち",
+  "icon": "🏙️",
+  "pattern": "sayuu",
+  "parts": [
+   "田",
+   "丁"
+  ],
+  "steps": [
+   {
+    "fixed": "田",
+    "answer": "丁",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "町",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    "answerGlyph": {
+     "source": "町",
+     "strokes": [
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "天",
+  "grade": 1,
+  "yomi": "てん",
+  "icon": "🌠",
+  "pattern": "jouge",
+  "parts": [
+   "一",
+   "大"
+  ],
+  "steps": [
+   {
+    "fixed": "一",
+    "answer": "大",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "天",
+     "strokes": [
+      1
+     ]
+    },
+    "answerGlyph": {
+     "source": "天",
+     "strokes": [
+      2,
+      3,
+      4
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "田",
+  "grade": 1,
+  "yomi": "た",
+  "icon": "🌾",
+  "pattern": "tantai",
+  "parts": [
+   "田"
+  ],
+  "steps": []
+ },
+ {
+  "char": "土",
+  "grade": 1,
+  "yomi": "つち",
+  "icon": "🟤",
+  "pattern": "tantai",
+  "parts": [
+   "土"
+  ],
+  "steps": []
+ },
+ {
+  "char": "二",
+  "grade": 1,
+  "yomi": "に",
+  "icon": "2️⃣",
+  "pattern": "tantai",
+  "parts": [
+   "二"
+  ],
+  "steps": []
+ },
+ {
+  "char": "日",
+  "grade": 1,
+  "yomi": "ひ",
+  "icon": "sun",
+  "pattern": "tantai",
+  "parts": [
+   "日"
+  ],
+  "steps": []
+ },
+ {
+  "char": "入",
+  "grade": 1,
+  "yomi": "はいる",
+  "icon": "📥",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "年",
+  "grade": 1,
+  "yomi": "とし",
+  "icon": "🎍",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "白",
+  "grade": 1,
+  "yomi": "しろ",
+  "icon": "white",
+  "pattern": "tantai",
+  "parts": [
+   "白"
+  ],
+  "steps": []
+ },
+ {
+  "char": "八",
+  "grade": 1,
+  "yomi": "はち",
+  "icon": "8️⃣",
+  "pattern": "tantai",
+  "parts": [
+   "八"
+  ],
+  "steps": []
+ },
+ {
+  "char": "百",
+  "grade": 1,
+  "yomi": "ひゃく",
+  "icon": "💯",
+  "pattern": "jouge",
+  "parts": [
+   "一",
+   "白"
+  ],
+  "steps": [
+   {
+    "fixed": "一",
+    "answer": "白",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "百",
+     "strokes": [
+      1
+     ]
+    },
+    "answerGlyph": {
+     "source": "百",
+     "strokes": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "文",
+  "grade": 1,
+  "yomi": "ぶん",
+  "icon": "📝",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "木",
+  "grade": 1,
+  "yomi": "き",
+  "icon": "tree",
+  "pattern": "tantai",
+  "parts": [
+   "木"
+  ],
+  "steps": []
+ },
+ {
+  "char": "本",
+  "grade": 1,
+  "yomi": "ほん",
+  "icon": "📖",
+  "pattern": "kakomu",
+  "parts": [
+   "木",
+   "一",
+   "本"
+  ],
+  "steps": [
+   {
+    "fixed": "木",
+    "answer": "一",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "本",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "本",
+     "strokes": [
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "名",
+  "grade": 1,
+  "yomi": "な",
+  "icon": "📛",
+  "pattern": "jouge",
+  "parts": [
+   "夕",
+   "口"
+  ],
+  "steps": [
+   {
+    "fixed": "夕",
+    "answer": "口",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "名",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "名",
+     "strokes": [
+      4,
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "目",
+  "grade": 1,
+  "yomi": "め",
+  "icon": "👁️",
+  "pattern": "tantai",
+  "parts": [
+   "目"
+  ],
+  "steps": []
+ },
+ {
+  "char": "立",
+  "grade": 1,
+  "yomi": "たつ",
+  "icon": "🧍",
+  "pattern": "tantai",
+  "parts": [
+   "立"
+  ],
+  "steps": []
+ },
+ {
+  "char": "力",
+  "grade": 1,
+  "yomi": "ちから",
+  "icon": "💪",
+  "pattern": "tantai",
+  "parts": [
+   "力"
+  ],
+  "steps": []
+ },
+ {
+  "char": "林",
+  "grade": 1,
+  "yomi": "はやし",
+  "icon": "trees2",
+  "pattern": "kurikaeshi",
+  "parts": [
+   "木",
+   "林"
+  ],
+  "steps": [
+   {
+    "fixed": "木",
+    "answer": "木",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "林",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "林",
+     "strokes": [
+      5,
+      6,
+      7,
+      8
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "六",
+  "grade": 1,
+  "yomi": "ろく",
+  "icon": "6️⃣",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "引",
+  "grade": 2,
+  "yomi": "ひく",
+  "icon": "🏹",
+  "pattern": "sayuu",
+  "parts": [
+   "弓",
+   "丨"
+  ],
+  "steps": [
+   {
+    "fixed": "弓",
+    "answer": "丨",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "引",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "引",
+     "strokes": [
+      4
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "羽",
+  "grade": 2,
+  "yomi": "はね",
+  "icon": "🪶",
+  "pattern": "kurikaeshi",
+  "parts": [
+   "习"
+  ],
+  "steps": [
+   {
+    "fixed": "习",
+    "answer": "习",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "羽",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "羽",
+     "strokes": [
+      4,
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "雲",
+  "grade": 2,
+  "yomi": "くも",
+  "icon": "cloud",
+  "pattern": "jouge",
+  "parts": [
+   "雨",
+   "云"
+  ],
+  "steps": [
+   {
+    "fixed": "雨",
+    "answer": "云",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "雲",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+     ]
+    },
+    "answerGlyph": {
+     "source": "雲",
+     "strokes": [
+      9,
+      10,
+      11,
+      12
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "園",
+  "grade": 2,
+  "yomi": "えん",
+  "icon": "🎡",
+  "pattern": "kakomu",
+  "parts": [
+   "囗",
+   "袁"
+  ],
+  "steps": [
+   {
+    "fixed": "囗",
+    "answer": "袁",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "園",
+     "strokes": [
+      1,
+      2,
+      13
+     ]
+    },
+    "answerGlyph": {
+     "source": "園",
+     "strokes": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "遠",
+  "grade": 2,
+  "yomi": "とおい",
+  "icon": "🔭",
+  "pattern": "kakomu",
+  "parts": [
+   "⻌",
+   "袁"
+  ],
+  "steps": [
+   {
+    "fixed": "⻌",
+    "answer": "袁",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "遠",
+     "strokes": [
+      11,
+      12,
+      13
+     ]
+    },
+    "answerGlyph": {
+     "source": "遠",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "何",
+  "grade": 2,
+  "yomi": "なに",
+  "icon": "❓",
+  "pattern": "sayuu",
+  "parts": [
+   "亻",
+   "可"
+  ],
+  "steps": [
+   {
+    "fixed": "亻",
+    "answer": "可",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "何",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "何",
+     "strokes": [
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "科",
+  "grade": 2,
+  "yomi": "か",
+  "icon": "🔬",
+  "pattern": "sayuu",
+  "parts": [
+   "禾",
+   "斗"
+  ],
+  "steps": [
+   {
+    "fixed": "禾",
+    "answer": "斗",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "科",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    "answerGlyph": {
+     "source": "科",
+     "strokes": [
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "夏",
+  "grade": 2,
+  "yomi": "なつ",
+  "icon": "🌻",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "家",
+  "grade": 2,
+  "yomi": "いえ",
+  "icon": "🏠",
+  "pattern": "jouge",
+  "parts": [
+   "宀",
+   "豕"
+  ],
+  "steps": [
+   {
+    "fixed": "宀",
+    "answer": "豕",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "家",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "家",
+     "strokes": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "歌",
+  "grade": 2,
+  "yomi": "うた",
+  "icon": "🎤",
+  "pattern": "sayuu",
+  "parts": [
+   "欠",
+   "哥"
+  ],
+  "steps": [
+   {
+    "fixed": "欠",
+    "answer": "哥",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "歌",
+     "strokes": [
+      11,
+      12,
+      13,
+      14
+     ]
+    },
+    "answerGlyph": {
+     "source": "歌",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "画",
+  "grade": 2,
+  "yomi": "が",
+  "icon": "🖼️",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "回",
+  "grade": 2,
+  "yomi": "まわる",
+  "icon": "🔄",
+  "pattern": "kakomu",
+  "parts": [
+   "囗",
+   "口"
+  ],
+  "steps": [
+   {
+    "fixed": "囗",
+    "answer": "口",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "回",
+     "strokes": [
+      1,
+      2,
+      6
+     ]
+    },
+    "answerGlyph": {
+     "source": "回",
+     "strokes": [
+      3,
+      4,
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "会",
+  "grade": 2,
+  "yomi": "あう",
+  "icon": "🤝",
+  "pattern": "jouge",
+  "parts": [
+   "人",
+   "云",
+   "会"
+  ],
+  "steps": [
+   {
+    "fixed": "人",
+    "answer": "云",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "会",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "会",
+     "strokes": [
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "海",
+  "grade": 2,
+  "yomi": "うみ",
+  "icon": "wave",
+  "pattern": "sayuu",
+  "parts": [
+   "氵",
+   "毎"
+  ],
+  "steps": [
+   {
+    "fixed": "氵",
+    "answer": "毎",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "海",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "海",
+     "strokes": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "絵",
+  "grade": 2,
+  "yomi": "え",
+  "icon": "🎨",
+  "pattern": "sayuu",
+  "parts": [
+   "糸",
+   "会"
+  ],
+  "steps": [
+   {
+    "fixed": "糸",
+    "answer": "会",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "絵",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    "answerGlyph": {
+     "source": "絵",
+     "strokes": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "外",
+  "grade": 2,
+  "yomi": "そと",
+  "icon": "🏕️",
+  "pattern": "sayuu",
+  "parts": [
+   "夕",
+   "卜"
+  ],
+  "steps": [
+   {
+    "fixed": "夕",
+    "answer": "卜",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "外",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "外",
+     "strokes": [
+      4,
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "角",
+  "grade": 2,
+  "yomi": "つの",
+  "icon": "🦌",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "楽",
+  "grade": 2,
+  "yomi": "たのしい",
+  "icon": "🎶",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "活",
+  "grade": 2,
+  "yomi": "かつ",
+  "icon": "🏃",
+  "pattern": "sayuu",
+  "parts": [
+   "氵",
+   "舌"
+  ],
+  "steps": [
+   {
+    "fixed": "氵",
+    "answer": "舌",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "活",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "活",
+     "strokes": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "間",
+  "grade": 2,
+  "yomi": "あいだ",
+  "icon": "between",
+  "pattern": "kakomu",
+  "parts": [
+   "門",
+   "日"
+  ],
+  "steps": [
+   {
+    "fixed": "門",
+    "answer": "日",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "間",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+     ]
+    },
+    "answerGlyph": {
+     "source": "間",
+     "strokes": [
+      9,
+      10,
+      11,
+      12
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "丸",
+  "grade": 2,
+  "yomi": "まる",
+  "icon": "⚪",
+  "pattern": "kakomu",
+  "parts": [
+   "九",
+   "丶"
+  ],
+  "steps": [
+   {
+    "fixed": "九",
+    "answer": "丶",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "丸",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "丸",
+     "strokes": [
+      3
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "岩",
+  "grade": 2,
+  "yomi": "いわ",
+  "icon": "🗿",
+  "pattern": "jouge",
+  "parts": [
+   "山",
+   "石"
+  ],
+  "steps": [
+   {
+    "fixed": "山",
+    "answer": "石",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "岩",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "岩",
+     "strokes": [
+      4,
+      5,
+      6,
+      7,
+      8
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "顔",
+  "grade": 2,
+  "yomi": "かお",
+  "icon": "😀",
+  "pattern": "sayuu",
+  "parts": [
+   "頁",
+   "彦"
+  ],
+  "steps": [
+   {
+    "fixed": "頁",
+    "answer": "彦",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "顔",
+     "strokes": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+     ]
+    },
+    "answerGlyph": {
+     "source": "顔",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "汽",
+  "grade": 2,
+  "yomi": "き",
+  "icon": "🚂",
+  "pattern": "sayuu",
+  "parts": [
+   "氵",
+   "气"
+  ],
+  "steps": [
+   {
+    "fixed": "氵",
+    "answer": "气",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "汽",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "汽",
+     "strokes": [
+      4,
+      5,
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "記",
+  "grade": 2,
+  "yomi": "しるす",
+  "icon": "✍️",
+  "pattern": "sayuu",
+  "parts": [
+   "言",
+   "己"
+  ],
+  "steps": [
+   {
+    "fixed": "言",
+    "answer": "己",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "記",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    },
+    "answerGlyph": {
+     "source": "記",
+     "strokes": [
+      8,
+      9,
+      10
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "帰",
+  "grade": 2,
+  "yomi": "かえる",
+  "icon": "🏡",
+  "pattern": "sayuu",
+  "parts": [
+   "刂",
+   "帚"
+  ],
+  "steps": [
+   {
+    "fixed": "刂",
+    "answer": "帚",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "帰",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "帰",
+     "strokes": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "弓",
+  "grade": 2,
+  "yomi": "ゆみ",
+  "icon": "🏹",
+  "pattern": "tantai",
+  "parts": [
+   "弓"
+  ],
+  "steps": []
+ },
+ {
+  "char": "牛",
+  "grade": 2,
+  "yomi": "うし",
+  "icon": "🐄",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "魚",
+  "grade": 2,
+  "yomi": "さかな",
+  "icon": "🐟",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "京",
+  "grade": 2,
+  "yomi": "きょう",
+  "icon": "🏯",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "強",
+  "grade": 2,
+  "yomi": "つよい",
+  "icon": "🦁",
+  "pattern": "sayuu",
+  "parts": [
+   "弓",
+   "虽"
+  ],
+  "steps": [
+   {
+    "fixed": "弓",
+    "answer": "虽",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "強",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "強",
+     "strokes": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "教",
+  "grade": 2,
+  "yomi": "おしえる",
+  "icon": "👩‍🏫",
+  "pattern": "sayuu",
+  "parts": [
+   "攵",
+   "孝"
+  ],
+  "steps": [
+   {
+    "fixed": "攵",
+    "answer": "孝",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "教",
+     "strokes": [
+      8,
+      9,
+      10,
+      11
+     ]
+    },
+    "answerGlyph": {
+     "source": "教",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "近",
+  "grade": 2,
+  "yomi": "ちかい",
+  "icon": "📍",
+  "pattern": "kakomu",
+  "parts": [
+   "⻌",
+   "斤"
+  ],
+  "steps": [
+   {
+    "fixed": "⻌",
+    "answer": "斤",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "近",
+     "strokes": [
+      5,
+      6,
+      7
+     ]
+    },
+    "answerGlyph": {
+     "source": "近",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "兄",
+  "grade": 2,
+  "yomi": "あに",
+  "icon": "👦",
+  "pattern": "jouge",
+  "parts": [
+   "口",
+   "儿"
+  ],
+  "steps": [
+   {
+    "fixed": "口",
+    "answer": "儿",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "兄",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "兄",
+     "strokes": [
+      4,
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "形",
+  "grade": 2,
+  "yomi": "かたち",
+  "icon": "🔷",
+  "pattern": "sayuu",
+  "parts": [
+   "彡",
+   "开"
+  ],
+  "steps": [
+   {
+    "fixed": "彡",
+    "answer": "开",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "形",
+     "strokes": [
+      5,
+      6,
+      7
+     ]
+    },
+    "answerGlyph": {
+     "source": "形",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "計",
+  "grade": 2,
+  "yomi": "はかる",
+  "icon": "⏱️",
+  "pattern": "sayuu",
+  "parts": [
+   "言",
+   "十"
+  ],
+  "steps": [
+   {
+    "fixed": "言",
+    "answer": "十",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "計",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    },
+    "answerGlyph": {
+     "source": "計",
+     "strokes": [
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "元",
+  "grade": 2,
+  "yomi": "もと",
+  "icon": "🌰",
+  "pattern": "jouge",
+  "parts": [
+   "二",
+   "儿"
+  ],
+  "steps": [
+   {
+    "fixed": "二",
+    "answer": "儿",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "元",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "元",
+     "strokes": [
+      3,
+      4
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "言",
+  "grade": 2,
+  "yomi": "いう",
+  "icon": "💬",
+  "pattern": "tantai",
+  "parts": [
+   "言"
+  ],
+  "steps": []
+ },
+ {
+  "char": "原",
+  "grade": 2,
+  "yomi": "はら",
+  "icon": "🌿",
+  "pattern": "kakomu",
+  "parts": [
+   "厂",
+   "泉"
+  ],
+  "steps": [
+   {
+    "fixed": "厂",
+    "answer": "泉",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "原",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "原",
+     "strokes": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "戸",
+  "grade": 2,
+  "yomi": "と",
+  "icon": "🚪",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "古",
+  "grade": 2,
+  "yomi": "ふるい",
+  "icon": "🏺",
+  "pattern": "jouge",
+  "parts": [
+   "十",
+   "口"
+  ],
+  "steps": [
+   {
+    "fixed": "十",
+    "answer": "口",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "古",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "古",
+     "strokes": [
+      3,
+      4,
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "午",
+  "grade": 2,
+  "yomi": "ご",
+  "icon": "🕛",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "後",
+  "grade": 2,
+  "yomi": "うしろ",
+  "icon": "🔙",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "語",
+  "grade": 2,
+  "yomi": "ご",
+  "icon": "🗣️",
+  "pattern": "sayuu",
+  "parts": [
+   "言",
+   "吾"
+  ],
+  "steps": [
+   {
+    "fixed": "言",
+    "answer": "吾",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "語",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    },
+    "answerGlyph": {
+     "source": "語",
+     "strokes": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "工",
+  "grade": 2,
+  "yomi": "こう",
+  "icon": "🔨",
+  "pattern": "tantai",
+  "parts": [
+   "工"
+  ],
+  "steps": []
+ },
+ {
+  "char": "公",
+  "grade": 2,
+  "yomi": "こう",
+  "icon": "🏛️",
+  "pattern": "jouge",
+  "parts": [
+   "八",
+   "厶"
+  ],
+  "steps": [
+   {
+    "fixed": "八",
+    "answer": "厶",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "公",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "公",
+     "strokes": [
+      3,
+      4
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "広",
+  "grade": 2,
+  "yomi": "ひろい",
+  "icon": "🏟️",
+  "pattern": "kakomu",
+  "parts": [
+   "广",
+   "厶"
+  ],
+  "steps": [
+   {
+    "fixed": "广",
+    "answer": "厶",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "広",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "広",
+     "strokes": [
+      4,
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "交",
+  "grade": 2,
+  "yomi": "まじわる",
+  "icon": "🔀",
+  "pattern": "jouge",
+  "parts": [
+   "亠",
+   "父",
+   "交"
+  ],
+  "steps": [
+   {
+    "fixed": "亠",
+    "answer": "父",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "交",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "交",
+     "strokes": [
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "光",
+  "grade": 2,
+  "yomi": "ひかり",
+  "icon": "💡",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "考",
+  "grade": 2,
+  "yomi": "かんがえる",
+  "icon": "🤔",
+  "pattern": "kakomu",
+  "parts": [
+   "耂",
+   "丂"
+  ],
+  "steps": [
+   {
+    "fixed": "耂",
+    "answer": "丂",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "考",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "考",
+     "strokes": [
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "行",
+  "grade": 2,
+  "yomi": "いく",
+  "icon": "🚶",
+  "pattern": "sayuu",
+  "parts": [
+   "彳",
+   "亍"
+  ],
+  "steps": [
+   {
+    "fixed": "彳",
+    "answer": "亍",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "行",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "行",
+     "strokes": [
+      4,
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "高",
+  "grade": 2,
+  "yomi": "たかい",
+  "icon": "🗼",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "黄",
+  "grade": 2,
+  "yomi": "き",
+  "icon": "🟡",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "合",
+  "grade": 2,
+  "yomi": "あう",
+  "icon": "🧩",
+  "pattern": "jouge",
+  "parts": [
+   "亼",
+   "口",
+   "合"
+  ],
+  "steps": [
+   {
+    "fixed": "亼",
+    "answer": "口",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "合",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "合",
+     "strokes": [
+      4,
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "谷",
+  "grade": 2,
+  "yomi": "たに",
+  "icon": "🏔️",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "国",
+  "grade": 2,
+  "yomi": "くに",
+  "icon": "🗾",
+  "pattern": "kakomu",
+  "parts": [
+   "囗",
+   "玉"
+  ],
+  "steps": [
+   {
+    "fixed": "囗",
+    "answer": "玉",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "国",
+     "strokes": [
+      1,
+      2,
+      8
+     ]
+    },
+    "answerGlyph": {
+     "source": "国",
+     "strokes": [
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "黒",
+  "grade": 2,
+  "yomi": "くろ",
+  "icon": "⚫",
+  "pattern": "jouge",
+  "parts": [
+   "里",
+   "灬"
+  ],
+  "steps": [
+   {
+    "fixed": "里",
+    "answer": "灬",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "黒",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    },
+    "answerGlyph": {
+     "source": "黒",
+     "strokes": [
+      8,
+      9,
+      10,
+      11
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "今",
+  "grade": 2,
+  "yomi": "いま",
+  "icon": "⌚",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "才",
+  "grade": 2,
+  "yomi": "さい",
+  "icon": "🎂",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "細",
+  "grade": 2,
+  "yomi": "ほそい",
+  "icon": "🧵",
+  "pattern": "sayuu",
+  "parts": [
+   "糸",
+   "田"
+  ],
+  "steps": [
+   {
+    "fixed": "糸",
+    "answer": "田",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "細",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    "answerGlyph": {
+     "source": "細",
+     "strokes": [
+      7,
+      8,
+      9,
+      10,
+      11
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "作",
+  "grade": 2,
+  "yomi": "つくる",
+  "icon": "🛠️",
+  "pattern": "sayuu",
+  "parts": [
+   "亻",
+   "乍"
+  ],
+  "steps": [
+   {
+    "fixed": "亻",
+    "answer": "乍",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "作",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "作",
+     "strokes": [
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "算",
+  "grade": 2,
+  "yomi": "さん",
+  "icon": "🧮",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "止",
+  "grade": 2,
+  "yomi": "とまる",
+  "icon": "🛑",
+  "pattern": "tantai",
+  "parts": [
+   "止"
+  ],
+  "steps": []
+ },
+ {
+  "char": "市",
+  "grade": 2,
+  "yomi": "いち",
+  "icon": "🏪",
+  "pattern": "jouge",
+  "parts": [
+   "亠",
+   "巾",
+   "市"
+  ],
+  "steps": [
+   {
+    "fixed": "亠",
+    "answer": "巾",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "市",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "市",
+     "strokes": [
+      3,
+      4,
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "矢",
+  "grade": 2,
+  "yomi": "や",
+  "icon": "🏹",
+  "pattern": "tantai",
+  "parts": [
+   "矢"
+  ],
+  "steps": []
+ },
+ {
+  "char": "姉",
+  "grade": 2,
+  "yomi": "あね",
+  "icon": "👧",
+  "pattern": "sayuu",
+  "parts": [
+   "女",
+   "市"
+  ],
+  "steps": [
+   {
+    "fixed": "女",
+    "answer": "市",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "姉",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "姉",
+     "strokes": [
+      4,
+      5,
+      6,
+      7,
+      8
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "思",
+  "grade": 2,
+  "yomi": "おもう",
+  "icon": "💭",
+  "pattern": "jouge",
+  "parts": [
+   "田",
+   "心"
+  ],
+  "steps": [
+   {
+    "fixed": "田",
+    "answer": "心",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "思",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    "answerGlyph": {
+     "source": "思",
+     "strokes": [
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "紙",
+  "grade": 2,
+  "yomi": "かみ",
+  "icon": "📄",
+  "pattern": "sayuu",
+  "parts": [
+   "糸",
+   "氏"
+  ],
+  "steps": [
+   {
+    "fixed": "糸",
+    "answer": "氏",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "紙",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    "answerGlyph": {
+     "source": "紙",
+     "strokes": [
+      7,
+      8,
+      9,
+      10
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "寺",
+  "grade": 2,
+  "yomi": "てら",
+  "icon": "🛕",
+  "pattern": "jouge",
+  "parts": [
+   "土",
+   "寸",
+   "寺"
+  ],
+  "steps": [
+   {
+    "fixed": "土",
+    "answer": "寸",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "寺",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "寺",
+     "strokes": [
+      4,
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "自",
+  "grade": 2,
+  "yomi": "じ",
+  "icon": "🙋",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "時",
+  "grade": 2,
+  "yomi": "とき",
+  "icon": "🕒",
+  "pattern": "sayuu",
+  "parts": [
+   "日",
+   "寺"
+  ],
+  "steps": [
+   {
+    "fixed": "日",
+    "answer": "寺",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "時",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "時",
+     "strokes": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "室",
+  "grade": 2,
+  "yomi": "しつ",
+  "icon": "🛏️",
+  "pattern": "jouge",
+  "parts": [
+   "宀",
+   "至"
+  ],
+  "steps": [
+   {
+    "fixed": "宀",
+    "answer": "至",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "室",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "室",
+     "strokes": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "社",
+  "grade": 2,
+  "yomi": "しゃ",
+  "icon": "⛩️",
+  "pattern": "sayuu",
+  "parts": [
+   "礻",
+   "土"
+  ],
+  "steps": [
+   {
+    "fixed": "礻",
+    "answer": "土",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "社",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "社",
+     "strokes": [
+      5,
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "弱",
+  "grade": 2,
+  "yomi": "よわい",
+  "icon": "🥀",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "首",
+  "grade": 2,
+  "yomi": "くび",
+  "icon": "🦒",
+  "pattern": "tantai",
+  "parts": [
+   "首"
+  ],
+  "steps": []
+ },
+ {
+  "char": "秋",
+  "grade": 2,
+  "yomi": "あき",
+  "icon": "🍁",
+  "pattern": "sayuu",
+  "parts": [
+   "禾",
+   "火"
+  ],
+  "steps": [
+   {
+    "fixed": "禾",
+    "answer": "火",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "秋",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    "answerGlyph": {
+     "source": "秋",
+     "strokes": [
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "週",
+  "grade": 2,
+  "yomi": "しゅう",
+  "icon": "📅",
+  "pattern": "kakomu",
+  "parts": [
+   "⻌",
+   "周"
+  ],
+  "steps": [
+   {
+    "fixed": "⻌",
+    "answer": "周",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "週",
+     "strokes": [
+      9,
+      10,
+      11
+     ]
+    },
+    "answerGlyph": {
+     "source": "週",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "春",
+  "grade": 2,
+  "yomi": "はる",
+  "icon": "🌸",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "書",
+  "grade": 2,
+  "yomi": "かく",
+  "icon": "✏️",
+  "pattern": "jouge",
+  "parts": [
+   "聿",
+   "日"
+  ],
+  "steps": [
+   {
+    "fixed": "聿",
+    "answer": "日",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "書",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    "answerGlyph": {
+     "source": "書",
+     "strokes": [
+      7,
+      8,
+      9,
+      10
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "少",
+  "grade": 2,
+  "yomi": "すこし",
+  "icon": "🤏",
+  "pattern": "kakomu",
+  "parts": [
+   "小",
+   "丿",
+   "少"
+  ],
+  "steps": [
+   {
+    "fixed": "小",
+    "answer": "丿",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "少",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "少",
+     "strokes": [
+      4
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "場",
+  "grade": 2,
+  "yomi": "ば",
+  "icon": "🎪",
+  "pattern": "sayuu",
+  "parts": [
+   "土",
+   "昜"
+  ],
+  "steps": [
+   {
+    "fixed": "土",
+    "answer": "昜",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "場",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "場",
+     "strokes": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "色",
+  "grade": 2,
+  "yomi": "いろ",
+  "icon": "🌈",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "食",
+  "grade": 2,
+  "yomi": "たべる",
+  "icon": "🍙",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "心",
+  "grade": 2,
+  "yomi": "こころ",
+  "icon": "❤️",
+  "pattern": "tantai",
+  "parts": [
+   "心"
+  ],
+  "steps": []
+ },
+ {
+  "char": "新",
+  "grade": 2,
+  "yomi": "あたらしい",
+  "icon": "🆕",
+  "pattern": "sayuu",
+  "parts": [
+   "斤",
+   "亲"
+  ],
+  "steps": [
+   {
+    "fixed": "斤",
+    "answer": "亲",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "新",
+     "strokes": [
+      10,
+      11,
+      12,
+      13
+     ]
+    },
+    "answerGlyph": {
+     "source": "新",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "親",
+  "grade": 2,
+  "yomi": "おや",
+  "icon": "👪",
+  "pattern": "sayuu",
+  "parts": [
+   "見",
+   "亲"
+  ],
+  "steps": [
+   {
+    "fixed": "見",
+    "answer": "亲",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "親",
+     "strokes": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+     ]
+    },
+    "answerGlyph": {
+     "source": "親",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "図",
+  "grade": 2,
+  "yomi": "ず",
+  "icon": "🗺️",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "数",
+  "grade": 2,
+  "yomi": "かず",
+  "icon": "🔢",
+  "pattern": "sayuu",
+  "parts": [
+   "攵",
+   "娄"
+  ],
+  "steps": [
+   {
+    "fixed": "攵",
+    "answer": "娄",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "数",
+     "strokes": [
+      10,
+      11,
+      12,
+      13
+     ]
+    },
+    "answerGlyph": {
+     "source": "数",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "西",
+  "grade": 2,
+  "yomi": "にし",
+  "icon": "🌇",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "声",
+  "grade": 2,
+  "yomi": "こえ",
+  "icon": "📣",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "星",
+  "grade": 2,
+  "yomi": "ほし",
+  "icon": "⭐",
+  "pattern": "jouge",
+  "parts": [
+   "日",
+   "生"
+  ],
+  "steps": [
+   {
+    "fixed": "日",
+    "answer": "生",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "星",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "星",
+     "strokes": [
+      5,
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "晴",
+  "grade": 2,
+  "yomi": "はれ",
+  "icon": "☀️",
+  "pattern": "sayuu",
+  "parts": [
+   "日",
+   "青"
+  ],
+  "steps": [
+   {
+    "fixed": "日",
+    "answer": "青",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "晴",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "晴",
+     "strokes": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "切",
+  "grade": 2,
+  "yomi": "きる",
+  "icon": "✂️",
+  "pattern": "sayuu",
+  "parts": [
+   "刀",
+   "七"
+  ],
+  "steps": [
+   {
+    "fixed": "刀",
+    "answer": "七",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "切",
+     "strokes": [
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "切",
+     "strokes": [
+      1,
+      2
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "雪",
+  "grade": 2,
+  "yomi": "ゆき",
+  "icon": "❄️",
+  "pattern": "jouge",
+  "parts": [
+   "雨",
+   "⺕"
+  ],
+  "steps": [
+   {
+    "fixed": "雨",
+    "answer": "⺕",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "雪",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+     ]
+    },
+    "answerGlyph": {
+     "source": "雪",
+     "strokes": [
+      9,
+      10,
+      11
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "船",
+  "grade": 2,
+  "yomi": "ふね",
+  "icon": "🚢",
+  "pattern": "sayuu",
+  "parts": [
+   "舟",
+   "㕣"
+  ],
+  "steps": [
+   {
+    "fixed": "舟",
+    "answer": "㕣",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "船",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    "answerGlyph": {
+     "source": "船",
+     "strokes": [
+      7,
+      8,
+      9,
+      10,
+      11
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "線",
+  "grade": 2,
+  "yomi": "せん",
+  "icon": "line",
+  "pattern": "fukusuu",
+  "parts": [
+   "白",
+   "水",
+   "泉",
+   "糸"
+  ],
+  "steps": [
+   {
+    "fixed": "白",
+    "answer": "水",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "線",
+     "strokes": [
+      7,
+      8,
+      9,
+      10,
+      11
+     ]
+    },
+    "answerGlyph": {
+     "source": "線",
+     "strokes": [
+      12,
+      13,
+      14,
+      15
+     ]
+    },
+    "makes": "泉"
+   },
+   {
+    "fixed": "糸",
+    "answer": "泉",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "線",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    "answerGlyph": {
+     "source": "線",
+     "strokes": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "前",
+  "grade": 2,
+  "yomi": "まえ",
+  "icon": "⏩",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "組",
+  "grade": 2,
+  "yomi": "くみ",
+  "icon": "🧑‍🤝‍🧑",
+  "pattern": "sayuu",
+  "parts": [
+   "糸",
+   "且"
+  ],
+  "steps": [
+   {
+    "fixed": "糸",
+    "answer": "且",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "組",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    "answerGlyph": {
+     "source": "組",
+     "strokes": [
+      7,
+      8,
+      9,
+      10,
+      11
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "走",
+  "grade": 2,
+  "yomi": "はしる",
+  "icon": "🏃",
+  "pattern": "jouge",
+  "parts": [
+   "土",
+   "龰"
+  ],
+  "steps": [
+   {
+    "fixed": "土",
+    "answer": "龰",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "走",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "走",
+     "strokes": [
+      4,
+      5,
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "多",
+  "grade": 2,
+  "yomi": "おおい",
+  "icon": "🍇",
+  "pattern": "kurikaeshi",
+  "parts": [
+   "夕"
+  ],
+  "steps": [
+   {
+    "fixed": "夕",
+    "answer": "夕",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "多",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "多",
+     "strokes": [
+      4,
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "太",
+  "grade": 2,
+  "yomi": "ふとい",
+  "icon": "🍖",
+  "pattern": "kakomu",
+  "parts": [
+   "大",
+   "丶"
+  ],
+  "steps": [
+   {
+    "fixed": "大",
+    "answer": "丶",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "太",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "太",
+     "strokes": [
+      4
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "体",
+  "grade": 2,
+  "yomi": "からだ",
+  "icon": "🧘",
+  "pattern": "sayuu",
+  "parts": [
+   "亻",
+   "本"
+  ],
+  "steps": [
+   {
+    "fixed": "亻",
+    "answer": "本",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "体",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "体",
+     "strokes": [
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "台",
+  "grade": 2,
+  "yomi": "だい",
+  "icon": "🪑",
+  "pattern": "jouge",
+  "parts": [
+   "厶",
+   "口"
+  ],
+  "steps": [
+   {
+    "fixed": "厶",
+    "answer": "口",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "台",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "台",
+     "strokes": [
+      3,
+      4,
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "地",
+  "grade": 2,
+  "yomi": "ち",
+  "icon": "🌍",
+  "pattern": "sayuu",
+  "parts": [
+   "土",
+   "也"
+  ],
+  "steps": [
+   {
+    "fixed": "土",
+    "answer": "也",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "地",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "地",
+     "strokes": [
+      4,
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "池",
+  "grade": 2,
+  "yomi": "いけ",
+  "icon": "pond",
+  "pattern": "sayuu",
+  "parts": [
+   "氵",
+   "也"
+  ],
+  "steps": [
+   {
+    "fixed": "氵",
+    "answer": "也",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "池",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "池",
+     "strokes": [
+      4,
+      5,
+      6
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "知",
+  "grade": 2,
+  "yomi": "しる",
+  "icon": "🎓",
+  "pattern": "sayuu",
+  "parts": [
+   "矢",
+   "口"
+  ],
+  "steps": [
+   {
+    "fixed": "矢",
+    "answer": "口",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "知",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    "answerGlyph": {
+     "source": "知",
+     "strokes": [
+      6,
+      7,
+      8
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "茶",
+  "grade": 2,
+  "yomi": "ちゃ",
+  "icon": "🍵",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "昼",
+  "grade": 2,
+  "yomi": "ひる",
+  "icon": "🌞",
+  "pattern": "jouge",
+  "parts": [
+   "尺",
+   "旦"
+  ],
+  "steps": [
+   {
+    "fixed": "尺",
+    "answer": "旦",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "昼",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "昼",
+     "strokes": [
+      5,
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "長",
+  "grade": 2,
+  "yomi": "ながい",
+  "icon": "🐍",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "鳥",
+  "grade": 2,
+  "yomi": "とり",
+  "icon": "🐦",
+  "pattern": "tantai",
+  "parts": [
+   "鳥"
+  ],
+  "steps": []
+ },
+ {
+  "char": "朝",
+  "grade": 2,
+  "yomi": "あさ",
+  "icon": "🌅",
+  "pattern": "sayuu",
+  "parts": [
+   "月",
+   "𠦝"
+  ],
+  "steps": [
+   {
+    "fixed": "月",
+    "answer": "𠦝",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "朝",
+     "strokes": [
+      9,
+      10,
+      11,
+      12
+     ]
+    },
+    "answerGlyph": {
+     "source": "朝",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "直",
+  "grade": 2,
+  "yomi": "なおす",
+  "icon": "🔧",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "通",
+  "grade": 2,
+  "yomi": "とおる",
+  "icon": "🚇",
+  "pattern": "kakomu",
+  "parts": [
+   "⻌",
+   "甬"
+  ],
+  "steps": [
+   {
+    "fixed": "⻌",
+    "answer": "甬",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "通",
+     "strokes": [
+      8,
+      9,
+      10
+     ]
+    },
+    "answerGlyph": {
+     "source": "通",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "弟",
+  "grade": 2,
+  "yomi": "おとうと",
+  "icon": "👦",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "店",
+  "grade": 2,
+  "yomi": "みせ",
+  "icon": "🏬",
+  "pattern": "kakomu",
+  "parts": [
+   "广",
+   "占"
+  ],
+  "steps": [
+   {
+    "fixed": "广",
+    "answer": "占",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "店",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "店",
+     "strokes": [
+      4,
+      5,
+      6,
+      7,
+      8
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "点",
+  "grade": 2,
+  "yomi": "てん",
+  "icon": "📌",
+  "pattern": "jouge",
+  "parts": [
+   "灬",
+   "占"
+  ],
+  "steps": [
+   {
+    "fixed": "灬",
+    "answer": "占",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "点",
+     "strokes": [
+      6,
+      7,
+      8,
+      9
+     ]
+    },
+    "answerGlyph": {
+     "source": "点",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "電",
+  "grade": 2,
+  "yomi": "でん",
+  "icon": "⚡",
+  "pattern": "jouge",
+  "parts": [
+   "雨",
+   "电"
+  ],
+  "steps": [
+   {
+    "fixed": "雨",
+    "answer": "电",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "電",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+     ]
+    },
+    "answerGlyph": {
+     "source": "電",
+     "strokes": [
+      9,
+      10,
+      11,
+      12,
+      13
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "刀",
+  "grade": 2,
+  "yomi": "かたな",
+  "icon": "🗡️",
+  "pattern": "tantai",
+  "parts": [
+   "刀"
+  ],
+  "steps": []
+ },
+ {
+  "char": "冬",
+  "grade": 2,
+  "yomi": "ふゆ",
+  "icon": "⛄",
+  "pattern": "jouge",
+  "parts": [
+   "夂",
+   "冫"
+  ],
+  "steps": [
+   {
+    "fixed": "夂",
+    "answer": "冫",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "冬",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "冬",
+     "strokes": [
+      4,
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "当",
+  "grade": 2,
+  "yomi": "あたる",
+  "icon": "🎯",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "東",
+  "grade": 2,
+  "yomi": "ひがし",
+  "icon": "🌄",
+  "pattern": "kakomu",
+  "parts": [
+   "木",
+   "日"
+  ],
+  "steps": [
+   {
+    "fixed": "木",
+    "answer": "日",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "東",
+     "strokes": [
+      1,
+      6,
+      7,
+      8
+     ]
+    },
+    "answerGlyph": {
+     "source": "東",
+     "strokes": [
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "答",
+  "grade": 2,
+  "yomi": "こたえ",
+  "icon": "✅",
+  "pattern": "jouge",
+  "parts": [
+   "竹",
+   "合"
+  ],
+  "steps": [
+   {
+    "fixed": "竹",
+    "answer": "合",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "答",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    "answerGlyph": {
+     "source": "答",
+     "strokes": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "頭",
+  "grade": 2,
+  "yomi": "あたま",
+  "icon": "🧠",
+  "pattern": "sayuu",
+  "parts": [
+   "頁",
+   "豆"
+  ],
+  "steps": [
+   {
+    "fixed": "頁",
+    "answer": "豆",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "頭",
+     "strokes": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+     ]
+    },
+    "answerGlyph": {
+     "source": "頭",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "同",
+  "grade": 2,
+  "yomi": "おなじ",
+  "icon": "👯",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "道",
+  "grade": 2,
+  "yomi": "みち",
+  "icon": "🛣️",
+  "pattern": "kakomu",
+  "parts": [
+   "⻌",
+   "首"
+  ],
+  "steps": [
+   {
+    "fixed": "⻌",
+    "answer": "首",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "道",
+     "strokes": [
+      10,
+      11,
+      12
+     ]
+    },
+    "answerGlyph": {
+     "source": "道",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "読",
+  "grade": 2,
+  "yomi": "よむ",
+  "icon": "📚",
+  "pattern": "sayuu",
+  "parts": [
+   "言",
+   "売"
+  ],
+  "steps": [
+   {
+    "fixed": "言",
+    "answer": "売",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "読",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    },
+    "answerGlyph": {
+     "source": "読",
+     "strokes": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "内",
+  "grade": 2,
+  "yomi": "うち",
+  "icon": "📦",
+  "pattern": "kakomu",
+  "parts": [
+   "冂",
+   "人"
+  ],
+  "steps": [
+   {
+    "fixed": "冂",
+    "answer": "人",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "内",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "内",
+     "strokes": [
+      3,
+      4
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "南",
+  "grade": 2,
+  "yomi": "みなみ",
+  "icon": "🏝️",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "肉",
+  "grade": 2,
+  "yomi": "にく",
+  "icon": "🥩",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "馬",
+  "grade": 2,
+  "yomi": "うま",
+  "icon": "🐎",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "売",
+  "grade": 2,
+  "yomi": "うる",
+  "icon": "🏷️",
+  "pattern": "tantai",
+  "parts": [
+   "売"
+  ],
+  "steps": []
+ },
+ {
+  "char": "買",
+  "grade": 2,
+  "yomi": "かう",
+  "icon": "🛒",
+  "pattern": "jouge",
+  "parts": [
+   "罒",
+   "貝"
+  ],
+  "steps": [
+   {
+    "fixed": "罒",
+    "answer": "貝",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "買",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    "answerGlyph": {
+     "source": "買",
+     "strokes": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "麦",
+  "grade": 2,
+  "yomi": "むぎ",
+  "icon": "🌾",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "半",
+  "grade": 2,
+  "yomi": "はん",
+  "icon": "🌗",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "番",
+  "grade": 2,
+  "yomi": "ばん",
+  "icon": "🥇",
+  "pattern": "jouge",
+  "parts": [
+   "釆",
+   "田"
+  ],
+  "steps": [
+   {
+    "fixed": "釆",
+    "answer": "田",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "番",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    },
+    "answerGlyph": {
+     "source": "番",
+     "strokes": [
+      8,
+      9,
+      10,
+      11,
+      12
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "父",
+  "grade": 2,
+  "yomi": "ちち",
+  "icon": "👨",
+  "pattern": "tantai",
+  "parts": [
+   "父"
+  ],
+  "steps": []
+ },
+ {
+  "char": "風",
+  "grade": 2,
+  "yomi": "かぜ",
+  "icon": "🍃",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "分",
+  "grade": 2,
+  "yomi": "わける",
+  "icon": "➗",
+  "pattern": "jouge",
+  "parts": [
+   "八",
+   "刀"
+  ],
+  "steps": [
+   {
+    "fixed": "八",
+    "answer": "刀",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "分",
+     "strokes": [
+      1,
+      2
+     ]
+    },
+    "answerGlyph": {
+     "source": "分",
+     "strokes": [
+      3,
+      4
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "聞",
+  "grade": 2,
+  "yomi": "きく",
+  "icon": "👂",
+  "pattern": "kakomu",
+  "parts": [
+   "門",
+   "耳"
+  ],
+  "steps": [
+   {
+    "fixed": "門",
+    "answer": "耳",
+    "layout": "kakomu",
+    "fixedGlyph": {
+     "source": "聞",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+     ]
+    },
+    "answerGlyph": {
+     "source": "聞",
+     "strokes": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "米",
+  "grade": 2,
+  "yomi": "こめ",
+  "icon": "🍚",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "歩",
+  "grade": 2,
+  "yomi": "あるく",
+  "icon": "🚶",
+  "pattern": "jouge",
+  "parts": [
+   "止",
+   "少"
+  ],
+  "steps": [
+   {
+    "fixed": "止",
+    "answer": "少",
+    "layout": "tate",
+    "fixedGlyph": {
+     "source": "歩",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "歩",
+     "strokes": [
+      5,
+      6,
+      7,
+      8
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "母",
+  "grade": 2,
+  "yomi": "はは",
+  "icon": "👩",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "方",
+  "grade": 2,
+  "yomi": "ほう",
+  "icon": "🧭",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "北",
+  "grade": 2,
+  "yomi": "きた",
+  "icon": "🐧",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "毎",
+  "grade": 2,
+  "yomi": "まい",
+  "icon": "🔁",
+  "pattern": "tantai",
+  "parts": [
+   "毎"
+  ],
+  "steps": []
+ },
+ {
+  "char": "妹",
+  "grade": 2,
+  "yomi": "いもうと",
+  "icon": "👧",
+  "pattern": "sayuu",
+  "parts": [
+   "女",
+   "未"
+  ],
+  "steps": [
+   {
+    "fixed": "女",
+    "answer": "未",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "妹",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "妹",
+     "strokes": [
+      4,
+      5,
+      6,
+      7,
+      8
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "万",
+  "grade": 2,
+  "yomi": "まん",
+  "icon": "💴",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "明",
+  "grade": 2,
+  "yomi": "あかるい",
+  "icon": "sparkle",
+  "pattern": "sayuu",
+  "parts": [
+   "日",
+   "月"
+  ],
+  "steps": [
+   {
+    "fixed": "日",
+    "answer": "月",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "明",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "明",
+     "strokes": [
+      5,
+      6,
+      7,
+      8
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "鳴",
+  "grade": 2,
+  "yomi": "なく",
+  "icon": "🐔",
+  "pattern": "sayuu",
+  "parts": [
+   "口",
+   "鳥"
+  ],
+  "steps": [
+   {
+    "fixed": "口",
+    "answer": "鳥",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "鳴",
+     "strokes": [
+      1,
+      2,
+      3
+     ]
+    },
+    "answerGlyph": {
+     "source": "鳴",
+     "strokes": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "毛",
+  "grade": 2,
+  "yomi": "け",
+  "icon": "🐑",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "門",
+  "grade": 2,
+  "yomi": "もん",
+  "icon": "gate",
+  "pattern": "tantai",
+  "parts": [
+   "門"
+  ],
+  "steps": []
+ },
+ {
+  "char": "夜",
+  "grade": 2,
+  "yomi": "よる",
+  "icon": "🌙",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "野",
+  "grade": 2,
+  "yomi": "の",
+  "icon": "🌼",
+  "pattern": "sayuu",
+  "parts": [
+   "里",
+   "予"
+  ],
+  "steps": [
+   {
+    "fixed": "里",
+    "answer": "予",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "野",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    },
+    "answerGlyph": {
+     "source": "野",
+     "strokes": [
+      8,
+      9,
+      10,
+      11
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "友",
+  "grade": 2,
+  "yomi": "とも",
+  "icon": "🤝",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "用",
+  "grade": 2,
+  "yomi": "よう",
+  "icon": "📌",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "曜",
+  "grade": 2,
+  "yomi": "よう",
+  "icon": "📆",
+  "pattern": "sayuu",
+  "parts": [
+   "日",
+   "翟"
+  ],
+  "steps": [
+   {
+    "fixed": "日",
+    "answer": "翟",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "曜",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "曜",
+     "strokes": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "来",
+  "grade": 2,
+  "yomi": "くる",
+  "icon": "🚌",
+  "pattern": "tantai",
+  "parts": [],
+  "steps": []
+ },
+ {
+  "char": "里",
+  "grade": 2,
+  "yomi": "さと",
+  "icon": "🏡",
+  "pattern": "tantai",
+  "parts": [
+   "里"
+  ],
+  "steps": []
+ },
+ {
+  "char": "理",
+  "grade": 2,
+  "yomi": "り",
+  "icon": "🧪",
+  "pattern": "sayuu",
+  "parts": [
+   "王",
+   "里"
+  ],
+  "steps": [
+   {
+    "fixed": "王",
+    "answer": "里",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "理",
+     "strokes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    "answerGlyph": {
+     "source": "理",
+     "strokes": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "char": "話",
+  "grade": 2,
+  "yomi": "はなす",
+  "icon": "📞",
+  "pattern": "sayuu",
+  "parts": [
+   "言",
+   "舌"
+  ],
+  "steps": [
+   {
+    "fixed": "言",
+    "answer": "舌",
+    "layout": "yoko",
+    "fixedGlyph": {
+     "source": "話",
+     "strokes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    },
+    "answerGlyph": {
+     "source": "話",
+     "strokes": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+     ]
+    }
+   }
+  ]
+ }
+]

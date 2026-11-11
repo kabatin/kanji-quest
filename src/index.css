@@ -1,0 +1,212 @@
+:root {
+  --bg: #faf5e9;
+  --ink: #2b2a33;
+  --muted: #7a7682;
+  --line: #e4dcc8;
+  --imi: #0f8f7d;
+  --imi-bg: #ddf3ee;
+  --oto: #d9731a;
+  --oto-bg: #fce9d4;
+  --primary: #2f6fde;
+  --danger: #c8452f;
+  --pale: #cfc8b8;
+  --radius: 20px;
+
+  /* カードの見た目(スキン)で変わる値 */
+  --card-bg: #ffffff;
+  --card-border: #e4dcc8;
+
+  font-family: 'BIZ UDPGothic', 'Hiragino Maru Gothic ProN', 'Yu Gothic UI', 'Meiryo', sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-skin='sora'] {
+  --card-bg: linear-gradient(180deg, #dff1ff 0%, #ffffff 70%);
+  --card-border: #9ccbf0;
+}
+
+[data-skin='kin'] {
+  --card-bg: linear-gradient(135deg, #fff8dc 0%, #ffe59a 100%);
+  --card-border: #d9a91f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ページ全体は動かさない。指でなぞっても画面が上下にずれず、タップが取りこぼされない。 */
+html,
+body {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+#root {
+  height: 100%;
+}
+
+h1,
+h2,
+p,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 4px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.app {
+  height: 100%;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  /* 中身が画面に収まらないときだけ、この中でスクロールする */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 16px 24px 24px;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  flex-wrap: wrap;
+}
+
+.bar h1 {
+  font-size: 1.6rem;
+}
+
+.bar__step,
+.bar__score,
+.bar__time {
+  font-size: 1.3rem;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 3px solid var(--line);
+  font-variant-numeric: tabular-nums;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 56px;
+  padding: 0 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  background: #ffffff;
+  border: 3px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 4px 0 var(--line);
+}
+
+.btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--line);
+}
+
+.btn--primary {
+  background: var(--primary);
+  border-color: #1f4fa8;
+  box-shadow: 0 4px 0 #1f4fa8;
+  color: #ffffff;
+}
+
+.btn--danger {
+  background: var(--danger);
+  border-color: #8f2e1e;
+  box-shadow: 0 4px 0 #8f2e1e;
+  color: #ffffff;
+}
+
+.btn--big {
+  min-height: 72px;
+  padding: 0 36px;
+  font-size: 1.6rem;
+}
+
+/* 漢字の画 */
+.glyph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.glyph path {
+  fill: none;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.glyph-imi path {
+  stroke: var(--imi);
+}
+
+.glyph-oto path {
+  stroke: var(--oto);
+}
+
+.glyph-ink path {
+  stroke: var(--ink);
+}
+
+.glyph-pale path {
+  stroke: var(--pale);
+}
+
+.glyph-slot {
+  fill: rgba(43, 42, 51, 0.05);
+  stroke: #a59d8a;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+}

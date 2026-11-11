@@ -1,0 +1,2168 @@
+[
+ {
+  "id": "ナ",
+  "label": "て",
+  "kind": "imi",
+  "icon": "✋",
+  "glyph": {
+   "source": "右",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "口",
+  "label": "くち",
+  "kind": "imi",
+  "icon": "👄",
+  "glyph": {
+   "source": "口",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "立",
+  "label": "たつ",
+  "kind": "imi",
+  "icon": "🧍",
+  "glyph": {
+   "source": "立",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "日",
+  "label": "ひ",
+  "kind": "imi",
+  "icon": "sun",
+  "glyph": {
+   "source": "日",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "艹",
+  "label": "くさ",
+  "kind": "imi",
+  "icon": "grass",
+  "glyph": {
+   "source": "花",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "化",
+  "label": "か",
+  "kind": "oto",
+  "glyph": {
+   "source": "花",
+   "strokes": [
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "亻",
+  "label": "ひと",
+  "kind": "imi",
+  "icon": "🧍",
+  "glyph": {
+   "source": "休",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "木",
+  "label": "き",
+  "kind": "imi",
+  "icon": "tree",
+  "glyph": {
+   "source": "木",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "王",
+  "label": "おう",
+  "kind": "imi",
+  "icon": "👑",
+  "glyph": {
+   "source": "王",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "丶",
+  "label": "てん",
+  "kind": "imi",
+  "icon": "⚫",
+  "glyph": {
+   "source": "玉",
+   "strokes": [
+    5
+   ]
+  }
+ },
+ {
+  "id": "穴",
+  "label": "あな",
+  "kind": "imi",
+  "icon": "🕳️",
+  "glyph": {
+   "source": "空",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "工",
+  "label": "こう",
+  "kind": "imi",
+  "icon": "🔨",
+  "glyph": {
+   "source": "工",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "大",
+  "label": "おおきい",
+  "kind": "imi",
+  "icon": "🐘",
+  "glyph": {
+   "source": "大",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "目",
+  "label": "め",
+  "kind": "imi",
+  "icon": "👁️",
+  "glyph": {
+   "source": "目",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "儿",
+  "label": "あし",
+  "kind": "imi",
+  "icon": "🦵",
+  "glyph": {
+   "source": "見",
+   "strokes": [
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "交",
+  "label": "まじわる",
+  "kind": "imi",
+  "icon": "🔀",
+  "glyph": {
+   "source": "交",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "宀",
+  "label": "やね",
+  "kind": "imi",
+  "icon": "🏠",
+  "glyph": {
+   "source": "字",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "子",
+  "label": "こ",
+  "kind": "imi",
+  "icon": "👶",
+  "glyph": {
+   "source": "子",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "林",
+  "label": "はやし",
+  "kind": "imi",
+  "icon": "trees2",
+  "glyph": {
+   "source": "林",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ]
+  }
+ },
+ {
+  "id": "一",
+  "label": "いち",
+  "kind": "imi",
+  "icon": "1️⃣",
+  "glyph": {
+   "source": "一",
+   "strokes": [
+    1
+   ]
+  }
+ },
+ {
+  "id": "止",
+  "label": "とまる",
+  "kind": "imi",
+  "icon": "🛑",
+  "glyph": {
+   "source": "止",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "十",
+  "label": "じゅう",
+  "kind": "imi",
+  "icon": "🔟",
+  "glyph": {
+   "source": "十",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "早",
+  "label": "はやい",
+  "kind": "imi",
+  "icon": "⏰",
+  "glyph": {
+   "source": "早",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "龰",
+  "label": "あし",
+  "kind": "imi",
+  "icon": "🦶",
+  "glyph": {
+   "source": "足",
+   "strokes": [
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "寸",
+  "label": "すん",
+  "kind": "oto",
+  "glyph": {
+   "source": "村",
+   "strokes": [
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "田",
+  "label": "た",
+  "kind": "imi",
+  "icon": "🌾",
+  "glyph": {
+   "source": "田",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "力",
+  "label": "ちから",
+  "kind": "imi",
+  "icon": "💪",
+  "glyph": {
+   "source": "力",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "丁",
+  "label": "ちょう",
+  "kind": "oto",
+  "glyph": {
+   "source": "町",
+   "strokes": [
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "白",
+  "label": "しろ",
+  "kind": "imi",
+  "icon": "white",
+  "glyph": {
+   "source": "白",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "夕",
+  "label": "ゆう",
+  "kind": "imi",
+  "icon": "🌆",
+  "glyph": {
+   "source": "夕",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "弓",
+  "label": "ゆみ",
+  "kind": "imi",
+  "icon": "🏹",
+  "glyph": {
+   "source": "弓",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "丨",
+  "label": "ぼう",
+  "kind": "imi",
+  "icon": "📏",
+  "glyph": {
+   "source": "引",
+   "strokes": [
+    4
+   ]
+  }
+ },
+ {
+  "id": "习",
+  "label": "はね",
+  "kind": "imi",
+  "icon": "🪶",
+  "glyph": {
+   "source": "羽",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "雨",
+  "label": "あめ",
+  "kind": "imi",
+  "icon": "rain",
+  "glyph": {
+   "source": "雨",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ]
+  }
+ },
+ {
+  "id": "云",
+  "label": "くも",
+  "kind": "imi",
+  "icon": "cloud",
+  "glyph": {
+   "source": "雲",
+   "strokes": [
+    9,
+    10,
+    11,
+    12
+   ]
+  }
+ },
+ {
+  "id": "囗",
+  "label": "かこい",
+  "kind": "imi",
+  "icon": "⬜",
+  "glyph": {
+   "source": "園",
+   "strokes": [
+    1,
+    2,
+    13
+   ]
+  }
+ },
+ {
+  "id": "袁",
+  "label": "えん",
+  "kind": "oto",
+  "glyph": {
+   "source": "園",
+   "strokes": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ]
+  }
+ },
+ {
+  "id": "⻌",
+  "label": "みち",
+  "kind": "imi",
+  "icon": "🛣️",
+  "glyph": {
+   "source": "遠",
+   "strokes": [
+    11,
+    12,
+    13
+   ]
+  }
+ },
+ {
+  "id": "可",
+  "label": "か",
+  "kind": "oto",
+  "glyph": {
+   "source": "何",
+   "strokes": [
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "禾",
+  "label": "いね",
+  "kind": "imi",
+  "icon": "🌾",
+  "glyph": {
+   "source": "科",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "斗",
+  "label": "ます",
+  "kind": "imi",
+  "icon": "⚖️",
+  "glyph": {
+   "source": "科",
+   "strokes": [
+    6,
+    7,
+    8,
+    9
+   ]
+  }
+ },
+ {
+  "id": "豕",
+  "label": "ぶた",
+  "kind": "imi",
+  "icon": "🐖",
+  "glyph": {
+   "source": "家",
+   "strokes": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ]
+  }
+ },
+ {
+  "id": "欠",
+  "label": "あくび",
+  "kind": "imi",
+  "icon": "🥱",
+  "glyph": {
+   "source": "歌",
+   "strokes": [
+    11,
+    12,
+    13,
+    14
+   ]
+  }
+ },
+ {
+  "id": "哥",
+  "label": "か",
+  "kind": "oto",
+  "glyph": {
+   "source": "歌",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ]
+  }
+ },
+ {
+  "id": "人",
+  "label": "ひと",
+  "kind": "imi",
+  "icon": "🧍",
+  "glyph": {
+   "source": "人",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "氵",
+  "label": "みず",
+  "kind": "imi",
+  "icon": "drop",
+  "glyph": {
+   "source": "海",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "毎",
+  "label": "かい",
+  "kind": "oto",
+  "glyph": {
+   "source": "毎",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "糸",
+  "label": "いと",
+  "kind": "imi",
+  "icon": "thread",
+  "glyph": {
+   "source": "糸",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "会",
+  "label": "あう",
+  "kind": "imi",
+  "icon": "🤝",
+  "glyph": {
+   "source": "会",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "卜",
+  "label": "うらない",
+  "kind": "imi",
+  "icon": "🔮",
+  "glyph": {
+   "source": "外",
+   "strokes": [
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "舌",
+  "label": "した",
+  "kind": "imi",
+  "icon": "👅",
+  "glyph": {
+   "source": "活",
+   "strokes": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  }
+ },
+ {
+  "id": "門",
+  "label": "もん",
+  "kind": "imi",
+  "icon": "gate",
+  "glyph": {
+   "source": "門",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ]
+  }
+ },
+ {
+  "id": "九",
+  "label": "きゅう",
+  "kind": "imi",
+  "icon": "9️⃣",
+  "glyph": {
+   "source": "九",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "山",
+  "label": "やま",
+  "kind": "imi",
+  "icon": "⛰️",
+  "glyph": {
+   "source": "山",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "石",
+  "label": "いし",
+  "kind": "imi",
+  "icon": "🪨",
+  "glyph": {
+   "source": "石",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "頁",
+  "label": "あたま",
+  "kind": "imi",
+  "icon": "👤",
+  "glyph": {
+   "source": "顔",
+   "strokes": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ]
+  }
+ },
+ {
+  "id": "彦",
+  "label": "がん",
+  "kind": "oto",
+  "glyph": {
+   "source": "顔",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  }
+ },
+ {
+  "id": "气",
+  "label": "き",
+  "kind": "oto",
+  "glyph": {
+   "source": "汽",
+   "strokes": [
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "言",
+  "label": "いう",
+  "kind": "imi",
+  "icon": "💬",
+  "glyph": {
+   "source": "言",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "己",
+  "label": "き",
+  "kind": "oto",
+  "glyph": {
+   "source": "記",
+   "strokes": [
+    8,
+    9,
+    10
+   ]
+  }
+ },
+ {
+  "id": "刂",
+  "label": "かたな",
+  "kind": "imi",
+  "icon": "🗡️",
+  "glyph": {
+   "source": "帰",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "帚",
+  "label": "ほうき",
+  "kind": "imi",
+  "icon": "🧹",
+  "glyph": {
+   "source": "帰",
+   "strokes": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ]
+  }
+ },
+ {
+  "id": "虽",
+  "label": "むし",
+  "kind": "imi",
+  "icon": "🐛",
+  "glyph": {
+   "source": "強",
+   "strokes": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ]
+  }
+ },
+ {
+  "id": "攵",
+  "label": "むち",
+  "kind": "imi",
+  "icon": "🪄",
+  "glyph": {
+   "source": "教",
+   "strokes": [
+    8,
+    9,
+    10,
+    11
+   ]
+  }
+ },
+ {
+  "id": "孝",
+  "label": "こう",
+  "kind": "oto",
+  "glyph": {
+   "source": "教",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "斤",
+  "label": "おの",
+  "kind": "imi",
+  "icon": "🪓",
+  "glyph": {
+   "source": "近",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "彡",
+  "label": "かざり",
+  "kind": "imi",
+  "icon": "✨",
+  "glyph": {
+   "source": "形",
+   "strokes": [
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "开",
+  "label": "けい",
+  "kind": "oto",
+  "glyph": {
+   "source": "形",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "二",
+  "label": "に",
+  "kind": "imi",
+  "icon": "2️⃣",
+  "glyph": {
+   "source": "二",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "厂",
+  "label": "がけ",
+  "kind": "imi",
+  "icon": "🧗",
+  "glyph": {
+   "source": "原",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "泉",
+  "label": "いずみ",
+  "kind": "imi",
+  "icon": "spring",
+  "glyph": {
+   "source": "原",
+   "strokes": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ]
+  }
+ },
+ {
+  "id": "吾",
+  "label": "ご",
+  "kind": "oto",
+  "glyph": {
+   "source": "語",
+   "strokes": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+   ]
+  }
+ },
+ {
+  "id": "八",
+  "label": "はち",
+  "kind": "imi",
+  "icon": "8️⃣",
+  "glyph": {
+   "source": "八",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "厶",
+  "label": "む",
+  "kind": "oto",
+  "glyph": {
+   "source": "公",
+   "strokes": [
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "广",
+  "label": "やね",
+  "kind": "imi",
+  "icon": "🛖",
+  "glyph": {
+   "source": "広",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "亠",
+  "label": "ふた",
+  "kind": "imi",
+  "icon": "🎩",
+  "glyph": {
+   "source": "交",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "父",
+  "label": "ちち",
+  "kind": "imi",
+  "icon": "👨",
+  "glyph": {
+   "source": "父",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "耂",
+  "label": "としより",
+  "kind": "imi",
+  "icon": "👴",
+  "glyph": {
+   "source": "考",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "丂",
+  "label": "こう",
+  "kind": "oto",
+  "glyph": {
+   "source": "考",
+   "strokes": [
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "彳",
+  "label": "みち",
+  "kind": "imi",
+  "icon": "🚶",
+  "glyph": {
+   "source": "行",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "亍",
+  "label": "みち",
+  "kind": "imi",
+  "icon": "🛣️",
+  "glyph": {
+   "source": "行",
+   "strokes": [
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "亼",
+  "label": "やね",
+  "kind": "imi",
+  "icon": "🔺",
+  "glyph": {
+   "source": "合",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "玉",
+  "label": "たま",
+  "kind": "imi",
+  "icon": "🔮",
+  "glyph": {
+   "source": "玉",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "里",
+  "label": "さと",
+  "kind": "imi",
+  "icon": "🏡",
+  "glyph": {
+   "source": "里",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "灬",
+  "label": "ひ",
+  "kind": "imi",
+  "icon": "🔥",
+  "glyph": {
+   "source": "黒",
+   "strokes": [
+    8,
+    9,
+    10,
+    11
+   ]
+  }
+ },
+ {
+  "id": "乍",
+  "label": "さく",
+  "kind": "oto",
+  "glyph": {
+   "source": "作",
+   "strokes": [
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "巾",
+  "label": "ぬの",
+  "kind": "imi",
+  "icon": "🧣",
+  "glyph": {
+   "source": "市",
+   "strokes": [
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "女",
+  "label": "おんな",
+  "kind": "imi",
+  "icon": "👩",
+  "glyph": {
+   "source": "女",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "市",
+  "label": "いち",
+  "kind": "imi",
+  "icon": "🏪",
+  "glyph": {
+   "source": "市",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "心",
+  "label": "こころ",
+  "kind": "imi",
+  "icon": "❤️",
+  "glyph": {
+   "source": "心",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "氏",
+  "label": "し",
+  "kind": "oto",
+  "glyph": {
+   "source": "紙",
+   "strokes": [
+    7,
+    8,
+    9,
+    10
+   ]
+  }
+ },
+ {
+  "id": "土",
+  "label": "つち",
+  "kind": "imi",
+  "icon": "🟤",
+  "glyph": {
+   "source": "土",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "寺",
+  "label": "てら",
+  "kind": "imi",
+  "icon": "🛕",
+  "glyph": {
+   "source": "寺",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "至",
+  "label": "しつ",
+  "kind": "oto",
+  "glyph": {
+   "source": "室",
+   "strokes": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  }
+ },
+ {
+  "id": "礻",
+  "label": "かみさま",
+  "kind": "imi",
+  "icon": "⛩️",
+  "glyph": {
+   "source": "社",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "火",
+  "label": "ひ",
+  "kind": "imi",
+  "icon": "🔥",
+  "glyph": {
+   "source": "火",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "周",
+  "label": "しゅう",
+  "kind": "oto",
+  "glyph": {
+   "source": "週",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ]
+  }
+ },
+ {
+  "id": "聿",
+  "label": "ふで",
+  "kind": "imi",
+  "icon": "🖌️",
+  "glyph": {
+   "source": "書",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "小",
+  "label": "ちいさい",
+  "kind": "imi",
+  "icon": "🐜",
+  "glyph": {
+   "source": "小",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "丿",
+  "label": "ななめ",
+  "kind": "imi",
+  "icon": "〽️",
+  "glyph": {
+   "source": "少",
+   "strokes": [
+    4
+   ]
+  }
+ },
+ {
+  "id": "昜",
+  "label": "じょう",
+  "kind": "oto",
+  "glyph": {
+   "source": "場",
+   "strokes": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ]
+  }
+ },
+ {
+  "id": "亲",
+  "label": "しん",
+  "kind": "oto",
+  "glyph": {
+   "source": "新",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  }
+ },
+ {
+  "id": "見",
+  "label": "みる",
+  "kind": "imi",
+  "icon": "👀",
+  "glyph": {
+   "source": "見",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "娄",
+  "label": "すう",
+  "kind": "oto",
+  "glyph": {
+   "source": "数",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  }
+ },
+ {
+  "id": "生",
+  "label": "うまれる",
+  "kind": "imi",
+  "icon": "🌱",
+  "glyph": {
+   "source": "生",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "青",
+  "label": "あお",
+  "kind": "imi",
+  "icon": "🔵",
+  "glyph": {
+   "source": "青",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ]
+  }
+ },
+ {
+  "id": "刀",
+  "label": "かたな",
+  "kind": "imi",
+  "icon": "🗡️",
+  "glyph": {
+   "source": "刀",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "七",
+  "label": "なな",
+  "kind": "imi",
+  "icon": "7️⃣",
+  "glyph": {
+   "source": "七",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "⺕",
+  "label": "て",
+  "kind": "imi",
+  "icon": "✋",
+  "glyph": {
+   "source": "雪",
+   "strokes": [
+    9,
+    10,
+    11
+   ]
+  }
+ },
+ {
+  "id": "舟",
+  "label": "ふね",
+  "kind": "imi",
+  "icon": "⛵",
+  "glyph": {
+   "source": "船",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "㕣",
+  "label": "せん",
+  "kind": "oto",
+  "glyph": {
+   "source": "船",
+   "strokes": [
+    7,
+    8,
+    9,
+    10,
+    11
+   ]
+  }
+ },
+ {
+  "id": "水",
+  "label": "みず",
+  "kind": "imi",
+  "icon": "drop",
+  "glyph": {
+   "source": "水",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "且",
+  "label": "そ",
+  "kind": "oto",
+  "glyph": {
+   "source": "組",
+   "strokes": [
+    7,
+    8,
+    9,
+    10,
+    11
+   ]
+  }
+ },
+ {
+  "id": "本",
+  "label": "ほん",
+  "kind": "imi",
+  "icon": "📖",
+  "glyph": {
+   "source": "本",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "也",
+  "label": "ち",
+  "kind": "oto",
+  "glyph": {
+   "source": "地",
+   "strokes": [
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "矢",
+  "label": "や",
+  "kind": "imi",
+  "icon": "🏹",
+  "glyph": {
+   "source": "矢",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "尺",
+  "label": "ものさし",
+  "kind": "imi",
+  "icon": "📏",
+  "glyph": {
+   "source": "昼",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "旦",
+  "label": "ひので",
+  "kind": "imi",
+  "icon": "🌅",
+  "glyph": {
+   "source": "昼",
+   "strokes": [
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  }
+ },
+ {
+  "id": "月",
+  "label": "つき",
+  "kind": "imi",
+  "icon": "moon",
+  "glyph": {
+   "source": "月",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "𠦝",
+  "label": "あさひ",
+  "kind": "imi",
+  "icon": "🌅",
+  "glyph": {
+   "source": "朝",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ]
+  }
+ },
+ {
+  "id": "甬",
+  "label": "つう",
+  "kind": "oto",
+  "glyph": {
+   "source": "通",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "占",
+  "label": "てん",
+  "kind": "oto",
+  "glyph": {
+   "source": "店",
+   "strokes": [
+    4,
+    5,
+    6,
+    7,
+    8
+   ]
+  }
+ },
+ {
+  "id": "电",
+  "label": "いなずま",
+  "kind": "imi",
+  "icon": "⚡",
+  "glyph": {
+   "source": "電",
+   "strokes": [
+    9,
+    10,
+    11,
+    12,
+    13
+   ]
+  }
+ },
+ {
+  "id": "夂",
+  "label": "あし",
+  "kind": "imi",
+  "icon": "👣",
+  "glyph": {
+   "source": "冬",
+   "strokes": [
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ {
+  "id": "冫",
+  "label": "こおり",
+  "kind": "imi",
+  "icon": "🧊",
+  "glyph": {
+   "source": "冬",
+   "strokes": [
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "竹",
+  "label": "たけ",
+  "kind": "imi",
+  "icon": "🎋",
+  "glyph": {
+   "source": "竹",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "合",
+  "label": "あう",
+  "kind": "imi",
+  "icon": "🧩",
+  "glyph": {
+   "source": "合",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "豆",
+  "label": "まめ",
+  "kind": "imi",
+  "icon": "🫘",
+  "glyph": {
+   "source": "頭",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "首",
+  "label": "くび",
+  "kind": "imi",
+  "icon": "🦒",
+  "glyph": {
+   "source": "首",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  }
+ },
+ {
+  "id": "売",
+  "label": "うる",
+  "kind": "imi",
+  "icon": "🏷️",
+  "glyph": {
+   "source": "売",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "冂",
+  "label": "わく",
+  "kind": "imi",
+  "icon": "🖼️",
+  "glyph": {
+   "source": "内",
+   "strokes": [
+    1,
+    2
+   ]
+  }
+ },
+ {
+  "id": "罒",
+  "label": "あみ",
+  "kind": "imi",
+  "icon": "🕸️",
+  "glyph": {
+   "source": "買",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  }
+ },
+ {
+  "id": "貝",
+  "label": "かい",
+  "kind": "imi",
+  "icon": "🐚",
+  "glyph": {
+   "source": "貝",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "釆",
+  "label": "たね",
+  "kind": "imi",
+  "icon": "🌱",
+  "glyph": {
+   "source": "番",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  }
+ },
+ {
+  "id": "耳",
+  "label": "みみ",
+  "kind": "imi",
+  "icon": "👂",
+  "glyph": {
+   "source": "耳",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  }
+ },
+ {
+  "id": "少",
+  "label": "すこし",
+  "kind": "imi",
+  "icon": "🤏",
+  "glyph": {
+   "source": "少",
+   "strokes": [
+    1,
+    2,
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "id": "未",
+  "label": "まい",
+  "kind": "oto",
+  "glyph": {
+   "source": "妹",
+   "strokes": [
+    4,
+    5,
+    6,
+    7,
+    8
+   ]
+  }
+ },
+ {
+  "id": "鳥",
+  "label": "とり",
+  "kind": "imi",
+  "icon": "🐦",
+  "glyph": {
+   "source": "鳥",
+   "strokes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ]
+  }
+ },
+ {
+  "id": "予",
+  "label": "よ",
+  "kind": "oto",
+  "glyph": {
+   "source": "野",
+   "strokes": [
+    8,
+    9,
+    10,
+    11
+   ]
+  }
+ },
+ {
+  "id": "翟",
+  "label": "よう",
+  "kind": "oto",
+  "glyph": {
+   "source": "曜",
+   "strokes": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ]
+  }
+ }
+]

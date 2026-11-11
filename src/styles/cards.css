@@ -1,0 +1,238 @@
+/* 部位カード */
+.part-card {
+  --glyph-size: 104px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 150px;
+  padding: 12px;
+  background: var(--card-bg);
+  border: 4px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 0 var(--card-border);
+}
+
+button.part-card:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--card-border);
+}
+
+.part-card__hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+}
+
+.part-card__icon {
+  width: 52px;
+  height: 52px;
+}
+
+.part-card__oto {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--oto-bg);
+  color: var(--oto);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.part-card__glyph {
+  width: var(--glyph-size);
+  height: var(--glyph-size);
+}
+
+.part-card__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.part-card__label small {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: #ffffff;
+}
+
+.part-card--imi .part-card__label small {
+  background: var(--imi);
+}
+
+.part-card--oto .part-card__label small {
+  background: var(--oto);
+}
+
+.part-card--plain {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+button.part-card--plain {
+  border: 4px dashed var(--line);
+}
+
+.part-card.is-wrong {
+  opacity: 0.3;
+  animation: shake 0.35s;
+}
+
+@keyframes shake {
+  25% {
+    transform: translateX(-8px);
+  }
+  75% {
+    transform: translateX(8px);
+  }
+}
+
+/* くみあわせ */
+.kumi {
+  flex: 1;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  gap: 16px 24px;
+}
+
+.kumi--yoko,
+.kumi--kakomu {
+  grid-template-columns: minmax(200px, 280px) auto minmax(360px, 480px);
+  grid-template-areas:
+    'goal goal goal'
+    'fixed plus choices'
+    'retry retry retry';
+}
+
+.kumi--tate {
+  grid-template-columns: minmax(0, 880px);
+  grid-template-areas:
+    'goal'
+    'fixed'
+    'plus'
+    'choices'
+    'retry';
+  justify-items: center;
+  gap: 8px 24px;
+}
+
+.kumi__goal {
+  grid-area: goal;
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 4px 28px 4px 16px;
+  background: #fff6cf;
+  border: 4px solid #f0c93d;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.kumi__goal-icon {
+  width: 56px;
+  height: 56px;
+}
+
+.kumi__goal-label {
+  font-size: 1.9rem;
+}
+
+.kumi__goal-text {
+  font-size: 1.2rem;
+  color: var(--muted);
+}
+
+.kumi__fixed {
+  grid-area: fixed;
+  width: 100%;
+}
+
+.kumi--tate .kumi__fixed {
+  max-width: 440px;
+}
+
+.kumi__fixed .part-card {
+  --glyph-size: 170px;
+  min-height: 0;
+}
+
+.kumi--tate .kumi__fixed .part-card {
+  --glyph-size: 150px;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.part-card__label {
+  white-space: nowrap;
+}
+
+.kumi__plus {
+  grid-area: plus;
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--muted);
+  line-height: 1;
+}
+
+.kumi__choices {
+  grid-area: choices;
+  display: grid;
+  gap: 16px;
+  width: 100%;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.kumi--tate .kumi__choices {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.kumi__retry {
+  grid-area: retry;
+  min-height: 1.6em;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.kumi--merged {
+  grid-template-columns: min(60vh, 420px);
+}
+
+.kumi__merged-glyph {
+  aspect-ratio: 1;
+}
+
+@media (max-width: 760px) {
+  .kumi--yoko,
+  .kumi--kakomu {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'goal'
+      'fixed'
+      'plus'
+      'choices'
+      'retry';
+    justify-items: center;
+  }
+
+  .kumi__fixed {
+    max-width: 240px;
+  }
+
+  .kumi--tate .kumi__choices {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
