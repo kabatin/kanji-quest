@@ -88,7 +88,7 @@ npm run build      # 本番ビルド(dist/)
 ## 公開(GitHub Pages)
 
 `master` に push すると、GitHub Actions(`.github/workflows/pages.yml`)がテストとビルドをして、
-https://kabatin.github.io/kanji-quest/ に公開します。URL を知っていれば誰でも ひらけます(検索よけの noindex は入れています)。
+https://kabatin.github.io/kanji-quest/ に公開します。だれでも ひらけます。
 
 ## Xserver で限定公開する
 
@@ -104,7 +104,6 @@ https://kabatin.github.io/kanji-quest/ に公開します。URL を知ってい�
 - どのフォルダに置いても動きます(`vite.config.ts` の `base: './'`)。
 - 保存データは「ドメイン + ブラウザ」ごとです。別の端末・別のブラウザには引きつがれません。
 - https で公開してください(Xserver の無料SSL)。
-- 公開する前に、使った音声モデルの利用規約を確認してください(下の「音声」)。
 
 ## データの作り方
 
@@ -148,7 +147,7 @@ npm run voice -- --force         # 全部作りなおす
 npm run voice -- <スタイルID>    # 声を変える
 ```
 
-外部に公開する場合は、使った音声モデルの利用規約を確認してください。
+今の音声は、モデルの利用規約を確認したうえで公開しています。声(スタイル)を変えるときは、そのモデルの利用規約を確認してください。
 
 ## 絵
 
