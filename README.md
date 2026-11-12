@@ -93,21 +93,6 @@ npm run build      # 本番ビルド(dist/)
 `master` に push すると、GitHub Actions(`.github/workflows/pages.yml`)がテストとビルドをして、
 https://kabatin.github.io/kanji-quest/ に公開します。だれでも ひらけます。
 
-## Xserver で限定公開する
-
-サーバー側のプログラムは使っていないので、ふつうのレンタルサーバー(Xserver など)に
-ファイルを置くだけで動きます。データは見る人の端末の中(localStorage)に保存されます。
-
-1. `npm run build` を実行する(`dist/` ができる。音声をふくめて 約20MB)
-2. `dist/` の **中身** を、公開フォルダ(例: `public_html/kanji/`)に FTP などでアップロードする
-3. パスワードをかける: Xserver のサーバーパネル「アクセス制限」で、そのフォルダを ON にしてユーザーを作る
-4. `deploy/xserver/htaccess.sample` の「検索エンジンに のせない」「読みこみを速くする」の部分を、
-   そのフォルダの `.htaccess` に追記する(アクセス制限が書いた行は消さない)
-
-- どのフォルダに置いても動きます(`vite.config.ts` の `base: './'`)。
-- 保存データは「ドメイン + ブラウザ」ごとです。別の端末・別のブラウザには引きつがれません。
-- https で公開してください(Xserver の無料SSL)。
-
 ## データの作り方
 
 漢字・部位・説明・音声は、手で書いた一覧からスクリプトで作ります。`src/data/generated/` と
