@@ -9,6 +9,8 @@
 - 横向きタブレット(iPad など)が基準。一度ひらけば電波がなくても あそべる
 - ログインなし。記録は端末の中(localStorage)にだけ保存
 
+**あそぶ: https://kabatin.github.io/kanji-quest/** (iPad などの横向きタブレット向け)
+
 ![ホーム: 空にうかぶ しま](docs/screenshots/home.png)
 
 | なりたちの物語 | ぼうけん |
@@ -82,6 +84,11 @@ npm run build      # 本番ビルド(dist/)
 - iPad では Safari の共有メニュー →「ホーム画面に追加」で、アプリのように ひらけます(アイコンは `public/icons/`、作りなおすときは `node scripts/build-icons.mjs`)
 - 文字(Google Fonts)は、2回目に ひらいたときから保存されます
 - 確認: `npm run e2e:pwa`(ビルドして、電波を切っても ひらけるか・音声が鳴るかを試す)
+
+## 公開(GitHub Pages)
+
+`master` に push すると、GitHub Actions(`.github/workflows/pages.yml`)がテストとビルドをして、
+https://kabatin.github.io/kanji-quest/ に公開します。URL を知っていれば誰でも ひらけます(検索よけの noindex は入れています)。
 
 ## Xserver で限定公開する
 
