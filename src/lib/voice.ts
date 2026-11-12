@@ -1,4 +1,5 @@
 import manifest from '../assets/voice-manifest.json'
+import { duckMusic } from './music'
 import { audioContext } from './sound'
 import { speak } from './speech'
 
@@ -41,6 +42,14 @@ function connectGain(element: HTMLAudioElement): void {
   }
 }
 
+/** こえ を鳴らす Audio 要素。こえ が流れている間は、うしろの音楽を小さくする。 */
+function createPlayer(): HTMLAudioElement {
+  const element = new Audio()
+  element.addEventListener('playing', () => duckMusic(true))
+  for (const done of ['ended', 'pause', 'error']) element.addEventListener(done, () => duckMusic(false))
+  return element
+}
+
 function setVolume(element: HTMLAudioElement, volume: number): void {
   if (gain) gain.gain.value = volume
   else element.volume = volume
@@ -61,7 +70,7 @@ export function playVoice(clipId: string, fallbackText: string, enabled: boolean
   if (!CLIPS.has(clipId) || typeof Audio === 'undefined') {
     return speak(fallbackText, true) ? 'speech' : 'none'
   }
-  player ??= new Audio()
+  player ??= createPlayer()
   cancelFade()
   connectGain(player)
   const ctx = gain ? audioContext() : undefined
