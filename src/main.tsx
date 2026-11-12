@@ -22,8 +22,23 @@ if (!root) throw new Error('#root が見つかりません')
 // 公開した版では、電波がなくても あそべるよう準備する(開発中は なにもしない)
 void registerServiceWorker()
 
-createRoot(root).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+// 開発中だけ(公開する版には 入らない):
+//   ?scene=休                 その字の場面を コマ送りで ならべて見る
+//   ?scene=山&variant=sonnet  ためしに作った場面(trials/sonnet/)を見る
+//   ?compare                  ためしに作った場面を、同じ字どうし よこに ならべて見くらべる
+const params = import.meta.env.DEV ? new URLSearchParams(window.location.search) : new URLSearchParams()
+const previewChar = params.get('scene')
+
+if (previewChar || params.has('compare')) {
+  void import('./features/story/ScenePreview').then(({ ScenePreview, SceneCompare }) => {
+    createRoot(root).render(
+      <StrictMode>{previewChar ? <ScenePreview char={previewChar} variant={params.get('variant')} /> : <SceneCompare chars={params.get('compare') ?? ''} />}</StrictMode>,
+    )
+  })
+} else {
+  createRoot(root).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  )
+}

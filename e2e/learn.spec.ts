@@ -69,7 +69,10 @@ test('「つづきから」で学び、指で書くと はんこ が押されて
 test('休: 人が木にもたれる物語のあと、亻と木を組み合わせると、なかまに体が出る', async ({ page }) => {
   await start(page)
   await openFromZukan(page, 1, '休')
-  await expect(page.locator('.story__actor[data-motion="lean-right"]')).toBeVisible()
+  // 休 には 手づくりの場面が ある。さいごまで流れると、字の画が ぜんぶ書けている
+  await expect(page.locator('.scene[data-scene="休"]')).toBeVisible()
+  await expect(page.locator('.scene[data-finished="true"] [data-done="true"]')).toHaveCount(6, { timeout: 15_000 })
+  expect(await overflow(page)).toEqual(FITS)
   await expect(page.getByText('ひとが きに もたれて ひとやすみ。')).toBeVisible()
   await page.getByRole('button', { name: 'つぎへ' }).click()
   await expect(page.locator('.kumi__fixed [data-part="亻"]')).toBeVisible()

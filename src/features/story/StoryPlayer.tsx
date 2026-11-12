@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { KText } from '../../components/KText'
 import { PartIcon } from '../../components/PartIcon'
 import type { Tone } from '../../components/KanjiGlyph'
@@ -9,6 +9,10 @@ import type { GlyphRef, Kanji } from '../../data/schema'
 import { fullGlyph, getStrokes, GLYPH_SIZE, unionBBox } from '../../data/strokes'
 import { useFeedback, useStopVoiceOnLeave } from '../../lib/useFeedback'
 import { voiceId } from '../../lib/voice'
+import { useSceneClock } from './sceneClock'
+import type { SceneModule } from './sceneKit'
+import { hasScene, useScene } from './sceneRegistry'
+import { SceneStage } from './SceneStage'
 
 /** 0 = 絵の場面 / 1 = 絵が筆画に変わっていく / 2 = 漢字のできあがり */
 type Phase = 0 | 1 | 2
@@ -68,11 +72,92 @@ const PICTURE_OPACITY: Record<Phase, number> = { 0: 1, 1: 0.2, 2: 0 }
 
 type Props = { readonly kanji: Kanji; readonly onDone: () => void }
 
+/** 文と ボタン(場面の よこ)。手づくりの場面でも、これまでの かんたんな絵でも 同じものを使う。 */
+function StoryText({ kanji, showYomi, onReplay, onDone }: { readonly kanji: Kanji; readonly showYomi: boolean; readonly onReplay: () => void; readonly onDone: () => void }) {
+  const narration = getNarration(kanji.char)
+  return (
+    <div className="story__text">
+      <span className={`story__kind story__kind--${narration.kind}`}>{KIND_LABEL[narration.kind]}</span>
+      <p className="story__caption">
+        <KText text={narration.caption} />
+      </p>
+      {showYomi && <p className="story__yomi">{kanji.yomi}</p>}
+      <div className="story__actions">
+        <button type="button" className="btn" onClick={onReplay}>
+          ↻ <KText text="もう{一|いち}ど" />
+        </button>
+        <button type="button" className="btn btn--primary btn--big" onClick={onDone}>
+          つぎへ
+        </button>
+      </div>
+    </div>
+  )
+}
+
+/** 場面の中で、いま通りすぎた くぎり の効果音を鳴らす。 */
+function useBeatSounds(scene: SceneModule | undefined, t: number, round: number) {
+  const { play } = useFeedback()
+  // もう鳴らした くぎり の数(画面には出さないので、書きかえても 描きなおさない)
+  const played = useRef({ round, count: 0 })
+  const due = scene ? scene.beats.filter((beat) => beat.at <= t).length : 0
+  useEffect(() => {
+    if (!scene) return
+    const done = played.current.round === round ? played.current.count : 0
+    if (due <= done) return
+    played.current = { round, count: due }
+    // できあがりの絵を はじめから見せるとき(動きを へらす設定など)は、音を まとめて鳴らさない
+    if (t < scene.duration) for (const beat of scene.beats.slice(done, due)) if (beat.sound) play(beat.sound)
+  }, [due, round, t, scene, play])
+}
+
 /**
- * 成り立ちの物語を、絵のアニメーションで見せる。
- * 部位の絵が、その部位のある場所に出てきて動き、そのまま筆画に変わって漢字になる。
+ * 手づくりの場面を流す。時間に合わせて 絵が動き、さいごに 絵が 字になる。
+ * 場面は あとから読みこまれる。読みこんでいる間も、わく・文・ボタン は 同じものを出したままにする
+ * (読みこみが おわった しゅんかんに「つぎへ」を おしても、おした ことが 消えないように)。
+ */
+function ScenePlayer({ kanji, onDone }: Props) {
+  const scene = useScene(kanji.char)
+  const { say } = useFeedback()
+  const [round, setRound] = useState(0)
+  const duration = scene?.duration ?? 0
+  // 読みこみが おわってから 時計を はじめる(scene が とどくと、duration が変わって はじめから進む)
+  const t = useSceneClock(duration, round)
+  useStopVoiceOnLeave(kanji.char)
+  useBeatSounds(scene, t, round)
+
+  useEffect(() => {
+    say(voiceId.explain(kanji.char), kanji.yomi)
+  }, [say, kanji, round])
+
+  // 字が できあがる ころ(さいごの くぎり)から、よみ を出す
+  const lastBeat = scene?.beats[scene.beats.length - 1]?.at ?? duration
+  const label = `${kanji.char} の ものがたり`
+  return (
+    <div className="story">
+      <div className="story__stage story__stage--scene">
+        {scene ? (
+          <SceneStage scene={scene} t={Math.min(t, duration)} label={label} />
+        ) : (
+          <svg className="story__svg" viewBox={`0 0 ${GLYPH_SIZE} ${GLYPH_SIZE}`} role="img" aria-label={label} data-loading="true" />
+        )}
+      </div>
+      <StoryText kanji={kanji} showYomi={scene !== undefined && t >= lastBeat} onReplay={() => setRound((r) => r + 1)} onDone={onDone} />
+    </div>
+  )
+}
+
+/**
+ * 成り立ちの物語。手づくりの場面(scenes/)がある字は それを流し、まだ ない字は これまでの かんたんな絵で見せる。
  */
 export function StoryPlayer({ kanji, onDone }: Props) {
+  return hasScene(kanji.char) ? <ScenePlayer key={kanji.char} kanji={kanji} onDone={onDone} /> : <SimpleStory kanji={kanji} onDone={onDone} />
+}
+
+/**
+ * これまでの かんたんな絵(手づくりの場面が まだ ない字に使う)。
+ * 部位の絵が、その部位のある場所に出てきて動き、そのまま筆画に変わって漢字になる。
+ */
+function SimpleStory({ kanji, onDone }: Props) {
   const narration = getNarration(kanji.char)
   const cast = castOf(kanji, narration.actors)
   const { say } = useFeedback()
@@ -141,21 +226,7 @@ export function StoryPlayer({ kanji, onDone }: Props) {
             ))}
         </svg>
       </div>
-      <div className="story__text">
-        <span className={`story__kind story__kind--${narration.kind}`}>{KIND_LABEL[narration.kind]}</span>
-        <p className="story__caption">
-          <KText text={narration.caption} />
-        </p>
-        {phase === 2 && <p className="story__yomi">{kanji.yomi}</p>}
-        <div className="story__actions">
-          <button type="button" className="btn" onClick={replay}>
-            ↻ <KText text="もう{一|いち}ど" />
-          </button>
-          <button type="button" className="btn btn--primary btn--big" onClick={onDone}>
-            つぎへ
-          </button>
-        </div>
-      </div>
+      <StoryText kanji={kanji} showYomi={phase === 2} onReplay={replay} onDone={onDone} />
     </div>
   )
 }

@@ -1,12 +1,11 @@
 import { motion } from 'motion/react'
 import { useEffect, useRef, useState, type PointerEvent } from 'react'
-import type { Tone } from '../../components/KanjiGlyph'
 import { KText } from '../../components/KText'
 import { PartIcon } from '../../components/PartIcon'
-import { getPart } from '../../data/parts'
 import type { Kanji } from '../../data/schema'
 import { fullGlyph, getStrokes, GLYPH_SIZE } from '../../data/strokes'
 import { judgeStroke, type Point, type StrokeJudge } from '../../lib/strokeMatch'
+import { strokeTones } from '../../lib/strokeTones'
 import { useFeedback } from '../../lib/useFeedback'
 import { voiceId } from '../../lib/voice'
 
@@ -21,16 +20,6 @@ const NOTE_TEXT: Record<Exclude<StrokeJudge, 'ok'>, string> = {
   order: '{書|か}きじゅんが ちがうよ',
   long: 'せんが ながすぎるよ',
   shape: 'かたちが ちがうよ',
-}
-
-/** 画ごとの色: その画が入っている部位の色にする(分けない字は墨色)。 */
-function tonesOf(kanji: Kanji): Tone[] {
-  const count = fullGlyph(kanji.char).strokes.length
-  const last = kanji.steps[kanji.steps.length - 1]
-  return Array.from({ length: count }, (_, i) => {
-    if (!last) return 'ink'
-    return last.fixedGlyph.strokes.includes(i + 1) ? getPart(last.fixed).kind : getPart(last.answer).kind
-  })
 }
 
 type Props = {
@@ -59,7 +48,7 @@ export function Kaku({ kanji, strokes: strokeNumbers, given = [], model = true, 
   const allStrokes = getStrokes(fullGlyph(kanji.char))
   const numbers = strokeNumbers ?? allStrokes.map((_, i) => i + 1)
   const targets = numbers.map((n) => allStrokes[n - 1])
-  const tones = tonesOf(kanji)
+  const tones = strokeTones(kanji)
   const { play, say } = useFeedback()
   const svgRef = useRef<SVGSVGElement>(null)
   const [doneCount, setDoneCount] = useState(0)

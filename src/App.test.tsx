@@ -379,7 +379,8 @@ describe('まなぶ: くみあわせ', () => {
     await openFromZukan(user, '休')
 
     expect(screen.getByText('ひとが きに もたれて ひとやすみ。')).toBeInTheDocument()
-    expect(container.querySelector('.story__actor[data-motion="lean-right"]')).toBeInTheDocument()
+    // 休 には 手づくりの場面が ある(あとから読みこまれる)
+    await waitFor(() => expect(container.querySelector('.scene[data-scene="休"]')).toBeInTheDocument())
     await user.click(screen.getByRole('button', { name: 'つぎへ' }))
 
     expect(container.querySelector('.kumi__fixed [data-part="亻"]')).toBeInTheDocument()
