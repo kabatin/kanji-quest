@@ -8,8 +8,8 @@ import { getKanji } from '../../data/kanji'
 import { fullGlyph } from '../../data/strokes'
 import { bossName } from '../../lib/boss'
 import { dayKey } from '../../lib/date'
-import { BOSS_TRIES_PER_DAY } from '../../lib/rewards'
 import { findStage, isCleared, triesLeft } from '../../lib/stages'
+import { useBossRules } from '../../store/parent'
 import { useProgress } from '../../store/progress'
 import { BossMonster } from '../boss/BossMonster'
 
@@ -29,7 +29,8 @@ export function StageScreen({ stageId, onBack, onLearn, onBoss }: Props) {
   const tries = useProgress((s) => s.tries)
   const rest = stage.kanji.filter((c) => !learned.includes(c)).length
   const nextChar = stage.kanji.find((c) => !learned.includes(c))
-  const left = triesLeft(tries, stageId, BOSS_TRIES_PER_DAY.stage, dayKey())
+  const { triesPerDay } = useBossRules()
+  const left = triesLeft(tries, stageId, triesPerDay, dayKey())
   const name = bossName(stage.number)
 
   return (

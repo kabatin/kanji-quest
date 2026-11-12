@@ -1,6 +1,6 @@
 import type { GlyphRef, Kanji } from '../data/schema'
 import { fullGlyph } from '../data/strokes'
-import type { BossKind } from './rewards'
+import { BOSS_TRIES_PER_DAY, type BossKind } from './rewards'
 import { examId, type Stage } from './stages'
 import { buildErabi, buildQuestion, shuffle, type ErabiQuestion, type KumiQuestion, type Rng } from './quiz'
 
@@ -63,7 +63,7 @@ export function buildWrite(kanji: Kanji, mode: 'part' | 'whole', model: boolean)
 export const SELECT_TYPES = ['kumi', 'story', 'parts', 'picture'] as const
 export type SelectType = (typeof SELECT_TYPES)[number]
 
-function buildSelect(kanji: Kanji, type: SelectType, all: readonly Kanji[], rng: Rng): BossQuestion {
+export function buildSelect(kanji: Kanji, type: SelectType, all: readonly Kanji[], rng: Rng): BossQuestion {
   const canSplit = kanji.steps.length > 0
   if (type === 'kumi' && canSplit) return buildQuestion(kanji, Math.floor(rng() * kanji.steps.length), all, rng)
   if (type === 'parts' && canSplit) return buildParts(kanji, all, rng)
@@ -120,9 +120,16 @@ export type BossDef = {
   /** 出題する漢字 */
   readonly kanji: readonly string[]
   readonly plan: BossPlan
+  /** 1日に ちょうせん できる回数 */
+  readonly triesPerDay: number
 }
 
-export function stageBoss(stage: Stage): BossDef {
+/** ステージの ボスの きまり(おうちの かた が変えられる) */
+export type BossRules = { readonly plan: BossPlan; readonly triesPerDay: number }
+
+export const DEFAULT_STAGE_RULES: BossRules = { plan: STAGE_BOSS_PLAN, triesPerDay: BOSS_TRIES_PER_DAY.stage }
+
+export function stageBoss(stage: Stage, rules: BossRules = DEFAULT_STAGE_RULES): BossDef {
   return {
     id: stage.id,
     kind: 'stage',
@@ -130,7 +137,8 @@ export function stageBoss(stage: Stage): BossDef {
     name: bossName(stage.number),
     seed: stage.number,
     kanji: stage.kanji,
-    plan: STAGE_BOSS_PLAN,
+    plan: rules.plan,
+    triesPerDay: rules.triesPerDay,
   }
 }
 
@@ -143,5 +151,12 @@ export function examBoss(grade: number, kanjiList: readonly Kanji[]): BossDef {
     seed: grade,
     kanji: kanjiList.filter((k) => k.grade === grade).map((k) => k.char),
     plan: EXAM_PLAN,
+    triesPerDay: BOSS_TRIES_PER_DAY.exam,
   }
+}
+
+/** ボスの画面の上に出す、問題の くぎり(えらぶ・みて かく・みないで かく) */
+export function roundOf(question: BossQuestion): 'select' | 'model' | 'blind' {
+  if (question.type !== 'write') return 'select'
+  return question.model ? 'model' : 'blind'
 }

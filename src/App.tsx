@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ALL_STAGES, AREAS } from './data/areas'
 import { getKanji, KANJI } from './data/kanji'
 import { BossScreen, type BossNext } from './features/boss/BossScreen'
@@ -6,7 +6,11 @@ import { Challenge } from './features/challenge/Challenge'
 import { Home } from './features/home/Home'
 import { Learn, type NextAction } from './features/learn/Learn'
 import { MapScreen } from './features/map/MapScreen'
+import { ParentGate } from './features/parent/ParentGate'
+import { ParentScreen } from './features/parent/ParentScreen'
 import { PartsScreen } from './features/parts/PartsScreen'
+import { ProfilesScreen } from './features/profiles/ProfilesScreen'
+import { ReviewScreen } from './features/review/ReviewScreen'
 import { SettingsScreen } from './features/settings/SettingsScreen'
 import { ShopScreen } from './features/shop/ShopScreen'
 import { StageScreen } from './features/stage/StageScreen'
@@ -16,17 +20,37 @@ import { itemName } from './lib/shop'
 import { findStage, type Stage } from './lib/stages'
 import { useStopVoiceOnLeave } from './lib/useFeedback'
 import { HOME, type Screen } from './nav'
+import { useBossRules } from './store/parent'
+import { useProfiles } from './store/profiles'
 import { useProgress } from './store/progress'
 
-const FIRST_PAGE: ZukanView = { grade: 1, page: 0 }
+const FIRST_PAGE: ZukanView = { grade: 1, scroll: 0 }
+const PROFILES: Screen = { name: 'profiles' }
+
+/** あそぶ人が2人以上いるときは、まず「だれが あそぶ？」を聞く。 */
+const firstStack = (): readonly Screen[] => (useProfiles.getState().profiles.length > 1 ? [PROFILES] : [HOME])
+
+/** 画面が見えている間、1分ごとに「あそんだ時間」を ふやす(保護者向けの画面で見る)。 */
+export const PLAY_TICK_MS = 60_000
+
+function usePlayTime() {
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (document.visibilityState === 'visible') useProgress.getState().addPlayMinute()
+    }, PLAY_TICK_MS)
+    return () => clearInterval(timer)
+  }, [])
+}
 
 export default function App() {
   // 開いている画面の重なり。最後の要素が、いま見えている画面
-  const [stack, setStack] = useState<readonly Screen[]>([HOME])
+  const [stack, setStack] = useState<readonly Screen[]>(firstStack)
   // ずかんで見ていた学年とページは、ほかの画面から戻ってきても覚えておく
   const [zukanView, setZukanView] = useState<ZukanView>(FIRST_PAGE)
   const skin = useProgress((s) => s.equipped.skin)
   const learned = useProgress((s) => s.learned)
+  const bossRules = useBossRules()
+  usePlayTime()
 
   const screen = stack[stack.length - 1]
   // 「もどる」などで画面をはなれたら、流れている音声をフェードアウトで止める
@@ -80,7 +104,7 @@ export default function App() {
       {screen.name === 'boss' && (
         <BossScreen
           key={screen.id}
-          boss={stageBoss(findStage(AREAS, screen.id))}
+          boss={stageBoss(findStage(AREAS, screen.id), bossRules)}
           onBack={back}
           next={nextAfterBoss(findStage(AREAS, screen.id))}
           onReview={review}
@@ -101,7 +125,11 @@ export default function App() {
       {screen.name === 'zukan' && <Zukan view={zukanView} onView={setZukanView} onOpen={(char) => go({ name: 'learn', char })} onBack={goHome} />}
       {screen.name === 'parts' && <PartsScreen onBack={goHome} onOpen={(char) => go({ name: 'learn', char })} />}
       {screen.name === 'shop' && <ShopScreen onBack={back} />}
-      {screen.name === 'settings' && <SettingsScreen onHome={goHome} />}
+      {screen.name === 'settings' && <SettingsScreen onHome={goHome} onProfiles={() => go(PROFILES)} onParent={() => go({ name: 'parent-gate' })} />}
+      {screen.name === 'review' && <ReviewScreen onHome={goHome} onOpen={review} />}
+      {screen.name === 'parent-gate' && <ParentGate onBack={back} onPass={() => replace({ name: 'parent' })} />}
+      {screen.name === 'parent' && <ParentScreen onBack={back} onOpen={review} />}
+      {screen.name === 'profiles' && <ProfilesScreen onDone={goHome} canGoBack={stack.length > 1} />}
     </div>
   )
 }

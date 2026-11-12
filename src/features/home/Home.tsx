@@ -1,21 +1,31 @@
 import { useEffect, type ReactNode } from 'react'
+import iconBouken from '../../assets/art/icon-bouken.webp'
+import iconChallenge from '../../assets/art/icon-challenge.webp'
+import iconHanko from '../../assets/art/icon-hanko.webp'
+import iconKisekae from '../../assets/art/icon-kisekae.webp'
+import iconParts from '../../assets/art/icon-parts.webp'
+import iconZukan from '../../assets/art/icon-zukan.webp'
 import { CoinCount, LevelBadge, StreakCount } from '../../components/Hud'
 import { KText } from '../../components/KText'
 import { AREAS } from '../../data/areas'
 import { KANJI } from '../../data/kanji'
 import { PARTS } from '../../data/parts'
-import { levelInfo, MASCOT_FORMS, mascotGrowth, mascotStage, nextMascotLevel } from '../../lib/level'
+import { levelInfo, mascotStage, nextMascotLevel } from '../../lib/level'
 import { stampCount } from '../../lib/rewards'
 import { COLLECTIBLE_TOTAL, collectedCount, itemName, ownedDecos } from '../../lib/shop'
 import { nextStep, type NextStep } from '../../lib/stages'
 import { useFeedback } from '../../lib/useFeedback'
 import type { Screen } from '../../nav'
+import { useProfiles } from '../../store/profiles'
 import { useProgress } from '../../store/progress'
+import { ReviewCall } from './ReviewCall'
+import { claimableParts } from '../../lib/partQuest'
+import { useLearnedSet } from '../../lib/useKanjiText'
+import { GrowPanel } from './GrowPanel'
 import { IslandCanvas } from './IslandCanvas'
 import { LevelUpModal } from './LevelUpModal'
 import { LoginBonusModal } from './LoginBonusModal'
 import { MissionPanel } from './MissionPanel'
-import { kanjiPerGrowth } from './scene/layout'
 
 type Props = { readonly onGo: (screen: Screen) => void }
 
@@ -41,16 +51,27 @@ function areaOf(next: NextStep): number {
   return next.kind === 'exam' ? next.areaIndex : 0
 }
 
-type DockButtonProps = { readonly icon: string; readonly label: string; readonly count?: string; readonly tone: 'play' | 'collect'; readonly onClick: () => void }
+type DockButtonProps = {
+  readonly icon: string
+  readonly label: string
+  readonly count?: string
+  readonly tone: 'play' | 'collect'
+  /** 受け取れる ごほうび などが あるとき、右上に数を出す */
+  readonly badge?: number
+  readonly onClick: () => void
+}
 
-function DockButton({ icon, label, count, tone, onClick }: DockButtonProps) {
+function DockButton({ icon, label, count, tone, badge = 0, onClick }: DockButtonProps) {
   return (
     <button type="button" className={`dock-btn dock-btn--${tone}`} onClick={onClick}>
-      <span className="dock-btn__icon" aria-hidden="true">
-        {icon}
-      </span>
+      <img className="dock-btn__icon" src={icon} alt="" draggable={false} />
       <span className="dock-btn__label">{label}</span>
       {count && <small className="dock-btn__count">{count}</small>}
+      {badge > 0 && (
+        <span className="dock-btn__badge" aria-label={`ごほうび ${badge}こ`}>
+          {badge}
+        </span>
+      )}
     </button>
   )
 }
@@ -74,6 +95,10 @@ export function Home({ onGo }: Props) {
   const equipped = useProgress((s) => s.equipped)
   const checkIn = useProgress((s) => s.checkIn)
   const { play } = useFeedback()
+  const learnedSet = useLearnedSet()
+  const partClaims = useProgress((s) => s.partClaims)
+  const partRewards = claimableParts(PARTS, KANJI, learnedSet, partClaims).length
+  const playerName = useProfiles((s) => s.profiles.find((p) => p.id === s.activeId)?.name ?? '')
 
   useEffect(() => {
     checkIn()
@@ -81,12 +106,9 @@ export function Home({ onGo }: Props) {
 
   const { level } = levelInfo(xp)
   const stage = mascotStage(level)
-  const nextForm = nextMascotLevel(level)
   const next = nextStep(AREAS, learned, clears)
   const foundParts = PARTS.filter((part) => KANJI.some((k) => learned.includes(k.char) && k.parts.includes(part.id))).length
   const stampTotal = Object.values(stamps).reduce((sum, mask) => sum + stampCount(mask), 0)
-  const perGrowth = kanjiPerGrowth(KANJI.length)
-  const toGrowth = perGrowth - (learned.length % perGrowth)
 
   return (
     <div className="home">
@@ -100,13 +122,17 @@ export function Home({ onGo }: Props) {
         onPoke={() => play('tap')}
       />
       <header className="home__hud">
+        <button type="button" className="player-chip" onClick={() => onGo({ name: 'profiles' })} aria-label={`あそぶ ひと: ${playerName}。きりかえる`}>
+          <span className="player-chip__name">{playerName}</span>
+          <span className="player-chip__swap" aria-hidden="true">
+            ⇄
+          </span>
+        </button>
         <LevelBadge />
         <StreakCount />
         <span className="bar__spacer" />
         <span className="hud-chip hud-chip--stamp" aria-label={`はんこ ${stampTotal}こ`}>
-          <span className="hud-chip__seal" aria-hidden="true">
-            印
-          </span>
+          <img className="hud-chip__art" src={iconHanko} alt="" draggable={false} />
           {stampTotal}
         </span>
         <CoinCount />
@@ -117,25 +143,19 @@ export function Home({ onGo }: Props) {
 
       <div className="home__body">
         <MissionPanel />
-        <p className="home__bubble">
-          <KText text={mascotLine(learned.length, level, next)} />
-        </p>
-        <section className="grow" aria-label="すみまるの せいちょう">
-          <h2 className="grow__name">{MASCOT_FORMS[stage].name}</h2>
-          <div className="grow__bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(mascotGrowth(level) * 100)}>
-            <span style={{ width: `${mascotGrowth(level) * 100}%` }} />
-          </div>
-          <p className="grow__next">{nextForm === null ? 'いちばん りっぱな すがた！' : `レベル ${nextForm} で すがたが かわるよ`}</p>
-          <p className="grow__forest">
-            <span aria-hidden="true">🌱</span> <KText text={`あと ${toGrowth}{字|じ}で {森|もり}が そだつ`} />
+        <div className="home__center">
+          <p className="home__bubble">
+            <KText text={mascotLine(learned.length, level, next)} />
           </p>
-        </section>
+          <ReviewCall onOpen={() => onGo({ name: 'review' })} />
+        </div>
+        <GrowPanel />
       </div>
 
       <nav className="dock" aria-label="メニュー">
         <DockGroup title="あそぶ" tone="play">
-          <DockButton icon="🗺️" label="ぼうけん" tone="play" onClick={() => onGo({ name: 'map', area: areaOf(next) })} />
-          <DockButton icon="⚡" label="チャレンジ" tone="play" onClick={() => onGo({ name: 'challenge' })} />
+          <DockButton icon={iconBouken} label="ぼうけん" tone="play" onClick={() => onGo({ name: 'map', area: areaOf(next) })} />
+          <DockButton icon={iconChallenge} label="チャレンジ" tone="play" onClick={() => onGo({ name: 'challenge' })} />
         </DockGroup>
 
         <button type="button" className="cta" onClick={() => onGo(continueTo(next))}>
@@ -167,9 +187,9 @@ export function Home({ onGo }: Props) {
         </button>
 
         <DockGroup title="あつめる" tone="collect">
-          <DockButton icon="📖" label="ずかん" count={`${learned.length} / ${KANJI.length}`} tone="collect" onClick={() => onGo({ name: 'zukan' })} />
-          <DockButton icon="🧩" label="パーツ" count={`${foundParts} / ${PARTS.length}`} tone="collect" onClick={() => onGo({ name: 'parts' })} />
-          <DockButton icon="🎀" label="きせかえ" count={`${collectedCount(owned)} / ${COLLECTIBLE_TOTAL}`} tone="collect" onClick={() => onGo({ name: 'shop' })} />
+          <DockButton icon={iconZukan} label="ずかん" count={`${learned.length} / ${KANJI.length}`} tone="collect" onClick={() => onGo({ name: 'zukan' })} />
+          <DockButton icon={iconParts} label="パーツ" count={`${foundParts} / ${PARTS.length}`} badge={partRewards} tone="collect" onClick={() => onGo({ name: 'parts' })} />
+          <DockButton icon={iconKisekae} label="きせかえ" count={`${collectedCount(owned)} / ${COLLECTIBLE_TOTAL}`} tone="collect" onClick={() => onGo({ name: 'shop' })} />
         </DockGroup>
       </nav>
       <LoginBonusModal />

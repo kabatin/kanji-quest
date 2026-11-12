@@ -5,7 +5,7 @@ import { KText } from '../../components/KText'
 import { getKanji, KANJI } from '../../data/kanji'
 import { buildBoss, type BossDef, type BossQuestion } from '../../lib/boss'
 import { dayKey } from '../../lib/date'
-import { BOSS_CLEAR_SCORE, BOSS_REWARD, BOSS_TRIES_PER_DAY } from '../../lib/rewards'
+import { BOSS_CLEAR_SCORE, BOSS_REWARD } from '../../lib/rewards'
 import { isCleared, triesLeft } from '../../lib/stages'
 import { useFeedback } from '../../lib/useFeedback'
 import { useProgress, type BossGain } from '../../store/progress'
@@ -47,14 +47,14 @@ export function BossScreen({ boss, onBack, next, onReview }: Props) {
   const startBoss = useProgress((s) => s.startBoss)
   const finishBoss = useProgress((s) => s.finishBoss)
   const { play } = useFeedback()
-  const limit = BOSS_TRIES_PER_DAY[boss.kind]
+  const limit = boss.triesPerDay
   const left = triesLeft(tries, boss.id, limit, dayKey())
   const king = boss.kind === 'exam'
   const total = boss.plan.select + boss.plan.model + boss.plan.blind
 
   const start = (practice: boolean) => {
     // ほんばんは、その日の回数を1つ使う。たおしたあとは、何回でも れんしゅう できる
-    if (!practice && !startBoss(boss.id, boss.kind)) return
+    if (!practice && !startBoss(boss.id, boss.kind, dayKey(), limit)) return
     play('tap')
     const questions = buildBoss(boss.kanji.map(getKanji), KANJI, boss.plan)
     setPhase({ name: 'play', practice, questions, run: phase.name === 'play' ? phase.run + 1 : Date.now() })
@@ -69,7 +69,7 @@ export function BossScreen({ boss, onBack, next, onReview }: Props) {
         questions={phase.questions}
         onQuit={() => setPhase({ name: 'intro' })}
         onFinish={(outcome) => {
-          const gain = finishBoss({ id: boss.id, kind: boss.kind, perfect: outcome.perfect, total: outcome.total, practice })
+          const gain = finishBoss({ id: boss.id, kind: boss.kind, perfect: outcome.perfect, total: outcome.total, practice, missed: outcome.missed })
           play(gain.score === BOSS_CLEAR_SCORE ? 'fanfare' : 'retry')
           setPhase({ name: 'result', practice, outcome, gain })
         }}

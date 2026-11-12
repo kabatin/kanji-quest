@@ -53,6 +53,52 @@ describe('まなぶ・かく', () => {
   })
 })
 
+describe('ふくしゅう・パーツ・あそんだ時間', () => {
+  it('はじめて覚えた字は、覚えた日を記録して、次の日の ふくしゅう に入る', () => {
+    state().completeKanji('海', DAY1)
+    state().completeKanji('海', DAY2)
+    expect(state().learnedOn).toEqual({ 海: DAY1 })
+    expect(state().reviews).toEqual({ 海: { due: DAY2, step: 0 } })
+  })
+
+  it('ふくしゅう: できた字は先へ、まちがえた字は あしたに。ごほうびと まちがいの回数も', () => {
+    state().completeKanji('海', DAY1)
+    state().completeKanji('池', DAY1)
+    const xp = state().xp
+    const coins = state().coins
+    const gain = state().finishReview({ right: ['海'], wrong: ['池'] }, DAY2)
+    expect(gain).toMatchObject({ xp: 4, coins: 6 })
+    expect(state().xp).toBe(xp + 4)
+    expect(state().coins).toBe(coins + 6)
+    expect(state().reviews).toEqual({ 海: { due: '2026-11-14', step: 1 }, 池: { due: '2026-11-12', step: 0 } })
+    expect(state().misses).toEqual({ 池: 1 })
+    expect(state().daily.counters).toMatchObject({ review: 1, firstTry: 1 })
+  })
+
+  it('ボスで まちがえた字も、まちがいの回数に入る', () => {
+    state().finishBoss({ id: 's1', kind: 'stage', perfect: 13, total: 15, practice: false, missed: ['海', '池'] }, DAY1)
+    expect(state().misses).toEqual({ 海: 1, 池: 1 })
+  })
+
+  it('コンプリートした パーツの ごほうびは 1回だけ', () => {
+    expect(state().claimPart('ナ')).toMatchObject({ xp: 30, coins: 20 })
+    expect(state().claimPart('ナ')).toBeNull()
+    expect(state().partClaims).toEqual(['ナ'])
+    expect(state().coins).toBe(20)
+  })
+
+  it('あそんだ時間を 日ごとに数える', () => {
+    state().addPlayMinute(DAY1)
+    state().addPlayMinute(DAY1)
+    state().addPlayMinute(DAY2)
+    expect(state().playMinutes).toEqual({ [DAY1]: 2, [DAY2]: 1 })
+  })
+
+  it('ボスの1日の回数は、おうちの かた の設定で変えられる', () => {
+    expect([1, 2].map(() => state().startBoss('s1', 'stage', DAY1, 1))).toEqual([true, false])
+  })
+})
+
 describe('クイズ', () => {
   it('チャレンジ: 点数が経験値になり、よい記録だけ自己ベストになる', () => {
     const key = bestKey(1, 5)
@@ -140,7 +186,7 @@ describe('まいにちの しくみ', () => {
     const mission = dailyMissions(DAY1)[0]
     expect(state().claimMission(mission.id, DAY1)).toBe(0)
     useProgress.setState({
-      daily: { day: DAY1, counters: { learn: 9, learnNew: 9, write: 9, challenge: 9, firstTry: 9, maxCombo: 9, stage: 9 }, claimed: [] },
+      daily: { day: DAY1, counters: { learn: 9, learnNew: 9, write: 9, challenge: 9, firstTry: 9, maxCombo: 9, stage: 9, review: 9 }, claimed: [] },
     })
     expect(state().claimMission(mission.id, DAY1)).toBe(mission.reward)
     expect(state().claimMission(mission.id, DAY1)).toBe(0)
@@ -206,7 +252,7 @@ describe('保存', () => {
   it('端末に保存され、リセットで最初にもどる', () => {
     state().completeKanji('木', DAY1)
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}')
-    expect(saved.version).toBe(4)
+    expect(saved.version).toBe(5)
     expect(saved.state.learned).toEqual(['木'])
     state().reset()
     expect(state().learned).toEqual([])
@@ -227,6 +273,22 @@ describe('保存', () => {
     expect(state().owned).toContain('skin:sora')
     expect(state().bests).toEqual({})
     expect(state().seenLevel).toBe(2)
+  })
+
+  it('1つ前の形式(v4)のデータは、覚えていた字を ふくしゅう に入れ、足りない数を 0 にする', async () => {
+    const old = {
+      learned: ['一', '二', '三', '四', '五', '六'],
+      xp: 300,
+      coins: 55,
+      daily: { day: DAY1, counters: { learn: 1, learnNew: 1, write: 0, challenge: 0, firstTry: 0, maxCombo: 0, stage: 0 }, claimed: [] },
+      settings: { sound: false, speech: true, icons: true, timer: false },
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ state: old, version: 4 }))
+    await useProgress.persist.rehydrate()
+    expect(Object.keys(state().reviews)).toHaveLength(6)
+    expect(state().daily.counters.review).toBe(0)
+    expect(state()).toMatchObject({ xp: 300, coins: 55, misses: {}, playMinutes: {}, partClaims: [], learnedOn: {} })
+    expect(state().settings.sound).toBe(false)
   })
 
   it('1つ前の形式(まとめ の星)のデータは、星をとったステージを ボスを たおしたことにして引き継ぐ', async () => {
@@ -250,6 +312,8 @@ describe('保存', () => {
     expect(state().clears).toEqual({ s1: DAY1, s2: DAY1 })
     expect(state()).toMatchObject({ learned: ['一', '二'], xp: 300, coins: 55, bests: old.bests, equipped: old.equipped, settings: old.settings })
     expect(state().daily.counters.write).toBe(0)
+    // 覚えていた字は、ふくしゅう に入る
+    expect(Object.keys(state().reviews)).toEqual(['一', '二'])
     expect(state().tries).toEqual({ day: '', used: {} })
     expect(state().seenLevel).toBeGreaterThan(1)
   })

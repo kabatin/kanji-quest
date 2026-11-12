@@ -1,0 +1,494 @@
+/* 画面には出さず、読み上げ(スクリーンリーダー)だけが読む */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ───────── ホーム: きょうの ふくしゅう ───────── */
+.home__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  pointer-events: none;
+}
+
+.home__center > * {
+  pointer-events: auto;
+}
+
+.review-call {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 18px 6px 8px;
+  background: #ffffff;
+  border: 4px solid #2f86b8;
+  border-radius: 999px;
+  box-shadow: 0 6px 0 #2f86b8;
+  animation: nudge 2.2s ease-in-out infinite;
+}
+
+.review-call:active {
+  transform: translateY(5px);
+  box-shadow: 0 1px 0 #2f86b8;
+  animation: none;
+}
+
+.review-call__icon {
+  width: 44px;
+  height: 44px;
+  padding: 4px;
+  background: #dff2fb;
+  border-radius: 50%;
+}
+
+.review-call__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.15;
+}
+
+.review-call__text small {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.review-call__text strong {
+  margin-right: 2px;
+  color: #2f86b8;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+
+.review-call__go {
+  color: #2f86b8;
+}
+
+/* 下のメニューの ごほうびの しるし */
+.dock-btn {
+  position: relative;
+}
+
+.dock-btn__badge {
+  position: absolute;
+  top: -10px;
+  right: -8px;
+  display: grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  background: var(--shu);
+  border: 3px solid #ffffff;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 0.85rem;
+  line-height: 1;
+  animation: nudge 1.4s ease-in-out infinite;
+}
+
+/* ───────── ふくしゅう ───────── */
+.review__body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+  align-items: center;
+}
+
+.review__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 20px;
+  background: var(--paper);
+  border: 5px solid #2f86b8;
+  border-radius: 36px;
+  box-shadow: 0 9px 0 #2f86b8;
+  text-align: center;
+}
+
+.review__icon {
+  width: 92px;
+  height: 92px;
+}
+
+.review__count {
+  font-size: 1.4rem;
+}
+
+.review__count strong {
+  color: #2f86b8;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.review__lead {
+  color: var(--muted);
+}
+
+.review__done {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 2rem;
+}
+
+.review__chars {
+  display: flex;
+  gap: 10px;
+}
+
+.review__chars span {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  background: #ffffff;
+  border: 4px dashed #8fc6e4;
+  border-radius: 18px;
+  color: #8fc6e4;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.8rem;
+}
+
+/* ふくしゅう の間隔(つぎの日 → 3日 → 7日 …)を、すごろくの ように見せる */
+.review__how {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.review__how li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: rgba(255, 253, 247, 0.92);
+  border: 3px solid var(--line);
+  border-radius: 18px;
+}
+
+.review__how-step {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: #2f86b8;
+  border-radius: 50%;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 400;
+}
+
+.review__how .review__how-goal {
+  justify-content: space-between;
+  background: #fff6cf;
+  border-color: var(--yamabuki-dark);
+}
+
+.review__how-goal strong {
+  color: var(--shu);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+
+.quiz__pips .is-miss {
+  background: var(--yamabuki);
+}
+
+.review-result {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  align-items: center;
+  gap: 24px;
+}
+
+.review-result__main,
+.review-result__side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.review-result__mascot {
+  width: min(30vh, 210px);
+}
+
+.review-result__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 2rem;
+}
+
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.review-item {
+  display: grid;
+  grid-template-columns: 64px 40px auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px 6px 6px;
+  background: #ffffff;
+  border: 3px solid var(--line);
+  border-radius: 18px;
+}
+
+.review-item.is-ok {
+  border-color: var(--wakaba);
+}
+
+.review-item.is-miss {
+  border-color: var(--yamabuki-dark);
+}
+
+.review-item__char {
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  background: var(--paper);
+  border: 3px solid var(--line-dark);
+  border-radius: 14px;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.review-item__mark {
+  font-size: 1.6rem;
+  text-align: center;
+}
+
+.review-item.is-ok .review-item__mark {
+  color: var(--shu);
+}
+
+.review-item.is-miss .review-item__mark {
+  color: var(--yamabuki-dark);
+}
+
+.review-item__next {
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-align: right;
+}
+
+.review-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.review-dots span {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--line-dark);
+  border-radius: 50%;
+}
+
+.review-dots .is-on {
+  background: #2f86b8;
+  border-color: #2f86b8;
+}
+
+.review-result__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  min-width: 300px;
+}
+
+/* ───────── パーツ クエスト ───────── */
+.parts__complete-count {
+  padding: 2px 12px;
+  background: #fff6cf;
+  border: 3px solid var(--yamabuki-dark);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.part-quest {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+  padding: 8px 10px 8px 8px;
+  background: linear-gradient(90deg, #fff6cf, #ffffff);
+  border: 4px solid var(--yamabuki-dark);
+  border-radius: 24px;
+}
+
+.part-quest__glyph {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  padding: 4px;
+  background: #ffffff;
+  border: 3px solid var(--yamabuki-dark);
+  border-radius: 16px;
+}
+
+.part-quest__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.1rem;
+  line-height: 1.3;
+}
+
+.part-quest__text small {
+  color: var(--yamabuki-dark);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+}
+
+.part-quest__text strong,
+.parts__lead strong {
+  color: var(--shu);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.4rem;
+}
+
+.parts-card {
+  position: relative;
+}
+
+.parts-card.is-complete {
+  border-color: var(--yamabuki-dark);
+  background: linear-gradient(160deg, #fff6cf 0%, #ffffff 70%);
+  box-shadow: 0 5px 0 var(--yamabuki-dark);
+}
+
+.parts-card__crown {
+  position: absolute;
+  top: -12px;
+  right: 6px;
+  font-size: 1.3rem;
+}
+
+.parts-card__dot {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 18px;
+  height: 18px;
+  background: var(--shu);
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+}
+
+.parts__head {
+  position: relative;
+}
+
+.parts__seal {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 3px solid var(--shu);
+  border-radius: 50%;
+  color: var(--shu);
+  transform: rotate(-10deg);
+}
+
+.parts__progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.parts__meter,
+.parent__meter {
+  flex: 1;
+  height: 14px;
+  background: #e3ecf3;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.parts__meter span,
+.parent__meter span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--yamabuki), #ff9a3d);
+  border-radius: 999px;
+}
+
+.parts__progress-num {
+  font-variant-numeric: tabular-nums;
+}
+
+.parts__claim {
+  font-size: 1rem;
+  animation: nudge 1.4s ease-in-out infinite;
+}
+
+.gains .gains__part {
+  background: #fff6cf;
+  border-color: var(--yamabuki-dark);
+}
+
+/* せってい: おうちの かたへ */
+.settings__parent {
+  min-height: 44px;
+  font-size: 0.9rem;
+}
+
+.settings__parent svg {
+  width: 24px;
+  height: 24px;
+}
+
+@media (max-width: 760px) {
+  .review__body,
+  .review-result {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ふくしゅう の入り口は、すみまるに かぶらないよう、まんなかの下(とび石のあたり)に置く */
+.home__body .home__center {
+  align-self: stretch;
+  justify-content: space-between;
+  padding-bottom: 18px;
+}
+
+.part-quest .part-quest__text {
+  display: block;
+}
+
+.part-quest__text small {
+  display: block;
+}
+
+/* ボタンの中でも、コインの丸が つぶれないようにする */
+.coin {
+  flex-shrink: 0;
+}

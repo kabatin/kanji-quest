@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { DECO_SPOTS, forestPlan, groundHeight, skyPreset, type SkyPreset } from './layout'
 import { buildMascot, type Mascot3D } from './mascot3d'
-import { buildCloud, buildDeco, buildFarIsland, buildInkstone, buildIsland, buildTree, seeded } from './props3d'
+import { buildBird, buildCloud, buildDeco, buildFarIsland, buildInkstone, buildIsland, buildTree, seeded, WATERFALL } from './props3d'
 
 /** しまの見た目を決める状態(保存データから作る) */
 export type IslandState = {
@@ -34,6 +34,13 @@ const CAMERA_DISTANCE = 30
 const CAMERA_HEIGHT = 9.5
 /** すみまるは主役なので、木よりも大きく見せる */
 const MASCOT_SCALE = 1.5
+/** ひらいたとき、カメラが遠くから近づいてくる時間(秒)と、はじめの遠さ */
+const INTRO_SECONDS = 1.8
+const INTRO_EXTRA_DISTANCE = 10
+/** 木が育ったとき、ぽんと大きくなる時間(秒) */
+const POP_SECONDS = 0.9
+const SPARKLES_PER_TREE = 8
+const BIRD_COLORS = ['#ffffff', '#ffd95a', '#ff9ec4'] as const
 const PARTICLE_COUNT = 140
 const STAR_COUNT = 260
 
@@ -44,6 +51,11 @@ function disposeObject(object: THREE.Object3D): void {
     for (const material of Array.isArray(child.material) ? child.material : [child.material]) material.dispose()
   })
 }
+
+/** 前に ホームを見たときの「覚えた字の数」。次に見たとき、育った木を目立たせるのに使う。 */
+let lastSeenLearned: number | undefined
+
+const easeOutBack = (x: number): number => 1 + 2.7 * (x - 1) ** 3 + 1.7 * (x - 1) ** 2
 
 /** まるく ぼやけた点の絵(ほたる・花びら・雪・星・太陽のまわりの光に使う)。 */
 function dotTexture(): THREE.Texture {
@@ -222,12 +234,54 @@ export function createIslandScene(canvas: HTMLCanvasElement, initial: IslandStat
     mascot = next
   }
 
+  const sparkles = new THREE.Points(
+    new THREE.BufferGeometry(),
+    new THREE.PointsMaterial({ map: texture, color: '#fff3a0', size: 0.5, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }),
+  )
+  sparkles.visible = false
+  world.add(sparkles)
+  let popAt = -10
+
   const applyTrees = (learnedCount: number, totalKanji: number) => {
     const next = new THREE.Group()
-    forestPlan(learnedCount, totalKanji).forEach((plan, i) => next.add(buildTree(plan, i)))
+    // 前に見たときから育った木(新しく植わった木・大きくなった木)を しらべる
+    const before = new Map((lastSeenLearned !== undefined && lastSeenLearned < learnedCount ? forestPlan(lastSeenLearned, totalKanji) : []).map((p) => [`${p.x},${p.z}`, p.stage]))
+    const compare = lastSeenLearned !== undefined && lastSeenLearned < learnedCount
+    const grown: THREE.Vector3[] = []
+    forestPlan(learnedCount, totalKanji).forEach((plan, i) => {
+      const tree = buildTree(plan, i)
+      tree.userData.baseScale = tree.scale.x
+      if (compare && before.get(`${plan.x},${plan.z}`) !== plan.stage) {
+        tree.userData.pop = true
+        grown.push(new THREE.Vector3(plan.x, tree.position.y + 0.6 + plan.stage * 0.5, plan.z))
+      }
+      next.add(tree)
+    })
     replace(trees, world, next)
     trees = next
+    lastSeenLearned = learnedCount
+    if (grown.length === 0 || reducedMotion) return
+    // 育った木のまわりに、きらきら を出す
+    const positions = new Float32Array(grown.length * SPARKLES_PER_TREE * 3)
+    grown.forEach((spot, g) => {
+      for (let k = 0; k < SPARKLES_PER_TREE; k += 1) {
+        const angle = (k / SPARKLES_PER_TREE) * Math.PI * 2
+        positions.set([spot.x + Math.cos(angle) * 0.7, spot.y, spot.z + Math.sin(angle) * 0.7], (g * SPARKLES_PER_TREE + k) * 3)
+      }
+    })
+    sparkles.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    sparkles.userData.base = positions.slice()
+    popAt = seconds() + 0.9
   }
+
+  const birds = BIRD_COLORS.map((color, i) => {
+    const bird = buildBird(color)
+    bird.userData.offset = (i / BIRD_COLORS.length) * Math.PI * 2
+    scene.add(bird)
+    return bird
+  })
+  const drops = island.getObjectByName('drops')
+  const water = island.getObjectByName('water') as THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial> | undefined
 
   const applyDecos = (names: readonly string[]) => {
     const next = new THREE.Group()
@@ -251,13 +305,48 @@ export function createIslandScene(canvas: HTMLCanvasElement, initial: IslandStat
     pointer.smoothX += (pointer.x - pointer.smoothX) * 0.05
     pointer.smoothY += (pointer.y - pointer.smoothY) * 0.05
     const angle = Math.sin(t * 0.12) * 0.16 + pointer.smoothX * 0.22
-    camera.position.set(Math.sin(angle) * CAMERA_DISTANCE, CAMERA_HEIGHT - pointer.smoothY * 1.4, Math.cos(angle) * CAMERA_DISTANCE)
+    // ひらいたときは、遠くから すっと近づく
+    const intro = reducedMotion ? 0 : (1 - Math.min(t / INTRO_SECONDS, 1)) ** 3
+    const distance = CAMERA_DISTANCE + intro * INTRO_EXTRA_DISTANCE
+    camera.position.set(Math.sin(angle) * distance, CAMERA_HEIGHT + intro * 4 - pointer.smoothY * 1.4, Math.cos(angle) * distance)
     camera.lookAt(CAMERA_TARGET)
     world.position.y = Math.sin(t * 0.7) * 0.14
     world.rotation.z = Math.sin(t * 0.45) * 0.008
+    mascot?.look(pointer.smoothX, pointer.smoothY)
     mascot?.animate(t)
     sky?.animate(t)
-    for (const tree of trees.children) tree.rotation.z = Math.sin(t * 1.1 + (tree.userData.phase as number)) * 0.025
+    const pop = Math.min(Math.max((t - popAt) / POP_SECONDS, 0), 1)
+    for (const tree of trees.children) {
+      tree.rotation.z = Math.sin(t * 1.1 + (tree.userData.phase as number)) * 0.025
+      // 育った木は、いちど小さくなってから ぽんと大きくなる
+      if (tree.userData.pop) tree.scale.setScalar((tree.userData.baseScale as number) * (pop <= 0 ? 0.55 : 0.55 + 0.45 * easeOutBack(pop)))
+    }
+    sparkles.visible = pop > 0 && pop < 1
+    if (sparkles.visible) {
+      const attribute = sparkles.geometry.getAttribute('position') as THREE.BufferAttribute
+      const base = sparkles.userData.base as Float32Array
+      for (let i = 0; i < attribute.count; i += 1) attribute.setY(i, base[i * 3 + 1] + pop * 1.6)
+      attribute.needsUpdate = true
+      sparkles.material.opacity = 1 - pop
+      sparkles.material.size = 0.3 + pop * 0.5
+    }
+    birds.forEach((bird, i) => {
+      const a = t * (0.22 + i * 0.04) + (bird.userData.offset as number)
+      const radius = 12.5 + i * 1.6
+      bird.position.set(Math.cos(a) * radius, 4.5 + i * 1.3 + Math.sin(t * 0.8 + i) * 0.5, Math.sin(a) * radius - 2)
+      bird.rotation.y = -a
+      const flap = Math.sin(t * 9 + i) * 0.7
+      const left = bird.getObjectByName('wing-left')
+      const right = bird.getObjectByName('wing-right')
+      if (left) left.rotation.z = flap
+      if (right) right.rotation.z = -flap
+    })
+    for (const drop of drops?.children ?? []) {
+      const fall = (t * 0.55 + (drop.userData.offset as number)) % 1
+      drop.position.y = -fall * WATERFALL.height
+      drop.scale.setScalar(1 + fall * 0.8)
+    }
+    if (water) water.material.emissiveIntensity = 0.12 + Math.sin(t * 1.6) * 0.06
     for (const spinner of spinners) spinner.rotation.z = t * 1.6
     renderer.render(scene, camera)
   }

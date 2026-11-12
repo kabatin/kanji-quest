@@ -1,6 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
 
-const MAX_PAGES = 10
 const GLYPH_SIZE = 109
 
 /** 最初の画面で、ログインボーナスを受け取ってホームを出す。 */
@@ -10,14 +9,11 @@ async function start(page: Page) {
   await expect(page.getByRole('dialog')).toHaveCount(0)
 }
 
-/** ずかんで学年をえらび、その漢字が出てくるページまで進んでから開く。 */
+/** ずかんで学年をえらび、その漢字の所まで スクロール して開く。 */
 async function openFromZukan(page: Page, grade: 1 | 2, char: string) {
   await page.getByRole('button', { name: /^ずかん/ }).click()
   await page.getByRole('tab', { name: `${grade}ねんせい` }).click()
   const card = page.getByRole('button', { name: new RegExp(`^${char}`) })
-  for (let i = 0; i < MAX_PAGES && (await card.count()) === 0; i += 1) {
-    await page.getByRole('button', { name: 'つぎの ページ' }).click()
-  }
   await card.click()
 }
 

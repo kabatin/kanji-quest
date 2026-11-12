@@ -1,36 +1,38 @@
 import { useState } from 'react'
 import { TopBar } from '../../components/Hud'
 import { KanjiGlyph } from '../../components/KanjiGlyph'
-import { PartIcon } from '../../components/PartIcon'
 import { KANJI } from '../../data/kanji'
 import { PARTS } from '../../data/parts'
-import type { Part } from '../../data/schema'
 import { refsViewBox } from '../../data/strokes'
+import { currentQuest, partProgress } from '../../lib/partQuest'
+import { useFeedback } from '../../lib/useFeedback'
+import { useLearnedSet } from '../../lib/useKanjiText'
 import { useProgress } from '../../store/progress'
-
-/** 1ページに並べる数(4列 x 4行) */
-export const PARTS_PAGE_SIZE = 16
-const KIND_LABEL = { imi: 'いみ', oto: 'おと' } as const
-
-/** その部位を持つ漢字 */
-const kanjiWith = (part: Part) => KANJI.filter((k) => k.parts.includes(part.id) && k.char !== part.id)
+import { PartDetail } from './PartDetail'
 
 type Props = { readonly onBack: () => void; readonly onOpen: (char: string) => void }
 
 /**
  * パーツずかん。漢字を覚えると、その中の部位が見つかる。
  * 部位をえらぶと、同じ部位を持つ漢字がならぶ(「さんずい は みずの なかま」が見える)。
+ * なかまを全部 覚えると コンプリートで、ごほうびがもらえる。上には、次に ねらう パーツ(クエスト)が出る。
  */
 export function PartsScreen({ onBack, onOpen }: Props) {
-  const learned = useProgress((s) => s.learned)
-  const [page, setPage] = useState(0)
+  const learned = useLearnedSet()
+  const partClaims = useProgress((s) => s.partClaims)
+  const claimPart = useProgress((s) => s.claimPart)
+  const { play } = useFeedback()
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  const isFound = (part: Part) => KANJI.some((k) => learned.includes(k.char) && k.parts.includes(part.id))
-  const pageCount = Math.ceil(PARTS.length / PARTS_PAGE_SIZE)
-  const shown = PARTS.slice(page * PARTS_PAGE_SIZE, (page + 1) * PARTS_PAGE_SIZE)
-  const selected = PARTS.find((p) => p.id === selectedId && isFound(p))
-  const foundCount = PARTS.filter(isFound).length
+  const all = PARTS.map((part) => partProgress(part, KANJI, learned))
+  const selected = all.find((p) => p.part.id === selectedId && p.found)
+  const foundCount = all.filter((p) => p.found).length
+  const completeCount = all.filter((p) => p.complete).length
+  const quest = currentQuest(PARTS, KANJI, learned)
+
+  const claim = (partId: string) => {
+    if (claimPart(partId)) play('fanfare')
+  }
 
   return (
     <div className="screen parts">
@@ -38,22 +40,34 @@ export function PartsScreen({ onBack, onOpen }: Props) {
         <span className="zukan__count">
           {foundCount} / {PARTS.length}
         </span>
+        <span className="parts__complete-count">コンプリート {completeCount}</span>
       </TopBar>
+      {quest && (
+        <section className="part-quest" aria-label="パーツ クエスト">
+          <span className="part-quest__glyph">
+            <KanjiGlyph layers={[{ glyph: quest.part.glyph, tone: quest.part.kind }]} viewBox={refsViewBox([quest.part.glyph])} label={quest.part.label} />
+          </span>
+          <p className="part-quest__text">
+            <small>パーツ クエスト</small>「{quest.part.label}」の かんじを あと <strong>{quest.remaining}</strong>つ みつけよう
+          </p>
+          <button type="button" className="btn btn--primary" onClick={() => onOpen(quest.nextChar)}>
+            さがしに いく ▶
+          </button>
+        </section>
+      )}
       <div className="parts__body">
         <div className="parts__left">
-          <ul className="parts__grid">
-            {shown.map((part) => {
-              const found = isFound(part)
-              const users = kanjiWith(part)
-              const known = users.filter((k) => learned.includes(k.char)).length
+          <ul className="parts__grid scroll-area">
+            {all.map(({ part, users, known, found, complete }) => {
+              const claimable = complete && !partClaims.includes(part.id)
               return (
                 <li key={part.id}>
                   <button
                     type="button"
-                    className={`parts-card parts-card--${part.kind} ${found ? '' : 'is-hidden'} ${selected?.id === part.id ? 'is-selected' : ''}`}
+                    className={`parts-card parts-card--${part.kind} ${found ? '' : 'is-hidden'} ${complete ? 'is-complete' : ''} ${selected?.part.id === part.id ? 'is-selected' : ''}`}
                     disabled={!found}
                     onClick={() => setSelectedId(part.id)}
-                    aria-label={found ? `${part.label} の パーツ` : 'まだ みつけていない パーツ'}
+                    aria-label={found ? `${part.label} の パーツ${complete ? ' コンプリート' : ''}` : 'まだ みつけていない パーツ'}
                   >
                     {found ? (
                       <>
@@ -64,6 +78,12 @@ export function PartsScreen({ onBack, onOpen }: Props) {
                         <span className="parts-card__count">
                           {known} / {users.length}
                         </span>
+                        {complete && (
+                          <span className="parts-card__crown" aria-hidden="true">
+                            👑
+                          </span>
+                        )}
+                        {claimable && <span className="parts-card__dot" aria-hidden="true" />}
                       </>
                     ) : (
                       <span className="parts-card__unknown" aria-hidden="true">
@@ -75,49 +95,12 @@ export function PartsScreen({ onBack, onOpen }: Props) {
               )
             })}
           </ul>
-          <nav className="pager" aria-label="ページ">
-            <button type="button" className="btn" disabled={page === 0} onClick={() => setPage(page - 1)} aria-label="まえの ページ">
-              ◀
-            </button>
-            <span className="pager__page">
-              {page + 1} / {pageCount}
-            </span>
-            <button type="button" className="btn" disabled={page >= pageCount - 1} onClick={() => setPage(page + 1)} aria-label="つぎの ページ">
-              ▶
-            </button>
-          </nav>
         </div>
         <aside className="parts__detail" aria-label="パーツの なかま">
           {selected ? (
-            <>
-              <div className={`parts__head parts__head--${selected.kind}`}>
-                {selected.icon ? <PartIcon id={selected.icon} className="parts__icon" /> : <span className="parts__note">♪</span>}
-                <div>
-                  <small>{KIND_LABEL[selected.kind]}パーツ</small>
-                  <strong>{selected.label}</strong>
-                </div>
-              </div>
-              <p className="parts__lead">この パーツを もつ かんじ</p>
-              <ul className="parts__users">
-                {kanjiWith(selected).map((k) => (
-                  <li key={k.char}>
-                    <button
-                      type="button"
-                      className={`parts-user ${learned.includes(k.char) ? 'is-learned' : ''}`}
-                      onClick={() => onOpen(k.char)}
-                      aria-label={`${k.char} ${k.yomi}`}
-                    >
-                      <span className="parts-user__char">{k.char}</span>
-                      <small>{k.yomi}</small>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </>
+            <PartDetail progress={selected} learned={learned} claimed={partClaims.includes(selected.part.id)} onClaim={() => claim(selected.part.id)} onOpen={onOpen} />
           ) : (
-            <p className="parts__empty">
-              {foundCount === 0 ? 'かんじを まなぶと、パーツが みつかるよ' : 'パーツを えらぶと、なかまの かんじが みられるよ'}
-            </p>
+            <p className="parts__empty">{foundCount === 0 ? 'かんじを まなぶと、パーツが みつかるよ' : 'パーツを えらぶと、なかまの かんじが みられるよ'}</p>
           )}
         </aside>
       </div>

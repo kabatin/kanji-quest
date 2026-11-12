@@ -38,7 +38,7 @@ describe('playVoice', () => {
     const src = vi.spyOn(HTMLMediaElement.prototype, 'src', 'set')
     expect(playVoice(voiceId.word('海'), 'うみ', true)).toBe('clip')
     expect(play).toHaveBeenCalledOnce()
-    expect(src).toHaveBeenCalledWith('/voice/word-6d77.mp3')
+    expect(src).toHaveBeenCalledWith(`${import.meta.env.BASE_URL}voice/word-6d77.mp3`)
   })
 
   it('クリップがなければ、読み上げで代わりに読む', () => {

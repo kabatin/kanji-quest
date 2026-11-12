@@ -1,0 +1,80 @@
+/*
+ * 絵(イラスト)の背景とアイコン。絵は src/assets/art/ にある(作り方は README の「絵」)。
+ * 絵の上に文字やボタンを置くので、読みにくくならないよう うすい白や影を重ねている。
+ */
+
+/* ぼうけん: エリアごとの景色 */
+.map .map__field {
+  background-size: cover;
+  background-position: center;
+}
+
+.map[data-theme='mori'] .map__field {
+  background-image: url('../assets/art/map-mori.webp');
+}
+
+.map[data-theme='oka'] .map__field {
+  background-image: url('../assets/art/map-oka.webp');
+}
+
+.map[data-theme='mizube'] .map__field {
+  background-image: url('../assets/art/map-mizube.webp');
+}
+
+.map[data-theme='kumo'] .map__field {
+  background-image: url('../assets/art/map-kumo.webp');
+}
+
+.map[data-theme='hoshi'] .map__field {
+  background-image: url('../assets/art/map-hoshi.webp');
+}
+
+.map[data-theme='shiro'] .map__field {
+  background-image: url('../assets/art/map-shiro.webp');
+}
+
+/* 道の点線は、絵の上でも見えるよう 影をつける */
+.map__path path {
+  filter: drop-shadow(0 2px 0 rgba(39, 51, 107, 0.35));
+}
+
+/* ボス: 墨のどうくつ */
+.boss-intro .boss-intro__stage,
+.boss-intro[data-king='true'] .boss-intro__stage {
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.16) 0%, rgba(20, 16, 50, 0) 55%),
+    url('../assets/art/boss-bg.webp') center / cover;
+}
+
+.boss-intro[data-king='true'] .boss-intro__stage {
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 120, 90, 0.3) 0%, rgba(60, 10, 30, 0.25) 70%),
+    url('../assets/art/boss-bg.webp') center / cover;
+}
+
+.boss-result__monster,
+.boss-intro__monster {
+  filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.35));
+}
+
+/* だれが あそぶ？: 空にうかぶ しま */
+.app:has(.profiles) {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.55) 100%),
+    url('../assets/art/title-bg.webp') center / cover;
+}
+
+/* メニューのアイコン(絵) */
+.dock-btn__icon {
+  display: block;
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 0 rgba(39, 51, 107, 0.18));
+}
+
+.hud-chip__art {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}

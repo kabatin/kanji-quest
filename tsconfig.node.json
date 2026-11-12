@@ -22,7 +22,10 @@
   },
   "include": [
     "vite.config.ts",
+    "scripts/precache-plugin.ts",
     "playwright.config.ts",
+    "playwright.pwa.config.ts",
+    "e2e-pwa",
     "e2e"
   ]
 }

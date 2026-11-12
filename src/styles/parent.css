@@ -1,0 +1,301 @@
+/*
+ * 保護者向けの画面。子ども向けの画面と区別できるよう、
+ * 落ち着いた色・ふつうの漢字かなまじり・小さめの文字にしている。
+ */
+.parent-gate__card {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: min(100%, 520px);
+  margin: auto 0;
+  padding: 28px;
+  background: #ffffff;
+  border: 3px solid var(--line-dark);
+  border-radius: 24px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.parent-gate__lead {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.parent-gate__question {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 2rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.parent-gate__question input {
+  width: 120px;
+  min-height: 60px;
+  padding: 0 12px;
+  border: 3px solid var(--ai);
+  border-radius: 14px;
+  color: var(--ai);
+  font: inherit;
+  text-align: center;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.parent-gate__error {
+  min-height: 1.4em;
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+.parent {
+  font-weight: 500;
+}
+
+.parent__tabs {
+  display: flex;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.parent__tabs .btn {
+  min-width: 0;
+  min-height: 44px;
+  font-size: 0.95rem;
+}
+
+.parent__body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  grid-template-rows: auto auto;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+.parent-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 2px solid var(--line-dark);
+  border-radius: 18px;
+}
+
+.parent-card h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.parent__sub {
+  margin-top: 6px;
+}
+
+.parent__facts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.parent__facts div {
+  padding: 6px 8px;
+  background: var(--sky);
+  border-radius: 12px;
+}
+
+.parent__facts dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.parent__facts dd {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.parent__facts small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.parent__grades {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.parent__grades li {
+  display: grid;
+  grid-template-columns: 64px 1fr 72px;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.parent__meter span {
+  background: var(--wakaba);
+}
+
+.parent__num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.parent__note,
+.parent__empty,
+.parent__offline {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.parent__note strong {
+  color: var(--ai);
+  font-size: 1.05rem;
+}
+
+.parent__charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* 7日ぶんの棒グラフ。1つの量だけを、1つの色の 細い棒で見せる */
+.week-chart {
+  margin: 0;
+}
+
+.week-chart__title {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.week-chart__total {
+  color: var(--muted);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.week-chart__plot {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  height: 128px;
+  margin-top: 6px;
+  /* 目もりの線は うすく、下の線(0)だけ はっきり */
+  border-bottom: 2px solid var(--line-dark);
+}
+
+.week-chart__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.week-chart__value {
+  min-height: 1.2em;
+  color: var(--ai);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.week-chart__bar {
+  width: 14px;
+  min-height: 0;
+  border-radius: 4px 4px 0 0;
+}
+
+.week-chart--learn .week-chart__bar {
+  background: #3a8f4f;
+}
+
+.week-chart--time .week-chart__bar {
+  background: #2f86b8;
+}
+
+.week-chart__col:hover .week-chart__bar {
+  filter: brightness(1.15);
+}
+
+.week-chart__day {
+  order: 3;
+  margin-top: 4px;
+  transform: translateY(18px);
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.week-chart__col.is-today .week-chart__day {
+  color: var(--ai);
+  font-weight: 700;
+}
+
+.week-chart__plot {
+  margin-bottom: 20px;
+}
+
+.parent__weak {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.parent__weak li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.parent__weak small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.parent__weak-char {
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  background: #fff6ef;
+  border: 2px solid #e8a58f;
+  border-radius: 12px;
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.parent__option {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.parent__option > span {
+  min-width: 72px;
+}
+
+.parent__option .btn {
+  min-width: 0;
+  min-height: 42px;
+  padding: 0 14px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 760px) {
+  .parent__body,
+  .parent__charts {
+    grid-template-columns: 1fr;
+  }
+}

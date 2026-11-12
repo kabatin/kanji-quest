@@ -150,3 +150,21 @@ test('きせかえ の画面は、どの種類も画面に収まる', async ({ p
     expect(await overflow(page)).toEqual(FITS)
   }
 })
+
+test('あそぶ人: 新しく作って切りかえると進みぐあいが分かれ、読み込みなおすと だれが あそぶか を聞かれる', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('dialog', { name: 'ログインボーナス' }).getByRole('button').click()
+  await page.getByRole('button', { name: /^あそぶ ひと/ }).click()
+  expect(await overflow(page)).toEqual(FITS)
+  await page.getByRole('button', { name: 'あたらしく つくる' }).click()
+  await page.getByRole('textbox', { name: 'なまえ' }).fill('はな')
+  await page.getByRole('button', { name: 'つくる' }).click()
+  await page.getByRole('dialog', { name: 'ログインボーナス' }).getByRole('button').click()
+  await expect(page.getByRole('button', { name: /^あそぶ ひと: はな/ })).toBeVisible()
+
+  await page.reload()
+  await expect(page.getByRole('heading', { name: 'だれが あそぶ？' })).toBeVisible()
+  expect(await overflow(page)).toEqual(FITS)
+  await page.getByRole('button', { name: 'プレイヤー1 で あそぶ' }).click()
+  await expect(page.getByRole('button', { name: /^あそぶ ひと: プレイヤー1/ })).toBeVisible()
+})

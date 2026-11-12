@@ -21,6 +21,16 @@ export const XP_BOSS_TRY = 10
 
 export const COINS_PERFECT_BONUS = 3
 
+/** ふくしゅう: 1回で できた字 1つあたり */
+export const XP_REVIEW_RIGHT = 4
+export const COINS_REVIEW_RIGHT = 1
+/** ふくしゅう を さいごまで やったら */
+export const COINS_REVIEW_DONE = 5
+
+/** パーツを コンプリートしたときの ごほうび */
+export const XP_PART_COMPLETE = 30
+export const COINS_PART_COMPLETE = 20
+
 /**
  * 漢字ごとの はんこ。3種類あり、どれを先に取ってもよい。
  * learn = ものがたりを見て覚えた / write = 手で書けた / quiz = ヒントの少ないクイズで1回で正解した

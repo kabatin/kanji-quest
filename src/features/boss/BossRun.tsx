@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { BossDef, BossQuestion } from '../../lib/boss'
 import { useFeedback } from '../../lib/useFeedback'
-import { Kaku } from '../kaku/Kaku'
-import { Kumiawase } from '../kumiawase/Kumiawase'
-import { Erabi } from '../quiz/Erabi'
 import { BossMonster, type BossMood } from './BossMonster'
-import { PartsPick } from './PartsPick'
+import { roundOf } from '../../lib/boss'
+import { QuestionView } from './QuestionView'
 
 /** こうげきが当たった・よけられた の顔を見せておく時間 */
 const MOOD_MS = 1000
@@ -23,11 +21,6 @@ type Tally = { readonly index: number; readonly perfect: number; readonly missed
 const START: Tally = { index: 0, perfect: 0, missed: [] }
 
 const ROUND_LABEL: Record<string, string> = { select: 'えらぶ', model: 'みて かく', blind: 'みないで かく' }
-
-function roundOf(question: BossQuestion): string {
-  if (question.type !== 'write') return 'select'
-  return question.model ? 'model' : 'blind'
-}
 
 type Props = {
   readonly boss: BossDef
@@ -95,12 +88,7 @@ export function BossRun({ boss, questions, onQuit, onFinish }: Props) {
           {tally.index + 1} / {total}
         </span>
       </header>
-      {question.type === 'kumi' && <Kumiawase key={tally.index} question={question} showHint={false} onSolved={handleSolved} />}
-      {question.type === 'parts' && <PartsPick key={tally.index} question={question} onSolved={handleSolved} />}
-      {question.type === 'erabi' && <Erabi key={tally.index} question={question} onSolved={handleSolved} />}
-      {question.type === 'write' && (
-        <Kaku key={tally.index} kanji={question.kanji} strokes={question.strokes} given={question.given} model={question.model} strict onDone={handleSolved} />
-      )}
+      <QuestionView key={tally.index} question={question} onSolved={handleSolved} />
     </div>
   )
 }

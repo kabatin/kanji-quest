@@ -11,13 +11,27 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* 指で上下に動かして見る所(ずかん・パーツ)。画面そのものは動かさず、この中だけが動く */
+.scroll-area {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-dark) transparent;
+  /* 上と下で、中身が すっと消えるように見せる(まだ続きがあると分かる) */
+  mask-image: linear-gradient(180deg, transparent 0, #000 14px, #000 calc(100% - 22px), transparent 100%);
+}
+
 .zukan__grid {
   flex: 1;
   min-height: 0;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: 148px;
+  align-content: start;
   gap: 12px;
+  padding: 12px 8px 22px 2px;
 }
 
 .zukan__grid li {
@@ -267,32 +281,7 @@
   font-size: 0.95rem;
 }
 
-/* せってい */
-.settings__list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  max-width: 640px;
-}
-
-.toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 68px;
-  padding: 0 24px;
-  font-size: 1.25rem;
-  background: var(--paper);
-  border: 3px solid var(--line);
-  border-radius: var(--radius);
-}
-
-.toggle input {
-  width: 34px;
-  height: 34px;
-  accent-color: var(--ai);
-}
-
+/* せってい(くわしくは settings.css) */
 .settings__reset {
   display: flex;
   align-items: center;

@@ -12,7 +12,8 @@
     "coverage": "vitest run --coverage",
     "e2e": "playwright test",
     "dev:lan": "vite --host --port 5190 --strictPort",
-    "voice": "node scripts/build-voice.mjs"
+    "voice": "node scripts/build-voice.mjs",
+    "e2e:pwa": "playwright test -c playwright.pwa.config.ts"
   },
   "dependencies": {
     "@types/three": "^0.187.0",

@@ -8,6 +8,10 @@ import type { Kanji } from '../../data/schema'
 import { fullGlyph } from '../../data/strokes'
 import { useFeedback } from '../../lib/useFeedback'
 import { voiceId } from '../../lib/voice'
+import { KANJI } from '../../data/kanji'
+import { PARTS } from '../../data/parts'
+import { newlyCompleted } from '../../lib/partQuest'
+import { useLearnedSet } from '../../lib/useKanjiText'
 import { useProgress, type LearnGain, type WriteGain } from '../../store/progress'
 import { Nakama } from '../nakama/Nakama'
 import type { NextAction } from './Learn'
@@ -41,6 +45,9 @@ export function KanjiResult({ kanji, learnGain, writeGain, onOpen, onWrite, onSt
   const coins = learnGain.coins + (writeGain?.coins ?? 0)
   const levelAfter = writeGain?.levelAfter ?? learnGain.levelAfter
   const leveledUp = levelAfter > learnGain.levelBefore
+  const learnedSet = useLearnedSet()
+  // この字を覚えたことで、ぜんぶ そろった パーツ
+  const completed = learnGain.isNew ? newlyCompleted(kanji.char, PARTS, KANJI, learnedSet) : []
 
   return (
     <div className="result">
@@ -67,6 +74,11 @@ export function KanjiResult({ kanji, learnGain, writeGain, onOpen, onWrite, onSt
             </li>
           )}
           {leveledUp && <li className="gains__level">レベル {levelAfter} に アップ！</li>}
+          {completed.map((part) => (
+            <li key={part.id} className="gains__part">
+              「{part.label}」の パーツ コンプリート！
+            </li>
+          ))}
         </ul>
         <Nakama kanji={kanji} onOpen={onOpen} />
         <div className="result__actions">

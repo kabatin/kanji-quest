@@ -1,0 +1,326 @@
+/* アプリの名前(ふりがな つき) */
+.app-logo {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  color: var(--ai);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 2.6rem;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  /* 絵の上でも読めるよう、白い ふちどり をつける */
+  -webkit-text-stroke: 8px #ffffff;
+  paint-order: stroke fill;
+}
+
+.app-logo ruby {
+  color: var(--shu);
+}
+
+.app-logo rt {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.3em;
+  letter-spacing: 0.2em;
+  -webkit-text-stroke: 4px #ffffff;
+  paint-order: stroke fill;
+}
+
+/* 「だれが あそぶ？」の上に出す名前 */
+.profiles__logo {
+  align-self: center;
+  font-size: 3.4rem;
+}
+
+/* せってい */
+.settings__body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 290px 1fr;
+  gap: 18px;
+  align-items: stretch;
+}
+
+/* あそんでいる人の きろく */
+.settings__me {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 253, 247, 0.5) 0%, var(--paper) 46%),
+    url('../assets/art/title-bg.webp') top center / 180% auto no-repeat;
+  border: 4px solid var(--ai);
+  border-radius: 30px;
+  box-shadow: 0 8px 0 rgba(39, 51, 107, 0.18);
+  text-align: center;
+}
+
+.settings__mascot {
+  width: 132px;
+  animation: bob 3s ease-in-out infinite;
+}
+
+.settings__name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.settings__form {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.settings__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+  margin: 6px 0 auto;
+}
+
+.settings__stats div {
+  padding: 6px 4px;
+  background: #ffffff;
+  border: 3px solid var(--line);
+  border-radius: 16px;
+}
+
+.settings__stats dt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.settings__stats dt svg {
+  width: 20px;
+  height: 20px;
+}
+
+.settings__stats dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.settings__stats dd small {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.settings__me .btn {
+  width: 100%;
+  font-size: 1rem;
+}
+
+/* 設定のまとまり */
+.settings__main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+.settings__group {
+  padding: 0 14px 12px;
+  background: rgba(255, 253, 247, 0.94);
+  border: 4px solid var(--ai);
+  border-radius: 26px;
+}
+
+.settings__group-title {
+  display: inline-block;
+  margin: -14px 0 8px 6px;
+  padding: 1px 18px;
+  background: var(--ai);
+  border-radius: 999px;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  transform: translateY(-2px);
+}
+
+.settings .settings__list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  max-width: none;
+}
+
+.setting {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 74px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 3px solid var(--line);
+  border-radius: 20px;
+}
+
+.setting.is-on {
+  border-color: var(--wakaba);
+  background: #f3fbf3;
+}
+
+.setting__icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  background: var(--sky);
+  border-radius: 50%;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.setting__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.setting__label {
+  font-size: 1.05rem;
+}
+
+.setting__text small {
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+
+/* スイッチ(チェックボックスを、オン/オフが見て分かる形にする) */
+.switch {
+  position: relative;
+  display: block;
+  width: 74px;
+  height: 42px;
+  cursor: pointer;
+}
+
+.switch input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.switch__track {
+  position: absolute;
+  inset: 0;
+  background: #c9d4de;
+  border: 3px solid #a9b6c4;
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+
+.switch__knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 30px;
+  height: 30px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 2px 0 rgba(39, 51, 107, 0.25);
+  transition: transform 0.2s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.switch input:checked + .switch__track {
+  background: var(--wakaba);
+  border-color: var(--wakaba-dark);
+}
+
+.switch input:checked + .switch__track .switch__knob {
+  transform: translateX(32px);
+}
+
+.switch input:focus-visible + .switch__track {
+  outline: 4px solid var(--ai);
+  outline-offset: 3px;
+}
+
+.settings__try {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.settings__try .btn {
+  min-height: 46px;
+  font-size: 1rem;
+}
+
+.settings__reset {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+}
+
+.settings__reset .btn {
+  min-height: 46px;
+  font-size: 1rem;
+}
+
+/* いちばん下: アプリの名前・バージョン・クレジット */
+.settings__about {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+  min-height: 52px;
+}
+
+.settings__logo {
+  font-size: 1.7rem;
+}
+
+.settings__version {
+  padding: 2px 14px;
+  background: var(--paper);
+  border: 3px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.settings .settings__credit {
+  margin: 0 0 0 auto;
+  text-align: right;
+}
+
+@media (max-width: 760px) {
+  .settings__body,
+  .settings .settings__list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.setting__text small {
+  word-break: keep-all;
+}

@@ -23,6 +23,26 @@ export function seeded(seed: number): () => number {
   }
 }
 
+const GRASS_LIGHT = new THREE.Color('#8fd67f')
+const GRASS_MID = new THREE.Color('#6cc46f')
+const GRASS_DARK = new THREE.Color('#4fae5e')
+
+/** 草に色の むら をつける(まんなかは明るく、ふちは こく、ところどころ まだらに)。 */
+function paintGrass(geometry: THREE.BufferGeometry): void {
+  const position = geometry.getAttribute('position')
+  const colors = new Float32Array(position.count * 3)
+  const color = new THREE.Color()
+  for (let i = 0; i < position.count; i += 1) {
+    const x = position.getX(i)
+    const z = position.getZ(i)
+    const edge = Math.min(Math.hypot(x, z) / ISLAND_RADIUS, 1)
+    const patch = (Math.sin(x * 1.3 + z * 0.7) + Math.cos(z * 1.7 - x * 0.4)) * 0.25 + 0.5
+    color.copy(GRASS_LIGHT).lerp(GRASS_MID, Math.min(patch + edge * 0.4, 1)).lerp(GRASS_DARK, edge * edge * 0.7)
+    colors.set([color.r, color.g, color.b], i * 3)
+  }
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+}
+
 /** 空にうかぶ しま。上は草の丘、下は岩。 */
 export function buildIsland(): THREE.Group {
   const island = new THREE.Group()
@@ -34,7 +54,8 @@ export function buildIsland(): THREE.Group {
   const grassGeometry = new THREE.LatheGeometry([...profile].reverse(), 56)
   // 面の向きから法線を作りなおす(光と影が、上を向いた面として当たるように)
   grassGeometry.computeVertexNormals()
-  const grass = mesh(grassGeometry, new THREE.MeshStandardMaterial({ color: '#6cc46f', roughness: 0.95 }), [0, 0, 0], false)
+  paintGrass(grassGeometry)
+  const grass = mesh(grassGeometry, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95 }), [0, 0, 0], false)
   const rim = mesh(new THREE.CylinderGeometry(ISLAND_RADIUS, ISLAND_RADIUS * 0.94, 0.7, 56, 1, true), flat('#4fa85a'), [0, -0.35, 0], false)
   const soil = mesh(new THREE.CylinderGeometry(ISLAND_RADIUS * 0.94, ISLAND_RADIUS * 0.8, 1.2, 14), flat('#9a6b45'), [0, -1.3, 0], false)
   const rock = mesh(new THREE.ConeGeometry(ISLAND_RADIUS * 0.8, 6.5, 9), flat('#7b5a48'), [0, -5.1, 0], false)
@@ -71,8 +92,57 @@ export function buildIsland(): THREE.Group {
     stone.rotation.y = i
     island.add(stone)
   }
-  island.add(buildPond())
+  island.add(buildPond(), buildWaterfall())
   return island
+}
+
+/** 池から しまの ふちへ流れて、下へ落ちる小さな たき。水の つぶ は islandScene が動かす。 */
+export const WATERFALL = { x: -4.6, z: 7.6, height: 5.5 } as const
+export const WATERFALL_DROPS = 14
+
+function buildWaterfall(): THREE.Group {
+  const fall = new THREE.Group()
+  const water = new THREE.MeshStandardMaterial({ color: '#7fd0f0', roughness: 0.15, metalness: 0.2, transparent: true, opacity: 0.82 })
+  // 池から ふち までの小川
+  const dx = WATERFALL.x - POND.x
+  const dz = WATERFALL.z - POND.z
+  const length = Math.hypot(dx, dz)
+  const stream = mesh(new THREE.BoxGeometry(0.8, 0.06, length), water, [(POND.x + WATERFALL.x) / 2, groundHeight((POND.x + WATERFALL.x) / 2, (POND.z + WATERFALL.z) / 2) + 0.03, (POND.z + WATERFALL.z) / 2], false)
+  stream.rotation.y = Math.atan2(dx, dz)
+  const sheet = mesh(new THREE.BoxGeometry(0.9, WATERFALL.height, 0.1), water, [WATERFALL.x * 1.045, -WATERFALL.height / 2, WATERFALL.z * 1.045], false)
+  sheet.rotation.y = Math.atan2(WATERFALL.x, WATERFALL.z)
+  fall.add(stream, sheet)
+  const drops = new THREE.Group()
+  drops.name = 'drops'
+  const foam = new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.85 })
+  for (let i = 0; i < WATERFALL_DROPS; i += 1) {
+    const drop = new THREE.Mesh(new THREE.SphereGeometry(0.07 + (i % 3) * 0.02, 6, 5), foam)
+    drop.position.set(WATERFALL.x * 1.06 + ((i % 5) - 2) * 0.1, 0, WATERFALL.z * 1.06 + ((i % 3) - 1) * 0.08)
+    drop.userData.offset = i / WATERFALL_DROPS
+    drops.add(drop)
+  }
+  fall.add(drops)
+  return fall
+}
+
+/** しまの まわりを とぶ鳥。つばさ は islandScene が はばたかせる。 */
+export function buildBird(color: string): THREE.Group {
+  const bird = new THREE.Group()
+  const body = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6), flat(color))
+  body.scale.set(1, 0.8, 1.7)
+  const beak = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.14, 5), flat('#ffb23d'))
+  beak.rotation.x = Math.PI / 2
+  beak.position.z = 0.3
+  bird.add(body, beak)
+  for (const side of [-1, 1]) {
+    const wing = new THREE.Group()
+    const feather = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.03, 0.22), flat(color))
+    feather.position.x = side * 0.22
+    wing.add(feather)
+    wing.name = side < 0 ? 'wing-left' : 'wing-right'
+    bird.add(wing)
+  }
+  return bird
 }
 
 function buildPond(): THREE.Group {
@@ -81,7 +151,7 @@ function buildPond(): THREE.Group {
   pond.add(mesh(new THREE.CylinderGeometry(POND.radius + 0.22, POND.radius + 0.3, 0.14, 24), flat('#cfc6b4'), [0, 0.02, 0], false))
   const water = mesh(
     new THREE.CylinderGeometry(POND.radius, POND.radius, 0.1, 32),
-    new THREE.MeshStandardMaterial({ color: '#5cc1ea', roughness: 0.12, metalness: 0.25 }),
+    new THREE.MeshStandardMaterial({ color: '#5cc1ea', emissive: '#bfeaff', emissiveIntensity: 0.12, roughness: 0.12, metalness: 0.25 }),
     [0, 0.07, 0],
     false,
   )

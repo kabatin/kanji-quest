@@ -1,4 +1,5 @@
 import { levelInfo } from '../lib/level'
+import { MiniIcon } from './MiniIcon'
 import { useProgress } from '../store/progress'
 
 /** コインの数。どの画面でも同じ見た目で出す。 */
@@ -20,7 +21,7 @@ export function LevelBadge() {
     <span className="level-badge" aria-label={`レベル ${level}`}>
       <span className="level-badge__num">
         <small>レベル</small>
-        {level}
+        <span className="level-badge__digits">{level}</span>
       </span>
       <span className="level-badge__bar" role="progressbar" aria-valuemin={0} aria-valuemax={need} aria-valuenow={into}>
         <span style={{ width: `${(into / need) * 100}%` }} />
@@ -34,7 +35,7 @@ export function StreakCount() {
   const count = useProgress((s) => s.streak.count)
   return (
     <span className="hud-chip hud-chip--streak" aria-label={`れんぞく ${count}にち`}>
-      <span aria-hidden="true">🔥</span>
+      <MiniIcon name="honoo" className="hud-chip__icon" />
       {count}にち
     </span>
   )

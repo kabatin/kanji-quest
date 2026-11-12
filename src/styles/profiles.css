@@ -1,0 +1,164 @@
+/* あそぶ人(ホームの上の名前・「だれが あそぶ？」) */
+.player-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 54px;
+  max-width: 190px;
+  padding: 0 14px;
+  background: var(--ai);
+  border: 3px solid #141c47;
+  border-radius: 999px;
+  box-shadow: 0 5px 0 #141c47;
+  color: #ffffff;
+  font-size: 1.05rem;
+}
+
+.player-chip:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #141c47;
+}
+
+.player-chip__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-chip__swap {
+  color: var(--yamabuki);
+  font-size: 1.2rem;
+}
+
+.profiles__list {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-content: center;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+  height: 270px;
+  padding: 12px;
+  background: var(--paper);
+  border: 4px solid var(--line-dark);
+  border-radius: 30px;
+  box-shadow: 0 7px 0 var(--line-dark);
+}
+
+.profile-card.is-active {
+  border-color: var(--ai);
+  box-shadow: 0 7px 0 var(--ai);
+}
+
+.profile-card--new {
+  background: rgba(255, 253, 247, 0.6);
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.profile-card__pick {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 0;
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+.profile-card__pick:active {
+  transform: scale(0.97);
+}
+
+.profile-card__mascot {
+  width: min(100%, 124px);
+}
+
+.profile-card__name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.45rem;
+}
+
+.profile-card__facts {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.profile-card__plus {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border: 4px dashed var(--line-dark);
+  border-radius: 50%;
+  color: var(--muted);
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.profile-card__edit {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.profile-card__edit .btn {
+  min-height: 46px;
+  font-size: 1rem;
+}
+
+.name-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.name-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 1rem;
+}
+
+.name-form input {
+  width: 100%;
+  min-height: 56px;
+  padding: 0 14px;
+  background: #ffffff;
+  border: 3px solid var(--ai);
+  border-radius: 16px;
+  color: var(--ai);
+  font: inherit;
+  font-size: 1.3rem;
+  /* 画面全体は文字をえらべなくしているので、入力のところだけ もどす */
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.name-form__note {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.name-form__actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}

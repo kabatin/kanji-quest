@@ -200,6 +200,8 @@ export type Mascot3D = {
   readonly animate: (t: number) => void
   /** ぴょんと とぶ(タップされたとき) */
   readonly jump: (t: number) => void
+  /** 指やマウスのほうを見る(x・y は -1〜1) */
+  readonly look: (x: number, y: number) => void
 }
 
 const JUMP_SECONDS = 0.7
@@ -220,6 +222,7 @@ export function buildMascot(stage: number, hat: string): Mascot3D {
   group.add(root)
 
   let jumpAt = -10
+  const gaze = { x: 0, y: 0 }
   const animate = (t: number) => {
     // 息をするように、ゆっくり のびちぢみ する
     const breath = Math.sin(t * 2.2) * 0.035
@@ -228,9 +231,12 @@ export function buildMascot(stage: number, hat: string): Mascot3D {
     const hop = jumping ? Math.sin((sinceJump / JUMP_SECONDS) * Math.PI) : 0
     root.position.y = hop * 1.1
     root.scale.set(FORM_SCALE[safeStage] * (1 - breath - hop * 0.08), FORM_SCALE[safeStage] * (1 + breath + hop * 0.14), FORM_SCALE[safeStage] * (1 - breath - hop * 0.08))
-    root.rotation.y = Math.sin(t * 0.6) * 0.18 + (jumping ? (sinceJump / JUMP_SECONDS) * Math.PI * 2 : 0)
+    // 指のあるほうへ、体ごと少しふりむく
+    root.rotation.y = Math.sin(t * 0.6) * 0.14 + gaze.x * 0.55 + (jumping ? (sinceJump / JUMP_SECONDS) * Math.PI * 2 : 0)
+    root.rotation.x = gaze.y * 0.12
     eyes.scale.y = t % BLINK_EVERY < BLINK_SECONDS ? 0.12 : 1
     eyes.position.y = t % BLINK_EVERY < BLINK_SECONDS ? 0.65 : 0
+    eyes.position.x = gaze.x * 0.035
     if (animated.orbs) animated.orbs.rotation.y = t * 1.1
     if (animated.halo) animated.halo.rotation.z = t * 0.35
     for (const wing of animated.wings ?? []) wing.rotation.y = (wing.userData.side as number) * (0.25 + Math.sin(t * 3) * 0.22)
@@ -240,6 +246,10 @@ export function buildMascot(stage: number, hat: string): Mascot3D {
     animate,
     jump: (t) => {
       if (t - jumpAt > JUMP_SECONDS) jumpAt = t
+    },
+    look: (x, y) => {
+      gaze.x = Math.min(Math.max(x, -1), 1)
+      gaze.y = Math.min(Math.max(y, -1), 1)
     },
   }
 }

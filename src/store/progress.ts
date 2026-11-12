@@ -1,8 +1,10 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { dayKey, isNextDay } from '../lib/date'
+import { backfillReviews, scheduleNew } from '../lib/review'
 import { levelInfo } from '../lib/level'
 import { dailyMissions, EMPTY_COUNTERS, isMissionDone, type Counters } from '../lib/missions'
+import { loadProfiles, PROGRESS_KEY, storageKeyFor } from '../lib/profiles'
 import type { ChallengeScope } from '../lib/quiz'
 import {
   BOSS_REWARD,
@@ -10,6 +12,9 @@ import {
   bossScore,
   COINS_LEARN_AGAIN,
   COINS_LEARN_NEW,
+  COINS_PART_COMPLETE,
+  COINS_REVIEW_DONE,
+  COINS_REVIEW_RIGHT,
   COINS_WRITE_FIRST,
   hasStamp,
   loginBonusFor,
@@ -20,6 +25,8 @@ import {
   XP_BOSS_TRY,
   XP_LEARN_AGAIN,
   XP_LEARN_NEW,
+  XP_PART_COMPLETE,
+  XP_REVIEW_RIGHT,
   XP_WRITE_AGAIN,
   XP_WRITE_FIRST,
   type BossKind,
@@ -28,6 +35,7 @@ import {
 import { DEFAULT_QUESTION_COUNT, isBetter, type Best, type Level } from '../lib/score'
 import { canBuy, DEFAULT_EQUIPPED, DEFAULT_OWNED, findItem, type Equipped } from '../lib/shop'
 import { isCleared, triesLeft, type Clears, type Tries } from '../lib/stages'
+import { addPlayMinutes, applyReview, EMPTY_RECORDS, updateMisses, type Records } from './records'
 
 export type Settings = {
   readonly sound: boolean
@@ -42,7 +50,7 @@ export type Daily = { readonly day: string; readonly counters: Counters; readonl
 
 export type LoginBonus = { readonly day: string; readonly streakDay: number; readonly coins: number; readonly claimed: boolean }
 
-type ProgressData = {
+type ProgressData = Records & {
   /** 「まなぶ」の はんこ を持っている漢字(覚えた順) */
   readonly learned: readonly string[]
   /** 漢字ごとの はんこ(STAMPS のビットの組み合わせ) */
@@ -97,6 +105,16 @@ export type BossResult = {
   readonly total: number
   /** れんしゅう(回数をつかわない。たおしたことにも ならない) */
   readonly practice: boolean
+  /** まちがえた問題の漢字 */
+  readonly missed?: readonly string[]
+}
+
+/** ふくしゅう 1回ぶんの結果 */
+export type ReviewResult = {
+  /** 1回で できた字 */
+  readonly right: readonly string[]
+  /** まちがえた字 */
+  readonly wrong: readonly string[]
 }
 
 export type BossGain = Gain & {
@@ -114,11 +132,16 @@ type ProgressActions = {
   completeKanji: (char: string, today?: string) => LearnGain
   completeWriting: (char: string, today?: string) => WriteGain
   finishQuiz: (summary: QuizSummary, context: QuizContext, today?: string) => QuizGain
-  /** ボスに ちょうせん する(その日の回数を1つ使う)。もう回数がなければ false。 */
-  startBoss: (id: string, kind: BossKind, today?: string) => boolean
+  /** ボスに ちょうせん する(その日の回数を1つ使う)。もう回数がなければ false。limit で1日の回数を変えられる */
+  startBoss: (id: string, kind: BossKind, today?: string, limit?: number) => boolean
   finishBoss: (result: BossResult, today?: string) => BossGain
   /** ホームで「レベルアップ」を見せおわったことを覚える */
   markLevelSeen: () => void
+  finishReview: (result: ReviewResult, today?: string) => Gain
+  /** コンプリートした パーツの ごほうびを受け取る(コンプリートかどうかは、よぶ側で たしかめる) */
+  claimPart: (partId: string) => Gain | null
+  /** あそんだ時間を ふやす(画面が見えている間、1分ごとに よぶ) */
+  addPlayMinute: (today?: string) => void
   claimMission: (id: string, today?: string) => number
   buy: (itemId: string) => boolean
   equip: (itemId: string) => void
@@ -130,6 +153,7 @@ type ProgressActions = {
 export type ProgressState = ProgressData & ProgressActions
 
 const INITIAL: ProgressData = {
+  ...EMPTY_RECORDS,
   learned: [],
   stamps: {},
   xp: 0,
@@ -148,7 +172,8 @@ const INITIAL: ProgressData = {
   settings: { sound: true, speech: true, icons: true, timer: false },
 }
 
-export const STORAGE_KEY = 'kanji-zukan-progress'
+/** 1人目の進みぐあいを保存するキー(2人目からは lib/profiles の storageKeyFor で決まる) */
+export const STORAGE_KEY = PROGRESS_KEY
 
 /** 日付が変わっていたら、その日の数えなおしを始める。 */
 const dailyFor = (daily: Daily, today: string): Daily => (daily.day === today ? daily : { day: today, counters: EMPTY_COUNTERS, claimed: [] })
@@ -163,6 +188,7 @@ const addCounters = (daily: Daily, patch: Partial<Counters>): Daily => ({
     firstTry: daily.counters.firstTry + (patch.firstTry ?? 0),
     maxCombo: Math.max(daily.counters.maxCombo, patch.maxCombo ?? 0),
     stage: daily.counters.stage + (patch.stage ?? 0),
+    review: daily.counters.review + (patch.review ?? 0),
   },
 })
 
@@ -176,29 +202,40 @@ const gainOf = (xpBefore: number, xp: number, coins: number): Gain => ({
 type OldState = { learned?: string[]; points?: number; skin?: string; settings?: Settings; challenge?: ChallengeOptions }
 type V3State = Partial<Omit<ProgressData, 'clears' | 'tries' | 'seenLevel'>> & { stageStars?: Record<string, number> }
 
-export const STORAGE_VERSION = 4
+export const STORAGE_VERSION = 5
+
+/** 4つ前までの形式に、ふくしゅう などの きろく を足す。覚えていた字は、少しずつ ふくしゅう に回す。 */
+function withRecords(data: ProgressData, today: string): ProgressData {
+  return {
+    ...data,
+    ...EMPTY_RECORDS,
+    reviews: backfillReviews(data.learned, today),
+    daily: { ...data.daily, counters: { ...EMPTY_COUNTERS, ...data.daily.counters } },
+  }
+}
 
 /** 1つ前の形式(まとめ の星)を今の形式に直す。星をとっていたステージは、ボスを たおしたことにする。 */
 function fromV3(old: V3State): ProgressData {
   const { stageStars = {}, ...rest } = old
-  return {
+  return withRecords({
     ...INITIAL,
     ...rest,
     daily: { ...INITIAL.daily, ...rest.daily, counters: { ...EMPTY_COUNTERS, ...rest.daily?.counters } },
     clears: Object.fromEntries(Object.keys(stageStars).map((id) => [id, rest.streak?.lastDay ?? ''])),
     seenLevel: levelInfo(rest.xp ?? 0).level,
-  }
+  }, dayKey())
 }
 
 /** 前の形式の保存データを、今の形式に直す。学んだ漢字・経験値・コインは引き継ぐ。 */
 function migrate(persisted: unknown, version: number): ProgressData {
   if (version >= STORAGE_VERSION) return persisted as ProgressData
+  if (version === 4) return withRecords({ ...INITIAL, ...(persisted as ProgressData) }, dayKey())
   if (version === 3) return fromV3((persisted ?? {}) as V3State)
   const old = (persisted ?? {}) as OldState
   const learned = old.learned ?? []
   const skinId = `skin:${old.skin ?? 'kami'}`
   const hasSkin = findItem(skinId) !== undefined
-  return {
+  return withRecords({
     ...INITIAL,
     learned,
     stamps: Object.fromEntries(learned.map((char) => [char, STAMPS.learn])),
@@ -209,7 +246,7 @@ function migrate(persisted: unknown, version: number): ProgressData {
     equipped: hasSkin ? { ...DEFAULT_EQUIPPED, skin: skinId } : DEFAULT_EQUIPPED,
     settings: old.settings ?? INITIAL.settings,
     challenge: old.challenge ?? INITIAL.challenge,
-  }
+  }, dayKey())
 }
 
 export const useProgress = create<ProgressState>()(
@@ -245,6 +282,9 @@ export const useProgress = create<ProgressState>()(
           xp: state.xp + gain.xp,
           coins: state.coins + gain.coins,
           daily: addCounters(dailyFor(state.daily, today), { learn: 1, learnNew: isNew ? 1 : 0 }),
+          // はじめて覚えた字は、あしたから ふくしゅう に出る
+          reviews: isNew ? { ...state.reviews, [char]: scheduleNew(today) } : state.reviews,
+          learnedOn: isNew ? { ...state.learnedOn, [char]: today } : state.learnedOn,
         }))
         return { ...gain, isNew }
       },
@@ -288,9 +328,9 @@ export const useProgress = create<ProgressState>()(
         return { ...gain, improved, newStamps }
       },
 
-      startBoss: (id, kind, today = dayKey()) => {
+      startBoss: (id, kind, today = dayKey(), limit = BOSS_TRIES_PER_DAY[kind]) => {
         const { tries } = get()
-        if (triesLeft(tries, id, BOSS_TRIES_PER_DAY[kind], today) <= 0) return false
+        if (triesLeft(tries, id, limit, today) <= 0) return false
         const used = tries.day === today ? tries.used : {}
         set({ tries: { day: today, used: { ...used, [id]: (used[id] ?? 0) + 1 } } })
         return true
@@ -308,9 +348,33 @@ export const useProgress = create<ProgressState>()(
           coins: state.coins + gain.coins,
           clears: firstClear ? { ...state.clears, [result.id]: today } : state.clears,
           daily: addCounters(dailyFor(state.daily, today), { stage: cleared ? 1 : 0 }),
+          misses: updateMisses(state.misses, result.missed ?? [], []),
         }))
         return { ...gain, score, cleared, firstClear }
       },
+
+      finishReview: (result, today = dayKey()) => {
+        const before = get()
+        const gain = gainOf(before.xp, result.right.length * XP_REVIEW_RIGHT, result.right.length * COINS_REVIEW_RIGHT + COINS_REVIEW_DONE)
+        set((state) => ({
+          xp: state.xp + gain.xp,
+          coins: state.coins + gain.coins,
+          reviews: applyReview(state.reviews, result.right, result.wrong, today),
+          misses: updateMisses(state.misses, result.wrong, result.right),
+          daily: addCounters(dailyFor(state.daily, today), { review: 1, firstTry: result.right.length }),
+        }))
+        return gain
+      },
+
+      claimPart: (partId) => {
+        const before = get()
+        if (before.partClaims.includes(partId)) return null
+        const gain = gainOf(before.xp, XP_PART_COMPLETE, COINS_PART_COMPLETE)
+        set((state) => ({ xp: state.xp + gain.xp, coins: state.coins + gain.coins, partClaims: [...state.partClaims, partId] }))
+        return gain
+      },
+
+      addPlayMinute: (today = dayKey()) => set((state) => ({ playMinutes: addPlayMinutes(state.playMinutes, today, 1) })),
 
       markLevelSeen: () => set((state) => ({ seenLevel: levelInfo(state.xp).level })),
 
@@ -345,6 +409,33 @@ export const useProgress = create<ProgressState>()(
       updateSettings: (patch) => set((state) => ({ settings: { ...state.settings, ...patch } })),
       reset: () => set({ ...INITIAL }),
     }),
-    { name: STORAGE_KEY, version: STORAGE_VERSION, migrate },
+    {
+      // いま えらばれている人の保存データを読む
+      name: storageKeyFor(loadProfiles().activeId),
+      version: STORAGE_VERSION,
+      migrate,
+      // 人を切りかえたとき、前の人のデータが残らないよう、いちど最初の状態にしてから重ねる
+      merge: (persisted, current) => {
+        const saved = (persisted ?? {}) as Partial<ProgressData>
+        return {
+          ...current,
+          ...INITIAL,
+          ...saved,
+          // あとから ふえた項目が、前の保存データに なくても こわれないようにする
+          settings: { ...INITIAL.settings, ...saved.settings },
+          daily: saved.daily ? { ...saved.daily, counters: { ...EMPTY_COUNTERS, ...saved.daily.counters } } : INITIAL.daily,
+        }
+      },
+    },
   ),
 )
+
+/**
+ * 進みぐあいを、べつの保存先(べつの人)のものに入れかえる。
+ * 保存データがまだない人は、最初の状態から始まる。
+ */
+export function loadProgressFrom(key: string): void {
+  useProgress.persist.setOptions({ name: key })
+  if (localStorage.getItem(key) !== null) void useProgress.persist.rehydrate()
+  else useProgress.setState({ ...INITIAL })
+}

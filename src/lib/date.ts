@@ -24,3 +24,13 @@ export function hashString(text: string): number {
   }
   return hash >>> 0
 }
+
+/** day から n 日あと(n がマイナスなら前)の日付。 */
+export function addDays(day: string, n: number): string {
+  return dayKey(new Date(toNoon(day) + n * MS_PER_DAY))
+}
+
+/** a から b まで何日あるか(b が後なら プラス)。 */
+export function daysBetween(a: string, b: string): number {
+  return Math.round((toNoon(b) - toNoon(a)) / MS_PER_DAY)
+}

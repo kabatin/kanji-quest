@@ -5,7 +5,6 @@ import App from './App'
 import { ALL_STAGES, AREAS } from './data/areas'
 import { getKanji, kanjiOfGrade } from './data/kanji'
 import { fullGlyph, getStrokes } from './data/strokes'
-import { PAGE_SIZE } from './features/zukan/Zukan'
 import { leafParts } from './lib/boss'
 import { dayKey } from './lib/date'
 import { levelInfo } from './lib/level'
@@ -28,15 +27,11 @@ function alreadyCheckedIn() {
   useProgress.setState({ coins: 0 })
 }
 
-/** ホームからずかんを開き、その漢字がある学年とページまで進んでから開く。 */
+/** ホームからずかんを開き、その漢字がある学年をえらんでから開く。 */
 async function openFromZukan(user: User, char: string) {
   await user.click(screen.getByRole('button', { name: /^ずかん/ }))
   const { grade } = getKanji(char)
   await user.click(screen.getByRole('tab', { name: `${grade}ねんせい` }))
-  const index = kanjiOfGrade(grade).findIndex((k) => k.char === char)
-  for (let i = 0; i < Math.floor(index / PAGE_SIZE); i += 1) {
-    await user.click(screen.getByRole('button', { name: 'つぎの ページ' }))
-  }
   await user.click(screen.getByRole('button', { name: new RegExp(`^${char}`) }))
 }
 
@@ -137,7 +132,7 @@ describe('ホーム', () => {
   it('きょうのミッションが3つ出て、達成したものだけ受け取れる', async () => {
     alreadyCheckedIn()
     useProgress.setState({
-      daily: { day: dayKey(), counters: { learn: 9, learnNew: 9, write: 9, challenge: 9, firstTry: 9, maxCombo: 9, stage: 9 }, claimed: [] },
+      daily: { day: dayKey(), counters: { learn: 9, learnNew: 9, write: 9, challenge: 9, firstTry: 9, maxCombo: 9, stage: 9, review: 9 }, claimed: [] },
     })
     const user = userEvent.setup()
     render(<App />)
@@ -154,7 +149,7 @@ describe('ホーム', () => {
     alreadyCheckedIn()
     render(<App />)
     const play = screen.getByRole('region', { name: 'あそぶ' })
-    expect(within(play).getAllByRole('button').map((b) => b.textContent)).toEqual(['🗺️ぼうけん', '⚡チャレンジ'])
+    expect(within(play).getAllByRole('button').map((b) => b.textContent)).toEqual(['ぼうけん', 'チャレンジ'])
     const collect = screen.getByRole('region', { name: 'あつめる' })
     expect(within(collect).getByRole('button', { name: /^ずかん/ })).toHaveTextContent('0 / 240')
     expect(within(collect).getByRole('button', { name: /^パーツ/ })).toBeInTheDocument()
@@ -169,7 +164,11 @@ describe('ホーム', () => {
     render(<App />)
     const grow = screen.getByRole('region', { name: 'すみまるの せいちょう' })
     expect(within(grow).getByRole('heading', { name: 'すみの しずく' })).toBeInTheDocument()
-    expect(within(grow).getByText('レベル 4 で すがたが かわるよ')).toBeInTheDocument()
+    expect(grow).toHaveTextContent('あと 3 レベルで すがたが かわるよ')
+    expect(within(grow).getByRole('progressbar', { name: 'つぎの すがた まで' })).toHaveAttribute('aria-valuenow', '0')
+    // 森の そだちぐあい も見える
+    expect(grow).toHaveTextContent('もりの き0ほん')
+    expect(within(grow).getByRole('progressbar', { name: 'もりの そだちぐあい' })).toHaveAttribute('aria-valuenow', '0')
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
 
     useProgress.setState({ xp: 300 })
@@ -450,6 +449,26 @@ describe('チャレンジ', () => {
     await user.click(screen.getByRole('button', { name: '← やめる' }))
     expect(screen.getByRole('heading', { name: 'チャレンジ' })).toBeInTheDocument()
   }, 30_000)
+})
+
+describe('ずかん', () => {
+  it('学年の漢字が全部ならび(ページ送りはない)、開いて もどると 見ていた所にもどる', async () => {
+    alreadyCheckedIn()
+    const user = userEvent.setup()
+    const { container } = render(<App />)
+    await user.click(screen.getByRole('button', { name: /^ずかん/ }))
+    expect(container.querySelectorAll('.zukan-card')).toHaveLength(kanjiOfGrade(1).length)
+    expect(screen.queryByRole('button', { name: 'つぎの ページ' })).not.toBeInTheDocument()
+    await user.click(screen.getByRole('tab', { name: '2ねんせい' }))
+    expect(container.querySelectorAll('.zukan-card')).toHaveLength(kanjiOfGrade(2).length)
+
+    const grid = container.querySelector('.zukan__grid') as HTMLElement
+    grid.scrollTop = 420
+    await user.click(screen.getByRole('button', { name: /^曜/ }))
+    await user.click(screen.getByRole('button', { name: '← もどる' }))
+    expect((container.querySelector('.zukan__grid') as HTMLElement).scrollTop).toBe(420)
+    expect(screen.getByRole('tab', { name: '2ねんせい' })).toHaveAttribute('aria-selected', 'true')
+  })
 })
 
 describe('パーツずかん・きせかえ・せってい', () => {

@@ -11,5 +11,9 @@ export type Screen =
   | { readonly name: 'parts' }
   | { readonly name: 'shop' }
   | { readonly name: 'settings' }
+  | { readonly name: 'profiles' }
+  | { readonly name: 'review' }
+  | { readonly name: 'parent-gate' }
+  | { readonly name: 'parent' }
 
 export const HOME: Screen = { name: 'home' }

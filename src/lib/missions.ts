@@ -16,9 +16,11 @@ export type Counters = {
   readonly maxCombo: number
   /** たおした ボスの数 */
   readonly stage: number
+  /** さいごまで やった ふくしゅう の数 */
+  readonly review: number
 }
 
-export const EMPTY_COUNTERS: Counters = { learn: 0, learnNew: 0, write: 0, challenge: 0, firstTry: 0, maxCombo: 0, stage: 0 }
+export const EMPTY_COUNTERS: Counters = { learn: 0, learnNew: 0, write: 0, challenge: 0, firstTry: 0, maxCombo: 0, stage: 0, review: 0 }
 
 export type Mission = {
   readonly id: string
@@ -38,6 +40,7 @@ export const MISSION_POOL: readonly Mission[] = [
   { id: 'write3', label: 'かんじを 3つ {書|か}く', counter: 'write', target: 3, reward: 10 },
   { id: 'combo3', label: '3れんぞくで せいかい', counter: 'maxCombo', target: 3, reward: 10 },
   { id: 'stage1', label: 'ボスを 1たい たおす', counter: 'stage', target: 1, reward: 25 },
+  { id: 'review1', label: 'ふくしゅうを {1回|1かい} する', counter: 'review', target: 1, reward: 15 },
 ]
 
 export const DAILY_MISSION_COUNT = 3

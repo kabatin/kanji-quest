@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from 'react'
 import { TopBar } from '../../components/Hud'
 import { KanjiGlyph } from '../../components/KanjiGlyph'
 import { PartIcon } from '../../components/PartIcon'
@@ -7,10 +8,8 @@ import type { Grade } from '../../data/schema'
 import { fullGlyph } from '../../data/strokes'
 import { useProgress } from '../../store/progress'
 
-/** 1ページに並べる数(5列 x 4行)。スクロールなしで1画面に収める。 */
-export const PAGE_SIZE = 20
-
-export type ZukanView = { readonly grade: Grade; readonly page: number }
+/** 見ていた学年と、どこまで スクロール していたか */
+export type ZukanView = { readonly grade: Grade; readonly scroll: number }
 
 type Props = {
   readonly view: ZukanView
@@ -19,16 +18,24 @@ type Props = {
   readonly onBack: () => void
 }
 
-/** 漢字のずかん。学年ごと・ページごとに見る。覚えた字は色がつき、はんこが並ぶ。 */
+/** 漢字のずかん。学年ごとに、指で スクロール して見る。覚えた字は色がつき、はんこが並ぶ。 */
 export function Zukan({ view, onView, onOpen, onBack }: Props) {
   const learned = useProgress((s) => s.learned)
   const stamps = useProgress((s) => s.stamps)
+  const gridRef = useRef<HTMLUListElement>(null)
 
   const all = kanjiOfGrade(view.grade)
-  const pageCount = Math.ceil(all.length / PAGE_SIZE)
-  const page = Math.min(view.page, pageCount - 1)
-  const shown = all.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
   const learnedCount = all.filter((k) => learned.includes(k.char)).length
+
+  // 漢字を開いて もどってきたとき、前に見ていた所から続きを見られるようにする
+  useLayoutEffect(() => {
+    if (gridRef.current) gridRef.current.scrollTop = view.scroll
+  }, [view.grade, view.scroll])
+
+  const open = (char: string) => {
+    onView({ grade: view.grade, scroll: gridRef.current?.scrollTop ?? 0 })
+    onOpen(char)
+  }
 
   return (
     <div className="screen zukan">
@@ -41,7 +48,7 @@ export function Zukan({ view, onView, onOpen, onBack }: Props) {
               role="tab"
               aria-selected={grade === view.grade}
               className={`btn chip ${grade === view.grade ? 'is-selected' : ''}`}
-              onClick={() => onView({ grade, page: 0 })}
+              onClick={() => onView({ grade, scroll: 0 })}
             >
               {grade}ねんせい
             </button>
@@ -51,15 +58,15 @@ export function Zukan({ view, onView, onOpen, onBack }: Props) {
           {learnedCount} / {all.length}
         </span>
       </TopBar>
-      <ul className="zukan__grid">
-        {shown.map((kanji) => {
+      <ul ref={gridRef} className="zukan__grid scroll-area">
+        {all.map((kanji) => {
           const isLearned = learned.includes(kanji.char)
           return (
             <li key={kanji.char}>
               <button
                 type="button"
                 className={`zukan-card ${isLearned ? 'is-learned' : ''}`}
-                onClick={() => onOpen(kanji.char)}
+                onClick={() => open(kanji.char)}
                 aria-label={`${kanji.char} ${kanji.yomi}${isLearned ? ' おぼえた' : ''}`}
               >
                 <KanjiGlyph layers={[{ glyph: fullGlyph(kanji.char), tone: isLearned ? 'ink' : 'pale' }]} label={kanji.char} />
@@ -70,23 +77,6 @@ export function Zukan({ view, onView, onOpen, onBack }: Props) {
           )
         })}
       </ul>
-      <nav className="pager" aria-label="ページ">
-        <button type="button" className="btn" disabled={page === 0} onClick={() => onView({ grade: view.grade, page: page - 1 })} aria-label="まえの ページ">
-          ◀
-        </button>
-        <span className="pager__page">
-          {page + 1} / {pageCount}
-        </span>
-        <button
-          type="button"
-          className="btn"
-          disabled={page >= pageCount - 1}
-          onClick={() => onView({ grade: view.grade, page: page + 1 })}
-          aria-label="つぎの ページ"
-        >
-          ▶
-        </button>
-      </nav>
     </div>
   )
 }
