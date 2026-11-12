@@ -14,6 +14,23 @@ export default defineConfig({
   base: './',
   // precachePlugin: オフラインで使うための ファイルの一覧(dist/precache.json)を書き出す
   plugins: [react(), precachePlugin(fileURLToPath(new URL('./public', import.meta.url)))],
+  build: {
+    // 漢字の画のデータ と three.js は、分けても 500kB を少し こえる(これ以上は分けられない)
+    chunkSizeWarningLimit: 600,
+    rolldownOptions: {
+      output: {
+        // 本体を3つに分けて書き出す。漢字のデータ と ライブラリ は めったに変わらないので、
+        // アプリを直して公開しなおしても、その2つは 端末に のこっているものを そのまま使える。
+        // (three.js は ホームを開いたときに あとから読むので、ここには入れない)
+        codeSplitting: {
+          groups: [
+            { name: 'data', test: /[\\/]src[\\/](assets[\\/]kanjivg|data)[\\/].*\.json$/ },
+            { name: 'vendor', test: /[\\/]node_modules[\\/](?!three[\\/])/ },
+          ],
+        },
+      },
+    },
+  },
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
