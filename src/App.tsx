@@ -14,6 +14,7 @@ import { ReviewScreen } from './features/review/ReviewScreen'
 import { SettingsScreen } from './features/settings/SettingsScreen'
 import { ShopScreen } from './features/shop/ShopScreen'
 import { StageScreen } from './features/stage/StageScreen'
+import { WeakScreen } from './features/weak/WeakScreen'
 import { Zukan, type ZukanView } from './features/zukan/Zukan'
 import { areaBoss, examBoss } from './lib/boss'
 import { setMusic } from './lib/music'
@@ -91,7 +92,8 @@ export default function App() {
     const stage = findStage(AREAS, current.stageId)
     const nextChar = stage.kanji.find((c) => c !== current.char && !learned.includes(c))
     if (nextChar) return { label: `つぎの かんじ「${nextChar}」へ`, onNext: () => replace({ name: 'learn', char: nextChar, stageId: stage.id }) }
-    return nextAfterStage(stage)
+    // この字で ステージの5字が そろった(はじめて覚えたときだけ、けっか の画面で おいわい する)
+    return { ...nextAfterStage(stage), cleared: `ステージ ${stage.number} クリア！` }
   }
 
   /** ボス をたおしたあとの行き先。中ボスなら次のステージへ。ラスボスなら 同じ学年の次のエリアか、ぼうけん の地図へ。 */
@@ -134,9 +136,10 @@ export default function App() {
           onBack={back}
           next={nextAfterBoss(findBoss(AREAS, screen.id))}
           onReview={review}
+          onWeak={() => go({ name: 'weak' })}
         />
       )}
-      {screen.name === 'exam' && <BossScreen key={screen.grade} boss={examBoss(screen.grade, KANJI)} onBack={back} onReview={review} />}
+      {screen.name === 'exam' && <BossScreen key={screen.grade} boss={examBoss(screen.grade, KANJI)} onBack={back} onReview={review} onWeak={() => go({ name: 'weak' })} />}
       {screen.name === 'learn' && (
         <Learn
           key={screen.char}
@@ -153,6 +156,7 @@ export default function App() {
       {screen.name === 'shop' && <ShopScreen onBack={back} />}
       {screen.name === 'settings' && <SettingsScreen onHome={goHome} onProfiles={() => go(PROFILES)} onParent={() => go({ name: 'parent-gate' })} />}
       {screen.name === 'review' && <ReviewScreen onHome={goHome} onOpen={review} />}
+      {screen.name === 'weak' && <WeakScreen onBack={back} onOpen={review} />}
       {screen.name === 'parent-gate' && <ParentGate onBack={back} onPass={() => replace({ name: 'parent' })} />}
       {screen.name === 'parent' && <ParentScreen onBack={back} onOpen={review} />}
       {screen.name === 'profiles' && <ProfilesScreen onDone={goHome} canGoBack={stack.length > 1} />}

@@ -15,6 +15,7 @@ export type Screen =
   | { readonly name: 'settings' }
   | { readonly name: 'profiles' }
   | { readonly name: 'review' }
+  | { readonly name: 'weak' }
   | { readonly name: 'parent-gate' }
   | { readonly name: 'parent' }
 
@@ -26,6 +27,6 @@ export const HOME: Screen = { name: 'home' }
 export function trackFor(name: Screen['name']): TrackName | undefined {
   if (name === 'boss' || name === 'exam') return 'boss'
   if (name === 'map' || name === 'stage' || name === 'challenge') return 'adventure'
-  if (name === 'learn' || name === 'review' || name === 'parent' || name === 'parent-gate' || name === 'profiles') return undefined
+  if (name === 'learn' || name === 'review' || name === 'weak' || name === 'parent' || name === 'parent-gate' || name === 'profiles') return undefined
   return 'home'
 }

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Burst } from '../../components/Burst'
 import { KanjiGlyph, type GlyphLayer } from '../../components/KanjiGlyph'
 import { KText } from '../../components/KText'
+import { MascotSays } from '../../components/MascotSays'
 import { STAMP_FIRST_MS, STAMP_GAP_MS, Stamps } from '../../components/Stamps'
 import { getNarration } from '../../data/narration'
 import { getPart } from '../../data/parts'
@@ -59,6 +60,15 @@ export function KanjiResult({ kanji, learnGain, writeGain, onOpen, onWrite, onSt
   const learnedSet = useLearnedSet()
   // この字を覚えたことで、ぜんぶ そろった パーツ
   const completed = learnGain.isNew ? newlyCompleted(kanji.char, PARTS, KANJI, learnedSet) : []
+  // この字で ステージの5字が そろったとき(はじめて覚えたときだけ)
+  const stageCleared = learnGain.isNew ? next.cleared : undefined
+  const cheer = stageCleared
+    ? '5つ ぜんぶ おぼえたね！ すごい！'
+    : learnGain.isNew
+      ? '{新|あたら}しい かんじを おぼえたね！'
+      : writeGain
+        ? 'じょうずに {書|か}けたね！'
+        : 'もういちど {学|まな}べて えらい！'
 
   return (
     <div className="result" data-new={learnGain.isNew}>
@@ -82,6 +92,7 @@ export function KanjiResult({ kanji, learnGain, writeGain, onOpen, onWrite, onSt
         </button>
       </div>
       <div className="result__side">
+        <MascotSays text={cheer} className="result__cheer" />
         <ul className="gains">
           <li className="gains__xp">けいけんち ＋{xp}</li>
           {coins > 0 && (
@@ -90,6 +101,7 @@ export function KanjiResult({ kanji, learnGain, writeGain, onOpen, onWrite, onSt
             </li>
           )}
           {leveledUp && <li className="gains__level">レベル {levelAfter} に アップ！</li>}
+          {stageCleared && <li className="gains__stage">{stageCleared}</li>}
           {completed.map((part) => (
             <li key={part.id} className="gains__part">
               「{part.label}」の パーツ コンプリート！

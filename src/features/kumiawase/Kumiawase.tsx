@@ -79,6 +79,9 @@ export function Kumiawase({ question, showHint, plain = false, onSolved }: Props
     ]
     return (
       <div className="kumi kumi--merged" data-testid="merged">
+        {/* 部位が くっついた しゅんかんに ひろがる 光の わ と、きらきら */}
+        <span className="kumi__flash" aria-hidden="true" />
+        <span className="kumi__sparks" aria-hidden="true" />
         <KanjiGlyph className="kumi__merged-glyph" layers={layers} viewBox={frame} label="がったい" />
       </div>
     )

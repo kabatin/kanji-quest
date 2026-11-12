@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { Burst } from '../../components/Burst'
 import { TopBar } from '../../components/Hud'
 import { KText } from '../../components/KText'
+import { MascotSays } from '../../components/MascotSays'
 import { getKanji, KANJI } from '../../data/kanji'
-import { buildBoss, type BossDef, type BossQuestion } from '../../lib/boss'
+import { buildBoss, cheerLine, type BossDef, type BossQuestion } from '../../lib/boss'
 import { dayKey } from '../../lib/date'
 import { BOSS_CLEAR_SCORE, BOSS_REWARD } from '../../lib/rewards'
 import { isCleared, triesLeft } from '../../lib/stages'
@@ -26,6 +27,8 @@ type Props = {
   readonly next?: BossNext
   /** まちがえた漢字を もういちど学ぶ */
   readonly onReview: (char: string) => void
+  /** にがて れんしゅう へ行く */
+  readonly onWeak?: () => void
 }
 
 /** のこりの回数を 丸で見せる。 */
@@ -40,7 +43,7 @@ function TryPips({ left, limit }: { readonly left: number; readonly limit: numbe
 }
 
 /** ボス(ステージの ボス・そつぎょうしけん)の、はじまり・たたかい・けっか。 */
-export function BossScreen({ boss, onBack, next, onReview }: Props) {
+export function BossScreen({ boss, onBack, next, onReview, onWeak }: Props) {
   const [phase, setPhase] = useState<Phase>({ name: 'intro' })
   const tries = useProgress((s) => s.tries)
   const cleared = useProgress((s) => isCleared(s.clears, boss.id))
@@ -92,7 +95,7 @@ export function BossScreen({ boss, onBack, next, onReview }: Props) {
           <h1 className="boss-result__title">
             {gain.cleared ? `${boss.name}を たおした！` : won ? 'れんしゅう ばっちり！' : practice ? 'れんしゅう おつかれさま' : `${boss.name}に にげられた…`}
           </h1>
-          {!won && <p className="boss-result__lead">100てんで たおせるよ。まちがえた かんじを ふくしゅう しよう</p>}
+          <MascotSays text={cheerLine({ cleared: gain.cleared, won, practice, missed: outcome.missed.length })} happy={won} className="boss-result__cheer" />
         </div>
         <div className="boss-result__side">
           <ul className="gains">
@@ -129,6 +132,11 @@ export function BossScreen({ boss, onBack, next, onReview }: Props) {
               </button>
             )}
             {!gain.cleared && !practice && left === 0 && <p className="boss-result__tomorrow">きょうは ここまで。あした また ちょうせん しよう！</p>}
+            {outcome.missed.length > 0 && onWeak && (
+              <button type="button" className="btn" onClick={onWeak}>
+                にがてな かんじを れんしゅう
+              </button>
+            )}
             <button type="button" className="btn" onClick={() => start(true)}>
               れんしゅう する
             </button>

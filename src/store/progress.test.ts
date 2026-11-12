@@ -86,6 +86,16 @@ describe('ふくしゅう・パーツ・あそんだ時間', () => {
     expect(state().misses).toEqual({ 海: 1, 山: 2 })
   })
 
+  it('にがて れんしゅう: 書けた字は 回数が へり、まちがえても ふえない', () => {
+    useProgress.setState({ misses: { 海: 2, 池: 1, 山: 1 }, xp: 0, coins: 0 })
+    const gain = state().finishWeak({ right: ['海', '池'], wrong: ['山'] }, DAY1)
+    expect(gain).toMatchObject({ xp: 8, coins: 2 })
+    expect(state().misses).toEqual({ 海: 1, 山: 1 })
+    expect(state().daily.counters.firstTry).toBe(2)
+    expect(state().finishWeak({ right: [], wrong: ['山'] }, DAY1)).toMatchObject({ xp: 0, coins: 0 })
+    expect(state().misses).toEqual({ 海: 1, 山: 1 })
+  })
+
   it('コンプリートした パーツの ごほうびは 1回だけ', () => {
     expect(state().claimPart('ナ')).toMatchObject({ xp: 30, coins: 20 })
     expect(state().claimPart('ナ')).toBeNull()
@@ -282,10 +292,17 @@ describe('きせかえ', () => {
     expect(state().decoStored).toEqual([])
     const hana = state().decoSpots.hana
     expect(Math.hypot(hana.x - 5, hana.z + 3)).toBeGreaterThan(1.3)
-    // 持っていない かざり・にじ は しまえない
+    // 持っていない かざり は しまえない
     state().storeDeco('tent', true)
-    state().storeDeco('niji', true)
+    state().storeDeco('nai', true)
     expect(state().decoStored).toEqual([])
+    // にじ は うごかせないが、しまう・だす は できる(場所は 変わらない)
+    useProgress.setState({ owned: [...state().owned, 'deco:niji'] })
+    state().storeDeco('niji', true)
+    expect(state().decoStored).toEqual(['niji'])
+    state().storeDeco('niji', false)
+    expect(state().decoStored).toEqual([])
+    expect(state().decoSpots.niji).toBeUndefined()
   })
 
   it('ずかん で見た字の数を覚える。この しくみ の前から覚えていた字は、もう見たことにする', async () => {

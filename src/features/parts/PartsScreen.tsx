@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Burst } from '../../components/Burst'
 import { TopBar } from '../../components/Hud'
 import { KanjiGlyph } from '../../components/KanjiGlyph'
 import { KANJI } from '../../data/kanji'
@@ -23,6 +24,8 @@ export function PartsScreen({ onBack, onOpen }: Props) {
   const claimPart = useProgress((s) => s.claimPart)
   const { play } = useFeedback()
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  // いま ごほうびを受け取った パーツ(紙ふぶき を出す)
+  const [celebrated, setCelebrated] = useState<string | null>(null)
 
   const all = PARTS.map((part) => partProgress(part, KANJI, learned))
   const selected = all.find((p) => p.part.id === selectedId && p.found)
@@ -31,11 +34,14 @@ export function PartsScreen({ onBack, onOpen }: Props) {
   const quest = currentQuest(PARTS, KANJI, learned)
 
   const claim = (partId: string) => {
-    if (claimPart(partId)) play('fanfare')
+    if (!claimPart(partId)) return
+    play('fanfare')
+    setCelebrated(partId)
   }
 
   return (
-    <div className="screen parts">
+    <div className="screen parts" data-celebrated={celebrated ?? undefined}>
+      {celebrated && <Burst key={celebrated} />}
       <TopBar onBack={onBack} backLabel="ホーム" title="パーツずかん">
         <span className="zukan__count">
           {foundCount} / {PARTS.length}

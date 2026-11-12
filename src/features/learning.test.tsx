@@ -111,6 +111,45 @@ describe('きょうの ふくしゅう', () => {
   })
 })
 
+describe('にがて れんしゅう', () => {
+  it('苦手な字が ないときは、ホームに入り口が出ない', () => {
+    useProgress.setState({ learned: ['山'], misses: {} })
+    render(<App />)
+    expect(screen.queryByRole('button', { name: /^にがて れんしゅう/ })).not.toBeInTheDocument()
+  })
+
+  it('ホームから始めて、2回とも書けた字は 苦手で なくなり、まちがえた字は のこる', async () => {
+    useProgress.setState({ learned: ['山', '川'], misses: { 山: 1, 川: 1 }, xp: 0 })
+    const user = userEvent.setup()
+    const { container } = render(<App />)
+    await user.click(screen.getByRole('button', { name: 'にがて れんしゅう 2じ' }))
+    expect(screen.getByRole('heading', { name: 'にがて れんしゅう' })).toBeInTheDocument()
+    expect(screen.getByLabelText('れんしゅう する かんじ')).toHaveTextContent('山川')
+    await user.click(screen.getByRole('button', { name: /はじめる/ }))
+
+    const asked: string[] = []
+    for (let i = 0; i < 4; i += 1) {
+      await screen.findByText(`${i + 1} / 4`, undefined, WAIT)
+      const run = container.querySelector<HTMLElement>('.review-run')
+      asked.push(`${run?.dataset.kanji}:${run?.dataset.round}`)
+      // さいごの問題(川 を 見ないで書く)だけ、わざと まちがえる
+      await solve(user, container, i === 3)
+    }
+    expect(asked).toEqual(['山:model', '川:model', '山:blind', '川:blind'])
+
+    expect(await screen.findByRole('heading', { name: 'れんしゅう おしまい！' }, WAIT)).toBeInTheDocument()
+    const list = screen.getByRole('list', { name: 'けっか' })
+    expect(list).toHaveTextContent('もう にがて じゃない！')
+    expect(list).toHaveTextContent('また れんしゅう しよう')
+    expect(state().misses).toEqual({ 川: 1 })
+    expect(state().xp).toBe(4)
+    await user.click(screen.getByRole('button', { name: 'つづけて れんしゅう' }))
+    expect(screen.getByLabelText('れんしゅう する かんじ')).toHaveTextContent('川')
+    await user.click(screen.getByRole('button', { name: '← もどる' }))
+    expect(screen.getByRole('button', { name: 'にがて れんしゅう 1じ' })).toBeInTheDocument()
+  }, 40_000)
+})
+
 describe('保護者の方へ', () => {
   async function openParent(user: User) {
     await user.click(screen.getByRole('button', { name: 'せってい' }))

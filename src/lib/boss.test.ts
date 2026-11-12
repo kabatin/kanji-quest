@@ -20,8 +20,9 @@ import {
   treeSpots,
   yieldToDecos,
 } from '../features/home/scene/layout'
-import { AREA_BOSS_PLAN, areaBoss, bossName, buildBoss, buildParts, buildWrite, EXAM_PLAN, examBoss, leafParts, PARTS_CHOICE_COUNT, pickForBoss } from './boss'
+import { AREA_BOSS_PLAN, areaBoss, bossName, buildBoss, buildParts, buildWrite, EXAM_PLAN, cheerLine, examBoss, leafParts, PARTS_CHOICE_COUNT, pickForBoss } from './boss'
 import { SHOP_ITEMS, itemName } from './shop'
+import { buildWeakQuestions, weakChars, weakOutcome } from './weak'
 import { playVoice, stopVoice, VOICE_FADE_MS, voiceId } from './voice'
 
 /** いつも同じ並びになる乱数 */
@@ -95,6 +96,25 @@ describe('ボスの問題', () => {
     // 苦手な字は はじめに かたまらず、まざって出る
     const order = [1, 2, 3, 4, 5, 6].map((seed) => pickForBoss(pool, 15, misses, seededRng(seed)).findIndex((k) => weak.includes(k.char)))
     expect(new Set(order).size).toBeGreaterThan(1)
+  })
+
+  it('たたかい の あとの ひとこと: かてば ほめて、まければ はげまして 次に やることを 言う', () => {
+    expect(cheerLine({ cleared: true, won: true, practice: false, missed: 0 })).toContain('たおしたね')
+    expect(cheerLine({ cleared: false, won: true, practice: true, missed: 0 })).toContain('ほんばんも')
+    expect(cheerLine({ cleared: false, won: false, practice: false, missed: 1 })).toBe('おしい！ あと 1{字|じ}。れんしゅう すれば たおせるよ')
+    expect(cheerLine({ cleared: false, won: false, practice: false, missed: 5 })).toContain('また ちょうせん')
+    expect(cheerLine({ cleared: false, won: false, practice: true, missed: 5 })).toContain('れんしゅう してみよう')
+  })
+
+  it('にがて れんしゅう: 回数の多い字から。見て書く → 見ないで書く の順に出し、2回とも書けた字だけ できた になる', () => {
+    expect(weakChars({ 山: 1, 川: 3, 海: 2, 木: 0 }, ['木', '山', '川'])).toEqual(['川', '山'])
+    expect(weakChars({}, ['木'])).toEqual([])
+    const questions = buildWeakQuestions(['山', '川'].map(getKanji))
+    expect(questions.map((q) => `${q.kanji.char}${q.type === 'write' && q.model ? '見' : '無'}`)).toEqual(['山見', '川見', '山無', '川無'])
+    expect(questions.every((q) => q.type === 'write' && q.mode === 'whole')).toBe(true)
+    expect(weakOutcome(questions, [0, 0, 0, 0])).toEqual({ right: ['山', '川'], wrong: [] })
+    expect(weakOutcome(questions, [0, 0, 0, 2])).toEqual({ right: ['山'], wrong: ['川'] })
+    expect(weakOutcome(questions, [1, 0, 0, 0])).toEqual({ right: ['川'], wrong: ['山'] })
   })
 
   it('字が問題の数より少ないときだけ、ひとまわりしてから くり返す', () => {

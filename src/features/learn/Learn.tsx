@@ -20,7 +20,12 @@ const STEP_LABELS = [
   { name: 'kaku', label: '{書|か}く' },
 ] as const
 
-export type NextAction = { readonly label: string; readonly onNext: () => void }
+export type NextAction = {
+  readonly label: string
+  readonly onNext: () => void
+  /** この字を覚えると そろうもの(「ステージ 3 クリア！」など)。あれば、けっか の画面で おいわい する */
+  readonly cleared?: string
+}
 
 type Props = {
   readonly kanji: Kanji

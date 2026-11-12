@@ -20,6 +20,7 @@ import type { Screen } from '../../nav'
 import { useProfiles } from '../../store/profiles'
 import { useProgress } from '../../store/progress'
 import { ReviewCall } from './ReviewCall'
+import { WeakCall } from './WeakCall'
 import { claimableParts } from '../../lib/partQuest'
 import { useLearnedSet } from '../../lib/useKanjiText'
 import { GrowPanel } from './GrowPanel'
@@ -27,7 +28,7 @@ import { IslandCanvas } from './IslandCanvas'
 import { LevelUpModal } from './LevelUpModal'
 import { LoginBonusModal } from './LoginBonusModal'
 import { MissionPanel } from './MissionPanel'
-import { isMovableDeco } from './scene/layout'
+import { FIXED_DECOS, isMovableDeco } from './scene/layout'
 import { POKE_LINE_MS, POKE_LINES } from './pokeLines'
 
 type Props = { readonly onGo: (screen: Screen) => void }
@@ -188,6 +189,8 @@ export function Home({ onGo }: Props) {
   const decos = ownedDecoNames.filter((name) => !decoStored.includes(name))
   const stored = ownedDecoNames.filter((name) => decoStored.includes(name))
   const hasMovable = ownedDecoNames.some(isMovableDeco)
+  // うごかせない かざり(にじ)で、いま 出ているもの。もようがえ で しまえる
+  const fixedShown = decos.filter((name) => FIXED_DECOS.includes(name))
   const pickedItem = picked ? findItem(`deco:${picked}`) : undefined
   const startEditing = () => {
     play('tap')
@@ -225,6 +228,26 @@ export function Home({ onGo }: Props) {
       />
       {editing && (
         <div className="edit-bar" role="region" aria-label="もようがえ">
+          {fixedShown.length > 0 && (
+            <ul className="edit-bar__tray edit-bar__tray--fixed" aria-label="うごかせない かざり">
+              {fixedShown.map((name) => (
+                <li key={name}>
+                  <button
+                    type="button"
+                    className="btn edit-bar__stored"
+                    aria-label={`${findItem(`deco:${name}`)?.label ?? name} を しまう`}
+                    onClick={() => {
+                      storeDeco(name, true)
+                      play('tap')
+                    }}
+                  >
+                    <span aria-hidden="true">{findItem(`deco:${name}`)?.emoji}</span>
+                    <small>しまう</small>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
           {stored.length > 0 && (
             <ul className="edit-bar__tray" aria-label="しまってある かざり">
               {stored.map((name) => (
@@ -235,7 +258,7 @@ export function Home({ onGo }: Props) {
                     aria-label={`${findItem(`deco:${name}`)?.label ?? name} を だす`}
                     onClick={() => {
                       storeDeco(name, false)
-                      setPicked(name)
+                      setPicked(isMovableDeco(name) ? name : null)
                       play('pop')
                     }}
                   >
@@ -323,7 +346,10 @@ export function Home({ onGo }: Props) {
           <p key={pokeLine.line ? pokeLine.count : 0} className={`home__bubble ${pokeLine.line ? 'is-poked' : ''}`} aria-live="polite">
             <KText text={pokeLine.line ?? mascotLine(learned.length, level, next)} />
           </p>
-          <ReviewCall onOpen={() => onGo({ name: 'review' })} />
+          <div className="home__calls">
+            <ReviewCall onOpen={() => onGo({ name: 'review' })} />
+            <WeakCall onOpen={() => onGo({ name: 'weak' })} />
+          </div>
         </div>
         <GrowPanel />
       </div>

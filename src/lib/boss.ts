@@ -185,6 +185,14 @@ export function hitLabel(streak: number): string {
   return streak >= 2 ? `${streak} れんぞく ヒット！` : 'ヒット！'
 }
 
+/** たたかい の あとの、すみまるの ひとこと。まけたときは、はげまして 次に やることを 言う。 */
+export function cheerLine(result: { readonly cleared: boolean; readonly won: boolean; readonly practice: boolean; readonly missed: number }): string {
+  if (result.cleared) return 'やったー！ たおしたね！ すごい！'
+  if (result.won) return 'ばっちり！ ほんばんも きっと だいじょうぶ'
+  if (result.missed <= 2) return `おしい！ あと ${result.missed}{字|じ}。れんしゅう すれば たおせるよ`
+  return result.practice ? 'がんばったね！ にがてを れんしゅう してみよう' : 'だいじょうぶ！ にがてを れんしゅう して、また ちょうせん しよう'
+}
+
 /** ボスの画面の上に出す、問題の くぎり(えらぶ・みて かく・みないで かく) */
 export function roundOf(question: BossQuestion): 'select' | 'model' | 'blind' {
   if (question.type !== 'write') return 'select'

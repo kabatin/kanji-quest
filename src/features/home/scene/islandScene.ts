@@ -285,6 +285,7 @@ export function createIslandScene(canvas: HTMLCanvasElement, initial: IslandStat
     forestPlan(learnedCount, totalKanji).forEach((plan, i) => {
       const tree = buildTree(plan, i)
       // 木が かざり と重なるときは、木のほうが少し よける
+      tree.userData.home = { x: plan.x, z: plan.z }
       const spot = yieldToDecos(plan, decoSpots)
       tree.position.set(spot.x, tree.position.y, spot.z)
       tree.userData.baseScale = tree.scale.x
@@ -354,6 +355,18 @@ export function createIslandScene(canvas: HTMLCanvasElement, initial: IslandStat
     }
     replace(decos, world, next)
     decos = next
+  }
+
+  /** かざり の いまの場所に合わせて、木を よけさせる(木を作りなおさずに、場所だけ うごかす)。 */
+  const yieldTrees = () => {
+    const decoSpots = movableSpots()
+    for (const tree of trees.children) {
+      const home = tree.userData.home as Spot | undefined
+      if (!home) continue
+      const spot = yieldToDecos(home, decoSpots)
+      tree.position.x = spot.x
+      tree.position.z = spot.z
+    }
   }
 
   const raycaster = new THREE.Raycaster()
@@ -518,6 +531,8 @@ export function createIslandScene(canvas: HTMLCanvasElement, initial: IslandStat
       const wanted = groundAt(x, y)
       if (!held || !deco || !wanted) return
       placeDeco(deco, held, settleDeco(wanted, movableSpots(held)), LIFT)
+      // ひっぱっている間も、木が よける(かざり が 木の うらに かくれないように)
+      yieldTrees()
       if (reducedMotion) render()
     },
     drop: () => {

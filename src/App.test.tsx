@@ -240,6 +240,7 @@ describe('えんしゅつ', () => {
     expect(container.querySelector('.result')).toHaveAttribute('data-new', 'true')
     expect(screen.getByText('あたらしく おぼえた！')).toBeInTheDocument()
     expect([...container.querySelectorAll('.result__stamps .stamp.is-fresh')].map((el) => el.getAttribute('data-stamp'))).toEqual(['learn', 'write'])
+    expect(container.querySelector('.result__cheer')).toHaveTextContent('あたらしい かんじを おぼえたね！')
 
     // もう覚えた字を もう一度学んでも、「あたらしく」は出ない
     await user.click(screen.getByRole('button', { name: 'もどる' }))
@@ -263,6 +264,38 @@ describe('えんしゅつ', () => {
     expect(screen.queryByLabelText(/^あたらしい かんじ \d+こ$/)).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /^ずかん/ }))
     expect(container.querySelectorAll('.zukan-card.is-new')).toHaveLength(0)
+  })
+
+  it('ステージの5字めを覚えると、けっか の画面で「ステージ クリア！」と おいわい する', async () => {
+    alreadyCheckedIn()
+    const stage = ALL_STAGES[0]
+    const last = stage.kanji[4]
+    useProgress.setState({ learned: stage.kanji.slice(0, 4) })
+    const user = userEvent.setup()
+    const { container } = render(<App />)
+    await user.click(screen.getByRole('button', { name: /つづきから まなぶ/ }))
+    await user.click(screen.getByRole('button', { name: 'つぎへ' }))
+    if (getKanji(last).steps.length > 0) throw new Error('ステージ1は 分けられない字の はず')
+    await user.click(screen.getByRole('button', { name: 'あとで' }))
+    expect(screen.getByText(`ステージ ${stage.number} クリア！`)).toBeInTheDocument()
+    expect(container.querySelector('.result__cheer')).toHaveTextContent('5つ ぜんぶ おぼえたね！ すごい！')
+    expect(screen.getByRole('button', { name: 'つぎの ステージへ' })).toBeInTheDocument()
+  })
+
+  it('ミッションを3つ ぜんぶ受け取ると、ほし が おどる', async () => {
+    alreadyCheckedIn()
+    useProgress.setState({
+      daily: { day: dayKey(), counters: { learn: 9, learnNew: 9, write: 9, challenge: 9, firstTry: 9, maxCombo: 9, stage: 9, review: 9 }, claimed: [] },
+    })
+    const user = userEvent.setup()
+    const { container } = render(<App />)
+    const missions = screen.getByRole('region', { name: 'きょうの ミッション' })
+    await user.click(within(missions).getAllByRole('button', { name: /うけとる$/ })[0])
+    expect(container.querySelectorAll('.mission.is-fresh')).toHaveLength(1)
+    expect(missions).not.toHaveClass('is-complete')
+    await user.click(within(missions).getAllByRole('button', { name: /うけとる$/ })[0])
+    await user.click(within(missions).getAllByRole('button', { name: /うけとる$/ })[0])
+    expect(missions).toHaveClass('is-complete')
   })
 
   it('画面ごとに 流す曲が決まっていて、学ぶ・ふくしゅう の間は 流さない', () => {
@@ -511,8 +544,11 @@ describe('ぼうけん: ボス', () => {
     expect(screen.getByRole('button', { name: /もういちど たたかう/ })).toBeEnabled()
     expect(within(screen.getByRole('button', { name: /もういちど たたかう/ })).getByRole('img', { name: 'きょうは あと 2かい' })).toBeInTheDocument()
 
-    await user.click(within(review).getAllByRole('button')[0])
-    expect(screen.getByRole('img', { name: /の ものがたり$/ })).toBeInTheDocument()
+    // すみまるが はげまして、にがて れんしゅう へ行ける
+    expect(container.querySelector('.boss-result__cheer')).toHaveTextContent('おしい！ あと 2じ。れんしゅう すれば たおせるよ')
+    await user.click(screen.getByRole('button', { name: 'にがてな かんじを れんしゅう' }))
+    expect(screen.getByRole('heading', { name: 'にがて れんしゅう' })).toBeInTheDocument()
+    expect(screen.getByLabelText('れんしゅう する かんじ').textContent?.split('').sort()).toEqual([...missed].sort())
   }, 90_000)
 
   it('その日の3回を使いきると、あしたまで たたかえない(れんしゅうは できる)', async () => {

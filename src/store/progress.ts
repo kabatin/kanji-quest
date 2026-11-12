@@ -36,7 +36,7 @@ import {
 import { DEFAULT_QUESTION_COUNT, isBetter, type Best, type Level } from '../lib/score'
 import { canBuy, DEFAULT_EQUIPPED, DEFAULT_OWNED, findItem, ownedDecos, type Equipped } from '../lib/shop'
 import { AREAS } from '../data/areas'
-import { decoSpot, isMovableDeco, settleDeco, TURN_STEPS, type DecoSpots, type DecoTurns, type Spot } from '../features/home/scene/layout'
+import { decoSpot, isDeco, isMovableDeco, settleDeco, TURN_STEPS, type DecoSpots, type DecoTurns, type Spot } from '../features/home/scene/layout'
 import { isCleared, migrateClears, triesLeft, type Clears, type Tries } from '../lib/stages'
 import { addPlayMinutes, applyReview, EMPTY_RECORDS, updateMisses, type Records } from './records'
 
@@ -155,6 +155,8 @@ type ProgressActions = {
   /** ずかん で、いま覚えている字を ぜんぶ見たことにする */
   markZukanSeen: () => void
   finishReview: (result: ReviewResult, today?: string) => Gain
+  /** にがて れんしゅう の結果。書けた字は 苦手の回数が へる。まちがえても 回数は ふえない */
+  finishWeak: (result: ReviewResult, today?: string) => Gain
   /** コンプリートした パーツの ごほうびを受け取る(コンプリートかどうかは、よぶ側で たしかめる) */
   claimPart: (partId: string) => Gain | null
   /** あそんだ時間を ふやす(画面が見えている間、1分ごとに よぶ) */
@@ -416,6 +418,18 @@ export const useProgress = create<ProgressState>()(
         return gain
       },
 
+      finishWeak: (result, today = dayKey()) => {
+        const before = get()
+        const gain = gainOf(before.xp, result.right.length * XP_REVIEW_RIGHT, result.right.length * COINS_REVIEW_RIGHT)
+        set((state) => ({
+          xp: state.xp + gain.xp,
+          coins: state.coins + gain.coins,
+          misses: updateMisses(state.misses, [], result.right),
+          daily: addCounters(dailyFor(state.daily, today), { firstTry: result.right.length }),
+        }))
+        return gain
+      },
+
       claimPart: (partId) => {
         const before = get()
         if (before.partClaims.includes(partId)) return null
@@ -473,13 +487,14 @@ export const useProgress = create<ProgressState>()(
 
       storeDeco: (name, stored) => {
         const { owned, decoSpots, decoStored } = get()
-        if (!isMovableDeco(name) || !owned.includes(`deco:${name}`) || decoStored.includes(name) === stored) return
+        // にじ は うごかせないが、しまう・だす は できる
+        if (!isDeco(name) || !owned.includes(`deco:${name}`) || decoStored.includes(name) === stored) return
         if (stored) {
           set({ decoStored: [...decoStored, name] })
           return
         }
         // しまっている間に、ほかの かざり が そこに置かれているかもしれない
-        const back = decoSpot(name, decoSpots)
+        const back = isMovableDeco(name) ? decoSpot(name, decoSpots) : undefined
         const settled = back ? settleDeco(back, otherDecoSpots(name, owned, decoSpots, decoStored)) : undefined
         set({
           decoStored: decoStored.filter((other) => other !== name),

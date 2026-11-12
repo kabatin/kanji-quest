@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import iconChallenge from '../../assets/art/icon-challenge.webp'
 import iconZukan from '../../assets/art/icon-zukan.webp'
 import { KText } from '../../components/KText'
@@ -33,9 +33,12 @@ export function MissionPanel() {
   const counters = daily.day === today ? daily.counters : undefined
   const claimed = daily.day === today ? daily.claimed : []
   const missions = dailyMissions(today)
+  // いま 受け取ったばかりの ミッション(はんこ が ぺたん と おされる)
+  const [fresh, setFresh] = useState<string | null>(null)
+  const allDone = claimed.length === missions.length
 
   return (
-    <section className="missions" aria-label="きょうの ミッション">
+    <section className={`missions ${allDone && fresh ? 'is-complete' : ''}`} aria-label="きょうの ミッション">
       <h2 className="missions__title">
         <KText text="{今日|きょう}の ミッション" />
         <span className="missions__done" aria-label={`${claimed.length} / ${missions.length} おわった`}>
@@ -52,7 +55,7 @@ export function MissionPanel() {
           const done = counters ? isMissionDone(mission, counters) : false
           const isClaimed = claimed.includes(mission.id)
           return (
-            <li key={mission.id} className={`mission ${isClaimed ? 'is-claimed' : done ? 'is-done' : ''}`}>
+            <li key={mission.id} className={`mission ${isClaimed ? 'is-claimed' : done ? 'is-done' : ''} ${fresh === mission.id ? 'is-fresh' : ''}`}>
               <span className="mission__icon" aria-hidden="true">
                 {MISSION_ICON[mission.counter]}
               </span>
@@ -77,7 +80,10 @@ export function MissionPanel() {
                   className="mission__claim"
                   disabled={!done}
                   onClick={() => {
-                    if (claimMission(mission.id) > 0) play('coin')
+                    if (claimMission(mission.id) <= 0) return
+                    setFresh(mission.id)
+                    // 3つ ぜんぶ 受け取ったら、おいわいの音
+                    play(claimed.length + 1 === missions.length ? 'fanfare' : 'coin')
                   }}
                   aria-label={`${kt(mission.label)} の ごほうびを うけとる`}
                 >

@@ -58,6 +58,9 @@ export const FIXED_DECOS: readonly string[] = ['niji']
 
 export const isMovableDeco = (name: string): boolean => DECO_SPOTS[name] !== undefined && !FIXED_DECOS.includes(name)
 
+/** しまに置ける かざり か(うごかせない にじ も ふくむ)。しまう・だす は、これで たしかめる */
+export const isDeco = (name: string): boolean => DECO_SPOTS[name] !== undefined
+
 /** かざり の いまの場所。うごかしていなければ、はじめの場所。 */
 export function decoSpot(name: string, placed: DecoSpots): Spot | undefined {
   return (isMovableDeco(name) ? placed[name] : undefined) ?? DECO_SPOTS[name]

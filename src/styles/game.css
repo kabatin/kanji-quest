@@ -465,7 +465,10 @@
   transform: translateX(-50%);
 }
 
+/* そうさ の ならび は、いつも いちばん下の行に */
 .edit-bar__main {
+  order: 2;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -499,6 +502,10 @@
   background: rgba(255, 253, 247, 0.9);
   border: 3px dashed var(--ai);
   border-radius: 22px;
+}
+
+.edit-bar__tray--fixed {
+  border-style: solid;
 }
 
 .edit-bar__stored {

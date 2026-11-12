@@ -456,3 +456,191 @@
     opacity: 1;
   }
 }
+
+/* ───────── すみまるの ひとこと ───────── */
+.mascot-says {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+}
+
+.mascot-says__mascot {
+  width: 86px;
+  flex-shrink: 0;
+  animation: bob 2.2s ease-in-out infinite;
+}
+
+.mascot-says__bubble {
+  position: relative;
+  padding: 6px 16px;
+  background: var(--paper);
+  border: 3px solid var(--ai);
+  border-radius: 18px;
+  font-size: 1.02rem;
+  line-height: 1.4;
+  text-align: left;
+  animation: gain-pop 0.4s cubic-bezier(0.3, 1.6, 0.5, 1) 0.25s backwards;
+}
+
+.mascot-says__bubble::before {
+  content: '';
+  position: absolute;
+  left: -9px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  background: var(--paper);
+  border-left: 3px solid var(--ai);
+  border-bottom: 3px solid var(--ai);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.gains .gains__stage {
+  background: var(--shu);
+  border-color: #8e2f24;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 400;
+}
+
+/* ステージ: 5字 そろったときの しるし */
+.stage__cleared {
+  animation: gain-pop 0.5s cubic-bezier(0.3, 1.7, 0.5, 1) 0.2s backwards;
+}
+
+/* ───────── にがて れんしゅう ───────── */
+.home__calls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.review-call.review-call--weak {
+  border-color: var(--shu);
+  box-shadow: 0 6px 0 var(--shu);
+  animation: none;
+}
+
+.review-call.review-call--weak:active {
+  box-shadow: 0 1px 0 var(--shu);
+}
+
+.weak__chars span {
+  font-family: var(--font-display);
+  font-weight: 400;
+}
+
+/* ───────── くみあわせ: がったい の しゅんかん ───────── */
+.kumi--merged {
+  position: relative;
+}
+
+.kumi__flash,
+.kumi__sparks {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+}
+
+/* 部位が くっつく ころ(0.4秒ご)に、光の わ が ひろがる */
+.kumi__flash {
+  width: 60%;
+  aspect-ratio: 1;
+  border: 10px solid var(--yamabuki);
+  border-radius: 50%;
+  opacity: 0;
+  animation: kumi-flash 0.6s ease-out 0.4s forwards;
+}
+
+@keyframes kumi-flash {
+  0% {
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.7);
+    opacity: 0;
+  }
+}
+
+.kumi__sparks {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--yamabuki);
+  opacity: 0;
+  animation: kumi-sparks 0.7s ease-out 0.4s forwards;
+}
+
+@keyframes kumi-sparks {
+  0% {
+    transform: translate(-50%, -50%);
+    box-shadow:
+      0 0 0 0 #ffffff,
+      0 0 0 0 var(--shu),
+      0 0 0 0 var(--yamabuki),
+      0 0 0 0 #ffffff,
+      0 0 0 0 var(--shu),
+      0 0 0 0 var(--yamabuki);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%);
+    box-shadow:
+      0 -24vh 0 2px #ffffff,
+      21vh -12vh 0 0 var(--shu),
+      21vh 12vh 0 3px var(--yamabuki),
+      0 24vh 0 0 #ffffff,
+      -21vh 12vh 0 2px var(--shu),
+      -21vh -12vh 0 0 var(--yamabuki);
+    opacity: 0;
+  }
+}
+
+.kumi__merged-glyph {
+  animation: kumi-bump 0.4s cubic-bezier(0.3, 1.6, 0.5, 1) 0.45s;
+}
+
+@keyframes kumi-bump {
+  40% {
+    transform: scale(1.1);
+  }
+}
+
+/* ───────── ミッション: 受け取った しゅんかん ───────── */
+.mission.is-fresh .mission__seal {
+  animation: stamp-press 0.42s cubic-bezier(0.3, 1.4, 0.5, 1) backwards;
+}
+
+.missions.is-complete .missions__done span {
+  display: inline-block;
+  animation: mission-star 0.6s cubic-bezier(0.3, 1.8, 0.5, 1) backwards;
+}
+
+.missions.is-complete .missions__done span:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.missions.is-complete .missions__done span:nth-child(3) {
+  animation-delay: 0.24s;
+}
+
+@keyframes mission-star {
+  0% {
+    transform: scale(0.2) rotate(-90deg);
+  }
+  60% {
+    transform: scale(1.6) rotate(10deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* パーツ: コンプリート の はんこ */
+.parts[data-celebrated] .parts__seal {
+  animation: stamp-press 0.42s cubic-bezier(0.3, 1.4, 0.5, 1) backwards;
+}
