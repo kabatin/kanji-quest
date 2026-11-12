@@ -11,6 +11,14 @@ const AVERAGE_TOLERANCE = 17
 const MIN_LENGTH_RATIO = 0.4
 /** 点のような短い画(てん・はね)は、長さでは判定しない */
 const SHORT_STROKE = 14
+/**
+ * お手本の長さにくらべて、これより長い線は「書きなぐり」とみなす
+ * (書きはじめ と 書きおわり だけ合わせて、とちゅうで ぐるぐる 書いた線を はじく)。
+ * 子どもの線は ふるえて 少し長くなるので、よゆう を持たせている。
+ */
+const MAX_LENGTH_RATIO = 1.8
+/** 短い画でも、このくらいの よぶん は ゆるす */
+const LENGTH_SLACK = 12
 
 const distance = (a: Point, b: Point): number => Math.hypot(a[0] - b[0], a[1] - b[1])
 
@@ -37,11 +45,22 @@ export function resample(points: readonly Point[], count: number): Point[] {
   })
 }
 
+/** お手本にくらべて、あからさまに長すぎる線か(ぐるぐる 書きなぐった線)。 */
+export function isTooLong(drawn: readonly Point[], target: readonly Point[]): boolean {
+  return pathLength(drawn) > pathLength(target) * MAX_LENGTH_RATIO + LENGTH_SLACK
+}
+
 /**
  * 指で書いた線が、お手本の1画と合っているか。
  * 書きはじめ・書きおわりの位置と、途中の通り道がお手本に近ければ合格。向き(書き順の方向)も見る。
+ * 長すぎる線(書きなぐり)は、位置が合っていても不合格。
  */
 export function matchStroke(drawn: readonly Point[], target: readonly Point[]): boolean {
+  return matchPath(drawn, target) && !isTooLong(drawn, target)
+}
+
+/** 長すぎるかどうかは見ずに、位置と通り道だけを お手本と くらべる。 */
+function matchPath(drawn: readonly Point[], target: readonly Point[]): boolean {
   if (drawn.length < 2 || target.length < 2) return false
   const targetLength = pathLength(target)
   if (targetLength > SHORT_STROKE && pathLength(drawn) < targetLength * MIN_LENGTH_RATIO) return false
@@ -52,12 +71,16 @@ export function matchStroke(drawn: readonly Point[], target: readonly Point[]): 
   return average <= AVERAGE_TOLERANCE
 }
 
-/** ok = 合っている / order = 形は合っているが書き順がちがう(あとの画を先に書いた) / shape = 形がちがう */
-export type StrokeJudge = 'ok' | 'order' | 'shape'
+/**
+ * ok = 合っている / order = 形は合っているが書き順がちがう(あとの画を先に書いた) /
+ * long = 場所は合っているが 長すぎる(書きなぐり) / shape = 形がちがう
+ */
+export type StrokeJudge = 'ok' | 'order' | 'long' | 'shape'
 
 /** 書いた線を、次に書くはずの画と、そのあとの画に てらし合わせる。 */
 export function judgeStroke(drawn: readonly Point[], targets: readonly (readonly Point[])[], nextIndex: number): StrokeJudge {
   const next = targets[nextIndex]
   if (next && matchStroke(drawn, next)) return 'ok'
+  if (next && matchPath(drawn, next)) return 'long'
   return targets.slice(nextIndex + 1).some((target) => matchStroke(drawn, target)) ? 'order' : 'shape'
 }

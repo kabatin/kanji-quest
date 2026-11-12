@@ -19,6 +19,7 @@ const MIN_POINTS = 3
 
 const NOTE_TEXT: Record<Exclude<StrokeJudge, 'ok'>, string> = {
   order: '{書|か}きじゅんが ちがうよ',
+  long: 'せんが ながすぎるよ',
   shape: 'かたちが ちがうよ',
 }
 
@@ -123,7 +124,7 @@ export function Kaku({ kanji, strokes: strokeNumbers, given = [], model = true, 
       doneCount,
     )
     if (judge === 'ok') {
-      play(doneCount + 1 === targets.length ? 'ok' : 'tap')
+      play(doneCount + 1 === targets.length ? 'ok' : 'stroke')
       setDoneCount(doneCount + 1)
       setMissesHere(0)
       setShowHint(false)
@@ -155,7 +156,7 @@ export function Kaku({ kanji, strokes: strokeNumbers, given = [], model = true, 
   }
 
   return (
-    <div className="kaku" data-strict={strict} data-model={model}>
+    <div className="kaku" data-strict={strict} data-model={model} data-finished={finished}>
       <div className="kaku__board">
         <svg
           ref={svgRef}

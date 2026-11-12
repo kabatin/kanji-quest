@@ -671,3 +671,40 @@
     grid-template-columns: repeat(2, minmax(0, 180px));
   }
 }
+
+/* ───────── かく: えんしゅつ ───────── */
+/* 書けた画は、太い線から すっと ほそくなって おさまる */
+.kaku__stroke {
+  animation: stroke-settle 0.32s ease-out;
+}
+
+@keyframes stroke-settle {
+  0% {
+    stroke-width: 11;
+    filter: brightness(1.6);
+  }
+  100% {
+    stroke-width: 5.5;
+    filter: none;
+  }
+}
+
+/* 書きおわったら、わく が ひかって ぽん と はずむ */
+.kaku[data-finished='true'] .kaku__board {
+  animation: board-done 0.7s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+@keyframes board-done {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 194, 51, 0.9);
+  }
+  35% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 14px rgba(255, 194, 51, 0.55);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 26px rgba(255, 194, 51, 0);
+  }
+}
