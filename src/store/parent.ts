@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { STAGE_BOSS_PLAN, type BossPlan } from '../lib/boss'
+import { AREA_BOSS_PLAN, type BossPlan } from '../lib/boss'
 
 /**
  * おうちの かた が決める設定。この端末で あそぶ人 全員に かかる。
@@ -13,7 +13,7 @@ export type BossSize = (typeof BOSS_SIZES)[number]
 export const BOSS_PLANS: Record<BossSize, BossPlan> = {
   // みじかめ: えらぶ5 + 見て書く2 + 見ないで書く3 = 10問
   short: { select: 5, model: 2, blind: 3 },
-  normal: STAGE_BOSS_PLAN,
+  normal: AREA_BOSS_PLAN,
 }
 
 export const BOSS_TRY_CHOICES = [1, 3, 5] as const
@@ -56,7 +56,7 @@ export const useParent = create<ParentState>()(
   ),
 )
 
-/** ステージの ボスの きまり(問題の数と、1日の回数)。 */
+/** エリアの ボスの きまり(問題の数と、1日の回数)。 */
 export function useBossRules(): { readonly plan: BossPlan; readonly triesPerDay: number } {
   const bossSize = useParent((s) => s.bossSize)
   const bossTries = useParent((s) => s.bossTries)

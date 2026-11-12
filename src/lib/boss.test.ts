@@ -1,9 +1,26 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { ALL_STAGES } from '../data/areas'
+import { AREAS } from '../data/areas'
 import { getKanji, KANJI } from '../data/kanji'
 import { fullGlyph } from '../data/strokes'
-import { forestPlan, groundHeight, ISLAND_RADIUS, kanjiPerGrowth, MAX_TREES, POND, skyPreset, SKY_PRESETS, TREE_STAGES, treeSpots, DECO_SPOTS } from '../features/home/scene/layout'
-import { bossName, buildBoss, buildParts, buildWrite, EXAM_PLAN, examBoss, leafParts, PARTS_CHOICE_COUNT, STAGE_BOSS_PLAN, stageBoss } from './boss'
+import {
+  DECO_SPOTS,
+  decoAngle,
+  decoSpot,
+  forestPlan,
+  groundHeight,
+  ISLAND_RADIUS,
+  isMovableDeco,
+  kanjiPerGrowth,
+  MAX_TREES,
+  POND,
+  settleDeco,
+  skyPreset,
+  SKY_PRESETS,
+  TREE_STAGES,
+  treeSpots,
+  yieldToDecos,
+} from '../features/home/scene/layout'
+import { AREA_BOSS_PLAN, areaBoss, bossName, buildBoss, buildParts, buildWrite, EXAM_PLAN, examBoss, leafParts, PARTS_CHOICE_COUNT, pickForBoss } from './boss'
 import { SHOP_ITEMS, itemName } from './shop'
 import { playVoice, stopVoice, VOICE_FADE_MS, voiceId } from './voice'
 
@@ -41,10 +58,10 @@ describe('ボスの問題', () => {
     expect(buildWrite(getKanji('山'), 'part', true).mode).toBe('whole')
   })
 
-  it('ステージの ボス: 5字それぞれを、えらぶ → 見て書く → 見ないで書く の順に15問', () => {
-    for (const stage of [ALL_STAGES[0], ALL_STAGES[15], ALL_STAGES[40]]) {
-      const boss = stageBoss(stage)
-      const questions = buildBoss(boss.kanji.map(getKanji), KANJI, boss.plan, seededRng(stage.number))
+  it('エリアの ボス: えらぶ → 見て書く → 見ないで書く の順に15問。同じ字は2回出ない', () => {
+    for (const source of [AREAS[0].bosses[0], AREAS[0].bosses[1], AREAS[5].bosses[1]]) {
+      const boss = areaBoss(source, AREAS[source.areaIndex])
+      const questions = buildBoss(boss.kanji.map(getKanji), KANJI, boss.plan, seededRng(source.number))
       expect(questions).toHaveLength(15)
       const select = questions.slice(0, 5)
       const model = questions.slice(5, 10)
@@ -52,8 +69,38 @@ describe('ボスの問題', () => {
       expect(select.every((q) => q.type !== 'write')).toBe(true)
       expect(model.every((q) => q.type === 'write' && q.model)).toBe(true)
       expect(blind.every((q) => q.type === 'write' && !q.model && q.mode === 'whole')).toBe(true)
-      for (const round of [select, model, blind]) expect(round.map((q) => q.kanji.char).sort()).toEqual([...stage.kanji].sort())
+      const chars = questions.map((q) => q.kanji.char)
+      expect(new Set(chars).size).toBe(15)
+      expect(chars.every((c) => source.kanji.includes(c))).toBe(true)
     }
+  })
+
+  it('苦手な字(まちがえた回数が のこっている字)は、かならず出る。回数が多い字から先に えらぶ', () => {
+    const pool = AREAS[0].bosses[1].kanji.map(getKanji)
+    const weak = ['一', '山', '川', '火', '水']
+    const misses = Object.fromEntries(weak.map((char, i) => [char, i + 1]))
+    for (const seed of [1, 2, 3, 4, 5]) {
+      const chars = buildBoss(pool, KANJI, AREA_BOSS_PLAN, seededRng(seed), misses).map((q) => q.kanji.char)
+      expect(new Set(chars).size).toBe(15)
+      for (const char of weak) expect(chars, `seed ${seed}`).toContain(char)
+    }
+    // 苦手な字が 問題の数より多いときは、回数が多い字が のこる
+    const many = Object.fromEntries(pool.slice(0, 20).map((k, i) => [k.char, i + 1]))
+    const picked = pickForBoss(pool, 15, many, seededRng()).map((k) => k.char)
+    expect([...picked].sort()).toEqual(pool.slice(5, 20).map((k) => k.char).sort())
+    // 苦手な字がなければ、ぜんぶの字から まぜて えらぶ(回によって 出る字が変わる)
+    const a = pickForBoss(pool, 15, {}, seededRng(1)).map((k) => k.char)
+    const b = pickForBoss(pool, 15, {}, seededRng(2)).map((k) => k.char)
+    expect([...a].sort()).not.toEqual([...b].sort())
+    // 苦手な字は はじめに かたまらず、まざって出る
+    const order = [1, 2, 3, 4, 5, 6].map((seed) => pickForBoss(pool, 15, misses, seededRng(seed)).findIndex((k) => weak.includes(k.char)))
+    expect(new Set(order).size).toBeGreaterThan(1)
+  })
+
+  it('字が問題の数より少ないときだけ、ひとまわりしてから くり返す', () => {
+    const five = AREAS[0].stages[0].kanji.map(getKanji)
+    const chars = buildBoss(five, KANJI, AREA_BOSS_PLAN, seededRng()).map((q) => q.kanji.char)
+    for (const round of [chars.slice(0, 5), chars.slice(5, 10), chars.slice(10)]) expect(new Set(round).size).toBe(5)
   })
 
   it('えらぶ問題は4種類(つくり・ぜんぶの部位・なりたち・絵)が まんべんなく出る', () => {
@@ -71,15 +118,20 @@ describe('ボスの問題', () => {
     expect(exam.kanji).toHaveLength(80)
     const questions = buildBoss(exam.kanji.map(getKanji), KANJI, exam.plan, seededRng())
     expect(questions).toHaveLength(20)
-    expect(new Set(questions.slice(0, 10).map((q) => q.kanji.char)).size).toBe(10)
-    expect(buildBoss([], KANJI, STAGE_BOSS_PLAN)).toEqual([])
+    expect(new Set(questions.map((q) => q.kanji.char)).size).toBe(20)
+    expect(buildBoss([], KANJI, AREA_BOSS_PLAN)).toEqual([])
   })
 
-  it('ボスの名前は、ステージごとに順番に変わる', () => {
+  it('ボスの名前は、ボスごとに順番に変わる。中ボスは そこまでの字、ラスボスは エリアの字ぜんぶ', () => {
     expect(bossName(1)).toBe('とめきち')
     expect(bossName(9)).toBe('とめきち')
     expect(bossName(2)).not.toBe(bossName(1))
-    expect(stageBoss(ALL_STAGES[1])).toMatchObject({ id: 's2', kind: 'stage', title: 'ステージ 2 の ボス', seed: 2 })
+    const [mid, last] = AREAS[0].bosses
+    expect(areaBoss(mid, AREAS[0])).toMatchObject({ id: 'a1-mid', kind: 'mid', title: 'はじまりの もりの ちゅうボス', name: 'とめきち', seed: 1, triesPerDay: 3 })
+    expect(areaBoss(mid, AREAS[0]).kanji).toHaveLength(20)
+    expect(areaBoss(last, AREAS[0])).toMatchObject({ id: 'a1-last', kind: 'last', title: 'はじまりの もりの ラスボス', name: 'はねぼう', seed: 2 })
+    expect(areaBoss(last, AREAS[0]).kanji).toHaveLength(40)
+    expect(areaBoss(mid, AREAS[0], { plan: { select: 5, model: 2, blind: 3 }, triesPerDay: 5 })).toMatchObject({ triesPerDay: 5, plan: { select: 5 } })
   })
 })
 
@@ -129,6 +181,64 @@ describe('ホームの しま', () => {
       if (item.kind === 'deco') expect(DECO_SPOTS[itemName(item.id)]).toBeDefined()
     }
     expect(skyPreset('nai')).toBe(SKY_PRESETS.asa)
+  })
+})
+
+describe('かざり を すきな場所に置く', () => {
+  const far = (a: { x: number; z: number }, b: { x: number; z: number }) => Math.hypot(a.x - b.x, a.z - b.z)
+
+  it('うごかしていない かざり は はじめの場所。にじ は うごかせない', () => {
+    expect(decoSpot('hana', {})).toEqual(DECO_SPOTS.hana)
+    expect(decoSpot('hana', { hana: { x: 5, z: 1 } })).toEqual({ x: 5, z: 1 })
+    expect(isMovableDeco('hana')).toBe(true)
+    expect(isMovableDeco('niji')).toBe(false)
+    expect(isMovableDeco('nai')).toBe(false)
+    expect(decoSpot('niji', { niji: { x: 5, z: 1 } })).toEqual(DECO_SPOTS.niji)
+    expect(decoSpot('nai', {})).toBeUndefined()
+  })
+
+  it('置ける場所は そのまま。しまの外・広場・池・ほかの かざり の上は、近くの 置ける場所に ずれる', () => {
+    expect(settleDeco({ x: 5, z: -3 }, [])).toEqual({ x: 5, z: -3 })
+    // しまの外
+    expect(Math.hypot(...Object.values(settleDeco({ x: 40, z: 0 }, [])))).toBeLessThan(ISLAND_RADIUS)
+    // すみまるの いる まんなか
+    expect(Math.hypot(...Object.values(settleDeco({ x: 0.2, z: 0.1 }, [])))).toBeGreaterThan(2.4)
+    expect(Math.hypot(...Object.values(settleDeco({ x: 0, z: 0 }, [])))).toBeGreaterThan(2.4)
+    // 池の中
+    expect(far(settleDeco({ x: POND.x, z: POND.z + 0.2 }, []), POND)).toBeGreaterThan(POND.radius)
+    // ほかの かざり の上
+    const other = { x: 5, z: -3 }
+    expect(far(settleDeco({ x: 5.1, z: -3 }, [other]), other)).toBeGreaterThan(1.3)
+    // 数でない値は、まんなか あつかいにして 置ける場所へ
+    const fixed = settleDeco({ x: Number.NaN, z: Number.POSITIVE_INFINITY }, [])
+    expect(Number.isFinite(fixed.x) && Number.isFinite(fixed.z)).toBe(true)
+  })
+
+  it('どこを指しても、しまの中の 置ける場所に おさまる', () => {
+    const others = [DECO_SPOTS.bench, DECO_SPOTS.tent, DECO_SPOTS.torii]
+    for (let x = -12; x <= 12; x += 1.5) {
+      for (let z = -12; z <= 12; z += 1.5) {
+        const spot = settleDeco({ x, z }, others)
+        expect(Math.hypot(spot.x, spot.z)).toBeLessThanOrEqual(ISLAND_RADIUS - 0.9 + 0.001)
+        expect(Math.hypot(spot.x, spot.z)).toBeGreaterThan(2.4)
+        expect(far(spot, POND)).toBeGreaterThan(POND.radius)
+      }
+    }
+  })
+
+  it('かざり の向きは 45度きざみ。おかしな値は 0 あつかい', () => {
+    expect(decoAngle('hana', {})).toBe(0)
+    expect(decoAngle('hana', { hana: 2 })).toBeCloseTo(Math.PI / 2)
+    expect(decoAngle('hana', { hana: 8 })).toBe(0)
+    expect(decoAngle('hana', { hana: -1 })).toBeCloseTo((Math.PI * 7) / 4)
+    expect(decoAngle('hana', { hana: Number.NaN })).toBe(0)
+  })
+
+  it('木は かざり と重なると 少し よける。はなれていれば そのまま', () => {
+    const tree = { x: 5, z: 0 }
+    expect(yieldToDecos(tree, [{ x: -5, z: 0 }])).toEqual(tree)
+    expect(far(yieldToDecos(tree, [{ x: 5.2, z: 0 }]), { x: 5.2, z: 0 })).toBeGreaterThan(1.2)
+    expect(yieldToDecos(tree, [])).toEqual(tree)
   })
 })
 

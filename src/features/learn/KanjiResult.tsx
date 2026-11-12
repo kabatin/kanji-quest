@@ -1,7 +1,8 @@
+import { useEffect } from 'react'
 import { Burst } from '../../components/Burst'
 import { KanjiGlyph, type GlyphLayer } from '../../components/KanjiGlyph'
 import { KText } from '../../components/KText'
-import { Stamps } from '../../components/Stamps'
+import { STAMP_FIRST_MS, STAMP_GAP_MS, Stamps } from '../../components/Stamps'
 import { getNarration } from '../../data/narration'
 import { getPart } from '../../data/parts'
 import type { Kanji } from '../../data/schema'
@@ -11,6 +12,7 @@ import { voiceId } from '../../lib/voice'
 import { KANJI } from '../../data/kanji'
 import { PARTS } from '../../data/parts'
 import { newlyCompleted } from '../../lib/partQuest'
+import type { StampKind } from '../../lib/rewards'
 import { useLearnedSet } from '../../lib/useKanjiText'
 import { useProgress, type LearnGain, type WriteGain } from '../../store/progress'
 import { Nakama } from '../nakama/Nakama'
@@ -39,8 +41,17 @@ function resultLayers(kanji: Kanji): GlyphLayer[] {
 
 /** 学びおえた画面: 漢字、はんこ、もらえたもの、なかま、つぎの行き先。 */
 export function KanjiResult({ kanji, learnGain, writeGain, onOpen, onWrite, onStory, next }: Props) {
-  const { say } = useFeedback()
+  const { say, play } = useFeedback()
   const mask = useProgress((s) => s.stamps[kanji.char])
+  // いま もらったばかりの はんこ(まなぶ・かく)。順番に ぺたん と おす
+  const learnNew = learnGain.isNew
+  const writeNew = writeGain?.isNew ?? false
+  const fresh: readonly StampKind[] = [...(learnNew ? (['learn'] as const) : []), ...(writeNew ? (['write'] as const) : [])]
+  const freshCount = fresh.length
+  useEffect(() => {
+    const timers = Array.from({ length: freshCount }, (_, i) => setTimeout(() => play('stamp'), STAMP_FIRST_MS + i * STAMP_GAP_MS))
+    return () => timers.forEach(clearTimeout)
+  }, [freshCount, play])
   const xp = learnGain.xp + (writeGain?.xp ?? 0)
   const coins = learnGain.coins + (writeGain?.coins ?? 0)
   const levelAfter = writeGain?.levelAfter ?? learnGain.levelAfter
@@ -50,14 +61,19 @@ export function KanjiResult({ kanji, learnGain, writeGain, onOpen, onWrite, onSt
   const completed = learnGain.isNew ? newlyCompleted(kanji.char, PARTS, KANJI, learnedSet) : []
 
   return (
-    <div className="result">
+    <div className="result" data-new={learnGain.isNew}>
       {(learnGain.isNew || leveledUp) && <Burst />}
       <div className="result__main">
         <button type="button" className="result__kanji" onClick={() => say(voiceId.word(kanji.char), kanji.yomi)} aria-label={`${kanji.yomi} を きく`}>
+          {learnGain.isNew && (
+            <span className="result__new">
+              <KText text="{新|あたら}しく おぼえた！" />
+            </span>
+          )}
           <KanjiGlyph layers={resultLayers(kanji)} label={kanji.char} />
           <span className="result__yomi">🔊 {kanji.yomi}</span>
         </button>
-        <Stamps mask={mask} withLabel className="result__stamps" />
+        <Stamps mask={mask} withLabel className="result__stamps" fresh={fresh} />
         <button type="button" className="result__explain" onClick={onStory} aria-label="ものがたり を もういちど みる">
           <span aria-hidden="true">▶</span>
           <span>

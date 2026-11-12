@@ -1,16 +1,18 @@
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App'
+import { POKE_LINE_MS, POKE_LINES } from './features/home/pokeLines'
 import { ALL_STAGES, AREAS } from './data/areas'
 import { getKanji, kanjiOfGrade } from './data/kanji'
 import { fullGlyph, getStrokes } from './data/strokes'
-import { leafParts } from './lib/boss'
+import { hitLabel, leafParts } from './lib/boss'
 import { dayKey } from './lib/date'
 import { levelInfo } from './lib/level'
 import { hasStamp } from './lib/rewards'
-import { examId, stagesOfGrade } from './lib/stages'
+import { bossesOfGrade, examId, stagesOfGrade } from './lib/stages'
 import { bestKey, DEFAULT_QUESTION_COUNT } from './lib/score'
+import { trackFor } from './nav'
 import { useProgress } from './store/progress'
 
 const WAIT = { timeout: 4000 }
@@ -185,6 +187,111 @@ describe('ホーム', () => {
   })
 })
 
+describe('えんしゅつ', () => {
+  it('すみまるを つつくと ひとこと が順番に かわり、少しすると もとにもどる', async () => {
+    alreadyCheckedIn()
+    const { container } = render(<App />)
+    const bubble = () => container.querySelector('.home__bubble')
+    const canvas = container.querySelector('.island__canvas') as HTMLCanvasElement
+    expect(bubble()).toHaveTextContent('いっしょに かんじの もりを そだてよう！')
+    fireEvent.pointerDown(canvas)
+    expect(bubble()).toHaveTextContent(POKE_LINES[0])
+    expect(bubble()).toHaveClass('is-poked')
+    fireEvent.pointerDown(canvas)
+    expect(bubble()).toHaveTextContent(POKE_LINES[1])
+    await waitFor(() => expect(bubble()).toHaveTextContent('いっしょに かんじの もりを そだてよう！'), { timeout: POKE_LINE_MS + 2000 })
+    expect(bubble()).not.toHaveClass('is-poked')
+  }, 10_000)
+
+  it('もようがえ: かざり を持っていないときは、押すと 案内が出て きせかえ へ行ける', async () => {
+    alreadyCheckedIn()
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(screen.getByRole('button', { name: 'もようがえ' }))
+    const guide = screen.getByRole('dialog', { name: 'もようがえ' })
+    expect(guide).toHaveTextContent('まずは「きせかえ」の「かざり」で、かざりを かおう')
+    await user.click(within(guide).getByRole('button', { name: 'とじる' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'もようがえ' }))
+    await user.click(screen.getByRole('button', { name: 'きせかえへ' }))
+    expect(screen.getByRole('heading', { name: 'きせかえ' })).toBeInTheDocument()
+  })
+
+  it('もようがえ: かざり を持っていても、3D の しま が出せない端末では できないと知らせる', async () => {
+    alreadyCheckedIn()
+    useProgress.setState({ owned: [...state().owned, 'deco:bench'] })
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(screen.getByRole('button', { name: 'もようがえ' }))
+    const guide = screen.getByRole('dialog', { name: 'もようがえ' })
+    expect(guide).toHaveTextContent('この たんまつでは、かざりを うごかせないよ')
+    expect(within(guide).queryByRole('button', { name: 'きせかえへ' })).not.toBeInTheDocument()
+  })
+
+  it('はじめて覚えた字は「あたらしく おぼえた！」と出て、もらった はんこ が ぺたん と おされる', async () => {
+    alreadyCheckedIn()
+    const user = userEvent.setup()
+    const { container } = render(<App />)
+    await openFromZukan(user, '山')
+    await user.click(screen.getByRole('button', { name: 'つぎへ' }))
+    writeAllStrokes(container, '山')
+    expect(container.querySelector('.kaku')).toHaveAttribute('data-finished', 'true')
+    await screen.findByRole('region', { name: 'なかま' }, WAIT)
+    expect(container.querySelector('.result')).toHaveAttribute('data-new', 'true')
+    expect(screen.getByText('あたらしく おぼえた！')).toBeInTheDocument()
+    expect([...container.querySelectorAll('.result__stamps .stamp.is-fresh')].map((el) => el.getAttribute('data-stamp'))).toEqual(['learn', 'write'])
+
+    // もう覚えた字を もう一度学んでも、「あたらしく」は出ない
+    await user.click(screen.getByRole('button', { name: 'もどる' }))
+    await user.click(screen.getByRole('button', { name: /^山/ }))
+    await user.click(screen.getByRole('button', { name: 'つぎへ' }))
+    await user.click(screen.getByRole('button', { name: 'あとで' }))
+    expect(container.querySelector('.result')).toHaveAttribute('data-new', 'false')
+    expect(container.querySelectorAll('.result__stamps .stamp.is-fresh')).toHaveLength(0)
+  }, 20_000)
+
+  it('あたらしく覚えた字は、ホームの ずかん に数が出て、ずかん で NEW と出る。見たら きえる', async () => {
+    alreadyCheckedIn()
+    useProgress.setState({ learned: ['一', '山', '川'], zukanSeen: 1 })
+    const user = userEvent.setup()
+    const { container } = render(<App />)
+    expect(screen.getByLabelText('あたらしい かんじ 2こ')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /^ずかん/ }))
+    expect([...container.querySelectorAll('.zukan-card.is-new')].map((el) => el.getAttribute('aria-label'))).toEqual(['山 やま おぼえた あたらしい', '川 かわ おぼえた あたらしい'])
+    expect(state().zukanSeen).toBe(3)
+    await user.click(screen.getByRole('button', { name: '← ホーム' }))
+    expect(screen.queryByLabelText(/^あたらしい かんじ \d+こ$/)).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /^ずかん/ }))
+    expect(container.querySelectorAll('.zukan-card.is-new')).toHaveLength(0)
+  })
+
+  it('画面ごとに 流す曲が決まっていて、学ぶ・ふくしゅう の間は 流さない', () => {
+    expect(trackFor('home')).toBe('home')
+    expect(trackFor('zukan')).toBe('home')
+    expect(trackFor('map')).toBe('adventure')
+    expect(trackFor('challenge')).toBe('adventure')
+    expect(trackFor('boss')).toBe('boss')
+    expect(trackFor('exam')).toBe('boss')
+    expect(trackFor('learn')).toBeUndefined()
+    expect(trackFor('review')).toBeUndefined()
+  })
+
+  it('ボスに つづけて当てると、れんぞくの数が出る', () => {
+    expect(hitLabel(1)).toBe('ヒット！')
+    expect(hitLabel(3)).toBe('3 れんぞく ヒット！')
+  })
+
+  it('せってい で、おんがく を切れる', async () => {
+    alreadyCheckedIn()
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(screen.getByRole('button', { name: 'せってい' }))
+    expect(state().settings.music).toBe(true)
+    await user.click(screen.getByRole('checkbox', { name: 'おんがく' }))
+    expect(state().settings.music).toBe(false)
+  })
+})
+
 describe('まなぶ: ものがたり → かく → けっか', () => {
   it('「つづきから」で最初の字が始まり、書くと はんこ が2つ押されて、次の字へ進める', async () => {
     alreadyCheckedIn()
@@ -292,64 +399,94 @@ describe('まなぶ: くみあわせ', () => {
 })
 
 describe('ぼうけん: ボス', () => {
-  const [s1, s2] = ALL_STAGES
+  const [s1, s2, , s4, s5] = ALL_STAGES
+  const [mid, last] = AREAS[0].bosses
   const BOSS_QUESTIONS = 15
 
-  /** ステージ1の5字を学んだ状態で、ボスの「はじまり」の画面まで行く。 */
+  /** 中ボスまでの20字を学んだ状態で、地図から ボスの「はじまり」の画面まで行く。 */
   async function openBoss(user: User) {
     await user.click(screen.getByRole('button', { name: /^ぼうけん/ }))
-    await user.click(screen.getByRole('button', { name: `ステージ ${s1.number}` }))
-    await user.click(screen.getByRole('button', { name: 'ボスに ちょうせん' }))
+    await user.click(screen.getByRole('button', { name: 'ちゅうボス とめきち' }))
   }
 
-  it('5字学ぶまでは たたかえない。学ぶと ボスの はじまりの画面に行ける', async () => {
-    alreadyCheckedIn()
-    useProgress.setState({ learned: s1.kanji.slice(0, 4) })
-    const user = userEvent.setup()
-    render(<App />)
-    await user.click(screen.getByRole('button', { name: /^ぼうけん/ }))
-    expect(screen.getByRole('button', { name: `ステージ ${s2.number} まだ あかない` })).toBeDisabled()
-    await user.click(screen.getByRole('button', { name: `ステージ ${s1.number}` }))
-    expect(screen.getByText('まなぶと、たたかえるよ', { exact: false })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'ボスに ちょうせん' })).toBeDisabled()
-
-    useProgress.setState({ learned: [...s1.kanji] })
-    await user.click(await screen.findByRole('button', { name: 'ボスに ちょうせん' }))
-    expect(screen.getByRole('heading', { name: `ステージ ${s1.number} の ボス` })).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: 'きょうは あと 3かい' })).toBeInTheDocument()
-    expect(screen.getByText('100てん', { exact: false })).toBeInTheDocument()
-  })
-
-  it('15問を全部まちがえずに とくと 100点で たおせて、次のステージが開く', async () => {
+  it('地図には ステージ8つと 中ボス・ラスボスが ならぶ。ステージは 前の5字を覚えると開く', async () => {
     alreadyCheckedIn()
     useProgress.setState({ learned: [...s1.kanji] })
     const user = userEvent.setup()
     const { container } = render(<App />)
+    await user.click(screen.getByRole('button', { name: /^ぼうけん/ }))
+    expect(container.querySelectorAll('.map-node--stage')).toHaveLength(8)
+    expect(container.querySelectorAll('.map-node--boss')).toHaveLength(2)
+    expect(screen.getByRole('button', { name: 'ちゅうボス とめきち まだ あかない' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'ラスボス はねぼう まだ あかない' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: `ステージ ${s2.number}` })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'ステージ 3 まだ あかない' })).toBeDisabled()
+
+    // 5字おぼえたステージは、ボスが いなければ そのまま次のステージへ進める
+    await user.click(screen.getByRole('button', { name: `ステージ ${s1.number} クリア` }))
+    expect(screen.getByText('5つ ぜんぶ おぼえた！')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'つぎの ステージへ' }))
+    expect(screen.getByRole('heading', { name: `ステージ ${s2.number}` })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'つぎの ステージへ' })).toBeDisabled()
+  })
+
+  it('中ボスまでの20字を学ぶまでは たたかえない。学ぶと ボスの はじまりの画面に行ける', async () => {
+    alreadyCheckedIn()
+    useProgress.setState({ learned: mid.kanji.slice(0, -1) })
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(screen.getByRole('button', { name: /^ぼうけん/ }))
+    expect(screen.getByRole('button', { name: 'ちゅうボス とめきち まだ あかない' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: `ステージ ${s5.number} まだ あかない` })).toBeDisabled()
+    await user.click(screen.getByRole('button', { name: `ステージ ${s4.number}` }))
+    expect(screen.getByText('まなぶと、たたかえるよ', { exact: false })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'ボスに ちょうせん' })).toBeDisabled()
+
+    useProgress.setState({ learned: [...mid.kanji] })
+    expect(screen.getByText('ちゅうボス「とめきち」')).toBeInTheDocument()
+    await user.click(await screen.findByRole('button', { name: 'ボスに ちょうせん' }))
+    expect(screen.getByRole('heading', { name: 'はじまりの もりの ちゅうボス' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'きょうは あと 3かい' })).toBeInTheDocument()
+    expect(screen.getByText('100てん', { exact: false })).toBeInTheDocument()
+    // 中ボスを たおすまでは、次のステージは開かない
+    await user.click(screen.getByRole('button', { name: '← もどる' }))
+    expect(screen.getByRole('button', { name: `ステージ ${s5.number} まだ あかない` })).toBeDisabled()
+  })
+
+  it('15問を全部まちがえずに とくと 100点で たおせて、次のステージが開く。同じ字は2回出ない', async () => {
+    alreadyCheckedIn()
+    useProgress.setState({ learned: [...mid.kanji] })
+    const user = userEvent.setup()
+    const { container } = render(<App />)
     await openBoss(user)
     await user.click(screen.getByRole('button', { name: 'たたかう！' }))
-    expect(state().tries.used[s1.id]).toBe(1)
+    expect(state().tries.used[mid.id]).toBe(1)
     expect(screen.getByRole('progressbar', { name: 'ボスの HP' })).toHaveAttribute('aria-valuenow', String(BOSS_QUESTIONS))
 
+    const asked: string[] = []
     for (let i = 0; i < BOSS_QUESTIONS; i += 1) {
       await screen.findByText(`${i + 1} / ${BOSS_QUESTIONS}`, undefined, WAIT)
+      asked.push(container.querySelector<HTMLElement>('.boss-run')?.dataset.kanji ?? '')
       await solveBossQuestion(user, container)
     }
+    expect(new Set(asked).size).toBe(BOSS_QUESTIONS)
+    expect(asked.every((char) => mid.kanji.includes(char))).toBe(true)
 
     expect(await screen.findByRole('heading', { name: 'とめきちを たおした！' }, WAIT)).toBeInTheDocument()
     expect(screen.getByText('100')).toBeInTheDocument()
-    expect(screen.getByText('けいけんち ＋100')).toBeInTheDocument()
-    expect(state().clears[s1.id]).toBe(dayKey())
+    expect(screen.getByText('けいけんち ＋300')).toBeInTheDocument()
+    expect(state().clears[mid.id]).toBe(dayKey())
 
     await user.click(screen.getByRole('button', { name: 'つぎの ステージへ' }))
-    expect(screen.getByRole('heading', { name: `ステージ ${s2.number}` })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: `ステージ ${s5.number}` })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: '← ぼうけん' }))
-    expect(screen.getByRole('button', { name: `ステージ ${s2.number}` })).toBeEnabled()
-    expect(screen.getByRole('button', { name: `ステージ ${s1.number} クリア` })).toBeEnabled()
+    expect(screen.getByRole('button', { name: `ステージ ${s5.number}` })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'ちゅうボス とめきち たおした' })).toBeEnabled()
   }, 90_000)
 
   it('1問でも まちがえると たおせない。ふくしゅう する字が出て、のこりの回数で もういちど たたかえる', async () => {
     alreadyCheckedIn()
-    useProgress.setState({ learned: [...s1.kanji] })
+    useProgress.setState({ learned: [...mid.kanji] })
     const user = userEvent.setup()
     const { container } = render(<App />)
     await openBoss(user)
@@ -369,7 +506,8 @@ describe('ぼうけん: ボス', () => {
     expect(screen.getByText('87')).toBeInTheDocument()
     expect(state().clears).toEqual({})
     const review = screen.getByRole('region', { name: 'ふくしゅう' })
-    expect(within(review).getAllByRole('button')).toHaveLength(new Set(missed).size)
+    expect(within(review).getAllByRole('button')).toHaveLength(2)
+    expect(missed).toHaveLength(2)
     expect(screen.getByRole('button', { name: /もういちど たたかう/ })).toBeEnabled()
     expect(within(screen.getByRole('button', { name: /もういちど たたかう/ })).getByRole('img', { name: 'きょうは あと 2かい' })).toBeInTheDocument()
 
@@ -379,29 +517,41 @@ describe('ぼうけん: ボス', () => {
 
   it('その日の3回を使いきると、あしたまで たたかえない(れんしゅうは できる)', async () => {
     alreadyCheckedIn()
-    useProgress.setState({ learned: [...s1.kanji], tries: { day: dayKey(), used: { [s1.id]: 3 } } })
+    useProgress.setState({ learned: [...mid.kanji], tries: { day: dayKey(), used: { [mid.id]: 3 } } })
     const user = userEvent.setup()
     render(<App />)
     await openBoss(user)
     expect(screen.getByRole('button', { name: 'あした また ちょうせん' })).toBeDisabled()
     await user.click(screen.getByRole('button', { name: 'れんしゅう する' }))
     expect(screen.getByText(`1 / ${BOSS_QUESTIONS}`)).toBeInTheDocument()
-    expect(state().tries.used[s1.id]).toBe(3)
+    expect(state().tries.used[mid.id]).toBe(3)
     await user.click(screen.getByRole('button', { name: '← やめる' }))
     expect(screen.getByRole('button', { name: 'れんしゅう する' })).toBeInTheDocument()
+  })
+
+  it('ラスボスは エリアの40字を覚えると たたかえて、たおすと 次のエリアへ進める', async () => {
+    alreadyCheckedIn()
+    useProgress.setState({ learned: [...last.kanji], clears: { [mid.id]: 'd' } })
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(screen.getByRole('button', { name: /^ぼうけん/ }))
+    await user.click(screen.getByRole('button', { name: 'ラスボス はねぼう' }))
+    expect(screen.getByRole('heading', { name: 'はじまりの もりの ラスボス' })).toBeInTheDocument()
+    expect(screen.getByText('たおすと', { exact: false })).toHaveTextContent('けいけんち ＋500')
   })
 
   it('そつぎょうしけん は、学年の字を全部学び ボスを全部たおすと開く。チャンスは1日2回', async () => {
     alreadyCheckedIn()
     const stages = stagesOfGrade(AREAS, 1)
-    useProgress.setState({ learned: stages.flatMap((s) => s.kanji), clears: Object.fromEntries(stages.slice(0, -1).map((s) => [s.id, 'd'])) })
+    const bosses = bossesOfGrade(AREAS, 1)
+    useProgress.setState({ learned: stages.flatMap((s) => s.kanji), clears: Object.fromEntries(bosses.slice(0, -1).map((b) => [b.id, 'd'])) })
     const user = userEvent.setup()
     render(<App />)
     await user.click(screen.getByRole('button', { name: /^ぼうけん/ }))
     expect(screen.getByRole('heading', { name: /1ねんせい/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '1ねんせいの そつぎょうしけん まだ あかない' })).toBeDisabled()
 
-    useProgress.setState({ clears: Object.fromEntries(stages.map((s) => [s.id, 'd'])) })
+    useProgress.setState({ clears: Object.fromEntries(bosses.map((b) => [b.id, 'd'])) })
     await user.click(await screen.findByRole('button', { name: '1ねんせいの そつぎょうしけん' }))
     expect(screen.getByRole('heading', { name: '1ねんせいの そつぎょうしけん' })).toBeInTheDocument()
     expect(screen.getByRole('img', { name: 'きょうは あと 2かい' })).toBeInTheDocument()
@@ -410,14 +560,25 @@ describe('ぼうけん: ボス', () => {
     expect(state().tries.used[examId(1)]).toBe(1)
   })
 
-  it('ホームの「つづきから」は、ボス → そつぎょうしけん と案内する', () => {
+  it('ホームの「つづきから」は、次のステージ → ボス → そつぎょうしけん と案内する', async () => {
     alreadyCheckedIn()
     useProgress.setState({ learned: [...s1.kanji] })
-    const { unmount } = render(<App />)
-    expect(screen.getByRole('button', { name: /ボスに ちょうせん/ })).toBeInTheDocument()
-    unmount()
+    const first = render(<App />)
+    // ステージ1の あとに ボスは いないので、ステージ2の字へ
+    expect(screen.getByRole('button', { name: /つづきから まなぶ/ })).toHaveTextContent(`ステージ ${s2.number}`)
+    first.unmount()
+
+    useProgress.setState({ learned: [...mid.kanji] })
+    const user = userEvent.setup()
+    const second = render(<App />)
+    const cta = screen.getByRole('button', { name: /ボスに ちょうせん/ })
+    expect(cta).toHaveTextContent('はじまりの もりの ちゅうボス')
+    await user.click(cta)
+    expect(screen.getByRole('heading', { name: 'はじまりの もりの ちゅうボス' })).toBeInTheDocument()
+    second.unmount()
+
     const stages = stagesOfGrade(AREAS, 1)
-    useProgress.setState({ learned: stages.flatMap((s) => s.kanji), clears: Object.fromEntries(stages.map((s) => [s.id, 'd'])), seenLevel: 99 })
+    useProgress.setState({ learned: stages.flatMap((s) => s.kanji), clears: Object.fromEntries(bossesOfGrade(AREAS, 1).map((b) => [b.id, 'd'])), seenLevel: 99 })
     render(<App />)
     expect(screen.getByRole('button', { name: /そつぎょうしけんへ/ })).toBeInTheDocument()
   })
@@ -509,6 +670,7 @@ describe('パーツずかん・きせかえ・せってい', () => {
     const hana = container.querySelector('button[data-item="deco:hana"]') as HTMLButtonElement
     await user.click(hana)
     expect(hana).toHaveTextContent('おいてある')
+    expect(screen.getByText(/もようがえ」で すきな ところに おけるよ/)).toBeInTheDocument()
     expect(state().owned).toContain('deco:hana')
     expect(screen.getByLabelText('コイン 20まい')).toBeInTheDocument()
 

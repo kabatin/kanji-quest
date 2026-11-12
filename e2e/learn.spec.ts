@@ -83,7 +83,7 @@ test('どの画面もタブレットの画面内に収まり、ページ全体�
   expect(await overflow(page)).toEqual(FITS)
 
   await page.getByRole('button', { name: /^ぼうけん/ }).click()
-  await expect(page.locator('.map-node')).toHaveCount(8)
+  await expect(page.locator('.map-node')).toHaveCount(10)
   expect(await overflow(page)).toEqual(FITS)
   await page.locator('.map-node.is-open').first().click()
   await expect(page.locator('.stage-card')).toHaveCount(5)

@@ -9,8 +9,22 @@ import { dailyMissions, EMPTY_COUNTERS, isMissionDone, MISSION_POOL, missionProg
 import { bossScore, comboBonus, hasStamp, loginBonusFor, quizCoins, quizXp, rankOf, stampCount, STAMPS, type QuizSummary } from './rewards'
 import { bestKey, formatTime, isBetter, questionPoints } from './score'
 import { buyState, canBuy, COLLECTIBLE_TOTAL, collectedCount, DEFAULT_OWNED, findItem, itemName, ownedDecos, SHOP_ITEMS } from './shop'
-import { examId, findStage, isExamUnlocked, isStageUnlocked, nextStep, STAGE_SIZE, stagesOfGrade, triesLeft } from './stages'
-import { judgeStroke, matchStroke, pathLength, resample, type Point } from './strokeMatch'
+import {
+  bossAfter,
+  bossesOfGrade,
+  examId,
+  findBoss,
+  findStage,
+  isBossUnlocked,
+  isExamUnlocked,
+  isStageUnlocked,
+  migrateClears,
+  nextStep,
+  STAGE_SIZE,
+  stagesOfGrade,
+  triesLeft,
+} from './stages'
+import { isTooLong, judgeStroke, matchStroke, pathLength, resample, type Point } from './strokeMatch'
 
 const summary = (patch: Partial<QuizSummary>): QuizSummary => ({
   score: 50,
@@ -89,12 +103,49 @@ describe('stages', () => {
     expect(first).toEqual([...first].sort((a, b) => a - b))
   })
 
-  it('エリアの最初はいつでも遊べて、あとは前のステージをクリアすると開く', () => {
+  it('エリアの最初はいつでも遊べて、あとは前のステージの字を全部覚えると開く', () => {
     const [s1, s2] = AREAS[0].stages
-    expect(isStageUnlocked(s1, AREAS, {})).toBe(true)
-    expect(isStageUnlocked(s2, AREAS, {})).toBe(false)
-    expect(isStageUnlocked(s2, AREAS, { [s1.id]: '2026-11-11' })).toBe(true)
-    expect(isStageUnlocked(AREAS[3].stages[0], AREAS, {})).toBe(true)
+    expect(isStageUnlocked(s1, AREAS, [], {})).toBe(true)
+    expect(isStageUnlocked(s2, AREAS, s1.kanji.slice(1), {})).toBe(false)
+    expect(isStageUnlocked(s2, AREAS, s1.kanji, {})).toBe(true)
+    expect(isStageUnlocked(AREAS[3].stages[0], AREAS, [], {})).toBe(true)
+  })
+
+  it('エリアには まんなかに 中ボス、さいごに ラスボスが いる', () => {
+    const [area] = AREAS
+    expect(AREAS.every((a) => a.bosses.length === 2)).toBe(true)
+    const [mid, last] = area.bosses
+    expect(mid).toMatchObject({ id: 'a1-mid', spot: 'mid', number: 1, afterStage: 4, areaIndex: 0, grade: 1 })
+    expect(last).toMatchObject({ id: 'a1-last', spot: 'last', number: 2, afterStage: 8 })
+    // 中ボスは そこまでに出た 20字、ラスボスは エリアの 40字ぜんぶ から出る
+    expect(mid.kanji).toEqual(area.stages.slice(0, 4).flatMap((s) => s.kanji))
+    expect(last.kanji).toEqual(area.stages.flatMap((s) => s.kanji))
+    expect(AREAS[1].bosses.map((b) => b.number)).toEqual([3, 4])
+    expect(bossAfter(area.stages[3], AREAS)).toBe(mid)
+    expect(bossAfter(area.stages[7], AREAS)).toBe(last)
+    expect(bossAfter(area.stages[0], AREAS)).toBeUndefined()
+    expect(findBoss(AREAS, 'a2-last').areaIndex).toBe(1)
+    expect(() => findBoss(AREAS, 'nai')).toThrow('ボスが見つかりません')
+  })
+
+  it('ボスは 出る字を全部覚えると たたかえて、中ボスを たおすと 次のステージが開く', () => {
+    const [area] = AREAS
+    const [mid, last] = area.bosses
+    expect(isBossUnlocked(mid, mid.kanji.slice(1))).toBe(false)
+    expect(isBossUnlocked(mid, mid.kanji)).toBe(true)
+    expect(isBossUnlocked(last, mid.kanji)).toBe(false)
+    const s5 = area.stages[4]
+    expect(isStageUnlocked(s5, AREAS, mid.kanji, {})).toBe(false)
+    expect(isStageUnlocked(s5, AREAS, mid.kanji, { [mid.id]: 'd' })).toBe(true)
+  })
+
+  it('ステージごとの ボスの記録は、そこまで全部クリアしていた ボスだけ たおしたことにする', () => {
+    const stage = (n: number) => [`s${n}`, `d${n}`] as const
+    const old = Object.fromEntries([...[1, 2, 3, 4, 5, 6].map(stage), ...[9, 10, 12].map(stage), ['exam-g1', 'e']])
+    expect(migrateClears(old, AREAS)).toEqual({ 'a1-mid': 'd4', 'exam-g1': 'e' })
+    expect(migrateClears({}, AREAS)).toEqual({})
+    // もう新しい形の記録は、そのまま
+    expect(migrateClears({ 'a1-mid': 'x', 'a1-last': 'y' }, AREAS)).toEqual({ 'a1-mid': 'x', 'a1-last': 'y' })
   })
 
   it('ステージもエリアも学年ごとに分かれている', () => {
@@ -106,10 +157,11 @@ describe('stages', () => {
   it('そつぎょうしけん は、学年の字を全部学び、ボスを全部たおすと開く', () => {
     const stages = stagesOfGrade(AREAS, 1)
     const learned = stages.flatMap((s) => s.kanji)
-    const clears = Object.fromEntries(stages.map((s) => [s.id, 'd']))
+    const clears = Object.fromEntries(bossesOfGrade(AREAS, 1).map((b) => [b.id, 'd']))
+    expect(Object.keys(clears)).toEqual(['a1-mid', 'a1-last', 'a2-mid', 'a2-last'])
     expect(isExamUnlocked(AREAS, 1, learned, clears)).toBe(true)
     expect(isExamUnlocked(AREAS, 1, learned.slice(1), clears)).toBe(false)
-    expect(isExamUnlocked(AREAS, 1, learned, { ...clears, s3: undefined as unknown as string })).toBe(false)
+    expect(isExamUnlocked(AREAS, 1, learned, { ...clears, 'a2-mid': undefined as unknown as string })).toBe(false)
     expect(isExamUnlocked(AREAS, 2, learned, clears)).toBe(false)
     expect(isExamUnlocked(AREAS, 9, learned, clears)).toBe(false)
   })
@@ -122,17 +174,23 @@ describe('stages', () => {
     expect(triesLeft({ day: '2026-11-11', used: { s1: 5 } }, 's1', 3, '2026-11-11')).toBe(0)
   })
 
-  it('「つづきから」は、まだの字 → ボス → 次のステージ → そつぎょうしけん と進む', () => {
+  it('「つづきから」は、まだの字 → 次のステージ → 中ボス → ラスボス → そつぎょうしけん と進む', () => {
     const s1 = ALL_STAGES[0]
+    const [mid, last] = AREAS[0].bosses
     expect(nextStep(AREAS, [], {})).toEqual({ kind: 'learn', stage: s1, char: s1.kanji[0] })
     expect(nextStep(AREAS, s1.kanji.slice(0, 2), {})).toEqual({ kind: 'learn', stage: s1, char: s1.kanji[2] })
-    expect(nextStep(AREAS, s1.kanji, {})).toEqual({ kind: 'boss', stage: s1 })
-    expect(nextStep(AREAS, s1.kanji, { [s1.id]: 'd' })).toMatchObject({ kind: 'learn', stage: ALL_STAGES[1] })
-    const grade1 = Object.fromEntries(stagesOfGrade(AREAS, 1).map((s) => [s.id, 'd']))
-    expect(nextStep(AREAS, [], grade1)).toEqual({ kind: 'exam', grade: 1, areaIndex: 1 })
-    expect(nextStep(AREAS, [], { ...grade1, [examId(1)]: 'd' })).toMatchObject({ kind: 'learn', stage: ALL_STAGES[16] })
-    const allCleared = Object.fromEntries([...ALL_STAGES.map((s) => s.id), examId(1), examId(2)].map((id) => [id, 'd']))
-    expect(nextStep(AREAS, [], allCleared)).toEqual({ kind: 'done' })
+    // ステージ1の あとには ボスが いないので、そのまま ステージ2へ
+    expect(nextStep(AREAS, s1.kanji, {})).toMatchObject({ kind: 'learn', stage: ALL_STAGES[1] })
+    expect(nextStep(AREAS, mid.kanji, {})).toEqual({ kind: 'boss', boss: mid })
+    expect(nextStep(AREAS, mid.kanji, { [mid.id]: 'd' })).toMatchObject({ kind: 'learn', stage: ALL_STAGES[4] })
+    expect(nextStep(AREAS, last.kanji, { [mid.id]: 'd' })).toEqual({ kind: 'boss', boss: last })
+    const grade1Kanji = stagesOfGrade(AREAS, 1).flatMap((s) => s.kanji)
+    const grade1 = Object.fromEntries(bossesOfGrade(AREAS, 1).map((b) => [b.id, 'd']))
+    expect(nextStep(AREAS, grade1Kanji, grade1)).toEqual({ kind: 'exam', grade: 1, areaIndex: 1 })
+    expect(nextStep(AREAS, grade1Kanji, { ...grade1, [examId(1)]: 'd' })).toMatchObject({ kind: 'learn', stage: ALL_STAGES[16] })
+    const everything = ALL_STAGES.flatMap((s) => s.kanji)
+    const allCleared = Object.fromEntries([...AREAS.flatMap((a) => a.bosses.map((b) => b.id)), examId(1), examId(2)].map((id) => [id, 'd']))
+    expect(nextStep(AREAS, everything, allCleared)).toEqual({ kind: 'done' })
   })
 
   it('存在しないステージはエラーになる', () => {
@@ -277,6 +335,34 @@ describe('strokeMatch', () => {
     expect(matchStroke(stroke('木', 1), target)).toBe(false)
     expect(matchStroke(target.slice(0, 2), target)).toBe(false)
     expect(matchStroke([target[0]], target)).toBe(false)
+  })
+
+  it('書きはじめ と 書きおわり だけ合わせて、とちゅうで ぐるぐる 書きなぐった線は不合格', () => {
+    const target = stroke('木', 0)
+    const [start, end] = [target[0], target[target.length - 1]]
+    // お手本の通り道を 3回 行ったり来たりしてから、書きおわり で はなす
+    const back = [...target].reverse()
+    const scribble = [...target, ...back, ...target, ...back, ...target]
+    expect(scribble[0]).toEqual(start)
+    expect(scribble[scribble.length - 1]).toEqual(end)
+    expect(isTooLong(scribble, target)).toBe(true)
+    expect(matchStroke(scribble, target)).toBe(false)
+    const targets = getStrokes(fullGlyph('木')).map((s) => s.pts as readonly Point[])
+    expect(judgeStroke(scribble, targets, 0)).not.toBe('ok')
+    // 通り道の上を 小さく ぐるぐる しながら進むと、場所は合っているが 長すぎる
+    const loops = target.flatMap(([x, y]) => [[x, y], [x + 4, y - 6], [x - 4, y - 6], [x - 4, y + 6], [x + 4, y + 6], [x, y]] as Point[])
+    expect(matchStroke(loops, target)).toBe(false)
+    expect(judgeStroke(loops, targets, 0)).toBe('long')
+    // 手が ふるえて 少し長くなった線は、合格のまま
+    const shaky = target.flatMap(([x, y], i) => [[x, y + (i % 2 === 0 ? 2 : -2)], [x + 2, y + (i % 2 === 0 ? -2 : 2)]] as Point[])
+    expect(isTooLong(shaky, target)).toBe(false)
+    expect(matchStroke(shaky, target)).toBe(true)
+  })
+
+  it('どの漢字の画も、お手本どおりに なぞれば 長すぎ にならない', () => {
+    for (const kanji of KANJI) {
+      for (const s of getStrokes(fullGlyph(kanji.char))) expect(matchStroke(s.pts, s.pts), kanji.char).toBe(true)
+    }
   })
 
   it('書き順: 次の画なら ok、あとの画を先に書くと order、どれでもなければ shape', () => {

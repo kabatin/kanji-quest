@@ -1,37 +1,68 @@
 import { TopBar } from '../../components/Hud'
 import { Mascot } from '../../components/Mascot'
 import { AREAS } from '../../data/areas'
+import { bossName, SPOT_LABEL } from '../../lib/boss'
 import { levelInfo, mascotStage } from '../../lib/level'
 import { itemName } from '../../lib/shop'
-import { examId, isCleared, isExamUnlocked, isStageUnlocked } from '../../lib/stages'
+import {
+  examId,
+  isBossUnlocked,
+  isCleared,
+  isExamUnlocked,
+  isStageDone,
+  isStageUnlocked,
+  nextInArea,
+  type Area,
+  type AreaBoss,
+  type Stage,
+} from '../../lib/stages'
 import { useProgress } from '../../store/progress'
 import { BossMonster } from '../boss/BossMonster'
 
-/** ステージの丸を置く場所(%)。左下から右上へ、くねくね進む道になる。 */
-const NODE_SPOTS = [
-  { x: 8, y: 74 },
-  { x: 19, y: 46 },
-  { x: 30, y: 72 },
-  { x: 41, y: 42 },
-  { x: 52, y: 70 },
-  { x: 63, y: 38 },
-  { x: 74, y: 64 },
-  { x: 82, y: 30 },
-] as const
+/** 道の はしから はしまで(%)。そつぎょうしけん が あるエリアは、右に その場所を あけておく。 */
+const PATH_FROM = 6
+const PATH_TO = 92
+const PATH_TO_WITH_EXAM = 79
+/** 道は 下 → 上 → 下 … と くねくね進む。同じ高さが つづいて見えないよう、少しずつ ずらす。 */
+const ROW_LOW = [74, 70, 72, 68, 73, 69] as const
+const ROW_HIGH = [44, 40, 36, 42, 34, 38] as const
 
 /** そつぎょうしけん の場所(学年の さいごの エリアだけ) */
-const EXAM_SPOT = { x: 89, y: 62 } as const
+const EXAM_SPOT = { x: 90, y: 64 } as const
+
+type Spot = { readonly x: number; readonly y: number }
+
+type Node = { readonly kind: 'stage'; readonly stage: Stage } | { readonly kind: 'boss'; readonly boss: AreaBoss }
+
+/** 地図に ならべる順: ステージ → (その あとに いる)ボス。 */
+function nodesOf(area: Area): Node[] {
+  return area.stages.flatMap((stage, i): Node[] => [
+    { kind: 'stage', stage },
+    ...area.bosses.filter((boss) => boss.afterStage === i + 1).map((boss): Node => ({ kind: 'boss', boss })),
+  ])
+}
+
+/** 丸を置く場所。左から右へ、同じ間かくで くねくね ならべる。 */
+function spotsFor(count: number, withExam: boolean): Spot[] {
+  const to = withExam ? PATH_TO_WITH_EXAM : PATH_TO
+  const step = count > 1 ? (to - PATH_FROM) / (count - 1) : 0
+  return Array.from({ length: count }, (_, i) => {
+    const row = i % 2 === 0 ? ROW_LOW : ROW_HIGH
+    return { x: Math.round((PATH_FROM + step * i) * 10) / 10, y: row[Math.floor(i / 2) % row.length] }
+  })
+}
 
 type Props = {
   readonly area: number
   readonly onArea: (area: number) => void
   readonly onStage: (id: string) => void
+  readonly onBoss: (id: string) => void
   readonly onExam: (grade: number) => void
   readonly onBack: () => void
 }
 
-/** ぼうけんの道のり。エリアごとに8つのステージが並び、学年の さいごに そつぎょうしけん がある。 */
-export function MapScreen({ area, onArea, onStage, onExam, onBack }: Props) {
+/** ぼうけんの道のり。エリアごとに ステージが並び、まんなかに 中ボス、さいごに ラスボス。学年の さいごに そつぎょうしけん がある。 */
+export function MapScreen({ area, onArea, onStage, onBoss, onExam, onBack }: Props) {
   const clears = useProgress((s) => s.clears)
   const learned = useProgress((s) => s.learned)
   const xp = useProgress((s) => s.xp)
@@ -41,10 +72,13 @@ export function MapScreen({ area, onArea, onStage, onExam, onBack }: Props) {
   const isLastOfGrade = gradeAreas[gradeAreas.length - 1].index === current.index
   const examOpen = isExamUnlocked(AREAS, current.grade, learned, clears)
   const examCleared = isCleared(clears, examId(current.grade))
-  // すみまるが立つのは、そのエリアで まだクリアしていない最初の(開いている)ステージ
-  const hereId = current.stages.find((s) => !isCleared(clears, s.id) && isStageUnlocked(s, AREAS, clears))?.id
-  const spots = [...NODE_SPOTS.slice(0, current.stages.length), ...(isLastOfGrade ? [EXAM_SPOT] : [])]
-  const path = spots.map((spot, i) => `${i === 0 ? 'M' : 'L'}${spot.x} ${spot.y}`).join(' ')
+  // すみまるが立つのは、そのエリアで 次に やる所(まだの字が あるステージか、まっている ボス)
+  const here = nextInArea(current, AREAS, learned, clears)
+  const hereId = here?.kind === 'learn' ? here.stage.id : here?.kind === 'boss' ? here.boss.id : undefined
+  const nodes = nodesOf(current)
+  const spots = spotsFor(nodes.length, isLastOfGrade)
+  const path = [...spots, ...(isLastOfGrade ? [EXAM_SPOT] : [])].map((spot, i) => `${i === 0 ? 'M' : 'L'}${spot.x} ${spot.y}`).join(' ')
+  const mascot = <Mascot stage={mascotStage(levelInfo(xp).level)} hat={itemName(hat)} className="map-node__mascot" />
 
   return (
     <div className="screen map" data-theme={current.theme}>
@@ -73,30 +107,61 @@ export function MapScreen({ area, onArea, onStage, onExam, onBack }: Props) {
         <svg className="map__path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           <path d={path} />
         </svg>
-        {current.stages.map((stage, i) => {
-          const spot = NODE_SPOTS[i]
-          const cleared = isCleared(clears, stage.id)
-          const unlocked = isStageUnlocked(stage, AREAS, clears)
+        {nodes.map((node, i) => {
+          const style = { left: `${spots[i].x}%`, top: `${spots[i].y}%` }
+          if (node.kind === 'boss') {
+            const { boss } = node
+            const cleared = isCleared(clears, boss.id)
+            const unlocked = isBossUnlocked(boss, learned)
+            const state = cleared ? 'cleared' : unlocked ? 'open' : 'locked'
+            const name = bossName(boss.number)
+            return (
+              <button
+                key={boss.id}
+                type="button"
+                className={`map-node map-node--boss is-${state}`}
+                data-spot={boss.spot}
+                style={style}
+                disabled={!unlocked}
+                onClick={() => onBoss(boss.id)}
+                aria-label={`${SPOT_LABEL[boss.spot]} ${name}${state === 'locked' ? ' まだ あかない' : cleared ? ' たおした' : ''}`}
+              >
+                {boss.id === hereId && mascot}
+                <span className="map-node__disc">
+                  <BossMonster seed={boss.number} mood={cleared ? 'down' : 'idle'} label={name} />
+                </span>
+                <span className="map-node__kanji" aria-hidden="true">
+                  {SPOT_LABEL[boss.spot]}
+                </span>
+                <span className="map-node__stars" aria-hidden="true">
+                  {cleared ? 'たおした' : unlocked ? 'ちょうせん！' : `${boss.kanji.length}じ おぼえて あく`}
+                </span>
+              </button>
+            )
+          }
+          const { stage } = node
+          const done = isStageDone(stage, learned)
+          const unlocked = isStageUnlocked(stage, AREAS, learned, clears)
           const learnedHere = stage.kanji.filter((c) => learned.includes(c)).length
-          const state = cleared ? 'cleared' : unlocked ? 'open' : 'locked'
+          const state = done ? 'cleared' : unlocked ? 'open' : 'locked'
           return (
             <button
               key={stage.id}
               type="button"
-              className={`map-node is-${state}`}
-              style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
-              disabled={!unlocked}
+              className={`map-node map-node--stage is-${state}`}
+              style={style}
+              disabled={!unlocked && !done}
               onClick={() => onStage(stage.id)}
-              aria-label={`ステージ ${stage.number}${state === 'locked' ? ' まだ あかない' : cleared ? ' クリア' : ''}`}
+              aria-label={`ステージ ${stage.number}${state === 'locked' ? ' まだ あかない' : done ? ' クリア' : ''}`}
             >
-              {stage.id === hereId && <Mascot stage={mascotStage(levelInfo(xp).level)} hat={itemName(hat)} className="map-node__mascot" />}
+              {stage.id === hereId && mascot}
               <span className="map-node__disc">{state === 'locked' ? '🔒' : stage.number}</span>
               <span className="map-node__kanji" aria-hidden="true">
                 {stage.kanji.join('')}
               </span>
-              {unlocked && (
+              {state !== 'locked' && (
                 <span className="map-node__stars" aria-hidden="true">
-                  {cleared ? 'クリア' : `${learnedHere} / ${stage.kanji.length}`}
+                  {done ? 'クリア' : `${learnedHere} / ${stage.kanji.length}`}
                 </span>
               )}
             </button>

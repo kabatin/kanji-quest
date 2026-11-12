@@ -1,7 +1,7 @@
 import type { GlyphRef, Kanji } from '../data/schema'
 import { fullGlyph } from '../data/strokes'
 import { BOSS_TRIES_PER_DAY, type BossKind } from './rewards'
-import { examId, type Stage } from './stages'
+import { examId, type Area, type AreaBoss } from './stages'
 import { buildErabi, buildQuestion, shuffle, type ErabiQuestion, type KumiQuestion, type Rng } from './quiz'
 
 /** ぜんぶの部位: その漢字を作っている部位を、6枚の中から全部えらぶ */
@@ -73,30 +73,51 @@ export function buildSelect(kanji: Kanji, type: SelectType, all: readonly Kanji[
 /** 問題の数。select = えらぶ / model = 見本を見て書く / blind = 見本なしで書く */
 export type BossPlan = { readonly select: number; readonly model: number; readonly blind: number }
 
-/** ステージの ボス: 5字それぞれを、えらぶ・見て書く・見ないで書く */
-export const STAGE_BOSS_PLAN: BossPlan = { select: 5, model: 5, blind: 5 }
+/** エリアの ボス(中ボス・ラスボス): えらぶ・見て書く・見ないで書く を5問ずつ */
+export const AREA_BOSS_PLAN: BossPlan = { select: 5, model: 5, blind: 5 }
 /** そつぎょうしけん: 学年の漢字から ぬきだして出す */
 export const EXAM_PLAN: BossPlan = { select: 10, model: 5, blind: 5 }
 
-/** kanji の中から count 字えらぶ。足りないときは、もう一度まぜて くり返す。 */
-function take(kanji: readonly Kanji[], count: number, rng: Rng): Kanji[] {
+/**
+ * kanji の中から count 字えらぶ。同じ字が2回出ないように えらび、
+ * 字が足りないときだけ、ひとまわりしてから もう一度まぜて くり返す。
+ */
+export function take(kanji: readonly Kanji[], count: number, rng: Rng): Kanji[] {
   const rounds = Math.ceil(count / Math.max(kanji.length, 1))
   return Array.from({ length: rounds }, () => shuffle(kanji, rng))
     .flat()
     .slice(0, count)
 }
 
+/** 漢字ごとの、まちがえた回数(ふくしゅう・ボス)。多いほど 苦手 */
+export type Misses = Readonly<Record<string, number>>
+
+/**
+ * ボスに出す字を count 字えらぶ。苦手な字(まちがえた回数が多い字)から先に えらび、
+ * のこりは まぜて えらぶ。えらんだ字は まぜて返すので、苦手な字が はじめに かたまらない。
+ */
+export function pickForBoss(kanji: readonly Kanji[], count: number, misses: Misses, rng: Rng): Kanji[] {
+  const weak = shuffle(kanji.filter((k) => (misses[k.char] ?? 0) > 0), rng).sort((a, b) => (misses[b.char] ?? 0) - (misses[a.char] ?? 0))
+  const rest = kanji.filter((k) => (misses[k.char] ?? 0) <= 0)
+  // 字が問題の数より少ないときは、これまでどおり ひとまわりしてから くり返す
+  if (kanji.length < count) return take(kanji, count, rng)
+  return shuffle([...weak, ...shuffle(rest, rng)].slice(0, count), rng)
+}
+
 /**
  * ボスの問題を作る。えらぶ問題 → 見本を見て書く → 見本なしで書く の順に出す。
+ * 出す字は、1回の たたかい を通して かさならないように えらぶ(字が問題の数より少ないときだけ くり返す)。
+ * 苦手な字(misses)が あれば、それを 優先して出す。
  * えらぶ問題は、4つの種類(つくり・ぜんぶの部位・なりたち・絵)が まんべんなく出るように回す。
  */
-export function buildBoss(kanji: readonly Kanji[], all: readonly Kanji[], plan: BossPlan, rng: Rng = Math.random): BossQuestion[] {
+export function buildBoss(kanji: readonly Kanji[], all: readonly Kanji[], plan: BossPlan, rng: Rng = Math.random, misses: Misses = {}): BossQuestion[] {
   if (kanji.length === 0) return []
   const types = shuffle(SELECT_TYPES, rng)
-  const select = take(kanji, plan.select, rng).map((k, i) => buildSelect(k, types[i % types.length], all, rng))
+  const picked = pickForBoss(kanji, plan.select + plan.model + plan.blind, misses, rng)
+  const select = picked.slice(0, plan.select).map((k, i) => buildSelect(k, types[i % types.length], all, rng))
   // 見て書く問題は、つくり だけ と 字ぜんたい を かわりばんこに
-  const model = take(kanji, plan.model, rng).map((k, i) => buildWrite(k, i % 2 === 0 ? 'part' : 'whole', true))
-  const blind = take(kanji, plan.blind, rng).map((k) => buildWrite(k, 'whole', false))
+  const model = picked.slice(plan.select, plan.select + plan.model).map((k, i) => buildWrite(k, i % 2 === 0 ? 'part' : 'whole', true))
+  const blind = picked.slice(plan.select + plan.model).map((k) => buildWrite(k, 'whole', false))
   return [...select, ...model, ...blind]
 }
 
@@ -104,13 +125,16 @@ export function buildBoss(kanji: readonly Kanji[], all: readonly Kanji[], plan: 
 const BOSS_NAMES = ['とめきち', 'はねぼう', 'はらいの', 'てんてん', 'まがりん', 'かすれまる', 'にじみん', 'くろずみ'] as const
 export const EXAM_BOSS_NAME = 'だいまおう すみおう'
 
-export function bossName(stageNumber: number): string {
-  return BOSS_NAMES[(Math.max(stageNumber, 1) - 1) % BOSS_NAMES.length]
+/** ボスの通し番号(1始まり)から名前を決める。 */
+export function bossName(number: number): string {
+  return BOSS_NAMES[(Math.max(number, 1) - 1) % BOSS_NAMES.length]
 }
 
-/** ボス1体ぶんの きまり(ステージの ボス と、学年の そつぎょうしけん) */
+export const SPOT_LABEL = { mid: 'ちゅうボス', last: 'ラスボス' } as const
+
+/** ボス1体ぶんの きまり(エリアの 中ボス・ラスボス と、学年の そつぎょうしけん) */
 export type BossDef = {
-  /** ステージの id、または そつぎょうしけん の id */
+  /** エリアの ボスの id、または そつぎょうしけん の id */
   readonly id: string
   readonly kind: BossKind
   readonly title: string
@@ -124,19 +148,20 @@ export type BossDef = {
   readonly triesPerDay: number
 }
 
-/** ステージの ボスの きまり(おうちの かた が変えられる) */
+/** エリアの ボスの きまり(おうちの かた が変えられる) */
 export type BossRules = { readonly plan: BossPlan; readonly triesPerDay: number }
 
-export const DEFAULT_STAGE_RULES: BossRules = { plan: STAGE_BOSS_PLAN, triesPerDay: BOSS_TRIES_PER_DAY.stage }
+export const DEFAULT_BOSS_RULES: BossRules = { plan: AREA_BOSS_PLAN, triesPerDay: BOSS_TRIES_PER_DAY.mid }
 
-export function stageBoss(stage: Stage, rules: BossRules = DEFAULT_STAGE_RULES): BossDef {
+/** エリアの 中ボス・ラスボス。中ボスは そこまでに出た字、ラスボスは エリアの字ぜんぶ から出題する。 */
+export function areaBoss(boss: AreaBoss, area: Area, rules: BossRules = DEFAULT_BOSS_RULES): BossDef {
   return {
-    id: stage.id,
-    kind: 'stage',
-    title: `ステージ ${stage.number} の ボス`,
-    name: bossName(stage.number),
-    seed: stage.number,
-    kanji: stage.kanji,
+    id: boss.id,
+    kind: boss.spot,
+    title: `${area.name}の ${SPOT_LABEL[boss.spot]}`,
+    name: bossName(boss.number),
+    seed: boss.number,
+    kanji: boss.kanji,
     plan: rules.plan,
     triesPerDay: rules.triesPerDay,
   }
@@ -153,6 +178,11 @@ export function examBoss(grade: number, kanjiList: readonly Kanji[]): BossDef {
     plan: EXAM_PLAN,
     triesPerDay: BOSS_TRIES_PER_DAY.exam,
   }
+}
+
+/** こうげきが当たったときに出す ことば。つづけて当てると、数が出る。 */
+export function hitLabel(streak: number): string {
+  return streak >= 2 ? `${streak} れんぞく ヒット！` : 'ヒット！'
 }
 
 /** ボスの画面の上に出す、問題の くぎり(えらぶ・みて かく・みないで かく) */

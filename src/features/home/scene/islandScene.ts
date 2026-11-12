@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { DECO_SPOTS, forestPlan, groundHeight, skyPreset, type SkyPreset } from './layout'
+import { decoAngle, decoSpot, forestPlan, groundHeight, isMovableDeco, settleDeco, skyPreset, yieldToDecos, type DecoSpots, type DecoTurns, type SkyPreset, type Spot } from './layout'
 import { buildMascot, type Mascot3D } from './mascot3d'
 import { buildBird, buildCloud, buildDeco, buildFarIsland, buildInkstone, buildIsland, buildTree, seeded, WATERFALL } from './props3d'
 
@@ -14,7 +14,14 @@ export type IslandState = {
   readonly hat: string
   /** 置いてある かざり の名前 */
   readonly decos: readonly string[]
+  /** 自分で うごかした かざり の場所 */
+  readonly decoSpots: DecoSpots
+  /** まわした かざり の向き */
+  readonly decoTurns: DecoTurns
 }
+
+/** かざり を置いた結果 */
+export type DecoDrop = { readonly name: string; readonly spot: Spot }
 
 export type IslandScene = {
   readonly update: (state: IslandState) => void
@@ -23,6 +30,16 @@ export type IslandScene = {
   readonly poke: () => void
   /** 指やマウスの位置(-1〜1)。カメラが少しだけ回りこむ */
   readonly look: (x: number, y: number) => void
+  /** もようがえ(かざり を うごかす)を はじめる・おわる。はじめると、カメラが上から見おろす */
+  readonly setEditing: (on: boolean) => void
+  /** 指の場所(画面の -1〜1。上が +1)に いちばん近い かざり を つかむ。つかめたら その名前 */
+  readonly grab: (x: number, y: number) => string | null
+  /** つかんでいる かざり を、指の場所まで うごかす */
+  readonly drag: (x: number, y: number) => void
+  /** つかんでいる かざり を はなす。置いた場所を返す */
+  readonly drop: () => DecoDrop | null
+  /** えらんでいる かざり(わっか の色が変わる)。えらんでいなければ null */
+  readonly select: (name: string | null) => void
   readonly dispose: () => void
 }
 
@@ -32,6 +49,13 @@ const CAMERA_FOV = 34
 const CAMERA_TARGET = new THREE.Vector3(0, -0.5, 0)
 const CAMERA_DISTANCE = 30
 const CAMERA_HEIGHT = 9.5
+/** もようがえ のときは、しまを 上から見おろす */
+const EDIT_CAMERA_DISTANCE = 21
+const EDIT_CAMERA_HEIGHT = 21
+/** 指が かざり から これより はなれていたら、つかまない(画面の たかさの半分 = 1) */
+const GRAB_REACH = 0.22
+/** つかんでいる かざり を うかせる高さ */
+const LIFT = 0.45
 /** すみまるは主役なので、木よりも大きく見せる */
 const MASCOT_SCALE = 1.5
 /** ひらいたとき、カメラが遠くから近づいてくる時間(秒)と、はじめの遠さ */
@@ -199,6 +223,15 @@ export function createIslandScene(canvas: HTMLCanvasElement, initial: IslandStat
   let mascot: Mascot3D | undefined
   let trees = new THREE.Group()
   let decos = new THREE.Group()
+  const decoByName = new Map<string, THREE.Group>()
+  let editing = false
+  /** カメラが もようがえ の見おろしに どれだけ近づいたか(0〜1) */
+  let editMix = 0
+  let held: string | undefined
+  let selected: string | null = null
+  /** うごかせる かざり の、いまの場所(except を のぞく) */
+  const movableSpots = (except?: string): Spot[] =>
+    [...decoByName.entries()].filter(([name]) => name !== except).map(([, deco]) => ({ x: deco.position.x, z: deco.position.z }))
   const spinners: THREE.Object3D[] = []
   const pointer = { x: 0, y: 0, smoothX: 0, smoothY: 0 }
   const startedAt = performance.now()
@@ -248,8 +281,12 @@ export function createIslandScene(canvas: HTMLCanvasElement, initial: IslandStat
     const before = new Map((lastSeenLearned !== undefined && lastSeenLearned < learnedCount ? forestPlan(lastSeenLearned, totalKanji) : []).map((p) => [`${p.x},${p.z}`, p.stage]))
     const compare = lastSeenLearned !== undefined && lastSeenLearned < learnedCount
     const grown: THREE.Vector3[] = []
+    const decoSpots = movableSpots()
     forestPlan(learnedCount, totalKanji).forEach((plan, i) => {
       const tree = buildTree(plan, i)
+      // 木が かざり と重なるときは、木のほうが少し よける
+      const spot = yieldToDecos(plan, decoSpots)
+      tree.position.set(spot.x, tree.position.y, spot.z)
       tree.userData.baseScale = tree.scale.x
       if (compare && before.get(`${plan.x},${plan.z}`) !== plan.stage) {
         tree.userData.pop = true
@@ -283,35 +320,73 @@ export function createIslandScene(canvas: HTMLCanvasElement, initial: IslandStat
   const drops = island.getObjectByName('drops')
   const water = island.getObjectByName('water') as THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial> | undefined
 
-  const applyDecos = (names: readonly string[]) => {
+  const placeDeco = (deco: THREE.Object3D, name: string, spot: Spot, lift = 0) => {
+    deco.position.set(spot.x, (name === 'niji' ? 0 : groundHeight(spot.x, spot.z) - 0.03) + lift, spot.z)
+  }
+
+  const applyDecos = (names: readonly string[], placed: DecoSpots, turns: DecoTurns) => {
     const next = new THREE.Group()
     spinners.length = 0
+    decoByName.clear()
     for (const name of names) {
       const deco = buildDeco(name)
-      const spot = DECO_SPOTS[name]
+      const spot = decoSpot(name, placed)
       if (!deco || !spot) continue
-      deco.position.set(spot.x, name === 'niji' ? 0 : groundHeight(spot.x, spot.z) - 0.03, spot.z)
+      placeDeco(deco, name, spot)
+      deco.rotation.y = decoAngle(name, turns)
       deco.traverse((child) => {
         if (child.name === 'spin') spinners.push(child)
       })
+      if (isMovableDeco(name)) {
+        // もようがえ のときに出る、「うごかせるよ」の わっか
+        const ring = new THREE.Mesh(
+          new THREE.RingGeometry(1.15, 1.38, 40),
+          new THREE.MeshBasicMaterial({ color: '#ffd95a', transparent: true, opacity: 0.9, side: THREE.DoubleSide, depthWrite: false }),
+        )
+        ring.name = 'edit-ring'
+        ring.rotation.x = -Math.PI / 2
+        ring.position.y = 0.08
+        ring.visible = editing
+        deco.add(ring)
+        decoByName.set(name, deco)
+      }
       next.add(deco)
     }
     replace(decos, world, next)
     decos = next
   }
 
+  const raycaster = new THREE.Raycaster()
+  const ground = new THREE.Plane(new THREE.Vector3(0, 1, 0), -0.3)
+  const hitPoint = new THREE.Vector3()
+  const projected = new THREE.Vector3()
+
   const render = () => {
     const t = seconds()
     pointer.smoothX += (pointer.x - pointer.smoothX) * 0.05
     pointer.smoothY += (pointer.y - pointer.smoothY) * 0.05
-    const angle = Math.sin(t * 0.12) * 0.16 + pointer.smoothX * 0.22
+    // もようがえ の間は、カメラも しまも 止めて、上から見おろす(指の場所と かざり が ずれないように)
+    editMix += ((editing ? 1 : 0) - editMix) * (reducedMotion ? 1 : 0.12)
+    const free = 1 - editMix
+    const angle = (Math.sin(t * 0.12) * 0.16 + pointer.smoothX * 0.22) * free
     // ひらいたときは、遠くから すっと近づく
     const intro = reducedMotion ? 0 : (1 - Math.min(t / INTRO_SECONDS, 1)) ** 3
-    const distance = CAMERA_DISTANCE + intro * INTRO_EXTRA_DISTANCE
-    camera.position.set(Math.sin(angle) * distance, CAMERA_HEIGHT + intro * 4 - pointer.smoothY * 1.4, Math.cos(angle) * distance)
+    const distance = (CAMERA_DISTANCE + intro * INTRO_EXTRA_DISTANCE) * free + EDIT_CAMERA_DISTANCE * editMix
+    const height = (CAMERA_HEIGHT + intro * 4 - pointer.smoothY * 1.4) * free + EDIT_CAMERA_HEIGHT * editMix
+    camera.position.set(Math.sin(angle) * distance, height, Math.cos(angle) * distance)
     camera.lookAt(CAMERA_TARGET)
-    world.position.y = Math.sin(t * 0.7) * 0.14
-    world.rotation.z = Math.sin(t * 0.45) * 0.008
+    world.position.y = Math.sin(t * 0.7) * 0.14 * free
+    world.rotation.z = Math.sin(t * 0.45) * 0.008 * free
+    if (editing) {
+      // うごかせる かざり の わっか を、ふわふわ 大きさを変えて目立たせる
+      for (const [name, deco] of decoByName) {
+        const ring = deco.getObjectByName('edit-ring') as THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial> | undefined
+        if (!ring) continue
+        ring.scale.setScalar(name === held ? 1.25 : 1 + Math.sin(t * 4) * 0.08)
+        // えらんでいる かざり の わっか は、朱色にして 見分けやすくする
+        ring.material.color.set(name === selected ? '#ff5a36' : '#ffd95a')
+      }
+    }
     mascot?.look(pointer.smoothX, pointer.smoothY)
     mascot?.animate(t)
     sky?.animate(t)
@@ -368,14 +443,27 @@ export function createIslandScene(canvas: HTMLCanvasElement, initial: IslandStat
   const update = (next: IslandState) => {
     if (next.sky !== state?.sky) applySky(next.sky)
     if (next.mascotStage !== state?.mascotStage || next.hat !== state?.hat) applyMascot(next.mascotStage, next.hat)
-    if (next.learnedCount !== state?.learnedCount || next.totalKanji !== state?.totalKanji) applyTrees(next.learnedCount, next.totalKanji)
-    if (next.decos.join() !== state?.decos.join()) applyDecos(next.decos)
+    // かざり を先に置く。木は かざり を よけて植えるので、かざり が うごいたときも 木を植えなおす
+    const decosChanged =
+      next.decos.join() !== state?.decos.join() ||
+      JSON.stringify(next.decoSpots) !== JSON.stringify(state?.decoSpots) ||
+      JSON.stringify(next.decoTurns) !== JSON.stringify(state?.decoTurns)
+    const treesChanged = next.learnedCount !== state?.learnedCount || next.totalKanji !== state?.totalKanji
+    if (decosChanged) applyDecos(next.decos, next.decoSpots, next.decoTurns)
+    if (treesChanged || decosChanged) applyTrees(next.learnedCount, next.totalKanji)
     state = next
     if (reducedMotion) render()
   }
 
   update(initial)
   start()
+
+  /** 画面の場所(-1〜1)を、しまの地面の場所に直す。 */
+  const groundAt = (x: number, y: number): Spot | null => {
+    raycaster.setFromCamera(new THREE.Vector2(x, y), camera)
+    if (!raycaster.ray.intersectPlane(ground, hitPoint)) return null
+    return { x: hitPoint.x, z: hitPoint.z }
+  }
 
   return {
     update,
@@ -392,6 +480,55 @@ export function createIslandScene(canvas: HTMLCanvasElement, initial: IslandStat
     look: (x, y) => {
       pointer.x = x
       pointer.y = y
+    },
+    select: (name) => {
+      selected = name
+      if (reducedMotion) render()
+    },
+    setEditing: (on) => {
+      editing = on
+      held = undefined
+      if (!on) selected = null
+      for (const deco of decoByName.values()) {
+        const ring = deco.getObjectByName('edit-ring')
+        if (ring) ring.visible = on
+      }
+      if (reducedMotion) render()
+    },
+    grab: (x, y) => {
+      if (!editing) return null
+      camera.updateMatrixWorld()
+      const reach = [...decoByName.entries()]
+        .map(([name, deco]) => {
+          projected.setFromMatrixPosition(deco.matrixWorld).project(camera)
+          // 横長の画面でも、指からの きょり を同じ ものさし で はかる
+          return { name, distance: Math.hypot((projected.x - x) * camera.aspect, projected.y - y) }
+        })
+        .sort((a, b) => a.distance - b.distance)[0]
+      if (!reach || reach.distance > GRAB_REACH) return null
+      held = reach.name
+      selected = reach.name
+      const deco = decoByName.get(held)
+      if (deco) placeDeco(deco, held, { x: deco.position.x, z: deco.position.z }, LIFT)
+      if (reducedMotion) render()
+      return held
+    },
+    drag: (x, y) => {
+      const deco = held ? decoByName.get(held) : undefined
+      const wanted = groundAt(x, y)
+      if (!held || !deco || !wanted) return
+      placeDeco(deco, held, settleDeco(wanted, movableSpots(held)), LIFT)
+      if (reducedMotion) render()
+    },
+    drop: () => {
+      const name = held
+      const deco = name ? decoByName.get(name) : undefined
+      held = undefined
+      if (!name || !deco) return null
+      const spot = { x: deco.position.x, z: deco.position.z }
+      placeDeco(deco, name, spot)
+      if (reducedMotion) render()
+      return { name, spot }
     },
     dispose: () => {
       cancelAnimationFrame(frame)

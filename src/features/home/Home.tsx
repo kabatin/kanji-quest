@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import iconBouken from '../../assets/art/icon-bouken.webp'
 import iconChallenge from '../../assets/art/icon-challenge.webp'
 import iconHanko from '../../assets/art/icon-hanko.webp'
@@ -10,9 +10,10 @@ import { KText } from '../../components/KText'
 import { AREAS } from '../../data/areas'
 import { KANJI } from '../../data/kanji'
 import { PARTS } from '../../data/parts'
+import { SPOT_LABEL } from '../../lib/boss'
 import { levelInfo, mascotStage, nextMascotLevel } from '../../lib/level'
 import { stampCount } from '../../lib/rewards'
-import { COLLECTIBLE_TOTAL, collectedCount, itemName, ownedDecos } from '../../lib/shop'
+import { COLLECTIBLE_TOTAL, collectedCount, findItem, itemName, ownedDecos } from '../../lib/shop'
 import { nextStep, type NextStep } from '../../lib/stages'
 import { useFeedback } from '../../lib/useFeedback'
 import type { Screen } from '../../nav'
@@ -26,6 +27,8 @@ import { IslandCanvas } from './IslandCanvas'
 import { LevelUpModal } from './LevelUpModal'
 import { LoginBonusModal } from './LoginBonusModal'
 import { MissionPanel } from './MissionPanel'
+import { isMovableDeco } from './scene/layout'
+import { POKE_LINE_MS, POKE_LINES } from './pokeLines'
 
 type Props = { readonly onGo: (screen: Screen) => void }
 
@@ -39,15 +42,31 @@ function mascotLine(learnedCount: number, level: number, next: NextStep): string
   return `かんじを ${learnedCount}{字|じ} おぼえたね！`
 }
 
+/** つついた回数と、ひとこと を出しているか。少したつと、もとの ひとこと にもどる。 */
+function usePokeLine(): { readonly line: string | undefined; readonly count: number; readonly poke: () => void } {
+  const [state, setState] = useState({ count: 0, showing: false })
+  useEffect(() => {
+    if (!state.showing) return
+    const timer = setTimeout(() => setState((prev) => ({ ...prev, showing: false })), POKE_LINE_MS)
+    return () => clearTimeout(timer)
+  }, [state])
+  return {
+    line: state.showing ? POKE_LINES[(state.count - 1) % POKE_LINES.length] : undefined,
+    count: state.count,
+    poke: () => setState((prev) => ({ count: prev.count + 1, showing: true })),
+  }
+}
+
 function continueTo(next: NextStep): Screen {
   if (next.kind === 'learn') return { name: 'learn', char: next.char, stageId: next.stage.id }
-  if (next.kind === 'boss') return { name: 'stage', id: next.stage.id }
+  if (next.kind === 'boss') return { name: 'boss', id: next.boss.id }
   if (next.kind === 'exam') return { name: 'map', area: next.areaIndex }
   return { name: 'map', area: 0 }
 }
 
 function areaOf(next: NextStep): number {
-  if (next.kind === 'learn' || next.kind === 'boss') return next.stage.areaIndex
+  if (next.kind === 'learn') return next.stage.areaIndex
+  if (next.kind === 'boss') return next.boss.areaIndex
   return next.kind === 'exam' ? next.areaIndex : 0
 }
 
@@ -58,17 +77,19 @@ type DockButtonProps = {
   readonly tone: 'play' | 'collect'
   /** 受け取れる ごほうび などが あるとき、右上に数を出す */
   readonly badge?: number
+  /** 右上の数が 何の数か(読み上げ用)。省くと「ごほうび」 */
+  readonly badgeLabel?: string
   readonly onClick: () => void
 }
 
-function DockButton({ icon, label, count, tone, badge = 0, onClick }: DockButtonProps) {
+function DockButton({ icon, label, count, tone, badge = 0, badgeLabel = 'ごほうび', onClick }: DockButtonProps) {
   return (
     <button type="button" className={`dock-btn dock-btn--${tone}`} onClick={onClick}>
       <img className="dock-btn__icon" src={icon} alt="" draggable={false} />
       <span className="dock-btn__label">{label}</span>
       {count && <small className="dock-btn__count">{count}</small>}
       {badge > 0 && (
-        <span className="dock-btn__badge" aria-label={`ごほうび ${badge}こ`}>
+        <span className="dock-btn__badge" aria-label={`${badgeLabel} ${badge}こ`}>
           {badge}
         </span>
       )}
@@ -85,6 +106,43 @@ function DockGroup({ title, tone, children }: { readonly title: string; readonly
   )
 }
 
+/** buy = まだ うごかせる かざり を持っていない / no3d = この端末では しま を 3D で出せない */
+type EditGuideKind = 'buy' | 'no3d'
+
+type EditGuideProps = { readonly kind: EditGuideKind; readonly onClose: () => void; readonly onShop: () => void }
+
+/** もようがえ が まだ できないときの 案内。 */
+function EditGuide({ kind, onClose, onShop }: EditGuideProps) {
+  return (
+    <div className="modal" role="dialog" aria-modal="true" aria-label="もようがえ">
+      <div className="modal__panel edit-guide">
+        <p className="edit-guide__art" aria-hidden="true">
+          {kind === 'buy' ? '🌷🪑🍄' : '🏝️'}
+        </p>
+        <h2>もようがえ</h2>
+        {kind === 'buy' ? (
+          <>
+            <p className="modal__lead">
+              <KText text="しまの かざりを、ゆびで ひっぱって すきな ところに おけるよ" />
+            </p>
+            <p className="edit-guide__how">
+              <KText text="まずは「きせかえ」の「かざり」で、かざりを {買|か}おう" />
+            </p>
+            <button type="button" className="btn btn--primary btn--big" onClick={onShop}>
+              きせかえへ
+            </button>
+          </>
+        ) : (
+          <p className="modal__lead">ごめんね。この たんまつでは、かざりを うごかせないよ</p>
+        )}
+        <button type="button" className="btn" onClick={onClose}>
+          とじる
+        </button>
+      </div>
+    </div>
+  )
+}
+
 /** マイページ: 空にうかぶ しま と すみまる、つづきから、きょうのミッション、各画面への入り口。 */
 export function Home({ onGo }: Props) {
   const learned = useProgress((s) => s.learned)
@@ -93,8 +151,24 @@ export function Home({ onGo }: Props) {
   const xp = useProgress((s) => s.xp)
   const owned = useProgress((s) => s.owned)
   const equipped = useProgress((s) => s.equipped)
+  const decoSpots = useProgress((s) => s.decoSpots)
+  const zukanSeen = useProgress((s) => s.zukanSeen)
+  const placeDeco = useProgress((s) => s.placeDeco)
+  const decoTurns = useProgress((s) => s.decoTurns)
+  const decoStored = useProgress((s) => s.decoStored)
+  const turnDeco = useProgress((s) => s.turnDeco)
+  const storeDeco = useProgress((s) => s.storeDeco)
+  /** もようがえ で えらんでいる かざり(さいごに つかんだもの) */
+  const [picked, setPicked] = useState<string | null>(null)
   const checkIn = useProgress((s) => s.checkIn)
+  // もようがえ: しまの かざり を指で うごかす。3D の しま が出ていて、うごかせる かざり を持っているときだけ できる。
+  // できないときも ボタンは出しておき、押したら「どうすれば できるか」を知らせる
+  const [editing, setEditing] = useState(false)
+  const [editGuide, setEditGuide] = useState<EditGuideKind | null>(null)
+  const [islandReady, setIslandReady] = useState(false)
+  const handleReady = useCallback((ready: boolean) => setIslandReady(ready), [])
   const { play } = useFeedback()
+  const pokeLine = usePokeLine()
   const learnedSet = useLearnedSet()
   const partClaims = useProgress((s) => s.partClaims)
   const partRewards = claimableParts(PARTS, KANJI, learnedSet, partClaims).length
@@ -109,18 +183,116 @@ export function Home({ onGo }: Props) {
   const next = nextStep(AREAS, learned, clears)
   const foundParts = PARTS.filter((part) => KANJI.some((k) => learned.includes(k.char) && k.parts.includes(part.id))).length
   const stampTotal = Object.values(stamps).reduce((sum, mask) => sum + stampCount(mask), 0)
+  const ownedDecoNames = ownedDecos(owned)
+  // しまってある かざり は、しまには出さない
+  const decos = ownedDecoNames.filter((name) => !decoStored.includes(name))
+  const stored = ownedDecoNames.filter((name) => decoStored.includes(name))
+  const hasMovable = ownedDecoNames.some(isMovableDeco)
+  const pickedItem = picked ? findItem(`deco:${picked}`) : undefined
+  const startEditing = () => {
+    play('tap')
+    if (!hasMovable) setEditGuide('buy')
+    else if (!islandReady) setEditGuide('no3d')
+    else setEditing(true)
+  }
 
   return (
-    <div className="home">
+    <div className={`home ${editing ? 'is-editing' : ''}`}>
       <IslandCanvas
         learnedCount={learned.length}
         totalKanji={KANJI.length}
         sky={itemName(equipped.bg)}
         mascotStage={stage}
         hat={itemName(equipped.hat)}
-        decos={ownedDecos(owned)}
-        onPoke={() => play('tap')}
+        decos={decos}
+        decoSpots={decoSpots}
+        decoTurns={decoTurns}
+        editing={editing}
+        selected={picked}
+        onReady={handleReady}
+        onGrab={(name) => {
+          play('pop')
+          setPicked(name)
+        }}
+        onPlace={(drop) => {
+          placeDeco(drop.name, drop.spot)
+          play('tap')
+        }}
+        onPoke={() => {
+          play('pop')
+          pokeLine.poke()
+        }}
       />
+      {editing && (
+        <div className="edit-bar" role="region" aria-label="もようがえ">
+          {stored.length > 0 && (
+            <ul className="edit-bar__tray" aria-label="しまってある かざり">
+              {stored.map((name) => (
+                <li key={name}>
+                  <button
+                    type="button"
+                    className="btn edit-bar__stored"
+                    aria-label={`${findItem(`deco:${name}`)?.label ?? name} を だす`}
+                    onClick={() => {
+                      storeDeco(name, false)
+                      setPicked(name)
+                      play('pop')
+                    }}
+                  >
+                    <span aria-hidden="true">{findItem(`deco:${name}`)?.emoji}</span>
+                    <small>だす</small>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <div className="edit-bar__main">
+            {picked && pickedItem && decos.includes(picked) ? (
+              <>
+                <p className="edit-bar__picked">
+                  <span aria-hidden="true">{pickedItem.emoji}</span> {pickedItem.label}
+                </p>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => {
+                    turnDeco(picked)
+                    play('tap')
+                  }}
+                >
+                  ↻ まわす
+                </button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => {
+                    storeDeco(picked, true)
+                    setPicked(null)
+                    play('tap')
+                  }}
+                >
+                  📦 しまう
+                </button>
+              </>
+            ) : (
+              <p className="edit-bar__lead">
+                <KText text="かざりを ひっぱって うごかそう" />
+              </p>
+            )}
+            <button
+              type="button"
+              className="btn btn--primary btn--big"
+              onClick={() => {
+                play('ok')
+                setPicked(null)
+                setEditing(false)
+              }}
+            >
+              できた！
+            </button>
+          </div>
+        </div>
+      )}
       <header className="home__hud">
         <button type="button" className="player-chip" onClick={() => onGo({ name: 'profiles' })} aria-label={`あそぶ ひと: ${playerName}。きりかえる`}>
           <span className="player-chip__name">{playerName}</span>
@@ -131,6 +303,9 @@ export function Home({ onGo }: Props) {
         <LevelBadge />
         <StreakCount />
         <span className="bar__spacer" />
+        <button type="button" className="btn hud-edit" onClick={startEditing}>
+          <span aria-hidden="true">🪴</span> もようがえ
+        </button>
         <span className="hud-chip hud-chip--stamp" aria-label={`はんこ ${stampTotal}こ`}>
           <img className="hud-chip__art" src={iconHanko} alt="" draggable={false} />
           {stampTotal}
@@ -144,8 +319,9 @@ export function Home({ onGo }: Props) {
       <div className="home__body">
         <MissionPanel />
         <div className="home__center">
-          <p className="home__bubble">
-            <KText text={mascotLine(learned.length, level, next)} />
+          {/* つついたときは、ひとこと が ぽんと出なおす(key を変えて、出てくる動きを もう一度見せる) */}
+          <p key={pokeLine.line ? pokeLine.count : 0} className={`home__bubble ${pokeLine.line ? 'is-poked' : ''}`} aria-live="polite">
+            <KText text={pokeLine.line ?? mascotLine(learned.length, level, next)} />
           </p>
           <ReviewCall onOpen={() => onGo({ name: 'review' })} />
         </div>
@@ -170,7 +346,9 @@ export function Home({ onGo }: Props) {
           )}
           {next.kind === 'boss' && (
             <span className="cta__text">
-              <small>ステージ {next.stage.number}</small>
+              <small>
+                {AREAS[next.boss.areaIndex].name}の {SPOT_LABEL[next.boss.spot]}
+              </small>
               ボスに ちょうせん
             </span>
           )}
@@ -187,11 +365,28 @@ export function Home({ onGo }: Props) {
         </button>
 
         <DockGroup title="あつめる" tone="collect">
-          <DockButton icon={iconZukan} label="ずかん" count={`${learned.length} / ${KANJI.length}`} tone="collect" onClick={() => onGo({ name: 'zukan' })} />
+          <DockButton
+            icon={iconZukan}
+            label="ずかん"
+            count={`${learned.length} / ${KANJI.length}`}
+            badge={Math.max(learned.length - zukanSeen, 0)}
+            badgeLabel="あたらしい かんじ"
+            tone="collect"
+            onClick={() => onGo({ name: 'zukan' })} />
           <DockButton icon={iconParts} label="パーツ" count={`${foundParts} / ${PARTS.length}`} badge={partRewards} tone="collect" onClick={() => onGo({ name: 'parts' })} />
           <DockButton icon={iconKisekae} label="きせかえ" count={`${collectedCount(owned)} / ${COLLECTIBLE_TOTAL}`} tone="collect" onClick={() => onGo({ name: 'shop' })} />
         </DockGroup>
       </nav>
+      {editGuide && (
+        <EditGuide
+          kind={editGuide}
+          onClose={() => setEditGuide(null)}
+          onShop={() => {
+            setEditGuide(null)
+            onGo({ name: 'shop' })
+          }}
+        />
+      )}
       <LoginBonusModal />
       <LevelUpModal />
     </div>

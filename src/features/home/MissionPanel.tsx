@@ -77,7 +77,7 @@ export function MissionPanel() {
                   className="mission__claim"
                   disabled={!done}
                   onClick={() => {
-                    if (claimMission(mission.id) > 0) play('ok')
+                    if (claimMission(mission.id) > 0) play('coin')
                   }}
                   aria-label={`${kt(mission.label)} の ごほうびを うけとる`}
                 >

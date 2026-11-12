@@ -56,6 +56,7 @@ export function ShopScreen({ onBack }: { readonly onBack: () => void }) {
   const xp = useProgress((s) => s.xp)
   const owned = useProgress((s) => s.owned)
   const equipped = useProgress((s) => s.equipped)
+  const decoStored = useProgress((s) => s.decoStored)
   const buy = useProgress((s) => s.buy)
   const equip = useProgress((s) => s.equip)
   const { play } = useFeedback()
@@ -67,7 +68,7 @@ export function ShopScreen({ onBack }: { readonly onBack: () => void }) {
       equip(item.id)
       play('tap')
     } else if (buy(item.id)) {
-      play('fanfare')
+      play('buy')
     }
   }
 
@@ -76,7 +77,8 @@ export function ShopScreen({ onBack }: { readonly onBack: () => void }) {
   const stateLabel = (item: ShopItem) => {
     const state = buyState(item, owned, coins, level)
     if (state === 'locked') return <>🔒 レベル {item.minLevel}</>
-    if (state === 'owned') return item.kind === 'deco' ? 'おいてある' : isOn(item) ? 'つかってる' : 'つかう'
+    if (state === 'owned' && item.kind === 'deco') return decoStored.includes(itemName(item.id)) ? 'しまってある' : 'おいてある'
+    if (state === 'owned') return isOn(item) ? 'つかってる' : 'つかう'
     return (
       <>
         <span className="coin" aria-hidden="true" />
@@ -112,6 +114,7 @@ export function ShopScreen({ onBack }: { readonly onBack: () => void }) {
               </button>
             ))}
           </div>
+          {kind === 'deco' && <p className="shop__hint">かった かざりは、ホームの「🪴 もようがえ」で すきな ところに おけるよ</p>}
           <ul className="shop__items">
             {SHOP_ITEMS.filter((item) => item.kind === kind).map((item) => {
               const state = buyState(item, owned, coins, level)

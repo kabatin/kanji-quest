@@ -87,6 +87,29 @@
   animation: bob 3.4s ease-in-out infinite;
 }
 
+/* すみまるを つついたときの ひとこと: ぽんと とびだす */
+.home__bubble.is-poked {
+  background: #fff6cf;
+  border-color: var(--yamabuki-dark);
+  animation: bubble-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.home__bubble.is-poked::after {
+  background: #fff6cf;
+  border-color: var(--yamabuki-dark);
+}
+
+@keyframes bubble-pop {
+  0% {
+    transform: scale(0.4) translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* すみまるの せいちょう */
 .grow {
   display: flex;
@@ -408,4 +431,121 @@
   font-weight: 400;
   font-size: 1.4rem;
   color: var(--shu);
+}
+
+/* ───────── もようがえ(かざり を うごかす) ───────── */
+.hud-edit {
+  min-height: 48px;
+  padding: 4px 16px;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+/* もようがえ の間は、しま だけを見せる */
+.home.is-editing .home__hud,
+.home.is-editing .home__body,
+.home.is-editing .dock {
+  display: none;
+}
+
+.island[data-editing='true'] .island__canvas {
+  cursor: grab;
+}
+
+.edit-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 32px);
+  transform: translateX(-50%);
+}
+
+.edit-bar__main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px 10px 24px;
+  background: rgba(255, 253, 247, 0.95);
+  border: 4px solid var(--ai);
+  border-radius: 999px;
+  box-shadow: 0 6px 0 rgba(39, 51, 107, 0.18);
+}
+
+.edit-bar__main > .btn:not(.btn--big) {
+  min-height: 52px;
+  padding: 4px 16px;
+  white-space: nowrap;
+}
+
+.edit-bar__picked {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.2rem;
+  white-space: nowrap;
+}
+
+/* しまってある かざり: おすと しまに出る */
+.edit-bar__tray {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(255, 253, 247, 0.9);
+  border: 3px dashed var(--ai);
+  border-radius: 22px;
+}
+
+.edit-bar__stored {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 58px;
+  min-height: 58px;
+  padding: 2px 8px;
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+.edit-bar__stored small {
+  font-size: 0.7rem;
+}
+
+.edit-bar__lead {
+  font-size: 1.15rem;
+  white-space: nowrap;
+}
+
+.edit-bar .btn--big {
+  min-width: 150px;
+}
+
+/* もようがえ が まだ できないときの 案内 */
+.edit-guide {
+  max-width: 520px;
+}
+
+.edit-guide__art {
+  font-size: 2.6rem;
+  line-height: 1.1;
+  letter-spacing: 0.15em;
+}
+
+.edit-guide__how {
+  padding: 8px 16px;
+  background: #fff6cf;
+  border-radius: 18px;
+}
+
+.shop__hint {
+  padding: 4px 16px;
+  background: #fff6cf;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  text-align: center;
 }

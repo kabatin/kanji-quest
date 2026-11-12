@@ -40,6 +40,72 @@ function isFree(spot: Spot): boolean {
   return Object.entries(DECO_SPOTS).every(([name, deco]) => name === 'niji' || dist(spot, deco) > DECO_GAP)
 }
 
+/** 自分で うごかした かざり の場所(かざり の名前 → 場所)。うごかしていない かざり は入っていない */
+export type DecoSpots = Readonly<Record<string, Spot>>
+
+/** かざり の向き。1 ふえるごとに、ひとまわりの 8分の1(45度)まわる */
+export type DecoTurns = Readonly<Record<string, number>>
+export const TURN_STEPS = 8
+
+/** かざり の向き(ラジアン)。まわしていなければ 0。 */
+export function decoAngle(name: string, turns: DecoTurns): number {
+  const steps = turns[name] ?? 0
+  return ((((Number.isFinite(steps) ? Math.round(steps) : 0) % TURN_STEPS) + TURN_STEPS) % TURN_STEPS) * ((Math.PI * 2) / TURN_STEPS)
+}
+
+/** にじ は空にかかるので、うごかせない */
+export const FIXED_DECOS: readonly string[] = ['niji']
+
+export const isMovableDeco = (name: string): boolean => DECO_SPOTS[name] !== undefined && !FIXED_DECOS.includes(name)
+
+/** かざり の いまの場所。うごかしていなければ、はじめの場所。 */
+export function decoSpot(name: string, placed: DecoSpots): Spot | undefined {
+  return (isMovableDeco(name) ? placed[name] : undefined) ?? DECO_SPOTS[name]
+}
+
+/** すみまると すずり の まわり。かざり は ここには置けない */
+const DECO_KEEP_OUT = 2.5
+/** かざり どうしを はなす きょり */
+const DECO_SPACING = 1.4
+/** 木が かざり を よける きょり */
+const TREE_YIELD = 1.25
+const SETTLE_PASSES = 6
+
+/** spot が center から gap より近いとき、gap だけ はなれた所まで おし出す。 */
+function pushAway(spot: Spot, center: Spot, gap: number): Spot {
+  const d = dist(spot, center)
+  if (d >= gap) return spot
+  // ぴったり重なっているときは、しまの手前の方へ ずらす
+  const direction = d < 0.001 ? { x: 0, z: 1 } : { x: (spot.x - center.x) / d, z: (spot.z - center.z) / d }
+  return { x: center.x + direction.x * gap, z: center.z + direction.z * gap }
+}
+
+function insideIsland(spot: Spot): Spot {
+  const limit = ISLAND_RADIUS - EDGE_MARGIN
+  const r = Math.hypot(spot.x, spot.z)
+  return r <= limit ? spot : { x: (spot.x / r) * limit, z: (spot.z / r) * limit }
+}
+
+/**
+ * かざり を置こうとした場所を、置ける場所に直す。
+ * しまの外・まんなかの広場・池の中・ほかの かざり の上には置けないので、いちばん近い 置ける場所へ ずらす。
+ */
+export function settleDeco(wanted: Spot, others: readonly Spot[]): Spot {
+  const start: Spot = { x: Number.isFinite(wanted.x) ? wanted.x : 0, z: Number.isFinite(wanted.z) ? wanted.z : 0 }
+  const obstacles: readonly { readonly center: Spot; readonly gap: number }[] = [
+    { center: { x: 0, z: 0 }, gap: DECO_KEEP_OUT },
+    { center: POND, gap: POND.radius + 0.7 },
+    ...others.map((center) => ({ center, gap: DECO_SPACING })),
+  ]
+  const pass = (spot: Spot): Spot => insideIsland(obstacles.reduce((moved, { center, gap }) => pushAway(moved, center, gap), spot))
+  return Array.from({ length: SETTLE_PASSES }).reduce<Spot>((spot) => pass(spot), insideIsland(start))
+}
+
+/** 木が かざり と重なるときは、木のほうが少し よける(木は なくならない)。 */
+export function yieldToDecos(tree: Spot, decos: readonly Spot[]): Spot {
+  return insideIsland(decos.reduce((moved, deco) => pushAway(moved, deco, TREE_YIELD), tree))
+}
+
 /** しまの高さ(まんなかが少し高い、なだらかな丘)。 */
 export function groundHeight(x: number, z: number): number {
   const r = Math.min(Math.hypot(x, z) / ISLAND_RADIUS, 1)

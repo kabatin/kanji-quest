@@ -16,6 +16,7 @@ type Toggle = { readonly key: keyof Settings; readonly label: string; readonly n
 
 const SOUND_TOGGLES: readonly Toggle[] = [
   { key: 'sound', label: 'おと', note: 'せいかい や タップの おと', icon: '🔔' },
+  { key: 'music', label: 'おんがく', note: 'うしろで ながれる きょく', icon: '🎵' },
   { key: 'speech', label: 'よみあげ', note: 'よみ や ものがたり を こえで きく', icon: '🗣️' },
 ]
 

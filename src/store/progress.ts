@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { dayKey, isNextDay } from '../lib/date'
@@ -33,12 +34,16 @@ import {
   type QuizSummary,
 } from '../lib/rewards'
 import { DEFAULT_QUESTION_COUNT, isBetter, type Best, type Level } from '../lib/score'
-import { canBuy, DEFAULT_EQUIPPED, DEFAULT_OWNED, findItem, type Equipped } from '../lib/shop'
-import { isCleared, triesLeft, type Clears, type Tries } from '../lib/stages'
+import { canBuy, DEFAULT_EQUIPPED, DEFAULT_OWNED, findItem, ownedDecos, type Equipped } from '../lib/shop'
+import { AREAS } from '../data/areas'
+import { decoSpot, isMovableDeco, settleDeco, TURN_STEPS, type DecoSpots, type DecoTurns, type Spot } from '../features/home/scene/layout'
+import { isCleared, migrateClears, triesLeft, type Clears, type Tries } from '../lib/stages'
 import { addPlayMinutes, applyReview, EMPTY_RECORDS, updateMisses, type Records } from './records'
 
 export type Settings = {
   readonly sound: boolean
+  /** うしろで流れる音楽 */
+  readonly music: boolean
   readonly speech: boolean
   readonly icons: boolean
   readonly timer: boolean
@@ -59,7 +64,7 @@ type ProgressData = Records & {
   readonly xp: number
   /** きせかえに使えるコイン */
   readonly coins: number
-  /** たおした ボス(ステージ・そつぎょうしけん) */
+  /** たおした ボス(エリアの 中ボス・ラスボス、そつぎょうしけん) */
   readonly clears: Clears
   /** その日に ボスへ ちょうせん した回数 */
   readonly tries: Tries
@@ -70,6 +75,14 @@ type ProgressData = Records & {
   readonly daily: Daily
   readonly owned: readonly string[]
   readonly equipped: Equipped
+  /** 自分で うごかした かざり の場所(うごかしていない かざり は、はじめの場所のまま) */
+  readonly decoSpots: DecoSpots
+  /** まわした かざり の向き(45度きざみ の回数) */
+  readonly decoTurns: DecoTurns
+  /** しまってある かざり の名前(持っているが、しまには出していない) */
+  readonly decoStored: readonly string[]
+  /** ずかん で もう見た字の数(learned の先頭から)。それより あとの字は「あたらしい」と出す */
+  readonly zukanSeen: number
   /** 自己ベスト。キーは bestKey(ヒントの量, 問題の数) */
   readonly bests: Readonly<Record<string, Best>>
   readonly challenge: ChallengeOptions
@@ -97,7 +110,7 @@ export type QuizContext = { readonly level: Level; readonly bestKey?: string }
 
 /** ボスとの たたかい1回ぶんの結果 */
 export type BossResult = {
-  /** ステージの id、または そつぎょうしけん の id */
+  /** エリアの ボスの id、または そつぎょうしけん の id */
   readonly id: string
   readonly kind: BossKind
   /** まちがえずに できた問題の数 */
@@ -107,6 +120,8 @@ export type BossResult = {
   readonly practice: boolean
   /** まちがえた問題の漢字 */
   readonly missed?: readonly string[]
+  /** まちがえずに できた漢字。苦手の回数が へる */
+  readonly solved?: readonly string[]
 }
 
 /** ふくしゅう 1回ぶんの結果 */
@@ -137,6 +152,8 @@ type ProgressActions = {
   finishBoss: (result: BossResult, today?: string) => BossGain
   /** ホームで「レベルアップ」を見せおわったことを覚える */
   markLevelSeen: () => void
+  /** ずかん で、いま覚えている字を ぜんぶ見たことにする */
+  markZukanSeen: () => void
   finishReview: (result: ReviewResult, today?: string) => Gain
   /** コンプリートした パーツの ごほうびを受け取る(コンプリートかどうかは、よぶ側で たしかめる) */
   claimPart: (partId: string) => Gain | null
@@ -145,6 +162,12 @@ type ProgressActions = {
   claimMission: (id: string, today?: string) => number
   buy: (itemId: string) => boolean
   equip: (itemId: string) => void
+  /** 持っている かざり を、しまの すきな場所に置く。置けない場所なら、いちばん近い 置ける場所になる。置いた場所を返す */
+  placeDeco: (name: string, spot: Spot) => Spot | null
+  /** 持っている かざり を 45度 まわす */
+  turnDeco: (name: string) => void
+  /** 持っている かざり を しまう(stored = true)・しまに出す(false)。出すときは、ほかと重ならない場所に直す */
+  storeDeco: (name: string, stored: boolean) => void
   setChallengeOptions: (patch: Partial<ChallengeOptions>) => void
   updateSettings: (patch: Partial<Settings>) => void
   reset: () => void
@@ -166,10 +189,27 @@ const INITIAL: ProgressData = {
   daily: { day: '', counters: EMPTY_COUNTERS, claimed: [] },
   owned: DEFAULT_OWNED,
   equipped: DEFAULT_EQUIPPED,
+  decoSpots: {},
+  decoTurns: {},
+  decoStored: [],
+  zukanSeen: 0,
   bests: {},
   challenge: { count: DEFAULT_QUESTION_COUNT, scope: 'mix' },
   // タイマーは焦りのもとになるので、最初は見せない
-  settings: { sound: true, speech: true, icons: true, timer: false },
+  settings: { sound: true, music: true, speech: true, icons: true, timer: false },
+}
+
+/** 保存してあった かざり の場所。こわれた値(数でない など)は すてる */
+const decoSpotsSchema = z.record(z.string(), z.object({ x: z.number().finite(), z: z.number().finite() })).catch({})
+
+const decoTurnsSchema = z.record(z.string(), z.number().int().min(0).max(TURN_STEPS - 1)).catch({})
+const decoStoredSchema = z.array(z.string()).catch([])
+
+/** しまに出ている、ほかの かざり(name を のぞく)の場所。置く場所が重ならないように使う */
+function otherDecoSpots(name: string, owned: readonly string[], decoSpots: DecoSpots, decoStored: readonly string[]): Spot[] {
+  return ownedDecos(owned)
+    .filter((other) => other !== name && isMovableDeco(other) && !decoStored.includes(other))
+    .flatMap((other) => decoSpot(other, decoSpots) ?? [])
 }
 
 /** 1人目の進みぐあいを保存するキー(2人目からは lib/profiles の storageKeyFor で決まる) */
@@ -202,7 +242,7 @@ const gainOf = (xpBefore: number, xp: number, coins: number): Gain => ({
 type OldState = { learned?: string[]; points?: number; skin?: string; settings?: Settings; challenge?: ChallengeOptions }
 type V3State = Partial<Omit<ProgressData, 'clears' | 'tries' | 'seenLevel'>> & { stageStars?: Record<string, number> }
 
-export const STORAGE_VERSION = 5
+export const STORAGE_VERSION = 6
 
 /** 4つ前までの形式に、ふくしゅう などの きろく を足す。覚えていた字は、少しずつ ふくしゅう に回す。 */
 function withRecords(data: ProgressData, today: string): ProgressData {
@@ -226,9 +266,18 @@ function fromV3(old: V3State): ProgressData {
   }, dayKey())
 }
 
-/** 前の形式の保存データを、今の形式に直す。学んだ漢字・経験値・コインは引き継ぐ。 */
+/**
+ * 前の形式の保存データを、今の形式に直す。学んだ漢字・経験値・コインは引き継ぐ。
+ * 5 までは ステージごとに ボスが いたので、たおした記録を エリアの ボスの記録に直す。
+ */
 function migrate(persisted: unknown, version: number): ProgressData {
   if (version >= STORAGE_VERSION) return persisted as ProgressData
+  const data = toV5(persisted, version)
+  return { ...data, clears: migrateClears(data.clears, AREAS) }
+}
+
+function toV5(persisted: unknown, version: number): ProgressData {
+  if (version === 5) return { ...INITIAL, ...(persisted as ProgressData) }
   if (version === 4) return withRecords({ ...INITIAL, ...(persisted as ProgressData) }, dayKey())
   if (version === 3) return fromV3((persisted ?? {}) as V3State)
   const old = (persisted ?? {}) as OldState
@@ -347,8 +396,9 @@ export const useProgress = create<ProgressState>()(
           xp: state.xp + gain.xp,
           coins: state.coins + gain.coins,
           clears: firstClear ? { ...state.clears, [result.id]: today } : state.clears,
-          daily: addCounters(dailyFor(state.daily, today), { stage: cleared ? 1 : 0 }),
-          misses: updateMisses(state.misses, result.missed ?? [], []),
+          // ミッション「ボスと たたかう」は、さいごまで たたかえば(れんしゅうでも)数える
+          daily: addCounters(dailyFor(state.daily, today), { stage: 1 }),
+          misses: updateMisses(state.misses, result.missed ?? [], result.solved ?? []),
         }))
         return { ...gain, score, cleared, firstClear }
       },
@@ -378,6 +428,8 @@ export const useProgress = create<ProgressState>()(
 
       markLevelSeen: () => set((state) => ({ seenLevel: levelInfo(state.xp).level })),
 
+      markZukanSeen: () => set((state) => (state.zukanSeen === state.learned.length ? state : { zukanSeen: state.learned.length })),
+
       claimMission: (id, today = dayKey()) => {
         const daily = dailyFor(get().daily, today)
         const mission = dailyMissions(today).find((m) => m.id === id)
@@ -405,6 +457,36 @@ export const useProgress = create<ProgressState>()(
         set((state) => ({ equipped: { ...state.equipped, [item.kind]: item.id } }))
       },
 
+      placeDeco: (name, spot) => {
+        const { owned, decoSpots, decoStored } = get()
+        if (!isMovableDeco(name) || !owned.includes(`deco:${name}`)) return null
+        const settled = settleDeco(spot, otherDecoSpots(name, owned, decoSpots, decoStored))
+        set({ decoSpots: { ...decoSpots, [name]: settled } })
+        return settled
+      },
+
+      turnDeco: (name) => {
+        const { owned, decoTurns } = get()
+        if (!isMovableDeco(name) || !owned.includes(`deco:${name}`)) return
+        set({ decoTurns: { ...decoTurns, [name]: ((decoTurns[name] ?? 0) + 1) % TURN_STEPS } })
+      },
+
+      storeDeco: (name, stored) => {
+        const { owned, decoSpots, decoStored } = get()
+        if (!isMovableDeco(name) || !owned.includes(`deco:${name}`) || decoStored.includes(name) === stored) return
+        if (stored) {
+          set({ decoStored: [...decoStored, name] })
+          return
+        }
+        // しまっている間に、ほかの かざり が そこに置かれているかもしれない
+        const back = decoSpot(name, decoSpots)
+        const settled = back ? settleDeco(back, otherDecoSpots(name, owned, decoSpots, decoStored)) : undefined
+        set({
+          decoStored: decoStored.filter((other) => other !== name),
+          decoSpots: settled ? { ...decoSpots, [name]: settled } : decoSpots,
+        })
+      },
+
       setChallengeOptions: (patch) => set((state) => ({ challenge: { ...state.challenge, ...patch } })),
       updateSettings: (patch) => set((state) => ({ settings: { ...state.settings, ...patch } })),
       reset: () => set({ ...INITIAL }),
@@ -423,6 +505,11 @@ export const useProgress = create<ProgressState>()(
           ...saved,
           // あとから ふえた項目が、前の保存データに なくても こわれないようにする
           settings: { ...INITIAL.settings, ...saved.settings },
+          decoSpots: decoSpotsSchema.parse(saved.decoSpots),
+          decoTurns: decoTurnsSchema.parse(saved.decoTurns),
+          decoStored: decoStoredSchema.parse(saved.decoStored),
+          // この しくみ が できる前から覚えていた字は、もう見たことにする
+          zukanSeen: typeof saved.zukanSeen === 'number' ? saved.zukanSeen : (saved.learned?.length ?? 0),
           daily: saved.daily ? { ...saved.daily, counters: { ...EMPTY_COUNTERS, ...saved.daily.counters } } : INITIAL.daily,
         }
       },

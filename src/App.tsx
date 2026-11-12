@@ -15,11 +15,12 @@ import { SettingsScreen } from './features/settings/SettingsScreen'
 import { ShopScreen } from './features/shop/ShopScreen'
 import { StageScreen } from './features/stage/StageScreen'
 import { Zukan, type ZukanView } from './features/zukan/Zukan'
-import { examBoss, stageBoss } from './lib/boss'
+import { areaBoss, examBoss } from './lib/boss'
+import { setMusic } from './lib/music'
 import { itemName } from './lib/shop'
-import { findStage, type Stage } from './lib/stages'
+import { bossAfter, findBoss, findStage, isCleared, type AreaBoss, type Stage } from './lib/stages'
 import { useStopVoiceOnLeave } from './lib/useFeedback'
-import { HOME, type Screen } from './nav'
+import { HOME, trackFor, type Screen } from './nav'
 import { useBossRules } from './store/parent'
 import { useProfiles } from './store/profiles'
 import { useProgress } from './store/progress'
@@ -42,6 +43,14 @@ function usePlayTime() {
   }, [])
 }
 
+function useMusic(name: Screen['name']) {
+  const enabled = useProgress((s) => s.settings.music)
+  useEffect(() => {
+    setMusic(enabled ? trackFor(name) : undefined)
+  }, [enabled, name])
+  useEffect(() => () => setMusic(undefined), [])
+}
+
 export default function App() {
   // 開いている画面の重なり。最後の要素が、いま見えている画面
   const [stack, setStack] = useState<readonly Screen[]>(firstStack)
@@ -49,12 +58,14 @@ export default function App() {
   const [zukanView, setZukanView] = useState<ZukanView>(FIRST_PAGE)
   const skin = useProgress((s) => s.equipped.skin)
   const learned = useProgress((s) => s.learned)
+  const clears = useProgress((s) => s.clears)
   const bossRules = useBossRules()
   usePlayTime()
 
   const screen = stack[stack.length - 1]
   // 「もどる」などで画面をはなれたら、流れている音声をフェードアウトで止める
   useStopVoiceOnLeave(screen)
+  useMusic(screen.name)
 
   const go = (next: Screen) => setStack((prev) => [...prev, next])
   const back = () => setStack((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev))
@@ -63,20 +74,34 @@ export default function App() {
   const toMap = (area: number): readonly Screen[] => [HOME, { name: 'map', area }]
   const toStage = (stage: Stage): readonly Screen[] => [...toMap(stage.areaIndex), { name: 'stage', id: stage.id }]
 
-  /** 学びおえたあとに すすめる行き先。ステージの中なら、次の字か ボス へ。 */
+  const toBoss = (boss: AreaBoss): readonly Screen[] => [...toMap(boss.areaIndex), { name: 'boss', id: boss.id }]
+
+  /** ステージの5字を学びおえたあとの行き先。ボスが まっていれば ボス、いなければ 同じエリアの次のステージ。 */
+  const nextAfterStage = (stage: Stage): NextAction => {
+    const boss = bossAfter(stage, AREAS)
+    if (boss && !isCleared(clears, boss.id)) return { label: 'ボスに ちょうせん', onNext: () => setStack(toBoss(boss)) }
+    const nextStage = ALL_STAGES[stage.number]
+    if (nextStage && nextStage.areaIndex === stage.areaIndex) return { label: 'つぎの ステージへ', onNext: () => setStack(toStage(nextStage)) }
+    return { label: 'ぼうけんへ', onNext: () => setStack(toMap(stage.areaIndex)) }
+  }
+
+  /** 学びおえたあとに すすめる行き先。ステージの中なら、次の字へ。5字おわったら、ボスか 次のステージへ。 */
   const nextAfterLearn = (current: Extract<Screen, { name: 'learn' }>): NextAction => {
     if (!current.stageId) return { label: 'もどる', onNext: back }
     const stage = findStage(AREAS, current.stageId)
     const nextChar = stage.kanji.find((c) => c !== current.char && !learned.includes(c))
     if (nextChar) return { label: `つぎの かんじ「${nextChar}」へ`, onNext: () => replace({ name: 'learn', char: nextChar, stageId: stage.id }) }
-    return { label: 'ボスに ちょうせん', onNext: () => setStack([...toStage(stage), { name: 'boss', id: stage.id }]) }
+    return nextAfterStage(stage)
   }
 
-  /** ステージの ボス をたおしたあとの行き先。同じ学年に次のステージがあればそこへ、なければ ぼうけん の地図へ。 */
-  const nextAfterBoss = (stage: Stage): BossNext => {
-    const nextStage = ALL_STAGES[stage.number]
-    if (nextStage && nextStage.grade === stage.grade) return { label: 'つぎの ステージへ', onNext: () => setStack(toStage(nextStage)) }
-    return { label: 'ぼうけんへ', onNext: () => setStack(toMap(stage.areaIndex)) }
+  /** ボス をたおしたあとの行き先。中ボスなら次のステージへ。ラスボスなら 同じ学年の次のエリアか、ぼうけん の地図へ。 */
+  const nextAfterBoss = (boss: AreaBoss): BossNext => {
+    const area = AREAS[boss.areaIndex]
+    const nextStage = area.stages[boss.afterStage]
+    if (nextStage) return { label: 'つぎの ステージへ', onNext: () => setStack(toStage(nextStage)) }
+    const nextArea = AREAS[boss.areaIndex + 1]
+    if (nextArea && nextArea.grade === boss.grade) return { label: 'つぎの エリアへ', onNext: () => setStack(toMap(nextArea.index)) }
+    return { label: 'ぼうけんへ', onNext: () => setStack(toMap(boss.areaIndex)) }
   }
 
   const review = (char: string) => go({ name: 'learn', char })
@@ -89,6 +114,7 @@ export default function App() {
           area={screen.area}
           onArea={(area) => replace({ name: 'map', area })}
           onStage={(id) => go({ name: 'stage', id })}
+          onBoss={(id) => go({ name: 'boss', id })}
           onExam={(grade) => go({ name: 'exam', grade })}
           onBack={goHome}
         />
@@ -98,15 +124,15 @@ export default function App() {
           stageId={screen.id}
           onBack={() => setStack(toMap(findStage(AREAS, screen.id).areaIndex))}
           onLearn={(char) => go({ name: 'learn', char, stageId: screen.id })}
-          onBoss={() => go({ name: 'boss', id: screen.id })}
+          next={nextAfterStage(findStage(AREAS, screen.id))}
         />
       )}
       {screen.name === 'boss' && (
         <BossScreen
           key={screen.id}
-          boss={stageBoss(findStage(AREAS, screen.id), bossRules)}
+          boss={areaBoss(findBoss(AREAS, screen.id), AREAS[findBoss(AREAS, screen.id).areaIndex], bossRules)}
           onBack={back}
-          next={nextAfterBoss(findStage(AREAS, screen.id))}
+          next={nextAfterBoss(findBoss(AREAS, screen.id))}
           onReview={review}
         />
       )}

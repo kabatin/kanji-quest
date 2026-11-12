@@ -76,8 +76,14 @@ describe('ふくしゅう・パーツ・あそんだ時間', () => {
   })
 
   it('ボスで まちがえた字も、まちがいの回数に入る', () => {
-    state().finishBoss({ id: 's1', kind: 'stage', perfect: 13, total: 15, practice: false, missed: ['海', '池'] }, DAY1)
+    state().finishBoss({ id: 'a1-mid', kind: 'mid', perfect: 13, total: 15, practice: false, missed: ['海', '池'] }, DAY1)
     expect(state().misses).toEqual({ 海: 1, 池: 1 })
+  })
+
+  it('ボスで まちがえずに できた字は、まちがいの回数が へる(苦手で なくなる)', () => {
+    useProgress.setState({ misses: { 海: 2, 池: 1, 山: 1 } })
+    state().finishBoss({ id: 'a1-mid', kind: 'mid', perfect: 14, total: 15, practice: true, missed: ['山'], solved: ['海', '池', '木'] }, DAY1)
+    expect(state().misses).toEqual({ 海: 1, 山: 2 })
   })
 
   it('コンプリートした パーツの ごほうびは 1回だけ', () => {
@@ -95,7 +101,7 @@ describe('ふくしゅう・パーツ・あそんだ時間', () => {
   })
 
   it('ボスの1日の回数は、おうちの かた の設定で変えられる', () => {
-    expect([1, 2].map(() => state().startBoss('s1', 'stage', DAY1, 1))).toEqual([true, false])
+    expect([1, 2].map(() => state().startBoss('a1-mid', 'mid', DAY1, 1))).toEqual([true, false])
   })
 })
 
@@ -121,15 +127,15 @@ describe('クイズ', () => {
 })
 
 describe('ボス', () => {
-  const fight = (perfect: number, practice = false) => state().finishBoss({ id: 's1', kind: 'stage', perfect, total: 15, practice }, DAY1)
+  const fight = (perfect: number, practice = false) => state().finishBoss({ id: 'a1-mid', kind: 'mid', perfect, total: 15, practice }, DAY1)
 
   it('ちょうせん は1日3回まで。日付が変わると また ちょうせん できる', () => {
-    expect([1, 2, 3, 4].map(() => state().startBoss('s1', 'stage', DAY1))).toEqual([true, true, true, false])
-    expect(triesLeft(state().tries, 's1', BOSS_TRIES_PER_DAY.stage, DAY1)).toBe(0)
-    // ほかのステージの回数は、べつに数える
-    expect(state().startBoss('s2', 'stage', DAY1)).toBe(true)
-    expect(state().startBoss('s1', 'stage', DAY2)).toBe(true)
-    expect(state().tries).toEqual({ day: DAY2, used: { s1: 1 } })
+    expect([1, 2, 3, 4].map(() => state().startBoss('a1-mid', 'mid', DAY1))).toEqual([true, true, true, false])
+    expect(triesLeft(state().tries, 'a1-mid', BOSS_TRIES_PER_DAY.mid, DAY1)).toBe(0)
+    // ほかの ボスの回数は、べつに数える
+    expect(state().startBoss('a1-last', 'last', DAY1)).toBe(true)
+    expect(state().startBoss('a1-mid', 'mid', DAY2)).toBe(true)
+    expect(state().tries).toEqual({ day: DAY2, used: { 'a1-mid': 1 } })
   })
 
   it('そつぎょうしけん は1日2回まで', () => {
@@ -140,12 +146,13 @@ describe('ボス', () => {
   it('1問でも まちがえると 100点にならず、たおせない(少しの経験値だけ)', () => {
     expect(fight(14)).toMatchObject({ score: 93, cleared: false, firstClear: false, xp: 10, coins: 0 })
     expect(state().clears).toEqual({})
-    expect(state().daily.counters.stage).toBe(0)
+    // ミッション「ボスと たたかう」は、まけても さいごまで やれば数える
+    expect(state().daily.counters.stage).toBe(1)
   })
 
   it('全部できると 100点で たおせて、はじめての1回だけ ごほうびが多い', () => {
-    expect(fight(15)).toMatchObject({ score: 100, cleared: true, firstClear: true, xp: 100, coins: 30 })
-    expect(state().clears).toEqual({ s1: DAY1 })
+    expect(fight(15)).toMatchObject({ score: 100, cleared: true, firstClear: true, xp: 300, coins: 90 })
+    expect(state().clears).toEqual({ 'a1-mid': DAY1 })
     expect(state().daily.counters.stage).toBe(1)
     expect(fight(15)).toMatchObject({ cleared: true, firstClear: false, xp: 10, coins: 0 })
   })
@@ -153,6 +160,11 @@ describe('ボス', () => {
   it('れんしゅう は、100点でも たおしたことに ならない', () => {
     expect(fight(15, true)).toMatchObject({ score: 100, cleared: false, firstClear: false, xp: 10 })
     expect(state().clears).toEqual({})
+  })
+
+  it('ラスボスは 中ボスより ごほうびが多い', () => {
+    const gain = state().finishBoss({ id: 'a1-last', kind: 'last', perfect: 15, total: 15, practice: false }, DAY1)
+    expect(gain).toMatchObject({ cleared: true, xp: 500, coins: 150 })
   })
 
   it('そつぎょうしけん に ごうかく すると、ごほうびが とても多い', () => {
@@ -231,6 +243,75 @@ describe('きせかえ', () => {
     expect(state().equipped).toEqual({ skin: 'skin:kami', hat: 'hat:none', bg: 'bg:asa' })
   })
 
+  it('持っている かざり は すきな場所に置けて、置けない場所は 近くに ずれる', () => {
+    expect(state().placeDeco('hana', { x: 5, z: -3 })).toBeNull()
+    useProgress.setState({ owned: [...state().owned, 'deco:hana', 'deco:bench', 'deco:niji'] })
+    expect(state().placeDeco('hana', { x: 5, z: -3 })).toEqual({ x: 5, z: -3 })
+    expect(state().decoSpots).toEqual({ hana: { x: 5, z: -3 } })
+    // ほかの かざり の上には置けない(少し はなれた所になる)
+    const bench = state().placeDeco('bench', { x: 5, z: -3 })
+    expect(Math.hypot((bench?.x ?? 0) - 5, (bench?.z ?? 0) + 3)).toBeGreaterThan(1.3)
+    // にじ・知らない名前は うごかせない
+    expect(state().placeDeco('niji', { x: 1, z: 1 })).toBeNull()
+    expect(state().placeDeco('nai', { x: 1, z: 1 })).toBeNull()
+    expect(Object.keys(state().decoSpots)).toEqual(['hana', 'bench'])
+  })
+
+  it('かざり は 45度ずつ まわせて、8回で ひとまわりする', () => {
+    state().turnDeco('hana')
+    expect(state().decoTurns).toEqual({})
+    useProgress.setState({ owned: [...state().owned, 'deco:hana', 'deco:niji'] })
+    state().turnDeco('hana')
+    state().turnDeco('hana')
+    expect(state().decoTurns).toEqual({ hana: 2 })
+    for (let i = 0; i < 6; i += 1) state().turnDeco('hana')
+    expect(state().decoTurns).toEqual({ hana: 0 })
+    state().turnDeco('niji')
+    expect(state().decoTurns).toEqual({ hana: 0 })
+  })
+
+  it('かざり は しまえて、また出せる。出すときは ほかの かざり と重ならない場所になる', () => {
+    useProgress.setState({ owned: [...state().owned, 'deco:hana', 'deco:bench'] })
+    state().placeDeco('hana', { x: 5, z: -3 })
+    state().storeDeco('hana', true)
+    state().storeDeco('hana', true)
+    expect(state().decoStored).toEqual(['hana'])
+    // しまっている間は、ほかの かざり を その場所に置ける
+    expect(state().placeDeco('bench', { x: 5, z: -3 })).toEqual({ x: 5, z: -3 })
+    state().storeDeco('hana', false)
+    expect(state().decoStored).toEqual([])
+    const hana = state().decoSpots.hana
+    expect(Math.hypot(hana.x - 5, hana.z + 3)).toBeGreaterThan(1.3)
+    // 持っていない かざり・にじ は しまえない
+    state().storeDeco('tent', true)
+    state().storeDeco('niji', true)
+    expect(state().decoStored).toEqual([])
+  })
+
+  it('ずかん で見た字の数を覚える。この しくみ の前から覚えていた字は、もう見たことにする', async () => {
+    state().completeKanji('木', DAY1)
+    state().completeKanji('山', DAY1)
+    expect(state().zukanSeen).toBe(0)
+    state().markZukanSeen()
+    expect(state().zukanSeen).toBe(2)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ state: { learned: ['一', '二', '三'] }, version: 6 }))
+    await useProgress.persist.rehydrate()
+    expect(state().zukanSeen).toBe(3)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ state: { learned: ['一', '二', '三'], zukanSeen: 1, decoTurns: { hana: 99 }, decoStored: 'x' }, version: 6 }))
+    await useProgress.persist.rehydrate()
+    expect(state()).toMatchObject({ zukanSeen: 1, decoTurns: {}, decoStored: [] })
+  })
+
+  it('保存してあった かざり の場所が こわれていたら、はじめの場所にもどす', async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ state: { learned: ['木'], decoSpots: { hana: { x: 'abc', z: 1 } } }, version: 6 }))
+    await useProgress.persist.rehydrate()
+    expect(state().decoSpots).toEqual({})
+    expect(state().learned).toEqual(['木'])
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ state: { decoSpots: { hana: { x: 4, z: 1 } } }, version: 6 }))
+    await useProgress.persist.rehydrate()
+    expect(state().decoSpots).toEqual({ hana: { x: 4, z: 1 } })
+  })
+
   it('持っている品だけ身につけられる', () => {
     state().equip('skin:kin')
     expect(state().equipped.skin).toBe('skin:kami')
@@ -245,14 +326,14 @@ describe('保存', () => {
     expect(state().settings.timer).toBe(false)
     state().updateSettings({ sound: false })
     state().setChallengeOptions({ count: 10 })
-    expect(state().settings).toEqual({ sound: false, speech: true, icons: true, timer: false })
+    expect(state().settings).toEqual({ sound: false, music: true, speech: true, icons: true, timer: false })
     expect(state().challenge).toEqual({ count: 10, scope: 'mix' })
   })
 
   it('端末に保存され、リセットで最初にもどる', () => {
     state().completeKanji('木', DAY1)
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}')
-    expect(saved.version).toBe(5)
+    expect(saved.version).toBe(6)
     expect(saved.state.learned).toEqual(['木'])
     state().reset()
     expect(state().learned).toEqual([])
@@ -273,6 +354,16 @@ describe('保存', () => {
     expect(state().owned).toContain('skin:sora')
     expect(state().bests).toEqual({})
     expect(state().seenLevel).toBe(2)
+  })
+
+  it('ステージごとに ボスが いたころ(v5)の記録は、エリアの ボスの記録に直す', async () => {
+    const stage = (n: number) => [`s${n}`, DAY1] as const
+    // エリア1は ステージ 1〜5 まで、エリア2は 9〜16 を全部クリアしていた
+    const clears = Object.fromEntries([...[1, 2, 3, 4, 5].map(stage), ...[9, 10, 11, 12, 13, 14, 15, 16].map(stage), ['exam-g1', DAY2]])
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ state: { learned: ['一'], xp: 300, coins: 55, clears }, version: 5 }))
+    await useProgress.persist.rehydrate()
+    expect(state().clears).toEqual({ 'a1-mid': DAY1, 'a2-mid': DAY1, 'a2-last': DAY1, 'exam-g1': DAY2 })
+    expect(state()).toMatchObject({ learned: ['一'], xp: 300, coins: 55 })
   })
 
   it('1つ前の形式(v4)のデータは、覚えていた字を ふくしゅう に入れ、足りない数を 0 にする', async () => {
@@ -309,7 +400,8 @@ describe('保存', () => {
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ state: old, version: 3 }))
     await useProgress.persist.rehydrate()
-    expect(state().clears).toEqual({ s1: DAY1, s2: DAY1 })
+    // 星をとっていたのは ステージ 2 まで。中ボス(ステージ 4 の あと)は まだ たおしていない
+    expect(state().clears).toEqual({})
     expect(state()).toMatchObject({ learned: ['一', '二'], xp: 300, coins: 55, bests: old.bests, equipped: old.equipped, settings: old.settings })
     expect(state().daily.counters.write).toBe(0)
     // 覚えていた字は、ふくしゅう に入る

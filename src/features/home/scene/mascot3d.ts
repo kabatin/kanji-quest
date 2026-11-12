@@ -198,13 +198,15 @@ export type Mascot3D = {
   readonly group: THREE.Group
   /** 毎フレーム呼ぶ。t = 秒 */
   readonly animate: (t: number) => void
-  /** ぴょんと とぶ(タップされたとき) */
+  /** タップされたときの うごき。とぶ・くるっと回る・ぷるぷる ふるえる を、順番に見せる */
   readonly jump: (t: number) => void
   /** 指やマウスのほうを見る(x・y は -1〜1) */
   readonly look: (x: number, y: number) => void
 }
 
 const JUMP_SECONDS = 0.7
+/** タップされるたびに、ちがう うごき を順番に見せる */
+const REACTIONS = ['spin', 'hops', 'wiggle'] as const
 const BLINK_EVERY = 3.4
 const BLINK_SECONDS = 0.14
 
@@ -222,18 +224,28 @@ export function buildMascot(stage: number, hat: string): Mascot3D {
   group.add(root)
 
   let jumpAt = -10
+  let reactionIndex = -1
   const gaze = { x: 0, y: 0 }
   const animate = (t: number) => {
     // 息をするように、ゆっくり のびちぢみ する
     const breath = Math.sin(t * 2.2) * 0.035
     const sinceJump = t - jumpAt
     const jumping = sinceJump >= 0 && sinceJump < JUMP_SECONDS
-    const hop = jumping ? Math.sin((sinceJump / JUMP_SECONDS) * Math.PI) : 0
+    const progress = jumping ? sinceJump / JUMP_SECONDS : 0
+    const reaction = jumping ? REACTIONS[reactionIndex % REACTIONS.length] : undefined
+    // spin = くるっと回りながら とぶ / hops = 小さく2回 はねる / wiggle = その場で ぷるぷる
+    const hop = reaction === 'spin' ? Math.sin(progress * Math.PI) : reaction === 'hops' ? Math.abs(Math.sin(progress * Math.PI * 2)) * 0.55 : 0
+    const wiggle = reaction === 'wiggle' ? Math.sin(progress * Math.PI * 8) * (1 - progress) : 0
     root.position.y = hop * 1.1
-    root.scale.set(FORM_SCALE[safeStage] * (1 - breath - hop * 0.08), FORM_SCALE[safeStage] * (1 + breath + hop * 0.14), FORM_SCALE[safeStage] * (1 - breath - hop * 0.08))
+    root.scale.set(
+      FORM_SCALE[safeStage] * (1 - breath - hop * 0.08 + Math.abs(wiggle) * 0.1),
+      FORM_SCALE[safeStage] * (1 + breath + hop * 0.14 - Math.abs(wiggle) * 0.1),
+      FORM_SCALE[safeStage] * (1 - breath - hop * 0.08 + Math.abs(wiggle) * 0.1),
+    )
     // 指のあるほうへ、体ごと少しふりむく
-    root.rotation.y = Math.sin(t * 0.6) * 0.14 + gaze.x * 0.55 + (jumping ? (sinceJump / JUMP_SECONDS) * Math.PI * 2 : 0)
+    root.rotation.y = Math.sin(t * 0.6) * 0.14 + gaze.x * 0.55 + (reaction === 'spin' ? progress * Math.PI * 2 : 0)
     root.rotation.x = gaze.y * 0.12
+    root.rotation.z = wiggle * 0.22
     eyes.scale.y = t % BLINK_EVERY < BLINK_SECONDS ? 0.12 : 1
     eyes.position.y = t % BLINK_EVERY < BLINK_SECONDS ? 0.65 : 0
     eyes.position.x = gaze.x * 0.035
@@ -245,7 +257,9 @@ export function buildMascot(stage: number, hat: string): Mascot3D {
     group,
     animate,
     jump: (t) => {
-      if (t - jumpAt > JUMP_SECONDS) jumpAt = t
+      if (t - jumpAt <= JUMP_SECONDS) return
+      jumpAt = t
+      reactionIndex += 1
     },
     look: (x, y) => {
       gaze.x = Math.min(Math.max(x, -1), 1)

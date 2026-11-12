@@ -305,3 +305,154 @@
     width: 100%;
   }
 }
+
+/* ───────── 学びおえた画面: えんしゅつ ───────── */
+.result__kanji {
+  position: relative;
+  animation: result-pop 0.55s cubic-bezier(0.3, 1.6, 0.5, 1) backwards;
+}
+
+@keyframes result-pop {
+  0% {
+    transform: scale(0.5) rotate(-6deg);
+    opacity: 0;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* あたらしく覚えた字は、うしろが ひかる */
+.result[data-new='true'] .result__kanji {
+  border-color: var(--yamabuki-dark);
+  box-shadow:
+    0 0 0 6px rgba(255, 194, 51, 0.35),
+    0 0 34px 10px rgba(255, 194, 51, 0.55);
+}
+
+.result__new {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  padding: 2px 16px;
+  background: var(--shu);
+  border-radius: 999px;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1rem;
+  white-space: nowrap;
+  transform: translateX(-50%) rotate(-3deg);
+  animation: result-ribbon 0.5s cubic-bezier(0.3, 1.7, 0.5, 1) 0.35s backwards;
+}
+
+@keyframes result-ribbon {
+  0% {
+    transform: translateX(-50%) scale(0.2) rotate(-20deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%) rotate(-3deg);
+    opacity: 1;
+  }
+}
+
+/* もらえたもの は、順番に ぽん と出る */
+.result .gains li {
+  animation: gain-pop 0.4s cubic-bezier(0.3, 1.6, 0.5, 1) backwards;
+}
+
+.result .gains li:nth-child(1) {
+  animation-delay: 0.5s;
+}
+
+.result .gains li:nth-child(2) {
+  animation-delay: 0.65s;
+}
+
+.result .gains li:nth-child(3) {
+  animation-delay: 0.8s;
+}
+
+.result .gains li:nth-child(n + 4) {
+  animation-delay: 0.95s;
+}
+
+@keyframes gain-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* いま もらった はんこ: 上から ぺたん と おされる(おされるまでは、まだ白い) */
+.stamp.is-fresh .stamp__seal {
+  animation: stamp-press 0.42s cubic-bezier(0.3, 1.4, 0.5, 1) var(--stamp-delay, 0ms) backwards;
+}
+
+.stamp.is-fresh .stamp__label {
+  animation: stamp-label 0.01s linear var(--stamp-delay, 0ms) backwards;
+}
+
+@keyframes stamp-press {
+  0% {
+    transform: scale(2.6) rotate(14deg);
+    background: transparent;
+    border-color: var(--line);
+    color: transparent;
+    opacity: 0.2;
+  }
+  55% {
+    transform: scale(0.86) rotate(-6deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(-6deg);
+  }
+}
+
+@keyframes stamp-label {
+  0% {
+    color: var(--muted);
+  }
+}
+
+/* ───────── ずかん: あたらしく覚えた字 ───────── */
+.zukan-card.is-new {
+  border-color: var(--yamabuki-dark);
+  box-shadow:
+    0 6px 0 var(--yamabuki-dark),
+    0 0 18px 4px rgba(255, 194, 51, 0.6);
+  animation: zukan-new 0.55s cubic-bezier(0.3, 1.6, 0.5, 1) var(--new-delay, 0ms) backwards;
+}
+
+.zukan-card__new {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  z-index: 1;
+  padding: 0 8px;
+  background: var(--shu);
+  border-radius: 999px;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 0.8rem;
+  transform: rotate(8deg);
+}
+
+@keyframes zukan-new {
+  0% {
+    transform: scale(0.3) rotate(-10deg);
+    opacity: 0;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}

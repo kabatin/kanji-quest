@@ -1,9 +1,9 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { TopBar } from '../../components/Hud'
 import { KanjiGlyph } from '../../components/KanjiGlyph'
 import { PartIcon } from '../../components/PartIcon'
 import { Stamps } from '../../components/Stamps'
-import { GRADES, kanjiOfGrade } from '../../data/kanji'
+import { getKanji, GRADES, kanjiOfGrade } from '../../data/kanji'
 import type { Grade } from '../../data/schema'
 import { fullGlyph } from '../../data/strokes'
 import { useProgress } from '../../store/progress'
@@ -22,6 +22,15 @@ type Props = {
 export function Zukan({ view, onView, onOpen, onBack }: Props) {
   const learned = useProgress((s) => s.learned)
   const stamps = useProgress((s) => s.stamps)
+  const markZukanSeen = useProgress((s) => s.markZukanSeen)
+  // ひらいたときに「まだ見ていなかった字」を覚えておく(見ている間は「あたらしい」の しるし を出したままにする)
+  const [fresh] = useState<readonly string[]>(() => {
+    const state = useProgress.getState()
+    return state.learned.slice(state.zukanSeen)
+  })
+  useEffect(() => {
+    markZukanSeen()
+  }, [markZukanSeen])
   const gridRef = useRef<HTMLUListElement>(null)
 
   const all = kanjiOfGrade(view.grade)
@@ -31,6 +40,21 @@ export function Zukan({ view, onView, onOpen, onBack }: Props) {
   useLayoutEffect(() => {
     if (gridRef.current) gridRef.current.scrollTop = view.scroll
   }, [view.grade, view.scroll])
+
+  // あたらしい字が あるときは、その字の学年を ひらいて、見える所まで うごかす(ひらいたときに1回だけ)
+  const firstFresh = fresh[0]
+  const jumped = useRef(false)
+  useLayoutEffect(() => {
+    if (jumped.current || firstFresh === undefined) return
+    const grade = getKanji(firstFresh).grade
+    if (grade !== view.grade) {
+      onView({ grade, scroll: 0 })
+      return
+    }
+    jumped.current = true
+    const card = gridRef.current?.querySelector('.zukan-card.is-new')
+    if (card && typeof card.scrollIntoView === 'function') card.scrollIntoView({ block: 'center' })
+  }, [firstFresh, view.grade, onView])
 
   const open = (char: string) => {
     onView({ grade: view.grade, scroll: gridRef.current?.scrollTop ?? 0 })
@@ -61,14 +85,22 @@ export function Zukan({ view, onView, onOpen, onBack }: Props) {
       <ul ref={gridRef} className="zukan__grid scroll-area">
         {all.map((kanji) => {
           const isLearned = learned.includes(kanji.char)
+          const freshIndex = fresh.indexOf(kanji.char)
+          const isNew = freshIndex >= 0
           return (
             <li key={kanji.char}>
               <button
                 type="button"
-                className={`zukan-card ${isLearned ? 'is-learned' : ''}`}
+                className={`zukan-card ${isLearned ? 'is-learned' : ''} ${isNew ? 'is-new' : ''}`}
+                style={isNew ? { ['--new-delay' as string]: `${Math.min(freshIndex, 8) * 90}ms` } : undefined}
                 onClick={() => open(kanji.char)}
-                aria-label={`${kanji.char} ${kanji.yomi}${isLearned ? ' おぼえた' : ''}`}
+                aria-label={`${kanji.char} ${kanji.yomi}${isLearned ? ' おぼえた' : ''}${isNew ? ' あたらしい' : ''}`}
               >
+                {isNew && (
+                  <span className="zukan-card__new" aria-hidden="true">
+                    NEW
+                  </span>
+                )}
                 <KanjiGlyph layers={[{ glyph: fullGlyph(kanji.char), tone: isLearned ? 'ink' : 'pale' }]} label={kanji.char} />
                 <PartIcon id={kanji.icon} className="zukan-card__icon" />
                 <Stamps mask={stamps[kanji.char]} className="zukan-card__stamps" />

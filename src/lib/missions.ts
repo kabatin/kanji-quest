@@ -14,7 +14,7 @@ export type Counters = {
   readonly firstTry: number
   /** いちばん長く続いた れんぞく正解 */
   readonly maxCombo: number
-  /** たおした ボスの数 */
+  /** さいごまで たたかった ボスの数(れんしゅう も ふくむ) */
   readonly stage: number
   /** さいごまで やった ふくしゅう の数 */
   readonly review: number
@@ -39,7 +39,7 @@ export const MISSION_POOL: readonly Mission[] = [
   { id: 'firstTry5', label: '{1回|1かい}で せいかいを 5もん', counter: 'firstTry', target: 5, reward: 10 },
   { id: 'write3', label: 'かんじを 3つ {書|か}く', counter: 'write', target: 3, reward: 10 },
   { id: 'combo3', label: '3れんぞくで せいかい', counter: 'maxCombo', target: 3, reward: 10 },
-  { id: 'stage1', label: 'ボスを 1たい たおす', counter: 'stage', target: 1, reward: 25 },
+  { id: 'stage1', label: 'ボスと {1回|1かい} たたかう', counter: 'stage', target: 1, reward: 25 },
   { id: 'review1', label: 'ふくしゅうを {1回|1かい} する', counter: 'review', target: 1, reward: 15 },
 ]
 

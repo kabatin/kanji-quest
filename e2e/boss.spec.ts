@@ -4,7 +4,7 @@ const GLYPH_SIZE = 109
 const BOSS_QUESTIONS = 15
 const FITS = { inner: 0, pageHeight: 768, pageWidth: 1024 }
 
-/** ステージ1の5字を学びおえた状態から始める(ログインボーナスは受け取りずみ)。 */
+/** 中ボスまでの20字を学びおえた状態から始める(ログインボーナスは受け取りずみ)。 */
 async function startWithStageLearned(page: Page) {
   await page.goto('/')
   await page.getByRole('dialog', { name: 'ログインボーナス' }).getByRole('button').click()
@@ -13,7 +13,7 @@ async function startWithStageLearned(page: Page) {
     const storePath = '/src/store/progress.ts'
     const areas = await import(/* @vite-ignore */ areasPath)
     const store = await import(/* @vite-ignore */ storePath)
-    store.useProgress.setState({ learned: [...areas.ALL_STAGES[0].kanji], settings: { sound: false, speech: false, icons: true, timer: false } })
+    store.useProgress.setState({ learned: [...areas.AREAS[0].bosses[0].kanji], settings: { sound: false, speech: false, music: false, icons: true, timer: false } })
   })
 }
 
@@ -88,11 +88,23 @@ test('ホームは 3D の しま が出て、画面に収まる。メニュー�
   expect(await overflow(page)).toEqual(FITS)
 })
 
+test('地図: ステージ8つと 中ボス・ラスボスが 画面に収まって ならぶ', async ({ page }) => {
+  await startWithStageLearned(page)
+  await page.getByRole('button', { name: 'ぼうけん' }).click()
+  await expect(page.locator('.map-node--stage')).toHaveCount(8)
+  await expect(page.locator('.map-node--boss')).toHaveCount(2)
+  expect(await overflow(page)).toEqual(FITS)
+  // 丸どうしが かさなって 押せなくならない
+  const discs = await page.locator('.map-node__disc').evaluateAll((nodes) => nodes.map((n) => n.getBoundingClientRect()).map((r) => ({ x: r.x + r.width / 2, y: r.y + r.height / 2, r: r.width / 2 })))
+  for (const [i, a] of discs.entries()) for (const b of discs.slice(i + 1)) expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeGreaterThan(a.r + b.r)
+  await page.getByRole('button', { name: 'ちゅうボス とめきち' }).click()
+  await expect(page.getByRole('heading', { name: 'はじまりの もりの ちゅうボス' })).toBeVisible()
+})
+
 test('ボス: 15問を まちがえずに とくと 100点で たおせて、次のステージが開く', async ({ page }) => {
   test.setTimeout(180_000)
   await startWithStageLearned(page)
   await page.getByRole('button', { name: /ボスに ちょうせん/ }).click()
-  await page.getByRole('button', { name: 'ボスに ちょうせん' }).click()
   await expect(page.getByRole('img', { name: 'きょうは あと 3かい' })).toBeVisible()
   expect(await overflow(page)).toEqual(FITS)
   await page.getByRole('button', { name: 'たたかう！' }).click()
@@ -112,15 +124,15 @@ test('ボス: 15問を まちがえずに とくと 100点で たおせて、次
   await expect(page.locator('.boss-result__score strong')).toHaveText('100')
   expect(await overflow(page)).toEqual(FITS)
   await page.getByRole('button', { name: 'つぎの ステージへ' }).click()
-  await expect(page.getByRole('heading', { name: 'ステージ 2' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'ステージ 5' })).toBeVisible()
 
   // 読み込みなおしても、たおした記録は残る
   await page.reload()
   // ボスを たおして レベルが上がったので、ホームで おいわいが出る
   await page.getByRole('dialog', { name: 'レベルアップ' }).getByRole('button', { name: 'やったー！' }).click()
   await page.getByRole('button', { name: 'ぼうけん' }).click()
-  await expect(page.getByRole('button', { name: 'ステージ 1 クリア' })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'ステージ 2', exact: true })).toBeEnabled()
+  await expect(page.getByRole('button', { name: 'ちゅうボス とめきち たおした' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'ステージ 5', exact: true })).toBeEnabled()
 })
 
 test('ボス: とちゅうで やめても1回つかい、3回使いきると あしたまで たたかえない', async ({ page }) => {
@@ -129,16 +141,92 @@ test('ボス: とちゅうで やめても1回つかい、3回使いきると �
     const storePath = '/src/store/progress.ts'
     const store = await import(/* @vite-ignore */ storePath)
     // 3回のうち 2回は、もう使ったことにする
-    store.useProgress.getState().startBoss('s1', 'stage')
-    store.useProgress.getState().startBoss('s1', 'stage')
+    store.useProgress.getState().startBoss('a1-mid', 'mid')
+    store.useProgress.getState().startBoss('a1-mid', 'mid')
   })
   await page.getByRole('button', { name: /ボスに ちょうせん/ }).click()
-  await page.getByRole('button', { name: 'ボスに ちょうせん' }).click()
   await expect(page.getByRole('img', { name: 'きょうは あと 1かい' })).toBeVisible()
   await page.getByRole('button', { name: 'たたかう！' }).click()
   await page.getByRole('button', { name: '← やめる' }).click()
   await expect(page.getByRole('button', { name: 'あした また ちょうせん' })).toBeDisabled()
   await expect(page.getByRole('button', { name: 'れんしゅう する' })).toBeEnabled()
+})
+
+test('もようがえ: かざり を指で ひっぱると 場所が変わり、読み込みなおしても残る', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('dialog', { name: 'ログインボーナス' }).getByRole('button').click()
+  await expect(page.locator('.island[data-ready="true"]')).toBeVisible({ timeout: 20_000 })
+  // かざり を持っていない間は、もようがえ を押すと「きせかえで買おう」と案内が出る
+  await page.getByRole('button', { name: 'もようがえ' }).click()
+  const guide = page.getByRole('dialog', { name: 'もようがえ' })
+  await expect(guide.getByRole('button', { name: 'きせかえへ' })).toBeVisible()
+  expect(await overflow(page)).toEqual(FITS)
+  await guide.getByRole('button', { name: 'とじる' }).click()
+  await expect(guide).toBeHidden()
+  const spots = () =>
+    page.evaluate(async () => {
+      const storePath = '/src/store/progress.ts'
+      return (await import(/* @vite-ignore */ storePath)).useProgress.getState().decoSpots as Record<string, { x: number; z: number }>
+    })
+  await page.evaluate(async () => {
+    const storePath = '/src/store/progress.ts'
+    const store = await import(/* @vite-ignore */ storePath)
+    store.useProgress.setState({ owned: [...store.useProgress.getState().owned, 'deco:bench'], settings: { sound: false, speech: false, music: false, icons: true, timer: false } })
+  })
+  expect(await overflow(page)).toEqual(FITS)
+  await page.getByRole('button', { name: 'もようがえ' }).click()
+  await expect(page.getByRole('region', { name: 'もようがえ' })).toBeVisible()
+  await expect(page.locator('.dock')).toBeHidden()
+  expect(await overflow(page)).toEqual(FITS)
+  // カメラが上から見おろすまで待つ
+  await page.waitForTimeout(1500)
+
+  // ベンチ(はじめの場所 x: 3.3, z: 1.5)は、上から見おろすと 画面の まんなかより 少し右に見える
+  const canvas = page.locator('.island__canvas')
+  const box = await canvas.boundingBox()
+  if (!box) throw new Error('しま がありません')
+  // 何もない所を ひっぱっても、何も うごかない
+  await page.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.08)
+  await page.mouse.down()
+  await page.mouse.move(box.x + box.width * 0.4, box.y + box.height * 0.2, { steps: 4 })
+  await page.mouse.up()
+  expect(await spots()).toEqual({})
+
+  await page.mouse.move(box.x + box.width * 0.643, box.y + box.height * 0.522)
+  await page.mouse.down()
+  await page.mouse.move(box.x + box.width * 0.3, box.y + box.height * 0.35, { steps: 8 })
+  await page.mouse.up()
+  const placed = (await spots()).bench
+  expect(placed).toBeDefined()
+  // はじめの場所(x: 3.3, z: 1.5)から、左の おくへ うごいた
+  expect(placed.x).toBeLessThan(0)
+  expect(placed.z).toBeLessThan(1.5)
+
+  // つかんだ かざり は、まわしたり しまったり できる
+  const bar = page.getByRole('region', { name: 'もようがえ' })
+  const saved = () =>
+    page.evaluate(async () => {
+      const storePath = '/src/store/progress.ts'
+      const { decoTurns, decoStored } = (await import(/* @vite-ignore */ storePath)).useProgress.getState()
+      return { decoTurns, decoStored }
+    })
+  await expect(bar).toContainText('ベンチ')
+  await bar.getByRole('button', { name: /まわす/ }).click()
+  await bar.getByRole('button', { name: /まわす/ }).click()
+  expect(await saved()).toEqual({ decoTurns: { bench: 2 }, decoStored: [] })
+  await bar.getByRole('button', { name: /しまう/ }).click()
+  expect((await saved()).decoStored).toEqual(['bench'])
+  expect(await overflow(page)).toEqual(FITS)
+  await bar.getByRole('button', { name: 'ベンチ を だす' }).click()
+  expect((await saved()).decoStored).toEqual([])
+  await expect(bar.getByRole('button', { name: /しまう/ })).toBeVisible()
+
+  await page.getByRole('button', { name: 'できた！' }).click()
+  await expect(page.locator('.dock')).toBeVisible()
+  await page.reload()
+  await expect(page.locator('.island[data-ready="true"]')).toBeVisible({ timeout: 20_000 })
+  expect((await spots()).bench).toEqual(placed)
+  expect(await saved()).toEqual({ decoTurns: { bench: 2 }, decoStored: [] })
 })
 
 test('きせかえ の画面は、どの種類も画面に収まる', async ({ page }) => {

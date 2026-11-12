@@ -29,7 +29,7 @@ export function LoginBonusModal() {
           className="btn btn--primary btn--big"
           onClick={() => {
             claim()
-            play('fanfare')
+            play('coin')
           }}
         >
           コインを {bonus.coins}まい うけとる

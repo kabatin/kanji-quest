@@ -14,8 +14,8 @@
   filter: brightness(1.9);
 }
 
-.boss-monster[data-mood='laugh'] .boss-monster__body {
-  animation: boss-laugh 0.4s ease-in-out 2;
+.boss-monster[data-mood='phew'] .boss-monster__body {
+  animation: boss-phew 0.8s ease-out;
 }
 
 .boss-monster[data-mood='down'] .boss-monster__body {
@@ -39,9 +39,22 @@
   }
 }
 
-@keyframes boss-laugh {
-  50% {
-    transform: translateY(-9px);
+/* さっと よけてから、ぶるぶる ふるえる */
+@keyframes boss-phew {
+  25% {
+    transform: translateX(12px) rotate(8deg);
+  }
+  55% {
+    transform: translateX(0);
+  }
+  65% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+  85% {
+    transform: translateX(-2px);
   }
 }
 
@@ -112,6 +125,57 @@
   background: none;
   border: none;
   font-size: 1.05rem;
+}
+
+/* ぼうけん: ステージの丸は、ボスが まじっても ならぶように 少し小さく */
+.map-node--stage .map-node__disc {
+  width: 70px;
+  height: 70px;
+  font-size: 1.6rem;
+}
+
+.map-node--stage .map-node__kanji {
+  margin-top: 6px;
+  padding: 1px 7px;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* ぼうけん: 中ボス・ラスボス */
+.map-node--boss .map-node__disc {
+  width: 84px;
+  height: 84px;
+  padding: 8px;
+  background: #3a2c6b;
+  border-color: var(--shu);
+  box-shadow: 0 7px 0 #8e2f24;
+}
+
+.map-node--boss[data-spot='last'] .map-node__disc {
+  width: 94px;
+  height: 94px;
+  background: #2b2350;
+}
+
+.map-node--boss.is-cleared .map-node__disc {
+  background: #6a5fb5;
+}
+
+.map-node--boss.is-locked .map-node__disc {
+  background: #8d99a8;
+  border-color: #6b7686;
+  box-shadow: 0 7px 0 #6b7686;
+}
+
+.map-node--boss.is-locked .boss-monster {
+  filter: grayscale(1) brightness(0.6);
+}
+
+.map-node--boss .map-node__kanji {
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 400;
 }
 
 /* ぼうけん: そつぎょうしけん */
@@ -476,5 +540,260 @@
   .boss-result {
     grid-template-columns: 1fr;
     justify-items: center;
+  }
+}
+
+/* ───────── ボス: えんしゅつ ───────── */
+.boss-run {
+  position: relative;
+}
+
+.boss-run__foe {
+  position: relative;
+  display: grid;
+  flex-shrink: 0;
+}
+
+/* こうげきが当たった: 画面の上が ゆれて、HP の わく が光る */
+.boss-run[data-mood='hit'] .boss-run__bar {
+  animation: boss-shake 0.4s ease-in-out;
+}
+
+.boss-run[data-mood='hit'] .boss-hp {
+  animation: boss-hp-flash 0.6s ease-out;
+}
+
+@keyframes boss-shake {
+  20% {
+    transform: translate(-6px, 2px);
+  }
+  40% {
+    transform: translate(6px, -2px);
+  }
+  60% {
+    transform: translate(-4px, 1px);
+  }
+  80% {
+    transform: translate(3px, 0);
+  }
+}
+
+@keyframes boss-hp-flash {
+  0% {
+    background: #ffffff;
+    box-shadow: 0 0 0 6px rgba(255, 194, 51, 0.9);
+  }
+  100% {
+    background: #2b2350;
+    box-shadow: 0 0 0 0 rgba(255, 194, 51, 0);
+  }
+}
+
+/* 墨の しぶき: 小さな点が、ボスから まわりに とびちる */
+.boss-splash {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--yamabuki);
+  pointer-events: none;
+  animation: boss-splash 0.6s ease-out forwards;
+}
+
+@keyframes boss-splash {
+  0% {
+    transform: translate(-50%, -50%) scale(0.6);
+    box-shadow:
+      0 0 0 0 var(--yamabuki),
+      0 0 0 0 #ffffff,
+      0 0 0 0 var(--shu),
+      0 0 0 0 var(--yamabuki),
+      0 0 0 0 #ffffff,
+      0 0 0 0 var(--shu),
+      0 0 0 0 var(--yamabuki),
+      0 0 0 0 #ffffff;
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow:
+      0 -46px 0 2px var(--yamabuki),
+      34px -32px 0 0 #ffffff,
+      48px 0 0 3px var(--shu),
+      34px 32px 0 0 var(--yamabuki),
+      0 46px 0 2px #ffffff,
+      -34px 32px 0 0 var(--shu),
+      -48px 0 0 3px var(--yamabuki),
+      -34px -32px 0 0 #ffffff;
+    opacity: 0;
+  }
+}
+
+/* よけられた: ボスの ふきだし */
+.boss-run__phew {
+  position: absolute;
+  left: 70%;
+  top: 100%;
+  z-index: 3;
+  padding: 2px 12px;
+  background: #ffffff;
+  border: 3px solid #2b2350;
+  border-radius: 2px 14px 14px 14px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: boss-phew-bubble 1s ease-out forwards;
+}
+
+@keyframes boss-phew-bubble {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* まんなかに出る ことば(ヒット！ / おしい！) */
+.boss-banner {
+  position: absolute;
+  left: 50%;
+  top: 92px;
+  z-index: 4;
+  padding: 4px 26px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.7rem;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: boss-banner 1s ease-out forwards;
+}
+
+.boss-banner--hit {
+  background: var(--yamabuki);
+  border: 4px solid var(--yamabuki-dark);
+  color: #2b2350;
+}
+
+.boss-banner--phew {
+  background: #ffffff;
+  border: 4px solid #8d99a8;
+  color: #4a5568;
+  font-size: 1.3rem;
+}
+
+@keyframes boss-banner {
+  0% {
+    transform: translate(-50%, 14px) scale(0.5);
+    opacity: 0;
+  }
+  18% {
+    transform: translate(-50%, 0) scale(1.12);
+    opacity: 1;
+  }
+  30% {
+    transform: translate(-50%, 0) scale(1);
+  }
+  75% {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -16px) scale(1);
+    opacity: 0;
+  }
+}
+
+/* はじまり: ボスが 上から どすんと おりてくる */
+.boss-intro__monster {
+  animation: boss-enter 0.8s cubic-bezier(0.3, 1.5, 0.5, 1) backwards;
+}
+
+@keyframes boss-enter {
+  0% {
+    transform: translateY(-90px) scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* けっか: たおした ボスは、光って ゆれてから たおれる */
+.boss-result[data-won='true'] .boss-result__monster .boss-monster__body {
+  animation: boss-defeat 1.2s ease-in both;
+}
+
+@keyframes boss-defeat {
+  0% {
+    transform: none;
+    opacity: 1;
+    filter: brightness(2.4);
+  }
+  12% {
+    transform: translateX(-12px) rotate(-5deg);
+  }
+  24% {
+    transform: translateX(12px) rotate(5deg);
+  }
+  36% {
+    transform: translateX(-9px) rotate(-4deg);
+  }
+  48% {
+    transform: translateX(9px) rotate(4deg);
+    filter: brightness(1.4);
+  }
+  60% {
+    transform: translateY(-10px);
+    opacity: 1;
+    filter: none;
+  }
+  100% {
+    transform: rotate(-14deg) translateY(6px);
+    opacity: 0.75;
+  }
+}
+
+.boss-result[data-won='true'] .boss-result__score strong {
+  display: inline-block;
+  animation: boss-score 0.7s cubic-bezier(0.3, 1.7, 0.5, 1) 0.5s backwards;
+}
+
+@keyframes boss-score {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boss-run[data-mood='hit'] .boss-run__bar,
+  .boss-run[data-mood='hit'] .boss-hp,
+  .boss-intro__monster,
+  .boss-result[data-won='true'] .boss-result__monster .boss-monster__body,
+  .boss-result[data-won='true'] .boss-result__score strong {
+    animation: none;
+  }
+
+  .boss-splash {
+    display: none;
   }
 }

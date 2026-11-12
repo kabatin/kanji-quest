@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Burst } from '../../components/Burst'
 import { Mascot } from '../../components/Mascot'
 import { levelInfo, MASCOT_FORMS, mascotStage } from '../../lib/level'
@@ -17,7 +18,12 @@ export function LevelUpModal() {
   const markLevelSeen = useProgress((s) => s.markLevelSeen)
   const { play } = useFeedback()
   const { level } = levelInfo(xp)
-  if (bonusOpen || level <= seenLevel) return null
+  const open = !bonusOpen && level > seenLevel
+  // おいわいが出たときに、1回だけ音を鳴らす
+  useEffect(() => {
+    if (open) play('levelup')
+  }, [open, play])
+  if (!open) return null
 
   const before = mascotStage(seenLevel)
   const after = mascotStage(level)

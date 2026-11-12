@@ -1,7 +1,7 @@
 /*
  * ごほうびの量。6年生まで(1026字・およそ 200ステージ)続けても、
  * コインが あまりすぎず、きせかえ を少しずつ集められるように決めている。
- *   1字: まなぶ 5 + かく 3 / ボス 1体 30 / そつぎょうしけん 300 / まいにち およそ 50
+ *   1字: まなぶ 5 + かく 3 / エリア1つの ボス 240(中ボス 90 + ラスボス 150)/ そつぎょうしけん 300 / まいにち およそ 50
  */
 export const XP_LEARN_NEW = 20
 export const XP_LEARN_AGAIN = 3
@@ -12,8 +12,11 @@ export const XP_WRITE_FIRST = 10
 export const XP_WRITE_AGAIN = 2
 export const COINS_WRITE_FIRST = 3
 
-export const XP_BOSS_CLEAR = 100
-export const COINS_BOSS_CLEAR = 30
+// エリア(8ステージ)に ボスは2体。ステージごとに ボスが いたころ(1体 100 / 30)と、エリアの合計が同じになるようにしている
+export const XP_MID_CLEAR = 300
+export const COINS_MID_CLEAR = 90
+export const XP_LAST_CLEAR = 500
+export const COINS_LAST_CLEAR = 150
 export const XP_EXAM_CLEAR = 500
 export const COINS_EXAM_CLEAR = 300
 /** クリアできなかったとき・れんしゅうのときも、がんばった分だけ少しもらえる */
@@ -105,15 +108,16 @@ export function quizXp(summary: QuizSummary): number {
 }
 
 /** ボスの種類ごとの ごほうび(はじめて たおしたとき) */
-export type BossKind = 'stage' | 'exam'
+export type BossKind = 'mid' | 'last' | 'exam'
 
 export const BOSS_REWARD: Record<BossKind, { readonly xp: number; readonly coins: number }> = {
-  stage: { xp: XP_BOSS_CLEAR, coins: COINS_BOSS_CLEAR },
+  mid: { xp: XP_MID_CLEAR, coins: COINS_MID_CLEAR },
+  last: { xp: XP_LAST_CLEAR, coins: COINS_LAST_CLEAR },
   exam: { xp: XP_EXAM_CLEAR, coins: COINS_EXAM_CLEAR },
 }
 
 /** 1日に ちょうせん できる回数 */
-export const BOSS_TRIES_PER_DAY: Record<BossKind, number> = { stage: 3, exam: 2 }
+export const BOSS_TRIES_PER_DAY: Record<BossKind, number> = { mid: 3, last: 3, exam: 2 }
 
 export const BOSS_CLEAR_SCORE = 100
 

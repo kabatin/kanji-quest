@@ -1,5 +1,5 @@
-/** idle = ふつう / hit = こうげきが当たった / laugh = よけて わらっている / down = たおれた */
-export type BossMood = 'idle' | 'hit' | 'laugh' | 'down'
+/** idle = ふつう / hit = こうげきが当たった / phew = ぎりぎり よけて「あぶなかった」 / down = たおれた */
+export type BossMood = 'idle' | 'hit' | 'phew' | 'down'
 
 const BODY_COLORS = ['#4b2f7a', '#1f5d63', '#7a2f3d', '#2d4a8a', '#6b4a1e', '#2a6b3c'] as const
 const BELLY_COLORS = ['#7d5bb5', '#3f9aa3', '#b85a6b', '#5b7fc7', '#a57a3a', '#55a56b'] as const
@@ -33,7 +33,16 @@ function eyesFor(count: number, mood: BossMood) {
   return spots.map((x, i) => {
     const y = count === 3 && i === 1 ? 44 : 52
     if (mood === 'down') return <path key={x} d={`M${x - 7} ${y - 7} L${x + 7} ${y + 7} M${x + 7} ${y - 7} L${x - 7} ${y + 7}`} stroke="#fff" strokeWidth="4" strokeLinecap="round" />
-    if (mood === 'laugh') return <path key={x} d={`M${x - 8} ${y + 2} Q${x} ${y - 9} ${x + 8} ${y + 2}`} stroke="#fff" strokeWidth="4" strokeLinecap="round" fill="none" />
+    if (mood === 'phew') {
+      // びっくりした まるい目と、こまった まゆ(子どもを わらわない)
+      return (
+        <g key={x}>
+          <ellipse cx={x} cy={y} rx="9" ry="11" fill="#fff" />
+          <circle cx={x} cy={y + 2} r="3" fill="#1b1b1b" />
+          <path d={x < 60 ? `M${x - 10} ${y - 13} L${x + 6} ${y - 17}` : `M${x + 10} ${y - 13} L${x - 6} ${y - 17}`} stroke="#1b1b1b" strokeWidth="4" strokeLinecap="round" />
+        </g>
+      )
+    }
     return (
       <g key={x}>
         <ellipse cx={x} cy={y} rx="9" ry={mood === 'hit' ? 11 : 10} fill="#fff" />
@@ -48,6 +57,15 @@ function eyesFor(count: number, mood: BossMood) {
 function mouthFor(mood: BossMood) {
   if (mood === 'down') return <path d="M48 82 Q60 74 72 82" stroke="#fff" strokeWidth="4" strokeLinecap="round" fill="none" />
   if (mood === 'hit') return <ellipse cx="60" cy="80" rx="8" ry="9" fill="#1b1b1b" />
+  if (mood === 'phew') {
+    return (
+      <>
+        <path d="M46 82 Q51 76 56 82 T66 82 T76 82" stroke="#fff" strokeWidth="4" strokeLinecap="round" fill="none" />
+        {/* ひやあせ */}
+        <path className="boss-monster__sweat" d="M98 30 Q104 42 98 46 Q92 42 98 30 Z" fill="#9fdcff" />
+      </>
+    )
+  }
   return (
     <>
       <path d="M40 72 Q60 96 80 72 Z" fill="#1b1b1b" />

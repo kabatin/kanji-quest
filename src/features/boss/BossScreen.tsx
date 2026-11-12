@@ -55,8 +55,9 @@ export function BossScreen({ boss, onBack, next, onReview }: Props) {
   const start = (practice: boolean) => {
     // ほんばんは、その日の回数を1つ使う。たおしたあとは、何回でも れんしゅう できる
     if (!practice && !startBoss(boss.id, boss.kind, dayKey(), limit)) return
-    play('tap')
-    const questions = buildBoss(boss.kanji.map(getKanji), KANJI, boss.plan)
+    play(practice ? 'tap' : 'bossAppear')
+    // 苦手な字(まちがえた回数が のこっている字)を 優先して出す
+    const questions = buildBoss(boss.kanji.map(getKanji), KANJI, boss.plan, Math.random, useProgress.getState().misses)
     setPhase({ name: 'play', practice, questions, run: phase.name === 'play' ? phase.run + 1 : Date.now() })
   }
 
@@ -69,8 +70,8 @@ export function BossScreen({ boss, onBack, next, onReview }: Props) {
         questions={phase.questions}
         onQuit={() => setPhase({ name: 'intro' })}
         onFinish={(outcome) => {
-          const gain = finishBoss({ id: boss.id, kind: boss.kind, perfect: outcome.perfect, total: outcome.total, practice, missed: outcome.missed })
-          play(gain.score === BOSS_CLEAR_SCORE ? 'fanfare' : 'retry')
+          const gain = finishBoss({ id: boss.id, kind: boss.kind, perfect: outcome.perfect, total: outcome.total, practice, missed: outcome.missed, solved: outcome.solved })
+          play(gain.cleared ? 'bossDown' : gain.score === BOSS_CLEAR_SCORE ? 'fanfare' : 'retry')
           setPhase({ name: 'result', practice, outcome, gain })
         }}
       />
@@ -84,7 +85,7 @@ export function BossScreen({ boss, onBack, next, onReview }: Props) {
       <div className="screen boss-result" data-won={won}>
         {gain.cleared && <Burst />}
         <div className="boss-result__main">
-          <BossMonster seed={boss.seed} king={king} mood={won ? 'down' : 'laugh'} className="boss-result__monster" label={boss.name} />
+          <BossMonster seed={boss.seed} king={king} mood={won ? 'down' : 'phew'} className="boss-result__monster" label={boss.name} />
           <p className="boss-result__score">
             <strong>{gain.score}</strong> てん
           </p>

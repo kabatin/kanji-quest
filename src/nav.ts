@@ -1,3 +1,5 @@
+import type { TrackName } from './lib/music'
+
 /** アプリの画面。App が「いま開いている画面の重なり」として持つ。 */
 export type Screen =
   | { readonly name: 'home' }
@@ -17,3 +19,13 @@ export type Screen =
   | { readonly name: 'parent' }
 
 export const HOME: Screen = { name: 'home' }
+
+/**
+ * 画面ごとの音楽。学ぶ・ふくしゅう の間は、こえ(ものがたり・よみ)を よく聞けるよう 流さない。
+ */
+export function trackFor(name: Screen['name']): TrackName | undefined {
+  if (name === 'boss' || name === 'exam') return 'boss'
+  if (name === 'map' || name === 'stage' || name === 'challenge') return 'adventure'
+  if (name === 'learn' || name === 'review' || name === 'parent' || name === 'parent-gate' || name === 'profiles') return undefined
+  return 'home'
+}
