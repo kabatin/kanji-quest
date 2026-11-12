@@ -1,9 +1,9 @@
 /*
  * 場面の「コマ送りの一覧」を 画像にする(場面を作る人・エージェントが、自分の目で たしかめるため)。
  *
- *   node scripts/scene-sheet.mjs 休                      → test-results/scenes/k4f11.png
+ *   node scripts/scene-sheet.mjs 休                      → .scene-sheets/k4f11.png
  *   node scripts/scene-sheet.mjs 休 木 林                → 何字でも
- *   node scripts/scene-sheet.mjs --variant sonnet 山     → ためしの場面(trials/sonnet/)。test-results/scenes/sonnet/k5c71.png
+ *   node scripts/scene-sheet.mjs --variant sonnet 山     → ためしの場面(trials/sonnet/)。.scene-sheets/sonnet/k5c71.png
  *   node scripts/scene-sheet.mjs --big 休                → コマを大きく(3列)。こまかい所を見るとき
  *
  * 開発サーバーを 自分で立ち上げて、?scene=字 のページを 写す。
@@ -21,7 +21,8 @@ const variantAt = args.indexOf('--variant')
 const variant = variantAt >= 0 ? args[variantAt + 1] : null
 const big = args.includes('--big')
 const chars = args.filter((arg, i) => !arg.startsWith('--') && (variantAt < 0 || i !== variantAt + 1))
-const outDir = join(root, 'test-results', 'scenes', ...(variant ? [variant] : []))
+// (test-results は Playwright のテストが 走るたびに 消されるので、べつの場所に置く)
+const outDir = join(root, '.scene-sheets', ...(variant ? [variant] : []))
 
 if (chars.length === 0 || (variantAt >= 0 && !variant)) {
   console.error('つかいかた: node scripts/scene-sheet.mjs [--variant <なまえ>] [--big] <漢字> [<漢字> ...]')

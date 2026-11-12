@@ -1,4 +1,5 @@
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { renderHook } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { getKanji, KANJI } from '../../data/kanji'
@@ -7,8 +8,10 @@ import { strokeTones } from '../../lib/strokeTones'
 import { canAnimate, useSceneClock } from './sceneClock'
 import { backOut, checkScene, clamp01, during, easeIn, easeInOut, easeOut, inkTiming, MAX_DURATION, MIN_DURATION, mix, pose, sheetTimes, span, wave, type SceneModule } from './sceneKit'
 import { BoneGlow, Ink, Sparkles } from './sceneParts'
+import { SceneGallery } from './SceneGallery'
 import { SceneCompare, ScenePreview } from './ScenePreview'
 import { hasScene, loadScene, sceneChars, sceneFileName } from './sceneRegistry'
+import { loadReviews, REVIEW_KEY, reviewReport } from './sceneReview'
 import { SceneStage } from './SceneStage'
 import { StoryPlayer } from './StoryPlayer'
 
@@ -230,6 +233,39 @@ describe('手づくりの場面', () => {
     // はじめの しゅんかん: まだ 字は 書かれていない(絵から 始まる)
     const first = render(<SceneStage scene={scene} t={0} label="x" />)
     expect(first.container.querySelectorAll('[data-stroke]')).toHaveLength(0)
+  })
+})
+
+describe('場面の たしかめ(開発用の一覧)', () => {
+  it('ぜんぶの字が 学ぶ順に ならび、字ごとに よい・なおしたい・メモ を付けて のこせる', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<SceneGallery />)
+    expect(container.querySelectorAll('.scene-card')).toHaveLength(KANJI.length)
+    expect(container.querySelector('.scene-card')).toHaveAttribute('data-char', '一')
+    const card = container.querySelector('.scene-card[data-char="休"]') as HTMLElement
+    expect(card).toHaveAttribute('data-state', 'todo')
+    await user.click(within(card).getByRole('checkbox', { name: 'よい' }))
+    expect(card).toHaveAttribute('data-state', 'ok')
+    // メモを書くと、「なおしたい」に なる(よい は はずれる)
+    await user.type(within(card).getByRole('textbox', { name: '休 の メモ' }), 'くび')
+    expect(card).toHaveAttribute('data-state', 'flag')
+    expect(loadReviews()['休']).toEqual({ ok: false, flag: true, memo: 'くび' })
+    expect(screen.getByRole('heading')).toHaveTextContent('なおしたい 1')
+    // しぼりこみ: なおしたい だけ。一覧の文も 出る
+    await user.click(screen.getByRole('button', { name: 'なおしたい' }))
+    expect(container.querySelectorAll('.scene-card')).toHaveLength(1)
+    expect(screen.getByRole('textbox', { name: 'なおしたい の一覧' })).toHaveValue('休: くび')
+    await user.click(screen.getByRole('button', { name: '場面が ない' }))
+    expect(container.querySelectorAll('.scene-card[data-state="missing"]').length).toBe(container.querySelectorAll('.scene-card').length)
+  })
+
+  it('なおしたい字を、1行に1字の 文に する。こわれた きろく は すてる', () => {
+    expect(reviewReport({ 山: { flag: true, memo: ' みね ' }, 休: { ok: true }, 川: { flag: true } }, ['川', '休', '山'])).toBe('川: (メモなし)\n山: みね')
+    expect(reviewReport({}, ['山'])).toBe('')
+    localStorage.setItem(REVIEW_KEY, '{こわれた')
+    expect(loadReviews()).toEqual({})
+    localStorage.setItem(REVIEW_KEY, '[1]')
+    expect(loadReviews()).toEqual({})
   })
 })
 

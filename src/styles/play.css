@@ -794,3 +794,137 @@
   width: 400px;
   color: #8a94a6;
 }
+
+/* 開発用: ぜんぶの場面を ならべて たしかめる(?gallery) */
+.scene-gallery__bar {
+  position: sticky;
+  top: -12px;
+  z-index: 5;
+  padding: 8px 0;
+  background: #ffffff;
+  border-bottom: 2px solid #27336b;
+}
+
+.scene-gallery__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.scene-gallery button {
+  padding: 4px 12px;
+  background: #ffffff;
+  border: 2px solid #27336b;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.scene-gallery button[aria-pressed='true'] {
+  background: #27336b;
+  color: #ffffff;
+}
+
+.scene-gallery button:disabled {
+  opacity: 0.4;
+}
+
+.scene-gallery__report {
+  width: 100%;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.scene-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.scene-card {
+  padding: 8px;
+  background: #f7f9fc;
+  border: 3px solid #c9d2e0;
+  border-radius: 14px;
+}
+
+.scene-card[data-state='ok'] {
+  border-color: #3f9c59;
+  background: #f1faf3;
+}
+
+.scene-card[data-state='flag'] {
+  border-color: #e8452c;
+  background: #fff3f0;
+}
+
+.scene-card[data-state='missing'] {
+  opacity: 0.55;
+}
+
+.scene-card header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.scene-card header strong {
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.scene-card header a {
+  margin-left: auto;
+}
+
+.scene-card__stage {
+  aspect-ratio: 1;
+  margin: 6px 0 0;
+}
+
+.scene-card__none {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: #8a94a6;
+}
+
+.scene-card__beat {
+  height: 2.6em;
+  overflow: hidden;
+  color: #5b6577;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.scene-card__caption {
+  margin-top: 30px;
+  min-height: 2.6em;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.scene-card footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.scene-card footer label {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.scene-card__memo {
+  flex: 1 1 100%;
+  padding: 4px 8px;
+  border: 2px solid #c9d2e0;
+  border-radius: 8px;
+  font-size: 13px;
+}

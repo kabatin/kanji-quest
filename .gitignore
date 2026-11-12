@@ -28,3 +28,6 @@ coverage
 test-results
 playwright-report
 .playwright-mcp
+
+# 場面の コマ送りの画像(scripts/scene-sheet.mjs が作る)
+.scene-sheets

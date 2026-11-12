@@ -26,10 +26,19 @@ void registerServiceWorker()
 //   ?scene=休                 その字の場面を コマ送りで ならべて見る
 //   ?scene=山&variant=sonnet  ためしに作った場面(trials/sonnet/)を見る
 //   ?compare                  ためしに作った場面を、同じ字どうし よこに ならべて見くらべる
+//   ?gallery                  ぜんぶの場面を 動いている すがた で ならべて、目で たしかめる(よい・なおしたい・メモ)
 const params = import.meta.env.DEV ? new URLSearchParams(window.location.search) : new URLSearchParams()
 const previewChar = params.get('scene')
 
-if (previewChar || params.has('compare')) {
+if (params.has('gallery')) {
+  void import('./features/story/SceneGallery').then(({ SceneGallery }) => {
+    createRoot(root).render(
+      <StrictMode>
+        <SceneGallery />
+      </StrictMode>,
+    )
+  })
+} else if (previewChar || params.has('compare')) {
   void import('./features/story/ScenePreview').then(({ ScenePreview, SceneCompare }) => {
     createRoot(root).render(
       <StrictMode>{previewChar ? <ScenePreview char={previewChar} variant={params.get('variant')} /> : <SceneCompare chars={params.get('compare') ?? ''} />}</StrictMode>,
