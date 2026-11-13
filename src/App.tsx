@@ -21,6 +21,7 @@ import { setMusic } from './lib/music'
 import { itemName } from './lib/shop'
 import { bossAfter, findBoss, findStage, isCleared, type AreaBoss, type Stage } from './lib/stages'
 import { useStopVoiceOnLeave } from './lib/useFeedback'
+import { reloadIfUpdated } from './lib/pwa'
 import { HOME, trackFor, type Screen } from './nav'
 import { useBossRules } from './store/parent'
 import { useProfiles } from './store/profiles'
@@ -67,6 +68,10 @@ export default function App() {
   // 「もどる」などで画面をはなれたら、流れている音声をフェードアウトで止める
   useStopVoiceOnLeave(screen)
   useMusic(screen.name)
+  // あそんでいる間に 新しい版が入っていたら、ホームに もどったときに 読みこみなおす
+  useEffect(() => {
+    if (screen.name === 'home') reloadIfUpdated()
+  }, [screen.name])
 
   const go = (next: Screen) => setStack((prev) => [...prev, next])
   const back = () => setStack((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev))

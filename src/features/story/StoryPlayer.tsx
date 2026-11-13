@@ -115,8 +115,7 @@ function useBeatSounds(scene: SceneModule | undefined, t: number, round: number)
  * 場面は あとから読みこまれる。読みこんでいる間も、わく・文・ボタン は 同じものを出したままにする
  * (読みこみが おわった しゅんかんに「つぎへ」を おしても、おした ことが 消えないように)。
  */
-function ScenePlayer({ kanji, onDone }: Props) {
-  const scene = useScene(kanji.char)
+function ScenePlayer({ kanji, onDone, scene }: Props & { readonly scene: SceneModule | undefined }) {
   const { say } = useFeedback()
   const [round, setRound] = useState(0)
   const duration = scene?.duration ?? 0
@@ -148,9 +147,11 @@ function ScenePlayer({ kanji, onDone }: Props) {
 
 /**
  * 成り立ちの物語。手づくりの場面(scenes/)がある字は それを流し、まだ ない字は これまでの かんたんな絵で見せる。
+ * 場面を 読みこめなかったとき(電波がない など)も、かんたんな絵で見せる(何も出ない ままに しない)。
  */
 export function StoryPlayer({ kanji, onDone }: Props) {
-  return hasScene(kanji.char) ? <ScenePlayer key={kanji.char} kanji={kanji} onDone={onDone} /> : <SimpleStory kanji={kanji} onDone={onDone} />
+  const { scene, failed } = useScene(kanji.char)
+  return hasScene(kanji.char) && !failed ? <ScenePlayer key={kanji.char} kanji={kanji} onDone={onDone} scene={scene} /> : <SimpleStory key={kanji.char} kanji={kanji} onDone={onDone} />
 }
 
 /**

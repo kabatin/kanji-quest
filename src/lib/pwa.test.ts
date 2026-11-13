@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import manifest from '../assets/voice-manifest.json'
-import { offlineStatus, registerServiceWorker, SHELL_PREFIX, SW_URL, VOICE_PREFIX } from './pwa'
+import { offlineStatus, registerServiceWorker, reloadIfUpdated, SHELL_PREFIX, SW_URL, VOICE_PREFIX } from './pwa'
 
 function fakeCaches(entries: Record<string, number>): CacheStorage {
   return {
@@ -14,6 +14,50 @@ function fakeNavigator(register: () => Promise<unknown>, postMessage = vi.fn()):
 }
 
 describe('オフライン(サービスワーカー)', () => {
+  it('新しい版が入ったら、ホームに もどったときに 読みこみなおす。もどるたびに 新しい版を さがす', async () => {
+    const listeners: Record<string, () => void> = {}
+    const update = vi.fn(async () => undefined)
+    const serviceWorker = {
+      controller: {},
+      register: async () => ({ update }),
+      ready: Promise.resolve({ active: { postMessage: vi.fn() } }),
+      addEventListener: (name: string, fn: () => void) => {
+        listeners[name] = fn
+      },
+    }
+    const doc = {
+      visibilityState: 'visible',
+      addEventListener: (name: string, fn: () => void) => {
+        listeners[name] = fn
+      },
+    }
+    const reload = vi.fn()
+    await registerServiceWorker({ prod: true, nav: { serviceWorker } as unknown as Navigator, cacheStorage: fakeCaches({}), doc: doc as unknown as Document })
+    expect(reloadIfUpdated(reload)).toBe(false)
+    listeners.visibilitychange()
+    expect(update).toHaveBeenCalledTimes(1)
+    listeners.controllerchange()
+    expect(reloadIfUpdated(reload)).toBe(true)
+    expect(reload).toHaveBeenCalledTimes(1)
+    // 1回 読みこみなおしたら、もう しない
+    expect(reloadIfUpdated(reload)).toBe(false)
+  })
+
+  it('はじめて入れたときは、読みこみなおさない', async () => {
+    const listeners: Record<string, () => void> = {}
+    const serviceWorker = {
+      controller: null,
+      register: async () => ({}),
+      ready: Promise.resolve({ active: { postMessage: vi.fn() } }),
+      addEventListener: (name: string, fn: () => void) => {
+        listeners[name] = fn
+      },
+    }
+    await registerServiceWorker({ prod: true, nav: { serviceWorker } as unknown as Navigator, cacheStorage: fakeCaches({}) })
+    listeners.controllerchange()
+    expect(reloadIfUpdated(vi.fn())).toBe(false)
+  })
+
   it('開発中は入れない', async () => {
     const register = vi.fn(async () => ({}))
     expect(await registerServiceWorker({ prod: false, nav: fakeNavigator(register), cacheStorage: fakeCaches({}) })).toBe(false)

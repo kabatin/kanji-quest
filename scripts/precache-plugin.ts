@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { readdirSync, statSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative, sep } from 'node:path'
 import type { Plugin } from 'vite'
 
@@ -40,7 +40,14 @@ export function buildPrecacheList(bundleFiles: readonly string[], publicFiles: r
   }
 }
 
-/** npm run build のときに、dist/precache.json を書き出す Vite のプラグイン。 */
+/**
+ * サービスワーカーの さいごに、アプリ本体の版を書きこむ。
+ * ブラウザは sw.js の中身が 1文字でも変わると 入れなおす(= 新しい版の保存が始まる)。
+ * 書きこまないと 中身が ずっと同じで、すでに入っている端末に 新しいファイルが とどかない。
+ */
+export const stampServiceWorker = (source: string, version: string): string => `${source.trimEnd()}\n\n// version: ${version}\n`
+
+/** npm run build のときに、dist/precache.json と、版を書きこんだ dist/sw.js を書き出す Vite のプラグイン。 */
 export function precachePlugin(publicDir: string): Plugin {
   return {
     name: 'kanji-quest-precache',
@@ -52,6 +59,7 @@ export function precachePlugin(publicDir: string): Plugin {
         listFiles(publicDir),
       )
       this.emitFile({ type: 'asset', fileName: 'precache.json', source: JSON.stringify(list) })
+      this.emitFile({ type: 'asset', fileName: 'sw.js', source: stampServiceWorker(readFileSync(join(publicDir, 'sw.js'), 'utf8'), list.version) })
     },
   }
 }

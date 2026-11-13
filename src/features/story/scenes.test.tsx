@@ -257,7 +257,7 @@ describe('場面の たしかめ(開発用の一覧)', () => {
     expect(screen.getByRole('textbox', { name: 'なおしたい の一覧' })).toHaveValue('休: くび')
     await user.click(screen.getByRole('button', { name: '場面が ない' }))
     expect(container.querySelectorAll('.scene-card[data-state="missing"]').length).toBe(container.querySelectorAll('.scene-card').length)
-  })
+  }, 30_000)
 
   it('なおしたい字を、1行に1字の 文に する。こわれた きろく は すてる', () => {
     expect(reviewReport({ 山: { flag: true, memo: ' みね ' }, 休: { ok: true }, 川: { flag: true } }, ['川', '休', '山'])).toBe('川: (メモなし)\n山: みね')

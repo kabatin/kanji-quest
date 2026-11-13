@@ -46,15 +46,18 @@ describe('オフライン保存の一覧(precache.json)', () => {
     ])
   })
 
-  it('ビルドのときだけ、precache.json を書き出す', () => {
+  it('ビルドのときだけ、precache.json と 版を書きこんだ sw.js を書き出す', () => {
     dir = mkdtempSync(join(tmpdir(), 'kq-'))
     writeFileSync(join(dir, 'manifest.webmanifest'), '{}')
+    writeFileSync(join(dir, 'sw.js'), '// sw')
     const plugin = precachePlugin(dir)
     expect(plugin.apply).toBe('build')
     const emitted: { fileName: string; source: string }[] = []
     const hook = plugin.generateBundle as unknown as (this: unknown, options: unknown, bundle: Record<string, unknown>) => void
     hook.call({ emitFile: (file: { fileName: string; source: string }) => emitted.push(file) }, {}, { 'assets/index.js': {}, 'assets/index.js.map': {} })
-    expect(emitted).toHaveLength(1)
+    expect(emitted.map((file) => file.fileName)).toEqual(['precache.json', 'sw.js'])
+    // サービスワーカーには 版が入る(公開するたびに 中身が変わり、端末が 入れなおす)
+    expect(emitted[1].source).toContain(`// version: ${JSON.parse(emitted[0].source).version}`)
     const list = JSON.parse(emitted[0].source)
     expect(list.shell).toEqual(['./', './assets/index.js', './index.html', './manifest.webmanifest'])
   })

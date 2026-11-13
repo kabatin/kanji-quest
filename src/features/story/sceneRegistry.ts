@@ -28,9 +28,17 @@ export async function loadScene(char: string): Promise<SceneModule | undefined> 
   return scene
 }
 
-/** 場面を読みこむ。読みこみ中・場面がない・読みこめなかったときは undefined。 */
-export function useScene(char: string): SceneModule | undefined {
+export type SceneLoad = {
+  /** 読みこめた場面(読みこみ中・場面がない・読みこめなかったときは undefined) */
+  readonly scene: SceneModule | undefined
+  /** 読みこめなかった(電波がない・公開しなおして ファイルが なくなった など) */
+  readonly failed: boolean
+}
+
+/** 場面を読みこむ。読みこめなかったときは failed が true に なる。 */
+export function useScene(char: string): SceneLoad {
   const [loaded, setLoaded] = useState<SceneModule | undefined>(undefined)
+  const [failedChar, setFailedChar] = useState<string | undefined>(undefined)
   useEffect(() => {
     let alive = true
     loadScene(char)
@@ -40,11 +48,11 @@ export function useScene(char: string): SceneModule | undefined {
       .catch((error: unknown) => {
         // 読みこめなかったときは、これまでの かんたんな絵で見せる(学習は止めない)
         console.error('場面を読みこめませんでした:', error)
-        if (alive) setLoaded(undefined)
+        if (alive) setFailedChar(char)
       })
     return () => {
       alive = false
     }
   }, [char])
-  return loaded?.char === char ? loaded : undefined
+  return { scene: loaded?.char === char ? loaded : undefined, failed: failedChar === char }
 }
