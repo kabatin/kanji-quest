@@ -5,7 +5,8 @@ import { sceneFileName } from './sceneRegistry'
  * ためしに作った場面(くらべる用)。trials/<なまえ>/k<文字コード>.tsx に置く。
  * 開発用の確認ページ(?scene=山&variant=sonnet / ?compare)からだけ読む。あそぶ画面には出ない。
  */
-const TRIALS = import.meta.glob<{ default: SceneModule }>('./trials/*/k*.tsx')
+// 公開する版には 入れない(開発中だけ読む)
+const TRIALS: Record<string, () => Promise<{ default: SceneModule }>> = import.meta.env.DEV ? import.meta.glob<{ default: SceneModule }>('./trials/*/k*.tsx') : {}
 
 /** ためしの場面の なまえ(trials の下のフォルダ名)。 */
 export function trialVariants(): string[] {
