@@ -1,6 +1,6 @@
 # 漢字クエスト
 
-![version](https://img.shields.io/badge/version-0.1.4-2f86b8) ![kanji](https://img.shields.io/badge/収録-240字(小1・小2)-3f9b5a)
+![version](https://img.shields.io/badge/version-0.1.5-2f86b8) ![kanji](https://img.shields.io/badge/収録-240字(小1・小2)-3f9b5a)
 
 漢字を「文字」ではなく「形と部位の組み合わせ」で覚えるための学習アプリの試作です。
 読み書きが苦手でも、形を見て考えるのが得意な子が、絵と物語から漢字の意味を想像できることを目指しています。
@@ -83,6 +83,7 @@ npm run build      # 本番ビルド(dist/)
 公開した版(`npm run build`)では、サービスワーカー(`public/sw.js`)が入り、一度ひらけば電波がなくても あそべます。
 
 - アプリ本体(画面・絵・データ)は、はじめて ひらいたときに保存します
+- 公開しなおすと、次に ひらいたとき(ホーム画面のアプリは、もどってきたとき)に 新しい版を保存しなおし、ホームに もどったところで 画面を読みこみなおします(ビルドのときに `sw.js` へ版を書きこむので、端末が 新しい版に気づく)
 - 音声(約18MB)は、そのあと うらで少しずつ保存します。保護者向け画面で「音声 603 / 603」のように進みぐあいが見えます
 - 保存するファイルの一覧(`dist/precache.json`)は、ビルドのときに `scripts/precache-plugin.ts` が作ります
 - iPad では Safari の共有メニュー →「ホーム画面に追加」で、アプリのように ひらけます(アイコンは `public/icons/`、作りなおすときは `node scripts/build-icons.mjs`)
