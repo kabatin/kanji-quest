@@ -347,7 +347,6 @@ function Scene({ t }: SceneProps) {
   const mood: Mood = t < GRIP + 0.2 ? 'curious' : t < UP ? 'effort' : 'happy'
   const headTilt = t < STOP ? stride * 2 : t < CROUCH ? 7 * span(t, STOP, STOP + 0.4, easeOut) : t < UP ? 0 : wave(t, 1.4) * 3
   const headY = hipY - 44
-  const held = grasp > 0.5
   const appear = span(t, 0.2, 0.7, easeOut)
   const stickPicture = (
     <Layer opacity={appear}>
@@ -359,12 +358,11 @@ function Scene({ t }: SceneProps) {
     <>
       <Layer opacity={ink.picture}>
         <Ground t={t} />
-        <Rocks t={t} />
         <ellipse cx={54.5 + walkX} cy="97.4" rx="12" ry="2.6" fill="#000000" opacity="0.12" />
-        {/* ぼうは、にぎる まえは 子どもの うしろ、にぎった あとは 子どもの 手まえ */}
-        {!held && stickPicture}
+        {/* 子どもは ぼうの うしろに 立つ。石も ぼうも 体の 手まえに 描き、さいごまで 前後を かえない。
+            (子どもは walkX で うごく層の中なので、石と ぼうは その分を うちけして 動かさない) */}
         <Layer x={walkX}>
-          <Child hipY={hipY} feet={feet} hands={hands} mood={mood} headTilt={headTilt} stick={held ? stickPicture : null} />
+          <Child hipY={hipY} feet={feet} hands={hands} mood={mood} headTilt={headTilt} stick={<Layer x={-walkX}><Rocks t={t} />{stickPicture}</Layer>} />
         </Layer>
         <Surprise t={t} x={68 + walkX} y={headY - 8} />
         <Sweat t={t} x={54.5} y={headY} />

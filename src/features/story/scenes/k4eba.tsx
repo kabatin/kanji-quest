@@ -316,8 +316,10 @@ function Scene({ t }: SceneProps) {
   // 立っているときの あし(あるくとき かわりばんこに ふる)
   const standX = HIP[0] + walkX
   const amp = 3 + 6 * walking
-  const standNear: Pt = [standX + amp * Math.sin(phase), ANKLE_Y - 4 * walking * Math.max(0, Math.cos(phase))]
-  const standFar: Pt = [standX + amp * Math.sin(phase + Math.PI), ANKLE_Y - 4 * walking * Math.max(0, Math.cos(phase + Math.PI))]
+  // すすむ向きは 左(-x)。足の いち = こし + amp*sin(位相)。cos>0 の間は 足が うしろへ ながれる(地面に ついている)。
+  // 足が うく(ひざ・足先が上がる)のは まえへ ふりだす cos<0 の間。
+  const standNear: Pt = [standX + amp * Math.sin(phase), ANKLE_Y - 4 * walking * Math.max(0, -Math.cos(phase))]
+  const standFar: Pt = [standX + amp * Math.sin(phase + Math.PI), ANKLE_Y - 4 * walking * Math.max(0, -Math.cos(phase + Math.PI))]
 
   // 一歩 ふみだす: まえの足は ふりだして 地面に つく。うしろの足は つまさきで 地面を けって のびる。こし が 下がる
   const step = span(t, STEP, STEP + 1.0, easeInOut)

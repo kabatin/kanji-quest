@@ -304,11 +304,12 @@ function Scene({ t }: SceneProps) {
   const wrapping = span(t, PULL - 0.15, PULL + 0.1)
   const release = span(t, TIGHT, TIGHT + 0.3, easeInOut)
   const lerp = (a: number, b: number, k: number) => a + (b - a) * k
-  const coilHand: readonly [number, number] = [lerp(HOLD_FAR[0], COIL[0] + 2, toCoil), lerp(HOLD_FAR[1], COIL[1] + 1, toCoil)]
-  const farBase: readonly [number, number] = [lerp(coilHand[0], loopX, wrapping), lerp(coilHand[1], loopY, wrapping)]
-  const farHand: readonly [number, number] = t < TIGHT ? farBase : [lerp(farBase[0], CHEER_FAR[0], cheer || release), lerp(farBase[1], CHEER_FAR[1], cheer || release)]
-  const nearUp = span(t, CHEER - 0.1, CHEER + 0.3, backOut)
-  const nearHand: readonly [number, number] = [lerp(HOLD_NEAR[0], CHEER_NEAR[0], nearUp), lerp(HOLD_NEAR[1], CHEER_NEAR[1], nearUp)]
+  // ひもを まく手は てまえの うで(胴の前、ぼうの 上に 見える)。むこうの うでは 胴の うしろ。
+  const coilHand: readonly [number, number] = [lerp(HOLD_NEAR[0], COIL[0] + 2, toCoil), lerp(HOLD_NEAR[1], COIL[1] + 1, toCoil)]
+  const nearBase: readonly [number, number] = [lerp(coilHand[0], loopX, wrapping), lerp(coilHand[1], loopY, wrapping)]
+  const nearHand: readonly [number, number] = t < TIGHT ? nearBase : [lerp(nearBase[0], CHEER_NEAR[0], cheer || release), lerp(nearBase[1], CHEER_NEAR[1], cheer || release)]
+  const farUp = span(t, CHEER - 0.1, CHEER + 0.3, backOut)
+  const farHand: readonly [number, number] = [lerp(HOLD_FAR[0], CHEER_FAR[0], farUp), lerp(HOLD_FAR[1], CHEER_FAR[1], farUp)]
 
   const tight = span(t, PULL + 0.3, TIGHT, easeInOut)
   // ひもが ぴん と はる ようす(手と わ を むすぶ)
@@ -329,6 +330,8 @@ function Scene({ t }: SceneProps) {
 
         <ellipse cx={27.5 + CHILD_X + walkX} cy="97.4" rx="9" ry="2.4" fill="#000000" opacity={0.12 * span(t, WALK, WALK + 0.2)} />
         <Layer x={walkX} y={bob + hop} opacity={span(t, WALK - 0.1, WALK + 0.2)}>
+          {/* むこうの うで: 胴の うしろ(胴より 先に かく) */}
+          <Arm hand={farHand} color={TUNIC_FAR} />
           <Layer x={CHILD_X}>
             <Layer scaleX={-1} origin={[27.5, 60]}>
               <Person step={stride} mood={mood} headTilt={lookUp} />
@@ -346,7 +349,6 @@ function Scene({ t }: SceneProps) {
         {/* うで と 手(ぼうの 上に かさねる) */}
         <Layer x={walkX} y={bob + hop}>
           <Layer opacity={span(t, WALK - 0.1, WALK + 0.2)}>
-            <Arm hand={farHand} color={TUNIC_FAR} />
             <Arm hand={nearHand} color={TUNIC_DARK} />
           </Layer>
         </Layer>
@@ -354,7 +356,7 @@ function Scene({ t }: SceneProps) {
         {/* ひもを ひっぱる ようす */}
         {ropeShow > 0 && (
           <path
-            d={`M${COIL[0]} ${COIL[1] + 1.5} Q${(COIL[0] + farHand[0]) / 2} ${Math.max(COIL[1], farHand[1]) + sag} ${farHand[0]} ${farHand[1]}`}
+            d={`M${COIL[0]} ${COIL[1] + 1.5} Q${(COIL[0] + nearHand[0]) / 2} ${Math.max(COIL[1], nearHand[1]) + sag} ${nearHand[0]} ${nearHand[1]}`}
             fill="none"
             stroke={ROPE}
             strokeWidth="1.6"
