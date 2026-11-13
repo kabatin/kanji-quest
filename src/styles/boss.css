@@ -797,3 +797,34 @@
     display: none;
   }
 }
+
+/* ふっかつ(敗者復活) */
+.boss-result__revive {
+  flex-direction: column;
+  gap: 2px;
+  animation: revive-pulse 1.4s ease-in-out infinite;
+}
+
+.boss-result__revive small {
+  font-size: 0.6em;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.boss-result__revived {
+  font-size: 34px;
+  font-weight: 900;
+  color: #e8452c;
+}
+
+@keyframes revive-pulse {
+  50% {
+    box-shadow: 0 0 0 8px rgb(255 190 46 / 45%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boss-result__revive {
+    animation: none;
+  }
+}

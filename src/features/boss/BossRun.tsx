@@ -16,17 +16,21 @@ export type BossOutcome = {
   readonly missed: readonly string[]
   /** まちがえずに できた漢字(まちがえた字は ふくまない) */
   readonly solved: readonly string[]
+  /** まちがえた問題(ふっかつ戦で、これだけを もう一度出す) */
+  readonly missedQuestions: readonly BossQuestion[]
 }
 
 type Tally = {
   readonly index: number
   readonly perfect: number
   readonly missed: readonly string[]
+  /** まちがえた問題の番号 */
+  readonly missedAt: readonly number[]
   /** つづけて まちがえずに できた数(えんしゅつ に使う) */
   readonly streak: number
 }
 
-const START: Tally = { index: 0, perfect: 0, missed: [], streak: 0 }
+const START: Tally = { index: 0, perfect: 0, missed: [], missedAt: [], streak: 0 }
 
 const ROUND_LABEL: Record<string, string> = { select: 'えらぶ', model: 'みて かく', blind: 'みないで かく' }
 
@@ -35,13 +39,15 @@ type Props = {
   readonly questions: readonly BossQuestion[]
   readonly onQuit: () => void
   readonly onFinish: (outcome: BossOutcome) => void
+  /** ふっかつ戦(まちがえた問題だけ。ボスの HP は その数だけ のこっている) */
+  readonly revive?: boolean
 }
 
 /**
  * ボスとの たたかい。問題を まちがえずに とくと、ボスの HP が1つ へる。
  * まちがえた問題では HP が へらないので、全部できたときだけ HP が 0 になる(= 100点)。
  */
-export function BossRun({ boss, questions, onQuit, onFinish }: Props) {
+export function BossRun({ boss, questions, onQuit, onFinish, revive = false }: Props) {
   const [tally, setTally] = useState<Tally>(START)
   const [mood, setMood] = useState<BossMood>('idle')
   const { play } = useFeedback()
@@ -63,12 +69,13 @@ export function BossRun({ boss, questions, onQuit, onFinish }: Props) {
         index: tally.index + 1,
         perfect: tally.perfect + (isPerfect ? 1 : 0),
         missed: isPerfect || tally.missed.includes(char) ? tally.missed : [...tally.missed, char],
+        missedAt: isPerfect ? tally.missedAt : [...tally.missedAt, tally.index],
         streak: isPerfect ? tally.streak + 1 : 0,
       }
       play(isPerfect ? 'hit' : 'miss')
       if (next.index >= total) {
         const solved = [...new Set(questions.map((q) => q.kanji.char))].filter((c) => !next.missed.includes(c))
-        onFinish({ perfect: next.perfect, total, missed: next.missed, solved })
+        onFinish({ perfect: next.perfect, total, missed: next.missed, solved, missedQuestions: next.missedAt.map((i) => questions[i]) })
         return
       }
       setMood(isPerfect ? 'hit' : 'phew')
@@ -78,7 +85,7 @@ export function BossRun({ boss, questions, onQuit, onFinish }: Props) {
   )
 
   return (
-    <div className="screen boss-run" data-kanji={question.kanji.char} data-type={question.type} data-round={roundOf(question)} data-mood={mood}>
+    <div className="screen boss-run" data-revive={revive || undefined} data-kanji={question.kanji.char} data-type={question.type} data-round={roundOf(question)} data-mood={mood}>
       <header className="bar boss-run__bar">
         <button type="button" className="btn btn--back" onClick={onQuit}>
           ← やめる
@@ -102,7 +109,7 @@ export function BossRun({ boss, questions, onQuit, onFinish }: Props) {
             HP {hp} / {total}
           </span>
         </div>
-        <span className="boss-run__round">{ROUND_LABEL[roundOf(question)]}</span>
+        <span className="boss-run__round">{revive ? `ふっかつ: ${ROUND_LABEL[roundOf(question)]}` : ROUND_LABEL[roundOf(question)]}</span>
         <span className="bar__step">
           {tally.index + 1} / {total}
         </span>

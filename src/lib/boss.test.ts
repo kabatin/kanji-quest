@@ -20,7 +20,7 @@ import {
   treeSpots,
   yieldToDecos,
 } from '../features/home/scene/layout'
-import { AREA_BOSS_PLAN, areaBoss, bossName, buildBoss, buildParts, buildWrite, EXAM_PLAN, cheerLine, examBoss, leafParts, PARTS_CHOICE_COUNT, pickForBoss } from './boss'
+import { AREA_BOSS_PLAN, areaBoss, bossName, buildBoss, buildParts, buildWrite, canRevive, EXAM_PLAN, cheerLine, REVIVE_MAX_MISSES, examBoss, leafParts, PARTS_CHOICE_COUNT, pickForBoss } from './boss'
 import { SHOP_ITEMS, itemName } from './shop'
 import { buildWeakQuestions, weakChars, weakOutcome } from './weak'
 import { playVoice, stopVoice, VOICE_FADE_MS, voiceId } from './voice'
@@ -100,6 +100,13 @@ describe('ボスの問題', () => {
 
   it('たたかい の あとの ひとこと: かてば ほめて、まければ はげまして 次に やることを 言う', () => {
     expect(cheerLine({ cleared: true, won: true, practice: false, missed: 0 })).toContain('たおしたね')
+    expect(cheerLine({ cleared: false, won: false, practice: false, missed: 2, canRevive: true })).toContain('ふっかつ')
+    // ふっかつ できるのは、ほんばんで 3問まで まちがえたとき。1回だけ
+    expect(canRevive({ practice: false, revived: false, missedQuestions: REVIVE_MAX_MISSES })).toBe(true)
+    expect(canRevive({ practice: false, revived: false, missedQuestions: REVIVE_MAX_MISSES + 1 })).toBe(false)
+    expect(canRevive({ practice: false, revived: false, missedQuestions: 0 })).toBe(false)
+    expect(canRevive({ practice: true, revived: false, missedQuestions: 1 })).toBe(false)
+    expect(canRevive({ practice: false, revived: true, missedQuestions: 1 })).toBe(false)
     expect(cheerLine({ cleared: false, won: true, practice: true, missed: 0 })).toContain('ほんばんも')
     expect(cheerLine({ cleared: false, won: false, practice: false, missed: 1 })).toBe('おしい！ あと 1{字|じ}。れんしゅう すれば たおせるよ')
     expect(cheerLine({ cleared: false, won: false, practice: false, missed: 5 })).toContain('また ちょうせん')

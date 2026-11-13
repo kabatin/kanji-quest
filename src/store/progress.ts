@@ -118,6 +118,8 @@ export type BossResult = {
   readonly total: number
   /** れんしゅう(回数をつかわない。たおしたことにも ならない) */
   readonly practice: boolean
+  /** ふっかつ戦(まちがえた問題だけを もう一度といた)。たおせたら コインは半分。たたかった回数には 数えない */
+  readonly revive?: boolean
   /** まちがえた問題の漢字 */
   readonly missed?: readonly string[]
   /** まちがえずに できた漢字。苦手の回数が へる */
@@ -393,14 +395,17 @@ export const useProgress = create<ProgressState>()(
         const cleared = !result.practice && result.perfect >= result.total && result.total > 0
         const firstClear = cleared && !isCleared(before.clears, result.id)
         const reward = BOSS_REWARD[result.kind]
-        const gain = gainOf(before.xp, firstClear ? reward.xp : XP_BOSS_TRY, firstClear ? reward.coins : 0)
+        const revive = result.revive === true
+        // ふっかつ で たおしたときは、コインが半分(いっぱつで たおす わけ を のこす)。にげられても、がんばり賞は 2回は出さない
+        const gain = gainOf(before.xp, firstClear ? reward.xp : revive ? 0 : XP_BOSS_TRY, firstClear ? (revive ? Math.floor(reward.coins / 2) : reward.coins) : 0)
         set((state) => ({
           xp: state.xp + gain.xp,
           coins: state.coins + gain.coins,
           clears: firstClear ? { ...state.clears, [result.id]: today } : state.clears,
           // ミッション「ボスと たたかう」は、さいごまで たたかえば(れんしゅうでも)数える
-          daily: addCounters(dailyFor(state.daily, today), { stage: 1 }),
-          misses: updateMisses(state.misses, result.missed ?? [], result.solved ?? []),
+          daily: revive ? state.daily : addCounters(dailyFor(state.daily, today), { stage: 1 }),
+          // ふっかつ戦で また まちがえても、苦手の回数は ふやさない(さっき 数えたので)
+          misses: updateMisses(state.misses, revive ? [] : (result.missed ?? []), result.solved ?? []),
         }))
         return { ...gain, score, cleared, firstClear }
       },

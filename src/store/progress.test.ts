@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { dailyMissions } from '../lib/missions'
-import { BOSS_TRIES_PER_DAY, hasStamp, STAMPS, type QuizSummary } from '../lib/rewards'
-import { examId, triesLeft } from '../lib/stages'
+import { BOSS_REWARD, BOSS_TRIES_PER_DAY, hasStamp, STAMPS, type QuizSummary } from '../lib/rewards'
+import { examId, isCleared, triesLeft } from '../lib/stages'
 import { bestKey } from '../lib/score'
 import { STORAGE_KEY, useProgress } from './progress'
 
@@ -138,6 +138,21 @@ describe('クイズ', () => {
 
 describe('ボス', () => {
   const fight = (perfect: number, practice = false) => state().finishBoss({ id: 'a1-mid', kind: 'mid', perfect, total: 15, practice }, DAY1)
+
+  it('ふっかつ戦: ぜんぶ できたら たおせる。コインは半分。にげられても 苦手の回数・たたかった回数は ふえない', () => {
+    useProgress.setState({ xp: 0, coins: 0, misses: { 海: 1, 池: 1 } })
+    const stage = state().daily.counters.stage
+    // ふっかつ ならず(2問のうち 1問を また まちがえた)
+    const lost = state().finishBoss({ id: 'a1-mid', kind: 'mid', perfect: 1, total: 2, practice: false, revive: true, missed: ['海'], solved: ['池'] }, DAY1)
+    expect(lost).toMatchObject({ cleared: false, xp: 0, coins: 0 })
+    expect(state().misses).toEqual({ 海: 1 })
+    // ふっかつ せいこう
+    const won = state().finishBoss({ id: 'a1-mid', kind: 'mid', perfect: 2, total: 2, practice: false, revive: true, missed: [], solved: ['海'] }, DAY1)
+    expect(won).toMatchObject({ cleared: true, firstClear: true, xp: BOSS_REWARD.mid.xp, coins: Math.floor(BOSS_REWARD.mid.coins / 2) })
+    expect(isCleared(state().clears, 'a1-mid')).toBe(true)
+    expect(state().misses).toEqual({})
+    expect(state().daily.counters.stage).toBe(stage)
+  })
 
   it('ちょうせん は1日3回まで。日付が変わると また ちょうせん できる', () => {
     expect([1, 2, 3, 4].map(() => state().startBoss('a1-mid', 'mid', DAY1))).toEqual([true, true, true, false])

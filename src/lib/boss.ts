@@ -186,11 +186,23 @@ export function hitLabel(streak: number): string {
 }
 
 /** たたかい の あとの、すみまるの ひとこと。まけたときは、はげまして 次に やることを 言う。 */
-export function cheerLine(result: { readonly cleared: boolean; readonly won: boolean; readonly practice: boolean; readonly missed: number }): string {
+export function cheerLine(result: { readonly cleared: boolean; readonly won: boolean; readonly practice: boolean; readonly missed: number; readonly canRevive?: boolean }): string {
   if (result.cleared) return 'やったー！ たおしたね！ すごい！'
+  if (result.canRevive) return 'おしい！ まだ おわりじゃ ないよ。れんしゅう して、ふっかつ しよう！'
   if (result.won) return 'ばっちり！ ほんばんも きっと だいじょうぶ'
   if (result.missed <= 2) return `おしい！ あと ${result.missed}{字|じ}。れんしゅう すれば たおせるよ`
   return result.practice ? 'がんばったね！ にがてを れんしゅう してみよう' : 'だいじょうぶ！ にがてを れんしゅう して、また ちょうせん しよう'
+}
+
+/** ふっかつ できるのは、まちがえた問題が この数まで のとき */
+export const REVIVE_MAX_MISSES = 3
+
+/**
+ * ふっかつ(敗者復活)できるか。ほんばんで 少しだけ まちがえて にげられたとき、1回だけ。
+ * まちがえた字を れんしゅう してから、まちがえた問題だけを もう一度とく。ぜんぶ できたら たおせる。
+ */
+export function canRevive(result: { readonly practice: boolean; readonly revived: boolean; readonly missedQuestions: number }): boolean {
+  return !result.practice && !result.revived && result.missedQuestions > 0 && result.missedQuestions <= REVIVE_MAX_MISSES
 }
 
 /** ボスの画面の上に出す、問題の くぎり(えらぶ・みて かく・みないで かく) */

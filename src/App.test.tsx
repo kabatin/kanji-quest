@@ -546,7 +546,9 @@ describe('ぼうけん: ボス', () => {
     expect(within(screen.getByRole('button', { name: /もういちど たたかう/ })).getByRole('img', { name: 'きょうは あと 2かい' })).toBeInTheDocument()
 
     // すみまるが はげまして、にがて れんしゅう へ行ける
-    expect(container.querySelector('.boss-result__cheer')).toHaveTextContent('おしい！ あと 2じ。れんしゅう すれば たおせるよ')
+    expect(container.querySelector('.boss-result__cheer')).toHaveTextContent('おしい！ まだ おわりじゃ ないよ。れんしゅう して、ふっかつ しよう！')
+    // まちがいが 3問まで なので、ふっかつ できる
+    expect(screen.getByRole('button', { name: /ふっかつ チャンス.*2もん/ })).toBeEnabled()
     await user.click(screen.getByRole('button', { name: 'にがてな かんじを れんしゅう' }))
     expect(screen.getByRole('heading', { name: 'にがて れんしゅう' })).toBeInTheDocument()
     expect(screen.getByLabelText('れんしゅう する かんじ').textContent?.split('').sort()).toEqual([...missed].sort())

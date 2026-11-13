@@ -4,7 +4,7 @@ import { TopBar } from '../../components/Hud'
 import { KText } from '../../components/KText'
 import { MascotSays } from '../../components/MascotSays'
 import { getKanji, KANJI } from '../../data/kanji'
-import { buildBoss, cheerLine, type BossDef, type BossQuestion } from '../../lib/boss'
+import { buildBoss, canRevive, cheerLine, REVIVE_MAX_MISSES, type BossDef, type BossQuestion } from '../../lib/boss'
 import { dayKey } from '../../lib/date'
 import { BOSS_CLEAR_SCORE, BOSS_REWARD } from '../../lib/rewards'
 import { isCleared, triesLeft } from '../../lib/stages'
@@ -12,13 +12,17 @@ import { useFeedback } from '../../lib/useFeedback'
 import { useProgress, type BossGain } from '../../store/progress'
 import { BossMonster } from './BossMonster'
 import { BossRun, type BossOutcome } from './BossRun'
+import { RevivePractice } from './RevivePractice'
 
 export type BossNext = { readonly label: string; readonly onNext: () => void }
 
 type Phase =
   | { readonly name: 'intro' }
-  | { readonly name: 'play'; readonly practice: boolean; readonly questions: readonly BossQuestion[]; readonly run: number }
-  | { readonly name: 'result'; readonly practice: boolean; readonly outcome: BossOutcome; readonly gain: BossGain }
+  | { readonly name: 'play'; readonly practice: boolean; readonly questions: readonly BossQuestion[]; readonly run: number; readonly revive?: boolean }
+  /** ふっかつ の前の れんしゅう(まちがえた字を書く) */
+  | { readonly name: 'revive-practice'; readonly outcome: BossOutcome }
+  /** revived: この ちょうせん で、もう ふっかつ を使った */
+  | { readonly name: 'result'; readonly practice: boolean; readonly outcome: BossOutcome; readonly gain: BossGain; readonly revived: boolean }
 
 type Props = {
   readonly boss: BossDef
@@ -64,38 +68,59 @@ export function BossScreen({ boss, onBack, next, onReview, onWeak }: Props) {
     setPhase({ name: 'play', practice, questions, run: phase.name === 'play' ? phase.run + 1 : Date.now() })
   }
 
+  if (phase.name === 'revive-practice') {
+    const { outcome } = phase
+    return (
+      <RevivePractice
+        chars={outcome.missed}
+        onQuit={() => setPhase({ name: 'intro' })}
+        onDone={() => {
+          play('bossAppear')
+          setPhase({ name: 'play', practice: false, questions: outcome.missedQuestions, run: Date.now(), revive: true })
+        }}
+      />
+    )
+  }
+
   if (phase.name === 'play') {
-    const { practice } = phase
+    const { practice, revive = false } = phase
     return (
       <BossRun
         key={phase.run}
         boss={boss}
         questions={phase.questions}
+        revive={revive}
         onQuit={() => setPhase({ name: 'intro' })}
         onFinish={(outcome) => {
-          const gain = finishBoss({ id: boss.id, kind: boss.kind, perfect: outcome.perfect, total: outcome.total, practice, missed: outcome.missed, solved: outcome.solved })
+          const gain = finishBoss({ id: boss.id, kind: boss.kind, perfect: outcome.perfect, total: outcome.total, practice, revive, missed: outcome.missed, solved: outcome.solved })
           play(gain.cleared ? 'bossDown' : gain.score === BOSS_CLEAR_SCORE ? 'fanfare' : 'retry')
-          setPhase({ name: 'result', practice, outcome, gain })
+          setPhase({ name: 'result', practice, outcome, gain, revived: revive })
         }}
       />
     )
   }
 
   if (phase.name === 'result') {
-    const { gain, outcome, practice } = phase
+    const { gain, outcome, practice, revived } = phase
     const won = gain.score === BOSS_CLEAR_SCORE
+    const revivable = !won && canRevive({ practice, revived, missedQuestions: outcome.missedQuestions.length })
     return (
-      <div className="screen boss-result" data-won={won}>
+      <div className="screen boss-result" data-won={won} data-revived={revived || undefined}>
         {gain.cleared && <Burst />}
         <div className="boss-result__main">
           <BossMonster seed={boss.seed} king={king} mood={won ? 'down' : 'phew'} className="boss-result__monster" label={boss.name} />
-          <p className="boss-result__score">
-            <strong>{gain.score}</strong> てん
-          </p>
+          {/* ふっかつ戦の てんすう は、のこりの問題だけの ものなので 出さない */}
+          {revived ? (
+            <p className="boss-result__revived">{won ? 'ふっかつ せいこう！' : 'ふっかつ ならず…'}</p>
+          ) : (
+            <p className="boss-result__score">
+              <strong>{gain.score}</strong> てん
+            </p>
+          )}
           <h1 className="boss-result__title">
             {gain.cleared ? `${boss.name}を たおした！` : won ? 'れんしゅう ばっちり！' : practice ? 'れんしゅう おつかれさま' : `${boss.name}に にげられた…`}
           </h1>
-          <MascotSays text={cheerLine({ cleared: gain.cleared, won, practice, missed: outcome.missed.length })} happy={won} className="boss-result__cheer" />
+          <MascotSays text={cheerLine({ cleared: gain.cleared, won, practice, missed: outcome.missed.length, canRevive: revivable })} happy={won} className="boss-result__cheer" />
         </div>
         <div className="boss-result__side">
           <ul className="gains">
@@ -125,8 +150,21 @@ export function BossScreen({ boss, onBack, next, onReview, onWeak }: Props) {
                 {next.label}
               </button>
             )}
+            {revivable && (
+              <button
+                type="button"
+                className="btn btn--primary btn--big boss-result__revive"
+                onClick={() => {
+                  play('tap')
+                  setPhase({ name: 'revive-practice', outcome })
+                }}
+              >
+                ふっかつ チャンス！
+                <small>れんしゅう して、まちがえた {outcome.missedQuestions.length}もん だけ もういちど</small>
+              </button>
+            )}
             {!gain.cleared && !practice && left > 0 && (
-              <button type="button" className="btn btn--primary btn--big" onClick={() => start(false)}>
+              <button type="button" className={revivable ? 'btn' : 'btn btn--primary btn--big'} onClick={() => start(false)}>
                 もういちど たたかう
                 <TryPips left={left} limit={limit} />
               </button>
@@ -170,6 +208,12 @@ export function BossScreen({ boss, onBack, next, onReview, onWeak }: Props) {
               <span aria-hidden="true">💯</span>
               <span>
                 ぜんぶ できて <strong>100てん</strong>に なると、たおせる！
+              </span>
+            </li>
+            <li>
+              <span aria-hidden="true">🔥</span>
+              <span>
+                まちがいが <strong>{REVIVE_MAX_MISSES}もん</strong> までなら、れんしゅう して ふっかつ できる！
               </span>
             </li>
             <li>

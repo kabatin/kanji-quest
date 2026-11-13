@@ -49,8 +49,8 @@ async function writeStrokes(page: Page, char: string) {
 }
 
 /** いま出ている ボスの問題を、まちがえずに とく。 */
-async function solve(page: Page) {
-  const run = page.locator('.boss-run')
+async function solve(page: Page, root = '.boss-run') {
+  const run = page.locator(root)
   const type = await run.getAttribute('data-type')
   const char = (await run.getAttribute('data-kanji')) ?? ''
   if (type === 'write') return writeStrokes(page, char)
@@ -133,6 +133,60 @@ test('ボス: 15問を まちがえずに とくと 100点で たおせて、次
   await page.getByRole('button', { name: 'ぼうけん' }).click()
   await expect(page.getByRole('button', { name: 'ちゅうボス とめきち たおした' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'ステージ 5', exact: true })).toBeEnabled()
+})
+
+/** いま出ている「えらぶ」問題で、わざと 1回 まちがえる(そのあと solve で とく)。 */
+async function miss(page: Page) {
+  const run = page.locator('.boss-run')
+  const type = await run.getAttribute('data-type')
+  const char = (await run.getAttribute('data-kanji')) ?? ''
+  if (type === 'erabi') return page.locator(`.erabi-card:not([data-kanji="${char}"])`).first().click()
+  const scope = type === 'parts' ? '.parts-pick__choices' : '.kumi__choices'
+  const wrong: string = await page.evaluate(
+    async ({ target, kind, scope }) => {
+      const kanjiPath = '/src/data/kanji.ts'
+      const bossPath = '/src/lib/boss.ts'
+      const kanji = (await import(/* @vite-ignore */ kanjiPath)).getKanji(target)
+      const right: string[] = kind === 'parts' ? (await import(/* @vite-ignore */ bossPath)).leafParts(kanji).map((p: { id: string }) => p.id) : kanji.steps.map((s: { answer: string }) => s.answer)
+      const shown = [...document.querySelectorAll(`${scope} button[data-part]`)].map((b) => b.getAttribute('data-part') ?? '')
+      return shown.find((id) => !right.includes(id)) ?? ''
+    },
+    { target: char, kind: type, scope },
+  )
+  await page.locator(`${scope} button[data-part="${wrong}"]`).click()
+}
+
+test('ボス: 1問 まちがえて にげられても、れんしゅう してから その1問を とけば ふっかつ で たおせる', async ({ page }) => {
+  test.setTimeout(240_000)
+  await startWithStageLearned(page)
+  await page.getByRole('button', { name: /ボスに ちょうせん/ }).click()
+  await page.getByRole('button', { name: 'たたかう！' }).click()
+  await expect(page.locator('.bar__step')).toHaveText(`1 / ${BOSS_QUESTIONS}`)
+  const missed = (await page.locator('.boss-run').getAttribute('data-kanji')) ?? ''
+  await miss(page)
+  for (let i = 0; i < BOSS_QUESTIONS; i += 1) {
+    await expect(page.locator('.bar__step')).toHaveText(`${i + 1} / ${BOSS_QUESTIONS}`)
+    await solve(page)
+  }
+  await expect(page.getByRole('heading', { name: /に にげられた…$/ })).toBeVisible()
+  expect(await overflow(page)).toEqual(FITS)
+
+  // まちがえた字を 見て書く → 見ないで書く
+  await page.getByRole('button', { name: /ふっかつ チャンス/ }).click()
+  for (const step of ['1 / 2', '2 / 2']) {
+    await expect(page.locator('.bar__step')).toHaveText(step)
+    await expect(page.locator('.revive-practice')).toHaveAttribute('data-kanji', missed)
+    await solve(page, '.revive-practice')
+  }
+
+  // まちがえた 1問だけ が、もう一度 出る
+  await expect(page.locator('.boss-run[data-revive="true"]')).toHaveAttribute('data-kanji', missed)
+  await expect(page.locator('.bar__step')).toHaveText('1 / 1')
+  await solve(page)
+  await expect(page.getByRole('heading', { name: /を たおした！$/ })).toBeVisible()
+  await expect(page.getByText('ふっかつ せいこう！')).toBeVisible()
+  await expect(page.getByRole('button', { name: /ふっかつ チャンス/ })).toHaveCount(0)
+  expect(await overflow(page)).toEqual(FITS)
 })
 
 test('ボス: とちゅうで やめても1回つかい、3回使いきると あしたまで たたかえない', async ({ page }) => {
