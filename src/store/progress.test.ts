@@ -75,6 +75,20 @@ describe('ふくしゅう・パーツ・あそんだ時間', () => {
     expect(state().daily.counters).toMatchObject({ review: 1, firstTry: 1 })
   })
 
+  it('ふくしゅう した字の数を 日ごとに数える。ほかの あそび で できた字は、日が来ていれば ふくしゅう したことに なる', () => {
+    useProgress.setState({ learned: ['海', '池', '山'], reviews: { 海: { due: DAY1, step: 0 }, 池: { due: DAY1, step: 0 }, 山: { due: DAY2, step: 0 } } })
+    state().finishReview({ right: ['海'], wrong: [] }, DAY1)
+    expect(state().reviewDone).toEqual({ day: DAY1, count: 1 })
+    // ボスで 池 と 山 を まちがえずに とけた: 日が来ている 池 だけ 次の間隔へ(数には 入れない)
+    state().finishBoss({ id: 'a1-mid', kind: 'mid', perfect: 15, total: 15, practice: true, missed: [], solved: ['池', '山'] }, DAY1)
+    expect(state().reviews['池']).toEqual({ due: DAY4, step: 1 })
+    expect(state().reviews['山']).toEqual({ due: DAY2, step: 0 })
+    expect(state().reviewDone).toEqual({ day: DAY1, count: 1 })
+    // 日が変わると、数え直す
+    state().finishReview({ right: ['山'], wrong: [] }, DAY2)
+    expect(state().reviewDone).toEqual({ day: DAY2, count: 1 })
+  })
+
   it('ボスで まちがえた字も、まちがいの回数に入る', () => {
     state().finishBoss({ id: 'a1-mid', kind: 'mid', perfect: 13, total: 15, practice: false, missed: ['海', '池'] }, DAY1)
     expect(state().misses).toEqual({ 海: 1, 池: 1 })

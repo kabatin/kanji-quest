@@ -7,7 +7,7 @@ import { addDays, daysBetween } from './date'
 import { checkGate, gradeStats, makeGateQuestion, reviewStats, weakKanji, weekStats } from './parentStats'
 import { claimableParts, currentQuest, newlyCompleted, partProgress } from './partQuest'
 import { storageKeyFor } from './profiles'
-import { afterReview, backfillReviews, buildReviewQuestion, dueChars, isMastered, MASTERED_INTERVAL, nextReviewLabel, REVIEW_INTERVALS, scheduleNew } from './review'
+import { afterReview, backfillReviews, buildReviewQuestion, creditReviews, dueChars, todaysReview, isMastered, MASTERED_INTERVAL, nextReviewLabel, REVIEW_INTERVALS, scheduleNew } from './review'
 
 const DAY = '2026-11-12'
 const fixed = (value: number) => () => value
@@ -49,7 +49,16 @@ describe('ふくしゅう の間隔', () => {
       日: { due: '2026-11-13', step: 0 },
     }
     expect(dueChars(reviews, DAY)).toEqual(['木', '山', '川'])
-    expect(dueChars(reviews, DAY, { 川: 2 })).toEqual(['木', '川', '山'])
+    // 苦手な字(まちがえた回数が のこっている字)が 先
+    expect(dueChars(reviews, DAY, { 川: 2 })).toEqual(['川', '木', '山'])
+    // 1日の数: 10字まで。やった ぶん だけ へり、のこりは 次の日に回す
+    expect(todaysReview(41, { day: '', count: 0 }, DAY, 10)).toEqual({ left: 10, later: 31 })
+    expect(todaysReview(36, { day: DAY, count: 5 }, DAY, 10)).toEqual({ left: 5, later: 31 })
+    expect(todaysReview(31, { day: DAY, count: 12 }, DAY, 10)).toEqual({ left: 0, later: 31 })
+    expect(todaysReview(3, { day: addDays(DAY, -1), count: 10 }, DAY, 10)).toEqual({ left: 3, later: 0 })
+    // ほかの あそび で できた字: 日が来ている字だけ、次の間隔へ すすむ
+    const credited = creditReviews({ 木: { due: DAY, step: 0 }, 山: { due: addDays(DAY, 2), step: 1 } }, ['木', '山', '川', '木'], DAY)
+    expect(credited).toEqual({ 木: { due: addDays(DAY, 3), step: 1 }, 山: { due: addDays(DAY, 2), step: 1 } })
   })
 
   it('前から覚えていた字は、1日5字ずつ ずらして入れる', () => {

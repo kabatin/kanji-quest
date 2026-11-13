@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { dayKey, isNextDay } from '../lib/date'
-import { backfillReviews, scheduleNew } from '../lib/review'
+import { backfillReviews, creditReviews, scheduleNew, type ReviewDone } from '../lib/review'
 import { levelInfo } from '../lib/level'
 import { dailyMissions, EMPTY_COUNTERS, isMissionDone, type Counters } from '../lib/missions'
 import { loadProfiles, PROGRESS_KEY, storageKeyFor } from '../lib/profiles'
@@ -68,6 +68,8 @@ type ProgressData = Records & {
   readonly clears: Clears
   /** その日に ボスへ ちょうせん した回数 */
   readonly tries: Tries
+  /** その日に「きょうの ふくしゅう」で やった字の数(1日の数を こえたら、のこりは 次の日) */
+  readonly reviewDone: ReviewDone
   /** ホームで「レベルアップ」を見せおわったレベル */
   readonly seenLevel: number
   readonly streak: { readonly count: number; readonly lastDay: string }
@@ -187,6 +189,7 @@ const INITIAL: ProgressData = {
   coins: 0,
   clears: {},
   tries: { day: '', used: {} },
+  reviewDone: { day: '', count: 0 },
   seenLevel: 1,
   streak: { count: 0, lastDay: '' },
   loginBonus: null,
@@ -368,6 +371,7 @@ export const useProgress = create<ProgressState>()(
           xp: state.xp + gain.xp,
           coins: state.coins + gain.coins,
           stamps: { ...state.stamps, ...Object.fromEntries(newStamps.map((c) => [c, (state.stamps[c] ?? 0) | STAMPS.quiz])) },
+          reviews: creditReviews(state.reviews, summary.firstTryChars, today),
           bests:
             improved && context.bestKey
               ? { ...state.bests, [context.bestKey]: { score: summary.score, timeMs: summary.timeMs } }
@@ -406,6 +410,7 @@ export const useProgress = create<ProgressState>()(
           daily: revive ? state.daily : addCounters(dailyFor(state.daily, today), { stage: 1 }),
           // ふっかつ戦で また まちがえても、苦手の回数は ふやさない(さっき 数えたので)
           misses: updateMisses(state.misses, revive ? [] : (result.missed ?? []), result.solved ?? []),
+          reviews: creditReviews(state.reviews, result.solved ?? [], today),
         }))
         return { ...gain, score, cleared, firstClear }
       },
@@ -417,6 +422,7 @@ export const useProgress = create<ProgressState>()(
           xp: state.xp + gain.xp,
           coins: state.coins + gain.coins,
           reviews: applyReview(state.reviews, result.right, result.wrong, today),
+          reviewDone: { day: today, count: (state.reviewDone.day === today ? state.reviewDone.count : 0) + result.right.length + result.wrong.length },
           misses: updateMisses(state.misses, result.wrong, result.right),
           daily: addCounters(dailyFor(state.daily, today), { review: 1, firstTry: result.right.length }),
         }))
@@ -430,6 +436,7 @@ export const useProgress = create<ProgressState>()(
           xp: state.xp + gain.xp,
           coins: state.coins + gain.coins,
           misses: updateMisses(state.misses, [], result.right),
+          reviews: creditReviews(state.reviews, result.right, today),
           daily: addCounters(dailyFor(state.daily, today), { firstTry: result.right.length }),
         }))
         return gain

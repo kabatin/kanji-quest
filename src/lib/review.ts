@@ -12,6 +12,13 @@ export const REVIEW_INTERVALS = [1, 3, 7, 14, 30] as const
 export const MASTERED_INTERVAL = 60
 /** 1回の ふくしゅう で出す字の数 */
 export const REVIEW_SIZE = 5
+/** 1日に ふくしゅう する字の数(おうちの かた が えらべる)。のこりは 次の日に回す */
+export const REVIEW_DAILY_CHOICES = [5, 10, 15] as const
+export type ReviewDaily = (typeof REVIEW_DAILY_CHOICES)[number]
+export const REVIEW_DAILY_DEFAULT: ReviewDaily = 10
+/** その日に ふくしゅう した字の数 */
+export type ReviewDone = { readonly day: string; readonly count: number }
+
 /** 前からの保存データで、もう覚えていた字を 1日に何字ずつ ふくしゅう に回すか */
 export const BACKLOG_PER_DAY = 5
 
@@ -41,12 +48,34 @@ export function isMastered(card: ReviewCard | undefined): boolean {
 }
 
 /**
- * きょう ふくしゅう する字。出す日が来ている字を、古い順に(同じなら まちがいの多い順に)。
+ * きょうの ぶん。出す日が来ている字が 多くても、1日の数(limit)までしか 見せない
+ * (子どもに見える数が、いつも「やりきれる数」に なるように)。
+ * left = きょう あと何字、later = 次の日いこうに回す字(「おかわり」で 先に やっても よい)。
+ */
+export function todaysReview(dueCount: number, done: ReviewDone, today: string, limit: number): { readonly left: number; readonly later: number } {
+  const doneToday = done.day === today ? done.count : 0
+  const left = Math.min(dueCount, Math.max(0, limit - doneToday))
+  return { left, later: dueCount - left }
+}
+
+/**
+ * ふくしゅう の日が来ている字を、ほかの あそび(ボス・チャレンジ・にがて れんしゅう)で まちがえずに できたら、
+ * ふくしゅう したことにして 次の間隔へ すすめる(同じ日に 同じ字を 2回 やらせない)。
+ */
+export function creditReviews(reviews: Reviews, chars: readonly string[], today: string): Reviews {
+  const due = [...new Set(chars)].filter((char) => reviews[char] !== undefined && daysBetween(reviews[char].due, today) >= 0)
+  if (due.length === 0) return reviews
+  return { ...reviews, ...Object.fromEntries(due.map((char) => [char, afterReview(reviews[char], true, today)])) }
+}
+
+/**
+ * きょう ふくしゅう する字。出す日が来ている字を、苦手な字(まちがえた回数が のこっている字)から先に、
+ * そのあとは 古い順に(同じなら まちがいの多い順に)。1日の数に かぎりが あるので、だいじな字を先に出す。
  */
 export function dueChars(reviews: Reviews, today: string, misses: Readonly<Record<string, number>> = {}): string[] {
   return Object.entries(reviews)
     .filter(([, card]) => daysBetween(card.due, today) >= 0)
-    .sort(([a, x], [b, y]) => daysBetween(y.due, x.due) || (misses[b] ?? 0) - (misses[a] ?? 0))
+    .sort(([a, x], [b, y]) => Number((misses[b] ?? 0) > 0) - Number((misses[a] ?? 0) > 0) || daysBetween(y.due, x.due) || (misses[b] ?? 0) - (misses[a] ?? 0))
     .map(([char]) => char)
 }
 

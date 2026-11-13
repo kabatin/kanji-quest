@@ -5,6 +5,7 @@ import { dayKey } from '../../lib/date'
 import { levelInfo } from '../../lib/level'
 import { gradeStats, reviewStats, weakKanji, weekStats } from '../../lib/parentStats'
 import { offlineStatus, type OfflineStatus } from '../../lib/pwa'
+import { REVIEW_DAILY_CHOICES } from '../../lib/review'
 import { readChildRecords } from '../../store/childRecords'
 import { BOSS_PLANS, BOSS_SIZES, BOSS_TRY_CHOICES, useParent, type BossSize } from '../../store/parent'
 import { useProfiles } from '../../store/profiles'
@@ -28,6 +29,7 @@ export function ParentScreen({ onBack, onOpen }: Props) {
   const version = useProgress((s) => s.xp + Object.keys(s.misses).length + Object.keys(s.playMinutes).length)
   const bossSize = useParent((s) => s.bossSize)
   const bossTries = useParent((s) => s.bossTries)
+  const reviewPerDay = useParent((s) => s.reviewPerDay)
   const update = useParent((s) => s.update)
   const [childId, setChildId] = useState(activeId)
   const [offline, setOffline] = useState<OfflineStatus | null>(null)
@@ -143,7 +145,7 @@ export function ParentScreen({ onBack, onOpen }: Props) {
         </section>
 
         <section className="parent-card parent-card--settings" aria-label="ボスの設定">
-          <h2>ボスの設定(この端末の全員)</h2>
+          <h2>あそびの設定(この端末の全員)</h2>
           <div className="parent__option" role="group" aria-label="問題の数">
             <span>問題の数</span>
             {BOSS_SIZES.map((size) => (
@@ -160,7 +162,16 @@ export function ParentScreen({ onBack, onOpen }: Props) {
               </button>
             ))}
           </div>
-          <p className="parent__note">100点で倒せるルールは変わりません。卒業試験は1日2回・20問のままです。</p>
+          <p className="parent__note">100点で倒せるルールは同じです。卒業試験は1日2回・20問のまま。</p>
+          <div className="parent__option" role="group" aria-label="1日の復習">
+            <span>1日の復習</span>
+            {REVIEW_DAILY_CHOICES.map((count) => (
+              <button key={count} type="button" className={`btn chip ${reviewPerDay === count ? 'is-selected' : ''}`} aria-pressed={reviewPerDay === count} onClick={() => update({ reviewPerDay: count })}>
+                {count}字
+              </button>
+            ))}
+          </div>
+          <p className="parent__note">超えた分は次の日に回し、苦手な字から出します。</p>
           <h2 className="parent__sub">オフライン</h2>
           <p className="parent__offline" role="status">
             {offline === null

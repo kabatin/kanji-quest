@@ -9,6 +9,7 @@ import { dayKey } from '../lib/date'
 import { useParent } from '../store/parent'
 import { useProfiles } from '../store/profiles'
 import { useProgress } from '../store/progress'
+import { ReviewScreen } from './review/ReviewScreen'
 
 const WAIT = { timeout: 4000 }
 const state = () => useProgress.getState()
@@ -100,6 +101,32 @@ describe('きょうの ふくしゅう', () => {
     await user.click(screen.getByRole('button', { name: 'ホームへ' }))
     expect(screen.queryByRole('button', { name: /きょうの ふくしゅう/ })).not.toBeInTheDocument()
   }, 30_000)
+
+  it('1日の数(おうちの かた が えらぶ)までしか 出さない。おわったら 入り口が消え、のこりは「おかわり」で できる', () => {
+    const today = dayKey()
+    const chars = ['一', '二', '三', '四', '五', '六', '七']
+    useParent.getState().update({ reviewPerDay: 5 })
+    useProgress.setState({ learned: chars, reviews: Object.fromEntries(chars.map((char) => [char, { due: today, step: 0 }])) })
+    const home = render(<App />)
+    // 7字 たまっていても、きょうの ぶん は 5字
+    expect(screen.getByRole('button', { name: 'きょうの ふくしゅう 5じ' })).toBeInTheDocument()
+    home.unmount()
+
+    // 3字 やったあと: あと 2字
+    useProgress.setState({ reviewDone: { day: today, count: 3 } })
+    const intro = render(<ReviewScreen onHome={() => undefined} onOpen={() => undefined} />)
+    expect(screen.getByRole('button', { name: 'はじめる（2もん）' })).toBeInTheDocument()
+    intro.unmount()
+
+    // 5字 やったあと: 入り口は消える。画面では「おしまい」と「おかわり」
+    useProgress.setState({ reviewDone: { day: today, count: 5 } })
+    const done = render(<App />)
+    expect(screen.queryByRole('button', { name: /きょうの ふくしゅう/ })).not.toBeInTheDocument()
+    done.unmount()
+    render(<ReviewScreen onHome={() => undefined} onOpen={() => undefined} />)
+    expect(screen.getByText('きょうの ぶんは おしまい！')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'おかわり（5もん）' })).toBeInTheDocument()
+  })
 
   it('ふくしゅう する字が ないときは、おわり と出る', async () => {
     useProgress.setState({ learned: ['山'], reviews: { 山: { due: '2099-01-01', step: 5 } } })
@@ -195,7 +222,8 @@ describe('保護者の方へ', () => {
     await user.click(screen.getByRole('button', { name: 'ひらく' }))
     await user.click(screen.getByRole('button', { name: '短め(10問)' }))
     await user.click(screen.getByRole('button', { name: '5回' }))
-    expect(useParent.getState()).toMatchObject({ bossSize: 'short', bossTries: 5 })
+    await user.click(screen.getByRole('button', { name: '15字' }))
+    expect(useParent.getState()).toMatchObject({ bossSize: 'short', bossTries: 5, reviewPerDay: 15 })
     expect(screen.getByRole('button', { name: '5回' })).toHaveAttribute('aria-pressed', 'true')
   })
 

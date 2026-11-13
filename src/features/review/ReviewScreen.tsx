@@ -8,7 +8,8 @@ import { getKanji, KANJI } from '../../data/kanji'
 import type { BossQuestion } from '../../lib/boss'
 import { dayKey } from '../../lib/date'
 import { levelInfo, mascotStage } from '../../lib/level'
-import { buildReviewQuestion, dueChars, isMastered, nextReviewLabel, REVIEW_INTERVALS, REVIEW_SIZE } from '../../lib/review'
+import { buildReviewQuestion, dueChars, isMastered, nextReviewLabel, REVIEW_INTERVALS, REVIEW_SIZE, todaysReview } from '../../lib/review'
+import { useParent } from '../../store/parent'
 import { itemName } from '../../lib/shop'
 import { useFeedback } from '../../lib/useFeedback'
 import { useProgress, type Gain } from '../../store/progress'
@@ -37,6 +38,7 @@ function StepDots({ step }: { readonly step: number }) {
 /**
  * きょうの ふくしゅう。覚えた字を、間をあけて もう一度とく。
  * 1回で できた字は 次は もっと先に、まちがえた字は あしたに また出る。
+ * 1日に やる数は きまっていて(おうちの かた が えらぶ)、のこりは 次の日に回す。もっと やりたいときは「おかわり」。
  */
 export function ReviewScreen({ onHome, onOpen }: Props) {
   const reviews = useProgress((s) => s.reviews)
@@ -49,10 +51,15 @@ export function ReviewScreen({ onHome, onOpen }: Props) {
   const today = dayKey()
   const due = dueChars(reviews, today, misses)
   const mastered = Object.values(reviews).filter(isMastered).length
+  const done = useProgress((s) => s.reviewDone)
+  const limit = useParent((s) => s.reviewPerDay)
+  const { left, later } = todaysReview(due.length, done, today, limit)
+  // きょうの ぶん が のこっていれば その数まで。おわっていれば「おかわり」(次の日の ぶん を 先に やる)
+  const batch = Math.min(left > 0 ? left : later, REVIEW_SIZE)
 
   const start = () => {
     play('tap')
-    const chars = due.slice(0, REVIEW_SIZE)
+    const chars = due.slice(0, batch)
     setPhase({ name: 'play', questions: chars.map((char) => buildReviewQuestion(getKanji(char), reviews[char], KANJI)), index: 0, outcomes: [] })
   }
 
@@ -98,6 +105,7 @@ export function ReviewScreen({ onHome, onOpen }: Props) {
 
   if (phase.name === 'result') {
     const reviewsNow = useProgress.getState().reviews
+    const leftNow = todaysReview(dueChars(reviewsNow, today).length, useProgress.getState().reviewDone, today, limit).left
     const perfect = phase.outcomes.every((o) => o.ok)
     return (
       <div className="screen review-result">
@@ -132,12 +140,17 @@ export function ReviewScreen({ onHome, onOpen }: Props) {
             })}
           </ul>
           <div className="review-result__actions">
-            {dueChars(reviewsNow, today).length > 0 && (
+            {leftNow > 0 && (
               <button type="button" className="btn btn--primary btn--big" onClick={() => setPhase({ name: 'intro' })}>
                 つづけて ふくしゅう
               </button>
             )}
-            <button type="button" className={dueChars(reviewsNow, today).length > 0 ? 'btn' : 'btn btn--primary btn--big'} onClick={onHome}>
+            {leftNow === 0 && dueChars(reviewsNow, today).length > 0 && (
+              <button type="button" className="btn" onClick={() => setPhase({ name: 'intro' })}>
+                もっと やる
+              </button>
+            )}
+            <button type="button" className={leftNow > 0 ? 'btn' : 'btn btn--primary btn--big'} onClick={onHome}>
               ホームへ
             </button>
           </div>
@@ -152,19 +165,27 @@ export function ReviewScreen({ onHome, onOpen }: Props) {
       <div className="review__body">
         <div className="review__hero">
           <MiniIcon name="kurikaeshi" className="review__icon" />
-          {due.length > 0 ? (
+          {left > 0 ? (
             <>
               <p className="review__count">
-                <strong>{due.length}</strong> <KText text="{字|じ}" />
+                <strong>{left}</strong> <KText text="{字|じ}" />
               </p>
               <p className="review__lead">まえに おぼえた かんじを、わすれないうちに もういちど！</p>
               <div className="review__chars" aria-label="ふくしゅう する かんじ">
-                {due.slice(0, REVIEW_SIZE).map((char) => (
+                {due.slice(0, batch).map((char) => (
                   <span key={char}>？</span>
                 ))}
               </div>
               <button type="button" className="btn btn--primary btn--big" onClick={start}>
-                はじめる（{Math.min(due.length, REVIEW_SIZE)}もん）
+                はじめる（{batch}もん）
+              </button>
+            </>
+          ) : later > 0 ? (
+            <>
+              <p className="review__done">きょうの ぶんは おしまい！</p>
+              <p className="review__lead">よく がんばったね。つづきは あした。もっと やりたい ときは おかわり も できるよ</p>
+              <button type="button" className="btn" onClick={start}>
+                おかわり（{batch}もん）
               </button>
             </>
           ) : (
