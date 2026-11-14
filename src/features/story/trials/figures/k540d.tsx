@@ -18,7 +18,7 @@
  */
 import { backOut, during, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../../sceneParts'
-import { Backdrop, DEFAULT_LOOK, Hearts, mixColor, mixLimb, PALETTE, Person, personRig, walk, walkDepth, turnAround, type DepthWalkPlan, type Look, type PersonProps } from '../../sceneFigures'
+import { Backdrop, DEFAULT_LOOK, Hearts, mixColor, mixLimb, PALETTE, Person, personRig, Question, walk, walkDepth, turnAround, type DepthWalkPlan, type Look, type PersonProps } from '../../sceneFigures'
 
 const CHAR = '名'
 
@@ -27,6 +27,8 @@ const MOON = PALETTE.moonGlow
 const BAT = '#2b3050'
 const SOUND = '#fff3b8'
 const WHITE = '#ffffff'
+/** ゆうぐれ の 肌(かげ に なった とき の くらい 青みの 肌色) */
+const DUSK_SKIN = '#6f7096'
 
 /** 友だちの 見た目(みどりの 服・むらさきの ズボン) */
 const FRIEND_LOOK: Look = { hair: '#3a2a22', top: '#3fb0a0', bottom: '#6a5a9a' }
@@ -125,9 +127,10 @@ const FRIEND_WALK: DepthWalkPlan = { from: [FRIEND_X, 108], to: [FRIEND_X, GROUN
 function Friend({ t }: SceneProps) {
   if (t < FRIEND_FROM) return null
   const walking = walkDepth(t, FRIEND_WALK)
-  const reveal = span(t, TURN + 0.2, TURN + 0.9)
-  const dim = (color: string) => mixColor(color, SHADOW_TONE, 0.82 * (1 - reveal))
-  const look: Look = { skin: dim(DEFAULT_LOOK.skin), hair: dim(FRIEND_LOOK.hair ?? ''), top: dim(FRIEND_LOOK.top ?? ''), bottom: dim(FRIEND_LOOK.bottom ?? ''), shoes: dim(DEFAULT_LOOK.shoes) }
+  // 顔が 見えはじめる のは 正面を むいてから。肌は 茶色く ならない よう、くらい 青みの 肌色へ まぜる
+  const reveal = span(t, TURN + 0.35, TURN + 0.8)
+  const dim = (color: string, tone = SHADOW_TONE) => mixColor(color, tone, 0.82 * (1 - reveal))
+  const look: Look = { skin: dim(DEFAULT_LOOK.skin, DUSK_SKIN), hair: dim(FRIEND_LOOK.hair ?? ''), top: dim(FRIEND_LOOK.top ?? ''), bottom: dim(FRIEND_LOOK.bottom ?? ''), shoes: dim(DEFAULT_LOOK.shoes) }
   const turn = t < TURN ? {} : turnAround(t, TURN, 'back', 'front', 0.3, 'right')
   const hello = span(t, TURN + 0.7, TURN + 1.1)
   const hop = t >= TURN + 0.8 && t < TURN + 1.5 ? Math.abs(Math.sin((t - TURN - 0.8) * Math.PI)) * 1.6 : 0
@@ -163,20 +166,6 @@ function SpeechBubble({ t }: SceneProps) {
   )
 }
 
-/** 「だれだろう?」 */
-function Question({ t }: SceneProps) {
-  const show = during(t, SQUINT + 0.15, CALL, 0.2)
-  if (show <= 0) return null
-  const pop = Math.max(0, span(t, SQUINT + 0.15, SQUINT + 0.6, backOut))
-  const head = personRig(KID_STAND).world.head
-  return (
-    <g opacity={show} transform={`translate(${head[0] + 6} ${head[1] - 16 - wave(t, 0.9) * 0.8}) scale(${pop})`}>
-      <path d="M-3 -2 Q-3 -6.4 1 -6.4 Q5 -6.4 5 -3 Q5 -0.8 1.8 0.6 Q1 1.4 1 3" fill="none" stroke={SOUND} strokeWidth="1.8" strokeLinecap="round" />
-      <circle cx="1" cy="6.2" r="1.1" fill={SOUND} />
-    </g>
-  )
-}
-
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 6)
   const kid = kidAt(t)
@@ -192,7 +181,7 @@ function Scene({ t }: SceneProps) {
         <Layer opacity={span(t, WALK_FROM - 0.1, WALK_FROM + 0.1)}>
           <Person {...kid} />
         </Layer>
-        <Question t={t} />
+        <Question x={kidHead[0] + 6} y={kidHead[1] - 16} size={12} t={t} show={during(t, SQUINT + 0.15, CALL, 0.2)} color={SOUND} />
         <SpeechBubble t={t} />
         <Hearts t={t} x={FRIEND_X - 8} y={64} show={joy} />
         <Hearts t={t} x={kidHead[0] - 2} y={kidHead[1] - 8} show={joy} />

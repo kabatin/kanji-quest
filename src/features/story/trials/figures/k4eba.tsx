@@ -65,7 +65,7 @@ const lerp = (a: number, b: number, k: number) => a + (b - a) * k
 type Mood = Expression
 
 /** 子どもの 場所と かっこう。左むき(てまえ の 手足 は 右) */
-function childAt(t: number): Placement & { readonly face: Mood; readonly squash?: number } {
+function childAt(t: number): Placement & { readonly face: Mood; readonly gazeY: number; readonly squash?: number } {
   const walking = walk(t, { from: HIP_X + 70, to: HIP_X, start: WALK, end: STOP, build: 'child', height: HEIGHT, armSwing: 10 })
   const settle = span(t, STOP - 0.3, NOTICE)
   const step = span(t, STEP, STEP + 1.0, easeInOut)
@@ -86,6 +86,8 @@ function childAt(t: number): Placement & { readonly face: Mood; readonly squash?
     lean: 7 * step,
     pose: { rightArm: nearArm, leftArm: farArm, rightLeg: nearLeg, leftLeg: farLeg, torso, head },
     face,
+    // しょんぼり は 目を 下へ。気づくと ぱっと 上がり、手に とまると 少し 見上げる
+    gazeY: mix(t, NOTICE - 0.1, NOTICE + 0.2, 0.8, 0) + mix(t, HAPPY, HAPPY + 0.5, 0, -0.3),
   }
 }
 

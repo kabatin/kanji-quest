@@ -21,7 +21,6 @@
  *
  * 字の形になるのは、家の前に ついて 立ち止まった さいごの しゅんかん(うで は 下に たれる)。
  */
-import type { ReactNode } from 'react'
 import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../../sceneKit'
 import { BoneGlow, Ink, Layer, Sparkles } from '../../sceneParts'
 import { Backdrop, Bird, Hearts, LOOKS, mixLimb, PALETTE, Person, personRig, run, Sweat, Notice, walk, type PersonProps } from '../../sceneFigures'
@@ -59,10 +58,12 @@ const DURATION = 10
 const GROUND = 96
 /** 子どもの 背の高さ。どう と あし が 2画目に のる */
 const HEIGHT = 78
+/** 元の 場面 の 子 は 頭が 小さめ(頭の 半径 9)。高学年の 体格 だと 同じ くらいに なる */
+const BUILD = 'teen'
 /** ついた ところ(こし の x)と、とぼとぼ あるいて 止まる ところ */
 const HOME_X = 27.5
-const TIRED_X = 13
-const START_X = -22
+const TIRED_X = 19
+const START_X = -16
 
 /** 家(ほそ長い 小さな 家)。まど・ひさし・ドア。画の 位置に 合わせた 1回きりの 家。 */
 function Home({ t }: SceneProps) {
@@ -123,25 +124,13 @@ function Broom({ t }: SceneProps) {
   )
 }
 
-/** せおった かばん。よこむき の 体の 座標で、せなか(うしろ)がわ に 描く。 */
-function bagOf(person: PersonProps): ReactNode {
-  const rig = personRig(person)
-  const b = rig.body
-  return (
-    <g transform={rig.transform}>
-      <rect x={-b.torsoW / 2 - 6} y={-b.torso * 0.92} width="10" height={b.torso * 0.62} rx="4" fill={BAG} />
-      <rect x={-b.torsoW / 2 - 6} y={-b.torso * 0.62} width="10" height="3.4" fill={BAG_DARK} />
-    </g>
-  )
-}
-
 /** 子どもの いち・かっこう: つかれて あるく → あかりに 気づいて 止まる → かけだす → 家の 前で 手を ふる */
 function kidAt(t: number): PersonProps {
-  const tired = walk(t, { from: START_X, to: TIRED_X, start: WALK, end: STOP, build: 'child', height: HEIGHT, step: 22, armSwing: 10 })
-  const dash = run(t, { from: TIRED_X, to: HOME_X, start: HURRY, end: ARRIVE, build: 'child', height: HEIGHT, stride: 10 })
-  const base = { y: GROUND, build: 'child', height: HEIGHT, facing: 'right', look: LOOKS.boy } as const
+  const tired = walk(t, { from: START_X, to: TIRED_X, start: WALK, end: STOP, build: BUILD, height: HEIGHT, step: 22, armSwing: 10 })
+  const dash = run(t, { from: TIRED_X, to: HOME_X, start: HURRY, end: ARRIVE, build: BUILD, height: HEIGHT, stride: 7 })
+  const base = { y: GROUND, build: BUILD, height: HEIGHT, facing: 'right', look: LOOKS.boy } as const
   const hang = { swing: 3, bend: 8 }
-  if (t < STOP) return { ...base, x: tired.x, pose: { ...tired.pose, torso: 7, head: 12 }, lean: 3, face: 'sad' }
+  if (t < STOP) return { ...base, x: tired.x, pose: { ...tired.pose, torso: 7, head: 12 }, lean: 3, face: 'sad', gazeY: 0.8 }
   if (t < HURRY) return { ...base, x: TIRED_X, pose: { leftArm: hang, rightArm: hang, head: -8 }, face: t < STOP + 1 ? 'surprised' : 'joy' }
   // ついたら 手を ふる(かたから 上へ あげて、ひじ から先を ゆらす)
   const wave1 = span(t, ARRIVE + 0.1, ARRIVE + 0.55, easeOut) * (1 - span(t, WAVE_END - 0.35, WAVE_END, easeInOut))
@@ -169,7 +158,7 @@ function Scene({ t }: SceneProps) {
         <Home t={t} />
         <Broom t={t} />
         <Layer opacity={span(t, WALK - 0.1, WALK + 0.15)}>
-          <Person {...kid} held={bagOf(kid)} />
+          <Person {...kid} pack="randoseru" />
           <Sweat t={t} x={head[0] - headR * 1.1} y={head[1] - headR * 0.5} show={during(t, WALK + 0.3, STOP, 0.2)} />
           <Notice x={head[0]} y={head[1]} r={headR} show={during(t, STOP + 0.05, STOP + 1.0, 0.15)} dir={1} />
           <Hearts t={t} x={head[0] + headR * 1.5} y={head[1] - headR * 1.2} show={during(t, ARRIVE + 0.35, INK - 0.05, 0.2)} />

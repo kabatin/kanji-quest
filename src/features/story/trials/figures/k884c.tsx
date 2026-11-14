@@ -18,20 +18,16 @@
  *
  * 字に なる とき、人は 字に 重ならない(みち が 字に なる。人は みち の うえを いく もの)。
  */
-import type { ReactNode } from 'react'
 import { backOut, during, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../../sceneParts'
-import { Butterfly, Clouds, Flower, House, LOOKS, Meadow, mixLimb, PALETTE, Person, personRig, Pond, run, Sun, Tree, turnAround, walkDepth, type DepthWalkPlan, type Look, type PersonProps } from '../../sceneFigures'
+import { Butterfly, Clouds, Flower, House, LOOKS, Meadow, mixLimb, Person, personRig, Pond, Question, run, Sun, Tree, turnAround, walkDepth, type DepthWalkPlan, type Look, type PersonProps } from '../../sceneFigures'
 
 const CHAR = '行'
 
 const ROAD = '#ecd29a'
 const ROAD_EDGE = '#d6b373'
 const GRASS_BG = '#d7efbd'
-const BAG = '#e8534a'
-const BAG_DARK = '#c9433b'
 const DOOR_INSIDE = '#4a3020'
-const QUESTION = '#5f7fd6'
 const HELLO = '#f07f9e'
 
 /** 友だちの 見た目(ももいろの 服・みどりの ズボン・くろい かみ) */
@@ -120,42 +116,6 @@ function Home({ t }: SceneProps) {
   )
 }
 
-/** 男の子の ランドセル。体の 座標で 描く: うしろむき は せなか、よこむき は せなか がわ、正面 は かたひも だけ。 */
-function bagOf(person: PersonProps): { readonly held?: ReactNode; readonly over?: ReactNode } {
-  const rig = personRig(person)
-  const b = rig.body
-  const top = -b.torso * 0.93
-  if (rig.view === 'back') {
-    const w = b.torsoFrontW * 0.78
-    return {
-      over: (
-        <g transform={rig.transform}>
-          <rect x={-w / 2} y={top} width={w} height={b.torso * 0.8} rx="4" fill={BAG} />
-          <rect x={-w / 2} y={top + b.torso * 0.34} width={w} height="4" fill={BAG_DARK} />
-          <circle cx="0" cy={top + b.torso * 0.2} r="2.2" fill={PALETTE.sun} />
-        </g>
-      ),
-    }
-  }
-  if (rig.view === 'front') {
-    return {
-      held: (
-        <g transform={rig.transform} stroke={BAG} strokeWidth="2.6" strokeLinecap="round">
-          <path d={`M${-b.torsoFrontW * 0.2} ${top} V${-b.torso * 0.28} M${b.torsoFrontW * 0.2} ${top} V${-b.torso * 0.28}`} />
-        </g>
-      ),
-    }
-  }
-  return {
-    held: (
-      <g transform={rig.transform}>
-        <rect x={-b.torsoW / 2 - 5} y={top} width="9" height={b.torso * 0.78} rx="3.5" fill={BAG} />
-        <rect x={-b.torsoW / 2 - 5} y={top + b.torso * 0.32} width="9" height="3.2" fill={BAG_DARK} />
-      </g>
-    ),
-  }
-}
-
 const KID_WALK: DepthWalkPlan = { from: [CROSS_X, 108], to: [CROSS_X, CROSS_Y], start: WALK, end: ARRIVE, build: 'child', height: 30, toHeight: KID_HEIGHT }
 
 /** 男の子の いち・向き・ポーズ: あるいてくる → たちどまる → ふりむく → 右を むく → かけだす */
@@ -182,20 +142,7 @@ function frontMood(t: number, standing: { readonly x: number; readonly y: number
   const rest = { swing: 6, bend: 10 }
   const scratching = mixLimb(rest, { to: [head[0] + headR * 1.05, head[1] - headR * 0.25] }, scratch)
   const leftArm = mixLimb(scratching, { swing: 135, bend: 22 + wave(t, 0.4) * 18 }, waving)
-  return { gaze, face: t < FACE ? 'normal' : t < POP + 0.2 ? 'sad' : 'joy', pose: { leftArm, rightArm: rest, head: gaze * 5 } }
-}
-
-/** 「どっちへ いこう?」の ハテナ。あたまの 上で ふわふわ。 */
-function Question({ t, x, y }: { readonly t: number; readonly x: number; readonly y: number }) {
-  const show = during(t, 4.0, 5.0, 0.2)
-  if (show <= 0) return null
-  const bob = wave(t, 0.9) * 0.8
-  return (
-    <g opacity={show} transform={`translate(${x} ${y + bob})`}>
-      <path d="M-2.2 -2 Q-2.2 -4.6 0 -4.6 Q2.2 -4.6 2.2 -2.6 Q2.2 -1.2 0 -0.2 V1" fill="none" stroke={QUESTION} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="0" cy="3.2" r="0.9" fill={QUESTION} />
-    </g>
-  )
+  return { gaze, face: t < FACE ? 'normal' : t < POP + 0.2 ? 'worried' : 'joy', pose: { leftArm, rightArm: rest, head: gaze * 5 } }
 }
 
 /** ともだちが 出てくる ときの「おーい」の しるし。 */
@@ -229,7 +176,6 @@ function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 6)
   const grow = [span(t, 0.1, 0.6), span(t, 0.2, 0.7), span(t, 0.3, 0.9), span(t, 0.3, 0.9), span(t, 0.2, 0.8), span(t, 0.1, 0.8)]
   const kid = kidAt(t)
-  const bag = bagOf(kid)
   const stopped = t >= ARRIVE && t < TURN_R
   return (
     <>
@@ -243,10 +189,9 @@ function Scene({ t }: SceneProps) {
         <Friend t={t} />
         <Hello t={t} />
         <Layer opacity={span(t, WALK - 0.1, WALK + 0.1)}>
-          <Person {...kid} held={bag.held} />
-          {kid.facing === 'back' && (kid.squash ?? 1) >= 1 && bag.over}
+          <Person {...kid} pack="randoseru" />
         </Layer>
-        {stopped && <Question t={t} x={CROSS_X + 1} y={CROSS_Y - 30} />}
+        <Question t={t} x={CROSS_X + 1} y={CROSS_Y - 30} show={stopped ? during(t, 4.0, 5.0, 0.2) : 0} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Ink char={CHAR} progress={ink.progress} tint={ink.tint} />

@@ -25,8 +25,6 @@ import { Butterfly, Clouds, Flower, House, LOOKS, mixLimb, Notice, Person, perso
 
 const CHAR = '道'
 
-const PACK = '#e8534a'
-const PACK_DARK = '#c9433b'
 const ROAD = '#ecd3a0'
 const ROAD_EDGE = '#d6b87c'
 const GRASS = '#c5e8a9'
@@ -147,20 +145,6 @@ function butterflyAt(t: number): { readonly x: number; readonly y: number; reado
 
 /* ───────── 子ども ───────── */
 
-/** 背中の ランドセル。かた の 少し 下から、せなか(あるく むき の うしろ)に 背負う */
-function Pack({ shoulder, scale }: { readonly shoulder: readonly [number, number]; readonly scale: number }) {
-  const w = 7.4 * scale
-  const h = 15 * scale
-  const x = shoulder[0] - 7.6 * scale
-  const y = shoulder[1] - 1.4 * scale
-  return (
-    <g>
-      <rect x={x} y={y} width={w} height={h} rx={2.6 * scale} fill={PACK_DARK} />
-      <rect x={x + 0.5 * scale} y={y} width={w - 1 * scale} height={h - 1.4 * scale} rx={2.4 * scale} fill={PACK} />
-    </g>
-  )
-}
-
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 12)
 
@@ -170,6 +154,8 @@ function Scene({ t }: SceneProps) {
 
   // 気持ち: うつむく → おどろく → にこっ
   const face: Expression = t < STOP + 0.1 ? 'normal' : t < GO - 0.2 ? 'surprised' : 'joy'
+  // 目線: 下を 見て あるく → ちょうちょを 見あげる → まっすぐ まえ
+  const gazeY = t < STOP ? 0.9 : t < GO - 0.2 ? mix(t, STOP, STOP + 0.4, 0.9, -0.8) : mix(t, GO - 0.2, GO + 0.5, -0.8, 0)
   // あたま: うつむいて あるく → ちょうちょを 見あげる → まっすぐ まえを 向く
   const head = t < STOP ? 18 : t < GO - 0.2 ? mix(t, STOP, STOP + 0.5, 18, -12) : mix(t, GO - 0.2, GO + 0.5, -12, 0)
   // からだ: とぼとぼは 少し まえかがみ。あたまを あげると のびる
@@ -183,7 +169,6 @@ function Scene({ t }: SceneProps) {
 
   const kid: PersonProps = { ...w, y: footY(w.x), lift: hop, pose: { ...w.pose, leftArm, torso, head } }
   const rig = personRig(kid)
-  const shoulder = rig.world.arms.left.root
   const headR = rig.body.headR * rig.scale
   const butterflyShow = span(t, FLUTTER, FLUTTER + 0.2) * (1 - span(t, ARRIVE - 0.3, ARRIVE + 0.1))
 
@@ -195,7 +180,7 @@ function Scene({ t }: SceneProps) {
         <Field />
         <Road t={t} />
         <Layer opacity={span(t, WALK - 0.1, WALK + 0.15)}>
-          <Person {...kid} look={KID_LOOK} face={face} held={<Pack shoulder={shoulder} scale={rig.scale} />} />
+          <Person {...kid} look={KID_LOOK} face={face} gazeY={gazeY} pack="randoseru" />
         </Layer>
         <Notice x={rig.world.head[0]} y={rig.world.head[1]} r={headR} show={during(t, STOP, STOP + 0.9, 0.15)} dir={1} />
         {butterflyShow > 0 && (

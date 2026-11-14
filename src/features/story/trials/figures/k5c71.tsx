@@ -11,33 +11,23 @@
  *   → 子どもが うしろすがた で あるいてきて、みねを ひとつずつ ゆびさして かぞえる(まんなかは まうえ を ゆびさす)
  *   → ふりむいて ばんざい → ほね が ひかって、絵が うすくなり、字「山」が のこる
  *
- * 山は、ほんものの 山の つくり を守る:
- *   すそ が ひろがった 三角で、日は 左上から さすので、りょうせん の 左が 日なた・右が ひかげ。
- *   いちばん たかい まんなかの 山にだけ 雪が のこり、雲は その 中ほどに かかる。
- * 子どもは Person(うしろすがた)。山より ずっと てまえ に いるので 大きめに見える。
+ * 山は 共通部品 Mountain(画の線に そう りょうせん ridge を わたす。rise・snow)。
+ * 日は 左上から さすので、りょうせん の 左が 日なた・右が ひかげ。いちばん たかい まんなかの 山にだけ 雪、雲は その 中ほどに かかる。
+ * 子どもは Person(うしろすがた)。リュックは pack、ぼうしは look.hat。山より ずっと てまえ に いるので 大きめに見える。
  * ゆびさす うで は、かた から みね の ほうへ まっすぐ のびる(とどかない ので、さす むき だけ 合う)。
- * 山は 部品に ないので、この 場面の 中で 描く。リュック も 部品に ないので、ここで 描く。
  */
-import type { ReactNode } from 'react'
 import { backOut, during, easeInOut, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../../sceneKit'
 import { BoneGlow, Ink, Layer, Sparkles, Star } from '../../sceneParts'
-import { Bird, Clouds, Dust, HANG_ARM, mixLimb, PALETTE, Person, personRig, posture, shade, Sun, turnAround, walkDepth, type Look } from '../../sceneFigures'
+import { Bird, Clouds, Dust, HANG_ARM, LOOKS, mixLimb, Mountain, PALETTE, Person, personRig, posture, Sun, turnAround, walkDepth, type Look, type MountainShape } from '../../sceneFigures'
 
 const CHAR = '山'
 
-/** まんなかの 山(とおくて 大きい): すこし 青みの ある みどり */
-const FAR_LIT = '#86c79a'
-const FAR_SHADE = '#62a67f'
-/** 左右の 山(てまえ): こい みどり */
-const NEAR_LIT = '#55b86e'
-const NEAR_SHADE = '#3f9c59'
-const SNOW = '#ffffff'
-const SNOW_SHADE = '#d7e6f2'
 const GRASS = PALETTE.grass
+/** リュック の 色 */
+const PACK = '#e8534a'
 const GRASS_NEAR = '#b3df95'
 const LEAF = PALETTE.leaf
 const SUN = PALETTE.sun
-const PACK = '#e8534a'
 
 /** くぎり の時間(秒) */
 const RISE_L = 0.25
@@ -59,39 +49,18 @@ const DONE = 9.1
 const DURATION = 9.75
 
 type Point = readonly [number, number]
-type Side = -1 | 1
 
 const r2 = (n: number) => Math.round(n * 100) / 100
-const pt = ([x, y]: Point) => `${r2(x)} ${r2(y)}`
 
-/* ───────── 山の かたち ───────── */
+/* ───────── 山の かたち(りょうせん は 画の線に そう) ───────── */
 
-/** 山 1つぶんの形 */
-type Peak = {
-  /** みねの てっぺん */
-  readonly top: Point
-  /** ふもと(のはら に かくれる 高さ) */
-  readonly foot: number
-  /** ふもと での はば の半分 */
-  readonly half: number
-  /** 山はだ の まっすぐさ(1 = まっすぐな 三角。小さいほど すそ が ひろがる) */
-  readonly straight: number
-  /** りょうせん: てっぺん から ふもと まで、画の線に そって おりる(SVG の C・L の つづき) */
-  readonly ridge: string
-}
-
-/** てっぺん を まるくする 長さ(とがりすぎない ように) */
-const ROUND = 1.8
-
-/** 1画目の 書きはじめの まがり(まんなかの 山の てっぺん の すぐ下)。雪の かげ にも使う */
+/** 1画目の 書きはじめの まがり(まんなかの 山の てっぺん の すぐ下) */
 const MIDDLE_RIDGE_TOP = 'C53.98 16.5 54.75 19 54.75 21.25'
-/** 1画目の たて線の x(雪の ふち が りょうせん と まじわる所) */
-const MIDDLE_RIDGE_X = 54.74
 
 /** まんなかの 山: いちばん たかい。てっぺん は 1画目の 書きはじめ */
-const MIDDLE: Peak = { top: [52.6, 14.2], foot: 90, half: 44, straight: 0.6, ridge: `${MIDDLE_RIDGE_TOP} L54.5 90` }
+const MIDDLE: MountainShape = { top: [52.6, 14.2], foot: 90, half: 44, straight: 0.6, ridge: `${MIDDLE_RIDGE_TOP} L54.5 90` }
 /** 左の 山: てっぺん は 2画目の 書きはじめ。りょうせん は 2画目の たての ぶぶん */
-const LEFT: Peak = {
+const LEFT: MountainShape = {
   top: [21.5, 53.6],
   foot: 90,
   half: 27,
@@ -99,44 +68,15 @@ const LEFT: Peak = {
   ridge: 'C22.37 55.38 22.88 56.75 22.75 58.25 C22.17 65.24 21.75 74.25 20.25 81.25 L19.9 90',
 }
 /** 右の 山: てっぺん は 3画目の 書きはじめ */
-const RIGHT: Peak = {
+const RIGHT: MountainShape = {
   top: [89.24, 48.1],
   foot: 90,
   half: 26,
   straight: 0.6,
   ridge: 'C90.18 49.94 90.88 51.38 90.75 53.25 C90.5 56.93 88.92 73.55 88.2 82.02 L87.6 90',
 }
-
-/** 山はだ の上の点。side は 左(-1)・右(1)、d は てっぺん(0)から ふもと(1)まで */
-function slopeAt(p: Peak, side: Side, d: number): Point {
-  const spread = p.half * (p.straight * d + (1 - p.straight) * d * d)
-  return [p.top[0] + side * spread, p.top[1] + (p.foot - p.top[1]) * d]
-}
-
-/** 山はだ を d0 から d1 まで なぞる 曲線(2次ベジェ)の 制御点。山はだ は 放物線なので、ぴったり なぞれる */
-function slopeControl(p: Peak, side: Side, d0: number, d1: number): Point {
-  const [x, y] = slopeAt(p, side, d0)
-  const k = (d1 - d0) / 2
-  return [x + k * side * p.half * (p.straight + 2 * (1 - p.straight) * d0), y + k * (p.foot - p.top[1])]
-}
-
-const tipDepth = (p: Peak) => ROUND / (p.foot - p.top[1])
-/** まるめた てっぺん の いちばん上(りょうせん の はじまり) */
-const apex = (p: Peak): Point => [p.top[0], p.top[1] + ROUND / 2]
-
-/** 山の りんかく(左の ふもと → てっぺん → 右の ふもと) */
-function outlinePath(p: Peak): string {
-  const d0 = tipDepth(p)
-  return `M${pt(slopeAt(p, -1, 1))} Q${pt(slopeControl(p, -1, d0, 1))} ${pt(slopeAt(p, -1, d0))} Q${pt(p.top)} ${pt(slopeAt(p, 1, d0))} Q${pt(slopeControl(p, 1, d0, 1))} ${pt(slopeAt(p, 1, 1))} Z`
-}
-
-/** ひかげ の 面: りょうせん より 右がわ(日は 左上から さす) */
-function shadePath(p: Peak): string {
-  const d0 = tipDepth(p)
-  const r0 = slopeAt(p, 1, d0)
-  const half: Point = [(p.top[0] + r0[0]) / 2, (p.top[1] + r0[1]) / 2]
-  return `M${pt(apex(p))} ${p.ridge} L${pt(slopeAt(p, 1, 1))} Q${pt(slopeControl(p, 1, d0, 1))} ${pt(r0)} Q${pt(half)} ${pt(apex(p))} Z`
-}
+/** 雪の ふち の 高さ */
+const SNOW_LINE = 29
 
 /** 山が せりあがる 度合い(overshoot が 大きいほど、ぽん と 行きすぎてから おちつく) */
 function riseOf(t: number, from: number, length: number, overshoot: number): number {
@@ -148,56 +88,6 @@ function riseOf(t: number, from: number, length: number, overshoot: number): num
 function shakeOf(t: number, from: number, length: number): number {
   const x = span(t, from, from + length)
   return x > 0 && x < 1 ? wave(t, 0.1) * 0.5 * (1 - x) : 0
-}
-
-type MountainProps = {
-  readonly peak: Peak
-  readonly rise: number
-  readonly shake: number
-  readonly lit: string
-  readonly shade: string
-  readonly children?: ReactNode
-}
-
-/**
- * 山 1つ。のはら の うしろ から せりあがる(rise = 0 のときは、ぜんぶ のはら に かくれている)。
- * 山はだ に たての すじ(谷すじ など)は 描かない: 字の たて線 と まぎれて、線の数が わからなくなるため。
- */
-function Mountain({ peak, rise, shake, lit, shade, children }: MountainProps) {
-  if (rise <= 0) return null
-  return (
-    <Layer x={shake} y={(1 - rise) * (peak.foot - peak.top[1])}>
-      <path d={outlinePath(peak)} fill={lit} />
-      <path d={shadePath(peak)} fill={shade} />
-      {children}
-    </Layer>
-  )
-}
-
-/** 雪の ふち の 高さ */
-const SNOW_LINE = 29
-
-/** まんなかの 山の てっぺん の 雪(いちばん たかい ので、雪が のこる)。ふち は とけて たれた ように 下へ ふくらむ */
-function Snow({ p }: { readonly p: Peak }) {
-  const d0 = tipDepth(p)
-  const ds = (SNOW_LINE - p.top[1]) / (p.foot - p.top[1])
-  const l = slopeAt(p, -1, ds)
-  const r = slopeAt(p, 1, ds)
-  const l0 = slopeAt(p, -1, d0)
-  const r0 = slopeAt(p, 1, d0)
-  const ridge: Point = [MIDDLE_RIDGE_X, SNOW_LINE + 0.8]
-  const mid: Point = [(ridge[0] + l[0]) / 2, SNOW_LINE + 1]
-  const dripR: Point = [(r[0] + ridge[0]) / 2, SNOW_LINE + 4.6]
-  const edge = `Q${pt(dripR)} ${pt(ridge)} Q${pt([(ridge[0] + mid[0]) / 2, SNOW_LINE + 5.6])} ${pt(mid)} Q${pt([(mid[0] + l[0]) / 2, SNOW_LINE + 4.2])} ${pt(l)}`
-  const cap = `M${pt(l)} Q${pt(slopeControl(p, -1, d0, ds))} ${pt(l0)} Q${pt(p.top)} ${pt(r0)} Q${pt(slopeControl(p, 1, d0, ds))} ${pt(r)} ${edge} Z`
-  const half: Point = [(p.top[0] + r0[0]) / 2, (p.top[1] + r0[1]) / 2]
-  const shade = `M${pt(apex(p))} ${MIDDLE_RIDGE_TOP} L${pt(ridge)} Q${pt(dripR)} ${pt(r)} Q${pt(slopeControl(p, 1, d0, ds))} ${pt(r0)} Q${pt(half)} ${pt(apex(p))} Z`
-  return (
-    <>
-      <path d={cap} fill={SNOW} />
-      <path d={shade} fill={SNOW_SHADE} />
-    </>
-  )
 }
 
 /** ふもと の 小さな 木。木が こんなに 小さく 見えるほど、山は 大きい(2画目の よこ線 に かからない 左右の はし だけ) */
@@ -259,7 +149,7 @@ function Meadow() {
 }
 
 /** かぞえた みね が、きらっと ひかる */
-function SummitStar({ t, at, peak, big }: { readonly t: number; readonly at: number; readonly peak: Peak; readonly big?: boolean }) {
+function SummitStar({ t, at, peak, big }: { readonly t: number; readonly at: number; readonly peak: MountainShape; readonly big?: boolean }) {
   const p = span(t, at, at + 0.75)
   if (p <= 0 || p >= 1) return null
   const pop = backOut(Math.min(1, p * 2.4))
@@ -301,22 +191,13 @@ function FarBirds({ t }: SceneProps) {
 const CHILD_AT: Point = [47, 108]
 /** 立ちどまった ときの 背の高さ(山より ずっと てまえ なので 大きめ) */
 const CHILD_HEIGHT = 29
+/** 入ってくる ときの 歩数(1秒 で 13 おくへ。ふつう に 数える と 5〜6歩 で 小走り に 見える ので、ゆっくり 4歩) */
+const WALK_STEPS = 4
 /** 画面の 下から あるいてくる(はじめ は 大きく) */
 const CHILD_FROM: Point = [47, 121]
 const CHILD_START_HEIGHT = 35
 
-const CHILD_LOOK: Look = { bottomKind: 'shorts', sleeves: 'short' }
-const HAT = PALETTE.sun
-const HAT_DARK = shade(PALETTE.sun, 0.2)
-
-/** きいろい ぼうし(あたま 半径 1 の 座標。つば が ぐるりと ある) */
-const HAT_SHAPE = (
-  <>
-    <ellipse cx="0" cy="-0.42" rx="1.38" ry="0.36" fill={HAT_DARK} />
-    <path d="M-1.07 -0.42 Q-1.12 -1.6 0 -1.62 Q1.12 -1.6 1.07 -0.42 Z" fill={HAT} />
-  </>
-)
-
+const CHILD_LOOK: Look = { ...LOOKS.boy, bottomKind: 'shorts', sleeves: 'short', hat: 'school' }
 const BANZAI = posture('banzai', 'front')
 /** 立ちどまった うしろすがた(かた の 場所 を しるため) */
 const STANDING = personRig({ x: CHILD_AT[0], y: CHILD_AT[1], build: 'child', height: CHILD_HEIGHT, facing: 'back' })
@@ -330,7 +211,7 @@ function pointAt(side: 'left' | 'right', target: Point) {
 
 /** 子どもの 場所と かっこう。みねを かぞえる: ひとつめ は 左うで、ふたつめ・みっつめ は 右うで。さいごに ばんざい */
 function childAt(t: number) {
-  const walking = walkDepth(t, { from: CHILD_FROM, to: CHILD_AT, start: WALK, end: STOP, build: 'child', height: CHILD_START_HEIGHT, toHeight: CHILD_HEIGHT })
+  const walking = walkDepth(t, { from: CHILD_FROM, to: CHILD_AT, start: WALK, end: STOP, build: 'child', height: CHILD_START_HEIGHT, toHeight: CHILD_HEIGHT, steps: WALK_STEPS })
   const turn = turnAround(t, TURN, 'back', 'front', 0.17, 'right')
   const cheer = span(t, CHEER, CHEER + 0.3, backOut)
   const leftUp = span(t, COUNT_1, COUNT_1 + 0.25, easeOut) - span(t, COUNT_2 - 0.05, COUNT_2 + 0.2, easeInOut)
@@ -357,30 +238,10 @@ function childAt(t: number) {
   }
 }
 
-/** リュック(うしろすがた の せなか)。部品に ないので ここで 描く。かた から こし の 手前 まで */
-function Pack({ child }: { readonly child: ReturnType<typeof childAt> }) {
-  const rig = personRig(child)
-  const [px, py] = rig.world.pelvis
-  const neck = rig.world.neck[1]
-  const torso = py - neck
-  const w = rig.body.torsoW * rig.scale * 0.8 * child.squash
-  return (
-    <g data-part="pack">
-      <rect x={px - w / 2} y={neck + torso * 0.1} width={w} height={torso * 0.62} rx={w * 0.25} fill={PACK} />
-      <rect x={px - w / 2} y={neck + torso * 0.1} width={w} height={torso * 0.25} rx={w * 0.25} fill={shade(PACK, 0.18)} />
-    </g>
-  )
-}
-
 function Child({ t }: SceneProps) {
   if (t < WALK) return null
   const child = childAt(t)
-  return (
-    <Layer opacity={span(t, WALK, WALK + 0.2)}>
-      <Person {...child} look={CHILD_LOOK} headwear={HAT_SHAPE} />
-      {child.facing === 'back' && <Pack child={child} />}
-    </Layer>
-  )
+  return <Person {...child} look={CHILD_LOOK} pack={{ kind: 'rucksack', color: PACK }} opacity={span(t, WALK, WALK + 0.2)} />
 }
 
 /* ───────── 場面 ───────── */
@@ -395,12 +256,10 @@ function Scene({ t }: SceneProps) {
       <Layer opacity={ink.picture}>
         <Sun t={t} x={14} y={14} />
         <FarBirds t={t} />
-        <Mountain peak={MIDDLE} rise={riseOf(t, RISE_M, 1.2, 0.4)} shake={shakeOf(t, RISE_M, 1.2)} lit={FAR_LIT} shade={FAR_SHADE}>
-          <Snow p={MIDDLE} />
-        </Mountain>
+        <Mountain shape={MIDDLE} rise={riseOf(t, RISE_M, 1.2, 0.4)} shake={shakeOf(t, RISE_M, 1.2)} far snow={SNOW_LINE} />
         <Clouds t={t} at={CLOUD_SPOTS} speed={0.7} opacity={0.95 * span(t, 0.2, 0.9)} />
-        <Mountain peak={LEFT} rise={riseOf(t, RISE_L, 0.7, 1)} shake={shakeOf(t, RISE_L, 0.7)} lit={NEAR_LIT} shade={NEAR_SHADE} />
-        <Mountain peak={RIGHT} rise={riseOf(t, RISE_R, 0.7, 1)} shake={shakeOf(t, RISE_R, 0.7)} lit={NEAR_LIT} shade={NEAR_SHADE} />
+        <Mountain shape={LEFT} rise={riseOf(t, RISE_L, 0.7, 1)} shake={shakeOf(t, RISE_L, 0.7)} />
+        <Mountain shape={RIGHT} rise={riseOf(t, RISE_R, 0.7, 1)} shake={shakeOf(t, RISE_R, 0.7)} />
         <Meadow />
         <FootTrees />
         {/* つちけむり は、それぞれの 山が のはら から 出てくる 所(のはら の ふち)に 立つ */}

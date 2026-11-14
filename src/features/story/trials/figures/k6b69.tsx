@@ -19,16 +19,10 @@
  */
 import { backOut, during, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../../sceneKit'
 import { BoneGlow, Ink, Layer, Sparkles, Star } from '../../sceneParts'
-import { Bird, Clouds, gaitAt, LOOKS, Person, Sun, walk, type Expression, type WalkPlan } from '../../sceneFigures'
+import { Bird, Clouds, Dust, Footprint, LOOKS, Person, Seashore, Sun, walk, walkPrints, type Expression, type WalkPlan } from '../../sceneFigures'
 
 const CHAR = '歩'
 
-const SEA = '#7cc4f2'
-const SEA_DARK = '#56aae6'
-const FOAM = '#ffffff'
-const SAND = '#f6e3b0'
-const SAND_DARK = '#ecd397'
-const PRINT = '#d9b878'
 const SHELL = '#ff9fb2'
 const SHELL_DARK = '#ee7f98'
 
@@ -43,49 +37,27 @@ const DURATION = 9.6
 /** 地面(あしの うら の たかさ) */
 const GROUND = 95.5
 const KID_LOOK = { ...LOOKS.boy, top: '#f2766b', bottom: '#4f9be0', bottomKind: 'shorts', sleeves: 'short' } as const
-/** あるく 子ども。足あと が 3つ ならぶ ように、歩幅 を 16 ほどに する */
-const PLAN: WalkPlan = { from: 15, to: 62, start: WALK_START, end: WALK_END, build: 'child', height: 80, step: 16, armSwing: 20 }
-
-/** 着地する 足あと(はじめ の 3歩)。at = 着地の 時刻、x = 足の x(足の うらの まんなか は 少し まえ) */
-function landings(): readonly { readonly at: number; readonly x: number }[] {
-  const { steps, stepLength } = gaitAt(WALK_START, PLAN)
-  const span1 = (WALK_END - WALK_START) / steps
-  return [1, 2, 3].map((k) => ({ at: WALK_START + k * span1, x: PLAN.from + k * stepLength + 9 }))
-}
-const PRINTS = landings()
+/** あるく 子ども。元の 場面 と おなじ くらい の 歩幅(1歩 およそ 20)で、足あと が ならぶ */
+const PLAN: WalkPlan = { from: 20, to: 78, start: WALK_START, end: WALK_END, build: 'child', height: 80, step: 20, armSwing: 20 }
+const PRINTS = walkPrints(PLAN)
+/** 足あとの 高さ(地面 より 少し てまえ)。むこうの 足 は 少し おく */
+const PRINT_Y = 96.6
 
 /* ───────── けしき ───────── */
 
 function Scenery({ t }: SceneProps) {
   const open = span(t, 0, 0.7, easeOut)
-  const drift = wave(t, 2.6) * 2
   return (
     <Layer opacity={open}>
-      <rect x="-2" y="-2" width="113" height="43" fill="#d5f0fb" />
+      <Seashore t={t} horizon={40} shore={58} sky="#d5f0fb" />
       <Sun t={t} x={97} y={12} r={5.8} />
       {/* 2画目: 細長い 雲 */}
       <Clouds t={t} at={[[73, 21, 1.1]]} speed={0.4} />
-      {/* 海: 4画目の 水平線 から 下 */}
-      <rect x="-2" y="40" width="113" height="20" fill={SEA} />
-      <rect x="-2" y="40" width="113" height="2.4" fill={SEA_DARK} />
-      <g stroke={FOAM} strokeWidth="1.1" strokeLinecap="round" fill="none" opacity="0.8" transform={`translate(${drift} 0)`}>
-        <path d="M8 47 q3 -1.6 6 0 M70 45 q3 -1.6 6 0 M92 51 q3 -1.6 6 0 M22 53 q3 -1.6 6 0" />
-      </g>
       {/* 3画目: とうだい */}
       <path d="M31.6 40 L32.8 28 H35.2 L36.4 40 Z" fill="#ffffff" />
       <path d="M32.2 33.2 H35.8 L36.1 36.4 H31.9 Z" fill="#e8534a" />
       <rect x="32.4" y="25" width="3.2" height="3.4" rx="0.6" fill="#ffe17a" />
       <path d="M31.6 25 L34 21.8 L36.4 25 Z" fill="#e8534a" />
-      {/* 砂はま と、うちよせる なみ */}
-      <rect x="-2" y="58" width="113" height="53" fill={SAND} />
-      <path d={`M-2 59 Q12 ${54.5 + drift * 0.4} 26 58.5 Q42 ${63 - drift * 0.4} 58 58.5 Q76 ${54.5 + drift * 0.4} 92 58.5 Q102 61 111 58 V50 H-2 Z`} fill={SEA} />
-      <path d={`M-2 59 Q12 ${54.5 + drift * 0.4} 26 58.5 Q42 ${63 - drift * 0.4} 58 58.5 Q76 ${54.5 + drift * 0.4} 92 58.5 Q102 61 111 58`} fill="none" stroke={FOAM} strokeWidth="1.6" strokeLinecap="round" />
-      <g fill={SAND_DARK}>
-        <ellipse cx="46" cy="104" rx="8" ry="1.4" />
-        <ellipse cx="8" cy="101" rx="5" ry="1.1" />
-        <ellipse cx="86" cy="76" rx="6" ry="1.2" />
-        <ellipse cx="14" cy="72" rx="5" ry="1.1" />
-      </g>
     </Layer>
   )
 }
@@ -123,27 +95,9 @@ function Shell({ t }: SceneProps) {
 
 /* ───────── あしあと ───────── */
 
-/** あしが ついたとき ぺた と 砂に のこる。x は 足の うらの まんなか */
-function Footprint({ t, x, at }: { readonly t: number; readonly x: number; readonly at: number }) {
-  const pop = span(t, at, at + 0.25, backOut)
-  if (pop <= 0) return null
-  const puff = span(t, at, at + 0.5, easeOut)
-  return (
-    <>
-      <Layer scale={pop} origin={[x, 96.6]}>
-        <ellipse cx={x} cy="96.6" rx="6" ry="2.5" fill={PRINT} />
-        {[[5.8, 95.4], [6.6, 96.7], [5.6, 98]].map(([dx, y]) => (
-          <circle key={y} cx={x + dx} cy={y} r="0.95" fill={PRINT} />
-        ))}
-      </Layer>
-      {puff < 1 ? (
-        <g opacity={1 - puff} fill="#fff6dc">
-          <circle cx={x - 4.6 - puff * 5} cy={94 - puff * 2} r={1.2 + puff * 1.4} />
-          <circle cx={x + 5.4 + puff * 4} cy={94.4 - puff * 2.4} r={1 + puff * 1.2} />
-        </g>
-      ) : null}
-    </>
-  )
+/** 足が ついた ところ の 砂けむり */
+function Puff({ t, x, at }: { readonly t: number; readonly x: number; readonly at: number }) {
+  return <Dust x={x} y={PRINT_Y - 1} p={span(t, at, at + 0.5, easeOut)} />
 }
 
 /** あしあとが つくたび、ちいさな ほし が ぽん と はじける */
@@ -178,10 +132,13 @@ function Scene({ t }: SceneProps) {
         <Gull t={t} />
         <Shell t={t} />
         {PRINTS.map((p) => (
-          <Footprint key={p.at} t={t} x={p.x} at={p.at} />
+          <Footprint key={p.at} x={p.x} y={PRINT_Y + (p.side === 'left' ? 0.8 : -0.6)} size={11} facing={p.facing} kind="shoe" grow={span(t, p.at, p.at + 0.25)} />
+        ))}
+        {PRINTS.slice(0, 3).map((p) => (
+          <Puff key={p.at} t={t} x={p.x} at={p.at} />
         ))}
         <Kid t={t} />
-        {PRINTS.map((p) => (
+        {PRINTS.slice(0, 3).map((p) => (
           <PrintStar key={p.at} t={t} x={p.x} at={p.at} />
         ))}
       </Layer>

@@ -20,33 +20,23 @@
  *   → ほね が ひかって、絵が うすくなり、字「学」が のこる
  *
  * 人は Person。あるきは walk、すわるのは posture('seiza')、ふりむきは turnAround。
- * 正面の 人は うで を まえへ のばせないので、字を かく うで は 低い つくえ(held)に のせて、
- * 手 が とどく ところ(かた の 下)で ふでを うごかす。ひじ は 外へ 出る(ほんものの 人の まがり かた)。
- * せんせいの めがね は headwear、すずめ は Bird。きょうしつ・花びん・ふで・紙 は 部品に ないので ここで 描く。
+ * 正面の 子が 字を かく うで は、{ to, depth } で まえへ のばす(手は 紙の 上、うで は まえへ むく)。
+ * ひくい つくえ は 子の held、子は せんせいの held に わたす(せんせい の 体 → 子 の 体 → つくえ → 子 の うで → せんせい の うで)。
+ * 広間は Hall、つくえは LowTable、ふでは tools、めがねは look.glasses。花びん・すずめ・朝日 は ここで 描く。
  */
 import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../../sceneParts'
-import { Backdrop, Bird, Desk, LOOKS, mixLimb, mixPose, PALETTE, Person, personRig, posture, turnAround, walk, type Limb, type PersonProps } from '../../sceneFigures'
+import { Backdrop, Bird, Hall, LOOKS, LowTable, mixLimb, mixPose, PALETTE, Person, personRig, posture, TiledRoof, Tool, turnAround, walk, type Limb, type PersonProps } from '../../sceneFigures'
 
 const CHAR = '学'
 
 const SAKURA = '#f7b6c8'
 const BARK = PALETTE.bark
-const ROOF = '#5f6f92'
-const ROOF_DARK = '#4c5a7a'
-const ROOF_LIGHT = '#7f8fb2'
-const WOOD = '#c99766'
 const WOOD_DARK = '#a5764b'
-const WALL = '#fbf0d8'
-const WALL_SHADE = '#efe0bf'
-const TATAMI = '#e4e7a9'
-const TATAMI_LINE = '#cbd187'
 const SUN = PALETTE.sun
 const SUN_GLOW = '#fff1b8'
 const SUMI = '#2b2b2b'
 const SHU = '#e5463b'
-const PAPER = '#fffdf6'
-const BAMBOO = '#d9b77a'
 
 /** くぎり の時間(秒) */
 const ARRIVE = 1.0
@@ -69,7 +59,6 @@ const PETAL_TO = HANAMARU + 0.82
 const CLAP_FROM = CHEER + 0.2
 
 type Pt = readonly [number, number]
-
 const lerp = (a: number, b: number, k: number): number => a + (b - a) * k
 const lerpPt = (a: Pt, b: Pt, k: number): Pt => [lerp(a[0], b[0], k), lerp(a[1], b[1], k)]
 const add = (a: Pt, b: Pt): Pt => [a[0] + b[0], a[1] + b[1]]
@@ -108,18 +97,24 @@ const CIRCLE_RY = 1.4
 /** はなまる の 花びら(まる の 何ばい の ところに かくか) */
 const PETAL_IN = 1.22
 const PETAL_OUT = 1.62
-/** ふでを もったとき、手 から ふでの 先まで */
-const BRUSH_DOWN: Pt = [0.5, 5.2]
+/** ふで を たてて もつ 手 は、ふで の 先 の 少し 上 */
+const HAND_ABOVE_TIP: Pt = [-0.8, -4.8]
+/** 正面 の 子 の 手 の おくゆき(体 の まえ へ。つくえ の 紙 の 上)と、せんせい の 手 の おくゆき */
+const REACH = 10
+const TEACHER_REACH = 8
+/** ふで を 手 に もっている あいだ(つくえ から とる → もどす) */
+const BRUSH_IN_HAND_FROM = LESSON + 0.16
+const BRUSH_IN_HAND_TO = ALONE + 0.7
 /** つくえの 上に ねかせた ふで(先 と おしり)と、それを つまむ ところ */
 const BRUSH_TIP_REST: Pt = [47.5, 90]
 const BRUSH_END_REST: Pt = [54, 88.6]
 const BRUSH_GRIP: Pt = [53, 88.9]
 
 /* ───── お日さま(やねの うしろ。ひかりの 3本が この まんなか から のびて 見える) ───── */
+const HALL_WIDTH = 76 // はしら の 外 から 外
 const SUN_C: Pt = [59, 47]
 const SUN_R = 21
 
-/* ───── 紙に かく もの ───── */
 
 /** まる の 上の点(p = 0 で てっぺん。左まわりに 1しゅう) */
 function circlePoint(p: number): Pt {
@@ -187,7 +182,7 @@ function FallingPetals({ t }: SceneProps) {
   )
 }
 
-/** やね の ある きょうしつ(まえは あいていて、中が 見える) */
+/** やね の ある きょうしつ(まえは あいていて、中が 見える)。広間 は Hall、やね は TiledRoof */
 function Classroom({ t }: SceneProps) {
   // ゆか・かべ・はしら が 下から たちあがり、さいごに やね が 上から おりてきて、とん と のる
   const posts = span(t, 0, 0.45, backOut)
@@ -195,26 +190,10 @@ function Classroom({ t }: SceneProps) {
   return (
     <>
       <Layer scaleY={posts} origin={[54.5, 107.6]}>
-        {/* おく の かべ・なげし・たたみ */}
-        <rect x="21.8" y="42" width="64.4" height="47.8" fill={WALL} />
-        <rect x="21.8" y="42" width="64.4" height="2.2" fill={WALL_SHADE} />
-        <rect x="21.8" y="47.4" width="64.4" height="2.2" fill={WOOD} />
-        <rect x="21.8" y="88.6" width="64.4" height="1.4" fill={WOOD_DARK} />
-        <rect x="19" y="89.8" width="70" height="15.4" fill={TATAMI} />
-        <path d="M19 97.2 H89 M54 89.8 V97.2 M36 97.2 V105.2 M72 97.2 V105.2" stroke={TATAMI_LINE} strokeWidth="0.8" />
-        {/* ゆか の ふち と、まえの はしら(4画目の 下の ほう が 左の はしら に のる) */}
-        <rect x="13.6" y="105" width="80.8" height="2.6" rx="0.6" fill={WOOD_DARK} />
-        <rect x="16.8" y="41" width="5" height="64.6" fill={WOOD} />
-        <rect x="86.2" y="41" width="5" height="64.6" fill={WOOD} />
-        <path d="M18.2 44 V103 M87.6 44 V103" stroke="#ddb184" strokeWidth="0.9" />
+        <Hall x={54.5} width={HALL_WIDTH} top={42} floor={89.8} front={105} roof={false} />
       </Layer>
-      {/* やね: かわら の すじ、のき の まるい かわら、てっぺん の むね */}
       <Layer y={roofDrop} opacity={span(t, 0.3, 0.45)}>
-        <path d="M21.6 31.6 L86.8 31.6 L92 42.2 L16.2 42.2 Z" fill={ROOF} />
-        {Array.from({ length: 16 }, (_, i) => 25 + i * 4).map((x) => <path key={x} d={`M${x} 33 V40.2`} stroke={ROOF_DARK} strokeWidth="0.8" strokeLinecap="round" />)}
-        <rect x="15.2" y="40" width="77.6" height="2.8" rx="1.2" fill={ROOF_LIGHT} />
-        {Array.from({ length: 21 }, (_, i) => 17.4 + i * 3.65).map((x) => <circle key={x} cx={x} cy="41.4" r="0.75" fill={ROOF_DARK} />)}
-        <rect x="20.2" y="29.6" width="67.8" height="3.2" rx="1.6" fill={ROOF_DARK} />
+        <TiledRoof x={54.5} y={42.8} width={HALL_WIDTH + 2} height={13} />
       </Layer>
     </>
   )
@@ -234,17 +213,6 @@ function Vase({ t }: SceneProps) {
   )
 }
 
-/** ふで 1本(おしり → 先)。先の 毛 は すみ(または しゅ)の 色 */
-function Brush({ end, tip, ink }: { readonly end: Pt; readonly tip: Pt; readonly ink: string }) {
-  const neck = lerpPt(end, tip, 0.68)
-  return (
-    <>
-      <path d={`M${xy(end)} L${xy(neck)}`} stroke={BAMBOO} strokeWidth="1.3" strokeLinecap="round" />
-      <path d={`M${xy(neck)} L${xy(tip)}`} stroke={ink} strokeWidth="1.5" strokeLinecap="round" />
-    </>
-  )
-}
-
 /* ───── 子ども ───── */
 
 const SEIZA = posture('seiza', 'front')
@@ -257,37 +225,35 @@ function kidAt(t: number): PersonProps {
   const turn = turnAround(t, SIT, 'left', 'front')
   const kneel = span(t, SIT + 0.32, SIT + 0.66, easeInOut) * (1 - span(t, CHEER, CHEER + 0.22, easeOut))
   const sit = mixPose(posture('stand', 'front'), SEIZA, kneel)
-  const writing: Limb = { to: sub(circlePoint(circleDrawn(t)), BRUSH_DOWN) }
-  const grip: Limb = { to: BRUSH_GRIP }
+  const tip = circlePoint(circleDrawn(t))
+  const writing: Limb = { to: add(tip, HAND_ABOVE_TIP), depth: REACH }
+  const grip: Limb = { to: BRUSH_GRIP, depth: REACH }
   const lap = sit.rightArm ?? SEIZA.rightArm ?? { swing: 4, bend: 8 }
   // ふでを とる → まる を かく → ふでを もどす → 手を ひざへ(ふでを もつ のは 右手 = 画面の 左)
-  const right = keyed<Limb>(t, [[SIT + 0.66, lap], [LESSON + 0.16, grip], [GUIDE_FROM - 0.03, writing], [ALONE + 0.5, writing], [ALONE + 0.7, grip], [ALONE + 0.9, lap]], mixLimb)
+  const right = keyed<Limb>(t, [[SIT + 0.66, lap], [BRUSH_IN_HAND_FROM, grip], [GUIDE_FROM - 0.03, writing], [ALONE + 0.5, writing], [BRUSH_IN_HAND_TO, grip], [ALONE + 0.9, lap]], mixLimb)
   const spread = span(t, CHEER + 0.18, CHEER + 0.55, easeInOut)
   const lean = mix(t, ALONE, ALONE + 0.35, 0, 5) * (1 - span(t, CHEER, CHEER + 0.15))
-  const face = t >= HANAMARU + 0.75 ? 'joy' : t >= HANAMARU + 0.15 ? 'surprised' : t >= GUIDE_FROM - 0.1 && t < ALONE + 0.55 ? 'normal' : 'smile'
+  const writingNow = t >= GUIDE_FROM - 0.1 && t < ALONE + 0.55
+  const face = t >= HANAMARU + 0.75 ? 'joy' : t >= HANAMARU + 0.15 ? 'surprised' : writingNow ? 'normal' : 'smile'
+  // ポニーテール: 歩く あいだ は 小さく、とびはねる あいだ は 大きく ゆれる
+  const jump = span(t, CHEER + 0.12, CHEER + 0.5)
   return {
     ...walking,
     ...turn,
     y: FLOOR,
     look: LOOKS.girl,
-    lift: Math.sin(span(t, CHEER + 0.12, CHEER + 0.5) * Math.PI) * 3,
+    lift: Math.sin(jump * Math.PI) * 3,
     face,
-    // せんせい(画面の 左)を ちらっと 見る
-    gaze: -0.5 * during(t, LESSON + 0.05, CHEER, 0.2),
+    // 書く あいだは 紙を 見る。それ いがいは せんせい(画面の 左)を ちらっと 見る
+    gaze: writingNow ? 0 : -0.5 * during(t, LESSON + 0.05, CHEER, 0.2),
+    gazeY: writingNow ? 1 : 0,
+    hairSway: wave(t, 0.4) * (walking.moving ? 6 : 0) + Math.sin(jump * Math.PI) * wave(t, 0.36) * 14,
+    opacity: span(t, ARRIVE - 0.05, ARRIVE + 0.1),
     pose: t < SIT ? walking.pose : { ...sit, rightArm: t < CHEER ? right : mixLimb(right, SPREAD, spread), leftArm: t < CHEER ? sit.leftArm : mixLimb(sit.leftArm ?? lap, SPREAD, spread), torso: lean },
   }
 }
 
 /* ───── せんせい ───── */
-
-/** せんせいの めがね(あたま 半径 1 の 座標。正面) */
-const GLASSES = (
-  <g fill="#ffffff" fillOpacity="0.25" stroke="#6b4a36" strokeWidth="0.07">
-    <circle cx="-0.38" cy="0.1" r="0.3" />
-    <circle cx="0.38" cy="0.1" r="0.3" />
-    <path d="M-0.08 0.06 Q0 0 0.08 0.06" fill="none" />
-  </g>
-)
 
 /** せんせいの 場所と かっこう。ずっと せいざ。子どもの 手を とる・ふでを うごかす・はくしゅ は うで だけ かえる */
 function teacherAt(t: number, kidHand: Pt): PersonProps & { readonly cx: number; readonly clapPhase: number } {
@@ -296,13 +262,14 @@ function teacherAt(t: number, kidHand: Pt): PersonProps & { readonly cx: number;
   const lapRight = SEIZA.rightArm ?? { swing: 6, bend: -10 }
   const lapLeft = SEIZA.leftArm ?? { swing: 6, bend: -10 }
   const hello: Limb = { swing: 150, bend: 25 + wave(t, 0.5) * 8 }
-  const guide: Limb = { to: add(kidHand, [-3.4, 0.4]) }
+  const guide: Limb = { to: add(kidHand, [-2.2, 0.6]), depth: TEACHER_REACH }
   const petal: Limb = { to: redBrushHand(petalPoint(petalsDrawn(t))) }
   /** はくしゅ の まわり(手が あうたびに 1 ふえる) */
   const clapPhase = t >= CLAP_FROM ? (t - CLAP_FROM) * 3 : -1
   const open = 2 + 3 * Math.abs(Math.sin(Math.max(0, clapPhase) * Math.PI))
-  const clapLeft: Limb = { to: [cx + open, CLAP_Y] }
-  const clapRight: Limb = { to: [cx - open, CLAP_Y] }
+  // 手 を むね の まえ へ のばす(まえ へ むく ので うで が みじかく まるく 見えない)
+  const clapLeft: Limb = { to: [cx + open, CLAP_Y], depth: TEACHER_REACH }
+  const clapRight: Limb = { to: [cx - open, CLAP_Y], depth: TEACHER_REACH }
   const leftArm = keyed<Limb>(t, [[LESSON + 0.18, lapLeft], [GUIDE_FROM - 0.04, guide], [ALONE, guide], [ALONE + 0.25, lapLeft], [PETAL_FROM - 0.2, lapLeft], [PETAL_FROM, petal], [PETAL_TO, petal], [PETAL_TO + 0.12, lapLeft], [CLAP_FROM, clapLeft]], mixLimb)
   const rightArm = keyed<Limb>(t, [[ARRIVE + 0.25, lapRight], [ARRIVE + 0.5, hello], [SIT + 0.15, hello], [SIT + 0.45, lapRight], [CHEER, lapRight], [CLAP_FROM, clapRight]], mixLimb)
   const torso = keyed(t, [[LESSON, 0], [LESSON + 0.3, 5], [PETAL_TO, 5], [CHEER + 0.15, 0]], lerp)
@@ -313,11 +280,12 @@ function teacherAt(t: number, kidHand: Pt): PersonProps & { readonly cx: number;
     build: 'adult',
     height: TEACHER_HEIGHT,
     facing: 'front',
-    look: LOOKS.woman,
+    look: { ...LOOKS.woman, glasses: true },
     // 子どもが 入ってくると そちら(画面の 右)を 見る
     gaze: mix(t, ARRIVE, ARRIVE + 0.4, 0, 0.8),
     face: t >= CHEER + 0.1 ? 'joy' : 'smile',
-    headwear: GLASSES,
+    // 子ども の 手元 を 見る あいだ は 目線 を 下げる
+    gazeY: 0.8 * during(t, LESSON + 0.2, PETAL_TO + 0.1, 0.2),
     pose: { ...SEIZA, leftArm, rightArm, torso, head },
     cx,
     clapPhase,
@@ -326,32 +294,17 @@ function teacherAt(t: number, kidHand: Pt): PersonProps & { readonly cx: number;
 
 /* ───── つくえ・ふで・はくしゅ ───── */
 
-/** ひくい つくえ・紙 と、紙に かいた まる と はなまる。子どもの 体の まえ(うで の おく)に 置く */
-function Table({ t, hand, holding }: { readonly t: number; readonly hand: Pt; readonly holding: number }) {
+/** ひくい つくえ・紙 と、紙に かいた まる と はなまる。子どもの held に わたす(体の まえ、うで の おく) */
+function Table({ t, brushOnTable }: { readonly t: number; readonly brushOnTable: boolean }) {
   const circle = partialPath(circlePoint, circleDrawn(t), 48)
   const petals = partialPath(petalPoint, petalsDrawn(t), 120)
-  const tip = lerpPt(BRUSH_TIP_REST, add(hand, BRUSH_DOWN), holding)
-  const end = lerpPt(BRUSH_END_REST, add(hand, [-0.4, -3.2]), holding)
-  const top = TABLE_TOP - TABLE_FACE
   return (
     <>
-      <Desk x={TABLE_X} y={FLOOR} width={30} height={FLOOR - TABLE_TOP} top={TABLE_FACE} />
-      <path d={`M${TABLE_X - 12} ${top + 1} H${TABLE_X + 12} L${TABLE_X + 13.4} ${TABLE_TOP - 1.2} H${TABLE_X - 13.4} Z`} fill={PAPER} />
+      <LowTable x={TABLE_X} y={FLOOR} width={30} height={FLOOR - TABLE_TOP} top={TABLE_FACE} paper />
       {circle && <path d={circle} fill="none" stroke={SUMI} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />}
       {petals && <path d={petals} fill="none" stroke={SHU} strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" />}
-      <Brush end={end} tip={tip} ink={SUMI} />
+      {brushOnTable && <Tool kind="brush" end={BRUSH_END_REST} tip={BRUSH_TIP_REST} ink={SUMI} />}
     </>
-  )
-}
-
-/** せんせいの 赤い ふで。花びら を かく あいだは、手 と 線の はし を むすぶ(先が 線に ぴったり つく) */
-function RedBrush({ t, hand, opacity }: { readonly t: number; readonly hand: Pt; readonly opacity: number }) {
-  const tip = t >= PETAL_FROM && t <= PETAL_TO ? petalPoint(petalsDrawn(t)) : add(hand, RED_BRUSH_IDLE)
-  const back = sub(hand, tip)
-  return (
-    <g opacity={opacity}>
-      <Brush end={add(hand, [back[0] * 0.5, back[1] * 0.5])} tip={tip} ink={SHU} />
-    </g>
   )
 }
 
@@ -383,22 +336,27 @@ function Sparrow({ t }: SceneProps) {
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 8)
   const kid = kidAt(t)
-  const kidRig = personRig(kid)
-  const kidHand = kidRig.world.arms.right.end
+  const kidHand = personRig(kid).world.arms.right.end
   const teacher = teacherAt(t, kidHand)
-  const teacherRig = personRig(teacher)
-  const holding = span(t, LESSON + 0.16, LESSON + 0.32) * (1 - span(t, ALONE + 0.55, ALONE + 0.7))
+  const teacherHand = personRig(teacher).world.arms.left.end
+  const holding = span(t, BRUSH_IN_HAND_FROM, BRUSH_IN_HAND_FROM + 0.16) * (1 - span(t, ALONE + 0.55, BRUSH_IN_HAND_TO))
+  const brushInHand = t >= BRUSH_IN_HAND_FROM && t < BRUSH_IN_HAND_TO
+  const brushTip = lerpPt(BRUSH_TIP_REST, circlePoint(circleDrawn(t)), holding)
   // せんせい と 紙・つくえ は、きょうしつ が できたあと ぽん と出る
   const teacherPop = span(t, 0.6, 0.95, backOut)
   const deskPop = span(t, 0.7, 1.0, backOut)
   // できあがりで、字が ぽん と はずむ
   const bump = Math.sin(span(t, DONE - 0.9, DONE - 0.45) * Math.PI) * 0.05
-  const redBrush = during(t, HANAMARU + 0.06, PETAL_TO + 0.12, 0.06)
+  // 赤い ふで は、花びら を かく あいだ 先が 線に つく。それ いがいは 手 の 少し 先
+  const redBrush = t >= HANAMARU + 0.06 && t <= PETAL_TO + 0.12
+  const redTip = t >= PETAL_FROM && t <= PETAL_TO ? petalPoint(petalsDrawn(t)) : add(teacherHand, RED_BRUSH_IDLE)
   const table = (
     <Layer scale={deskPop} origin={[TABLE_X, FLOOR]}>
-      <Table t={t} hand={kidHand} holding={holding} />
+      <Table t={t} brushOnTable={!brushInHand} />
     </Layer>
   )
+  // かさなり: せんせい の 体 → 子 の 体 → つくえ → 子 の うで → せんせい の うで(held に 人 を まるごと わたす)
+  const child = <Person {...kid} tools={brushInHand ? { right: { kind: 'brush', tip: brushTip } } : undefined} held={table} />
   return (
     <>
       <Layer opacity={ink.picture}>
@@ -407,15 +365,9 @@ function Scene({ t }: SceneProps) {
         <Classroom t={t} />
         <Vase t={t} />
         <Sparrow t={t} />
-        {/* せんせい(子ども より おく。子どもが ひろげる うで が まえを 通る) */}
         <Layer scale={teacherPop} opacity={span(t, 0.6, 0.7)} origin={[teacher.cx, TEACHER_FLOOR]}>
-          <Person {...teacher} />
+          <Person {...teacher} tools={redBrush ? { left: { kind: 'brush', tip: redTip, ink: SHU } } : undefined} held={child} />
         </Layer>
-        {/* 子ども: よこむき で あるいてきて、くるっと こちらを むく */}
-        <Layer opacity={span(t, ARRIVE - 0.05, ARRIVE + 0.1)}>
-          <Person {...kid} held={table} />
-        </Layer>
-        {redBrush > 0 && <RedBrush t={t} hand={teacherRig.world.arms.left.end} opacity={redBrush} />}
         <ClapMarks cx={teacher.cx} phase={teacher.clapPhase} />
         <FallingPetals t={t} />
       </Layer>
