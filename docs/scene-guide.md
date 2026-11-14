@@ -132,7 +132,7 @@ import { Backdrop, Bird, Chair, LOOKS, mixLimb, PALETTE, Person, personRig, post
 | 顔 | `trials/parts/k9854.tsx` | 足した 顔 5つ(正面・横)、目線 の 上下、ぼうし 4つ と めがね(3つの 向き)、ランドセル・リュック(体格 4つ が ふりむく・あるく)、かみ の ゆれ、「?」 |
 | 手 | `trials/parts/k624b.tsx` | 正面 で ひくい つくえ に ふで で 書く・手 を とる(広間・たたみ)、さし出す、道具(えんぴつ・ぼう)、てまえ・おく へ はしる と ゴール の テープ、海 と 砂はま・足あと・山 |
 
-部品で 書きなおした 例: `trials/figures/k4f11.tsx`(休)・`trials/figures/k6751.tsx`(村)。
+部品で 書きなおした 例: `scenes/k4f11.tsx`(休)・`scenes/k6751.tsx`(村)・`scenes/k5148.tsx`(先)・`scenes/k5b66.tsx`(学)。
 
 ### きまり(かならず 守る)
 

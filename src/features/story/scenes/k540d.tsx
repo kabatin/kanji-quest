@@ -1,5 +1,5 @@
 /*
- * 名(な): くらい ゆうがた、遠くの ともだちの かおが 見えない。そこで 口で 名前を よぶ。
+ * 名(な): くらい ゆうがた、遠くの ともだちの かおが 見えない。そこで 口で 名前を よぶ。(共通部品 sceneFigures で 書きなおした ためし)
  *
  * ほね(画と絵の対応)
  *   1〜3画目(夕) … ゆうがたの 空に のぼった 三日月(夕)。1画目は 月の かさ(ほそい ひかり)、
@@ -10,37 +10,30 @@
  * ながれ
  *   日が くれて 空が くらくなり、月が のぼる → 子どもが 帰り道を あるいてくる
  *   → むこうに 人かげ。くらくて かおが 見えず、手を おでこに あてて「だれだろう?」
- *   → 大きく いきを すって、口を あけて 名前を よぶ(ふきだしに ともだちの かお)
+ *   → 大きく いきを すって、口を あけて 名前を よぶ(ふきだしに ともだちの すがた)
  *   → ともだちが ふりむき、かおが 見えて にっこり 手を ふる。子どもも ぴょんと よろこぶ
  *   → ほね が ひかって、絵が うすくなり、字「名」が のこる
  *
- * 人は、ほんものの人の つくり を守る(字の形に合わせるために、体を ゆがめない):
- *   うで は かた から出て ひじ で まがる。くび は みじかく、どう の まんなか の上。あし は こし から。
- *   ふきだしは、口の 近くから しっぽを のばす。
+ * ふきだしは、口の 近くから しっぽを のばす。
  */
-import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Backdrop, DEFAULT_LOOK, Hearts, mixColor, mixLimb, PALETTE, Person, personRig, Question, walk, walkDepth, turnAround, type DepthWalkPlan, type Look, type PersonProps } from '../sceneFigures'
 
 const CHAR = '名'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const HAIR_FRIEND = '#3a2a22'
-const TUNIC = '#ee7a4c'
-const TUNIC_DARK = '#d4633a'
-const TUNIC_FAR = '#b5532f'
-const PANTS = '#3e5c86'
-const PANTS_DARK = '#34507a'
-const SHOE = '#6b4a36'
-const FRIEND_TUNIC = '#3fb0a0'
-const FRIEND_TUNIC_DARK = '#2f9486'
-const FRIEND_PANTS = '#6a5a9a'
 const SHADOW_TONE = '#2b3050'
-const MOON = '#fff3b8'
-const EYE = '#2b2b2b'
-const MOUTH = '#b9483f'
-const CHEEK = '#ff9d9d'
+const MOON = PALETTE.moonGlow
+const BAT = '#2b3050'
+const SOUND = '#fff3b8'
+const WHITE = '#ffffff'
+/** ゆうぐれ の 肌(かげ に なった とき の くらい 青みの 肌色) */
+const DUSK_SKIN = '#6f7096'
+
+/** 友だちの 見た目(みどりの 服・むらさきの ズボン) */
+const FRIEND_LOOK: Look = { hair: '#3a2a22', top: '#3fb0a0', bottom: '#6a5a9a' }
+/** 子どもの 見た目(だいだいの 服) */
+const KID_LOOK: Look = { top: '#ee7a4c' }
 
 /** くぎり の時間(秒) */
 const WALK_FROM = 0.5
@@ -59,81 +52,15 @@ const INK = 6.4
 const DONE = 9.4
 const DURATION = 10
 
-/** 子どもが たつ 場所の ずれ と、ともだちの 足もと */
-const FRIEND_FEET: readonly [number, number] = [98, 96]
-/** ふきだし(口 の 四角)。左がわ の まんなかへ、しっぽ を のばす */
+const GROUND = 96
+const KID_X = 22
+const KID_HEIGHT = 41
+const FRIEND_X = 98
+/** ふきだし(口 の 四角) */
 const BUBBLE_BOX = { x: 44, y: 66, w: 40, h: 28 }
-const BUBBLE_TAIL_TIP: readonly [number, number] = [30.2, 67.8]
 
-/** 2つの いろ(#rrggbb)を k の割合で まぜる */
-function tone(a: string, b: string, k: number): string {
-  const amount = Math.min(Math.max(k, 0), 1)
-  const parse = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
-  const from = parse(a)
-  const to = parse(b)
-  return `#${from.map((v, i) => Math.round(v + (to[i] - v) * amount).toString(16).padStart(2, '0')).join('')}`
-}
-
-/** うで の かっこう。a1 = かた から ひじ、a2 = ひじ から 手 の むき(ま下 = 0、まえ = 90、ま上 = 180 度) */
-type ArmPose = { readonly a1: number; readonly a2: number }
-
-const HANG: ArmPose = { a1: 6, a2: 20 }
-/** 手を おでこの まえに かざす */
-const SHADE: ArmPose = { a1: 115, a2: 178 }
-/** 手を 口の そばに そえて よぶ */
-const CUP: ArmPose = { a1: 95, a2: 165 }
-const CHEER: ArmPose = { a1: 140, a2: 176 }
-
-const mixPose = (a: ArmPose, b: ArmPose, k: number): ArmPose => ({ a1: a.a1 + (b.a1 - a.a1) * k, a2: a.a2 + (b.a2 - a.a2) * k })
-
-const rad = (deg: number) => (deg * Math.PI) / 180
-
-/** かた から出て、ひじ で まがる うで。かた・ひじ・手 の じゅんに つながる。 */
-function Arm({ shoulder, length, pose, color, width }: { readonly shoulder: readonly [number, number]; readonly length: number; readonly pose: ArmPose; readonly color: string; readonly width: number }) {
-  const elbow = [shoulder[0] + Math.sin(rad(pose.a1)) * length, shoulder[1] + Math.cos(rad(pose.a1)) * length] as const
-  const hand = [elbow[0] + Math.sin(rad(pose.a2)) * length, elbow[1] + Math.cos(rad(pose.a2)) * length] as const
-  return (
-    <>
-      <path d={`M${shoulder[0]} ${shoulder[1]} L${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hand[0]} cy={hand[1]} r={width * 0.6} fill={SKIN} />
-    </>
-  )
-}
-
-function Sky({ t }: SceneProps) {
-  const dusk = span(t, 0, 2.2)
-  const stars = span(t, 1.0, 2.4)
-  const rise = span(t, 0, 1.1, easeOut)
-  const twinkle = 0.8 + wave(t, 1.3) * 0.2
-  return (
-    <>
-      <rect x="0" y="0" width="109" height="109" fill={tone('#f6b27a', '#46568c', dusk)} />
-      {/* とおくの おか(ゆうやけの そこ だけ ほんのり あかるい) */}
-      <path d="M-4 99 Q18 74 44 90 Q72 68 113 93 V101 H-4 Z" fill={tone('#d99a78', '#3e5878', dusk)} />
-      {/* ほし */}
-      <g fill="#ffffff" opacity={stars * 0.85}>
-        <circle cx="12" cy="14" r="0.9" />
-        <circle cx="26" cy="7" r="0.7" />
-        <circle cx="92" cy="12" r="1" />
-        <circle cx="100" cy="30" r="0.7" />
-        <circle cx="84" cy="40" r="0.7" />
-      </g>
-      {/* 月: ふくらんだ ふちが 右がわ。まわりに うすい かさ */}
-      <Layer y={(1 - rise) * 14} opacity={rise}>
-        <circle cx="50" cy="42" r="34" fill={MOON} opacity="0.1" />
-        <Bone char={CHAR} n={1} color={MOON} width={2} opacity={0.5} />
-        <path d="M54 13 C84 22 80 60 42 70 C54 58 58 40 54 13 Z" fill={MOON} />
-        <path d="M60 22 C74 30 71 50 46 64" fill="none" stroke="#ffe27a" strokeWidth="1.4" strokeLinecap="round" opacity="0.7" />
-        {/* 3画目: 月の となりの 一番ぼし */}
-        <Star cx={48.4} cy={45.6} r={4.2 * twinkle} color="#ffffff" spin={wave(t, 4) * 12} />
-      </Layer>
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.6" fill={tone('#c5e8a9', '#5d8a63', dusk)} />
-      {[8, 34, 82, 100].map((x) => (
-        <path key={x} d={`M${x} 97.5 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={tone('#55b86e', '#3e6e50', dusk)} />
-      ))}
-    </>
-  )
-}
+/** 立っている 子ども の 場所(あたま の 位置 を 出す ために使う) */
+const KID_STAND: PersonProps = { x: KID_X, y: GROUND, build: 'child', height: KID_HEIGHT, facing: 'right' }
 
 /** ゆうぐれの 空を とぶ コウモリ(かげ)。右から 左へ。 */
 function Bat({ t }: SceneProps) {
@@ -142,252 +69,122 @@ function Bat({ t }: SceneProps) {
   const flap = 0.35 + Math.abs(wave(t, 0.3)) * 0.65
   return (
     <Layer x={112 - p * 70} y={26 + Math.sin(p * 9) * 3 - p * 4}>
-      <ellipse cx="0" cy="0" rx="2" ry="1.4" fill="#2b3050" />
+      <ellipse cx="0" cy="0" rx="2" ry="1.4" fill={BAT} />
       <Layer scaleY={flap} origin={[0, 0]}>
-        <path d="M-1 -0.4 Q-4 -3 -7 -1.5 Q-5 0 -4.4 1.2 Q-3 0.2 -1 0.8 Z" fill="#2b3050" />
-        <path d="M1 -0.4 Q4 -3 7 -1.5 Q5 0 4.4 1.2 Q3 0.2 1 0.8 Z" fill="#2b3050" />
+        <path d="M-1 -0.4 Q-4 -3 -7 -1.5 Q-5 0 -4.4 1.2 Q-3 0.2 -1 0.8 Z" fill={BAT} />
+        <path d="M1 -0.4 Q4 -3 7 -1.5 Q5 0 4.4 1.2 Q3 0.2 1 0.8 Z" fill={BAT} />
       </Layer>
     </Layer>
   )
 }
 
-type Mood = 'plain' | 'squint' | 'call' | 'happy'
+/** 月(夕の 1〜3画目): ふくらんだ ふちが 右がわ。まわりに うすい かさ。3画目は となりの 一番ぼし */
+function CrescentMoon({ t }: SceneProps) {
+  const rise = span(t, 0, 1.1, easeOut)
+  const twinkle = 0.8 + wave(t, 1.3) * 0.2
+  return (
+    <Layer y={(1 - rise) * 14} opacity={rise}>
+      <circle cx="50" cy="42" r="34" fill={MOON} opacity="0.1" />
+      <Bone char={CHAR} n={1} color={MOON} width={2} opacity={0.5} />
+      <path d="M54 13 C84 22 80 60 42 70 C54 58 58 40 54 13 Z" fill={MOON} />
+      <path d="M60 22 C74 30 71 50 46 64" fill="none" stroke={PALETTE.moonShade} strokeWidth="1.4" strokeLinecap="round" opacity="0.7" />
+      <Star cx={48.4} cy={45.6} r={4.2 * twinkle} color={WHITE} spin={wave(t, 4) * 12} />
+    </Layer>
+  )
+}
 
-function Face({ mood }: { readonly mood: Mood }) {
-  switch (mood) {
-    case 'squint':
-      return (
-        <>
-          <path d="M32.6 59.4 l3.6 0.9" stroke={HAIR} strokeWidth="1.1" strokeLinecap="round" />
-          <path d="M32.9 62.4 h3" stroke={EYE} strokeWidth="1.2" strokeLinecap="round" />
-          <path d="M34 67.4 q1.4 -1.2 2.8 0" fill="none" stroke={MOUTH} strokeWidth="1.1" strokeLinecap="round" />
-        </>
-      )
-    case 'call':
-      return (
-        <>
-          <path d="M32.6 58.6 l3.2 -0.5" stroke={HAIR} strokeWidth="1.1" strokeLinecap="round" />
-          <circle cx="34.5" cy="62.2" r="1.3" fill={EYE} />
-          <ellipse cx="36" cy="67" rx="1.8" ry="2.5" fill={MOUTH} />
-        </>
-      )
-    case 'happy':
-      return (
-        <>
-          <path d="M32.8 62.8 q1.6 -2.2 3.2 0" fill="none" stroke={EYE} strokeWidth="1.2" strokeLinecap="round" />
-          <path d="M33.8 66 q1.8 2.4 3.6 -0.2" fill="none" stroke={MOUTH} strokeWidth="1.2" strokeLinecap="round" />
-        </>
-      )
-    default:
-      return (
-        <>
-          <circle cx="34.4" cy="62.2" r="1.1" fill={EYE} />
-          <path d="M34 66.8 h2.2" stroke={MOUTH} strokeWidth="1.1" strokeLinecap="round" />
-        </>
-      )
+/** 子ども: あるいてくる → 手を おでこに → いきを すって よぶ → ぴょんと よろこぶ */
+function kidAt(t: number): PersonProps {
+  const w = walk(t, { from: -14, to: KID_X, start: WALK_FROM, end: WALK_TO, build: 'child', height: KID_HEIGHT, step: 13 })
+  const rig = personRig(KID_STAND)
+  const head = rig.world.head
+  const r = rig.body.headR * rig.scale
+  const hang = { swing: 4, bend: 8 }
+  const squint = span(t, SQUINT, SQUINT + 0.4) * (1 - span(t, CALL - 0.2, CALL))
+  const cup = span(t, CALL - 0.2, CALL + 0.1) * (1 - span(t, JOY - 0.2, JOY + 0.1))
+  const cheer = span(t, JOY, JOY + 0.35)
+  const shade = mixLimb(hang, { to: [head[0] + r * 1.15, head[1] - r * 0.55] }, squint)
+  const near = mixLimb(mixLimb(shade, { to: [head[0] + r * 1.0, head[1] + r * 0.9] }, cup), { swing: 172, bend: wave(t, 0.5) * 8 }, cheer)
+  const far = mixLimb(hang, { swing: 170, bend: -wave(t, 0.5) * 8 }, cheer)
+  const breath = t >= CALL - 0.4 && t < CALL ? span(t, CALL - 0.4, CALL) : 0
+  const hop = t >= JOY && t < JOY + 0.9 ? Math.abs(Math.sin((t - JOY) * Math.PI * 2.2)) * 2.4 : 0
+  const face = t < SQUINT ? 'normal' : t < CALL ? 'normal' : t < JOY ? 'surprised' : 'joy'
+  const head2 = t < SQUINT ? 0 : t < CALL ? 4 : span(t, JOY, JOY + 0.3) * -4
+  const walking = t < WALK_TO
+  return {
+    ...KID_STAND,
+    x: walking ? w.x : KID_X,
+    pose: walking ? w.pose : { leftArm: near, rightArm: far, torso: -4 * breath, head: head2 },
+    lift: hop,
+    face,
+    look: { ...KID_LOOK },
   }
 }
 
-type ChildProps = {
-  readonly step: number
-  readonly mood: Mood
-  readonly nearArm: ArmPose
-  readonly farArm: ArmPose
-  readonly headTilt: number
-  readonly breath: number
-}
+const FRIEND_WALK: DepthWalkPlan = { from: [FRIEND_X, 108], to: [FRIEND_X, GROUND], start: FRIEND_FROM, end: FRIEND_TO, build: 'child', height: 46, toHeight: 38 }
 
-/** 主役の 子ども(右むき)。足もとが y = 96。 */
-function Child({ step, mood, nearArm, farArm, headTilt, breath }: ChildProps) {
-  const shoulder = [29.7, 73.2] as const
+/** ともだち: くらくて かげ(うしろむき)→ 名前を よばれて ふりむく → かおが 見えて 手を ふる */
+function Friend({ t }: SceneProps) {
+  if (t < FRIEND_FROM) return null
+  const walking = walkDepth(t, FRIEND_WALK)
+  // 顔が 見えはじめる のは 正面を むいてから。肌は 茶色く ならない よう、くらい 青みの 肌色へ まぜる
+  const reveal = span(t, TURN + 0.35, TURN + 0.8)
+  const dim = (color: string, tone = SHADOW_TONE) => mixColor(color, tone, 0.82 * (1 - reveal))
+  const look: Look = { skin: dim(DEFAULT_LOOK.skin, DUSK_SKIN), hair: dim(FRIEND_LOOK.hair ?? ''), top: dim(FRIEND_LOOK.top ?? ''), bottom: dim(FRIEND_LOOK.bottom ?? ''), shoes: dim(DEFAULT_LOOK.shoes) }
+  const turn = t < TURN ? {} : turnAround(t, TURN, 'back', 'front', 0.3, 'right')
+  const hello = span(t, TURN + 0.7, TURN + 1.1)
+  const hop = t >= TURN + 0.8 && t < TURN + 1.5 ? Math.abs(Math.sin((t - TURN - 0.8) * Math.PI)) * 1.6 : 0
+  const waving = { swing: 125, bend: 22 + wave(t, 0.5) * 18 }
+  const pose = t < TURN ? walking.pose : { rightArm: mixLimb({ swing: 4, bend: 8 }, waving, hello) }
   return (
-    <>
-      <Arm shoulder={shoulder} length={8.4} pose={farArm} color={TUNIC_FAR} width={4.2} />
-      <Layer rotate={-step * 20} origin={[27.4, 84]}>
-        <rect x="25.6" y="84" width="3.6" height="12" rx="1.8" fill={PANTS_DARK} />
-        <ellipse cx="28.4" cy="95.6" rx="3" ry="1.6" fill={SHOE} />
-      </Layer>
-      <Layer rotate={step * 20} origin={[31.4, 84]}>
-        <rect x="29.6" y="84" width="3.6" height="12" rx="1.8" fill={PANTS} />
-        <ellipse cx="32.4" cy="95.6" rx="3" ry="1.6" fill={SHOE} />
-      </Layer>
-      {/* くび: みじかく、どう の まんなか の上 */}
-      <rect x="27.9" y="66.4" width="3.8" height="5.4" rx="1.8" fill={SKIN_SHADE} />
-      <Layer scaleX={1 + breath * 0.08} scaleY={1 + breath * 0.03} origin={[29.7, 86]}>
-        <rect x="24" y="69.5" width="11.4" height="17" rx="5.2" fill={TUNIC} />
-        <path d="M25.6 82 h8.2" stroke={TUNIC_DARK} strokeWidth="1.2" strokeLinecap="round" />
-      </Layer>
-      <Arm shoulder={shoulder} length={8.4} pose={nearArm} color={TUNIC_DARK} width={4.2} />
-      <Layer rotate={headTilt} origin={[29.8, 68]}>
-        <circle cx="30.4" cy="62.5" r="7.6" fill={SKIN} />
-        <path d="M22.8 62 C22.5 54 31 51.5 36 55 C38 56.5 38.4 59 38 60.5 C35 57.5 31 57 27 58.5 C25 59.2 23.6 60.4 22.8 62 Z" fill={HAIR} />
-        <circle cx="33" cy="66" r="1.7" fill={CHEEK} opacity="0.55" />
-        <Face mood={mood} />
-      </Layer>
-    </>
-  )
-}
-
-type FriendProps = {
-  readonly step: number
-  /** 0 = うしろむきで かげ / 1 = かおが 見えて いろが もどる */
-  readonly reveal: number
-  /** 0〜1。むきを かえる とちゅう の はば */
-  readonly turn: number
-  readonly arm: ArmPose
-}
-
-/** ともだち(はじめは くらくて かげ。むこうへ むいている)。足もとが (0, 0)。 */
-function Friend({ step, reveal, turn, arm }: FriendProps) {
-  const dim = (color: string) => tone(color, SHADOW_TONE, 0.82 * (1 - reveal))
-  const face = span(turn, 0.5, 0.8)
-  const shoulder = [0, -23] as const
-  return (
-    <Layer scaleX={Math.cos(turn * Math.PI)}>
-      <Layer rotate={-step * 20} origin={[-2.8, -12]}>
-        <rect x="-4.6" y="-12" width="3.6" height="12" rx="1.8" fill={dim(FRIEND_PANTS)} />
-      </Layer>
-      <Layer rotate={step * 20} origin={[2.8, -12]}>
-        <rect x="1" y="-12" width="3.6" height="12" rx="1.8" fill={dim(FRIEND_PANTS)} />
-      </Layer>
-      <rect x="-1.8" y="-27.6" width="3.6" height="5" rx="1.8" fill={dim(SKIN_SHADE)} />
-      <rect x="-5.6" y="-26" width="11.2" height="16" rx="5" fill={dim(FRIEND_TUNIC)} />
-      <Arm shoulder={shoulder} length={7.6} pose={arm} color={dim(FRIEND_TUNIC_DARK)} width={3.8} />
-      <circle cx="0" cy="-32.4" r="7" fill={dim(SKIN)} />
-      {/* うしろ向きの あいだは、あたまの うしろ(かみ)が 見える */}
-      <circle cx="0" cy="-32.4" r="7" fill={dim(HAIR_FRIEND)} opacity={1 - face} />
-      <path d="M-6.8 -33 C-7 -40 0 -41.4 4.6 -38.6 C6.4 -37.4 6.8 -35.2 6.4 -34 C3.6 -36.2 0 -36.4 -3.4 -35.4 C-5 -35 -6.2 -34 -6.8 -33 Z" fill={dim(HAIR_FRIEND)} opacity={face} />
-      <g opacity={face}>
-        <circle cx="3" cy="-32.6" r="1" fill={EYE} />
-        <circle cx="2.4" cy="-29.4" r="1.5" fill={CHEEK} opacity="0.55" />
-        <path d="M2 -28.2 q1.8 2 3.4 -0.2" fill="none" stroke={MOUTH} strokeWidth="1.1" strokeLinecap="round" />
-      </g>
+    <Layer opacity={span(t, FRIEND_FROM, FRIEND_FROM + 0.2)}>
+      <Person {...walking} {...turn} pose={pose} lift={hop} look={look} face={reveal > 0.5 ? 'smile' : 'normal'} />
     </Layer>
   )
 }
 
-/** ふきだし の なかの ともだちの かお(「名前」の しるし) */
-function NameFace() {
-  return (
-    <>
-      <circle cx="64" cy="80" r="8" fill={SKIN} />
-      <path d="M56 78.6 C55.8 71.6 63 70 68 72 C70.6 73.2 71.8 76 71.8 78 C68.6 75.4 64 75 60.4 75.8 C58.4 76.2 56.8 77.2 56 78.6 Z" fill={HAIR_FRIEND} />
-      <circle cx="61" cy="80.6" r="1.1" fill={EYE} />
-      <circle cx="67" cy="80.6" r="1.1" fill={EYE} />
-      <path d="M61.2 84 q2.8 2.6 5.6 0" fill="none" stroke={MOUTH} strokeWidth="1.2" strokeLinecap="round" />
-    </>
-  )
-}
-
-/** 口から とび出した ふきだし。口の 四角に なる。 */
+/** 口から とび出した ふきだし。口の 四角に なる。中は ともだちの すがた(「名前」の しるし) */
 function SpeechBubble({ t }: SceneProps) {
   const grow = span(t, BUBBLE, BUBBLE + 0.6, backOut)
   if (grow <= 0) return null
   const { x, y, w, h } = BUBBLE_BOX
-  const [tipX, tipY] = BUBBLE_TAIL_TIP
+  const rig = personRig(KID_STAND)
+  const mouth = [rig.world.head[0] + rig.body.headR * rig.scale * 0.8, rig.world.head[1] + rig.body.headR * rig.scale * 0.45] as const
   const sound = during(t, CALL, BUBBLE + 0.8, 0.15)
   return (
     <>
-      <g opacity={sound} fill="none" stroke="#fff3b8" strokeWidth="1" strokeLinecap="round">
-        <path d="M33.2 63.8 q1.6 2.4 0 4.8" />
-        <path d="M35.6 62.4 q2.4 3.8 0 7.6" />
+      <g opacity={sound} fill="none" stroke={SOUND} strokeWidth="1" strokeLinecap="round">
+        <path d={`M${mouth[0] + 3} ${mouth[1] - 2} q1.6 2.4 0 4.8`} />
+        <path d={`M${mouth[0] + 5.4} ${mouth[1] - 3.4} q2.4 3.8 0 7.6`} />
       </g>
       <Layer scale={Math.max(0, grow)} origin={[x, y + h / 2]}>
-        <path d={`M${x} ${y + 5} L${tipX} ${tipY} L${x} ${y + 11} Z`} fill="#ffffff" />
-        <rect x={x} y={y} width={w} height={h} rx="5" fill="#ffffff" />
-        <NameFace />
+        <path d={`M${x} ${y + 5} L${mouth[0] + 5} ${mouth[1]} L${x} ${y + 11} Z`} fill={WHITE} />
+        <rect x={x} y={y} width={w} height={h} rx="5" fill={WHITE} />
+        <Person x={x + w / 2} y={y + h - 3} height={21} build="child" facing="front" look={FRIEND_LOOK} face="smile" shadow={false} />
       </Layer>
     </>
-  )
-}
-
-/** 「だれだろう?」 */
-function Question({ t }: SceneProps) {
-  const show = during(t, SQUINT + 0.15, CALL, 0.2)
-  if (show <= 0) return null
-  const pop = Math.max(0, span(t, SQUINT + 0.15, SQUINT + 0.6, backOut))
-  return (
-    <g opacity={show} transform={`translate(36 ${44 - wave(t, 0.9) * 0.8}) scale(${pop})`}>
-      <path d="M-3 -2 Q-3 -6.4 1 -6.4 Q5 -6.4 5 -3 Q5 -0.8 1.8 0.6 Q1 1.4 1 3" fill="none" stroke="#fff3b8" strokeWidth="1.8" strokeLinecap="round" />
-      <circle cx="1" cy="6.2" r="1.1" fill="#fff3b8" />
-    </g>
-  )
-}
-
-function Heart({ x, y, size, color }: { readonly x: number; readonly y: number; readonly size: number; readonly color: string }) {
-  return <path d="M0 2 C-4 -1 -3 -4.4 0 -2.6 C3 -4.4 4 -1 0 2 Z" fill={color} transform={`translate(${x} ${y}) scale(${size})`} />
-}
-
-/** なまえを よんだ あとの うれしい ハート。 */
-function Hearts({ t }: SceneProps) {
-  const p = span(t, JOY, INK - 0.1)
-  if (p <= 0) return null
-  const fade = Math.sin(p * Math.PI)
-  return (
-    <g opacity={fade}>
-      <Heart x={78 - Math.sin(p * 6) * 1.5} y={74 - p * 18} size={Math.max(0, 1.5 * span(t, JOY, JOY + 0.4, backOut))} color="#f07f9e" />
-      <Heart x={22 + Math.sin(p * 6) * 1.5} y={50 - p * 12} size={Math.max(0, 1.2 * span(t, JOY + 0.2, JOY + 0.6, backOut))} color="#f6a0b6" />
-    </g>
   )
 }
 
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 6)
-
-  // 子ども: ひだりから あるいてきて 立ちどまる
-  const walking = 1 - span(t, WALK_TO - 0.25, WALK_TO)
-  const stride = t < WALK_FROM ? 0 : Math.sin((t - WALK_FROM) * Math.PI * 2 * 1.8) * walking
-  const childX = mix(t, WALK_FROM, WALK_TO, -42, -8, easeOut)
-  const joy = span(t, JOY, JOY + 0.3)
-  const hop = t >= JOY && t < JOY + 0.9 ? -Math.abs(Math.sin((t - JOY) * Math.PI * 2.2)) * 2.4 : 0
-  const bob = -Math.abs(stride) * 1.2 + hop
-
-  const squint = span(t, SQUINT, SQUINT + 0.4) * (1 - span(t, CALL - 0.2, CALL))
-  const cup = span(t, CALL - 0.2, CALL + 0.1) * (1 - span(t, JOY - 0.2, JOY + 0.1))
-  const cheer = span(t, JOY, JOY + 0.35)
-  const walkArm: ArmPose = { a1: HANG.a1 + stride * 26, a2: HANG.a2 + stride * 26 }
-  const swayArm: ArmPose = t < WALK_TO ? walkArm : HANG
-  const cheerPose: ArmPose = { a1: CHEER.a1, a2: CHEER.a2 + wave(t, 0.5) * 9 * cheer }
-  const nearArm = mixPose(mixPose(mixPose(swayArm, SHADE, squint), CUP, cup), cheerPose, cheer)
-  const farArm = mixPose(t < WALK_TO ? { a1: HANG.a1 - stride * 26, a2: HANG.a2 - stride * 26 } : HANG, { a1: CHEER.a1, a2: CHEER.a2 - wave(t, 0.5) * 9 }, cheer)
-  const mood: Mood = t < SQUINT ? 'plain' : t < CALL ? 'squint' : t < JOY ? 'call' : 'happy'
-  const breath = t >= CALL - 0.4 && t < CALL ? span(t, CALL - 0.4, CALL) : 0
-  const headTilt = t < SQUINT ? 0 : t < CALL ? 4 : joy * -4
-
-  // ともだち: みぎから あるいてきて 立ちどまる。名前を よばれて ふりむく
-  const friendWalking = 1 - span(t, FRIEND_TO - 0.25, FRIEND_TO)
-  const friendStride = t < FRIEND_FROM ? 0 : Math.sin((t - FRIEND_FROM) * Math.PI * 2 * 1.8) * friendWalking
-  const friendX = mix(t, FRIEND_FROM, FRIEND_TO, 26, 0, easeOut)
-  const turn = span(t, TURN, TURN + 0.6, easeInOut)
-  const reveal = span(t, TURN + 0.2, TURN + 0.9)
-  const wavePose: ArmPose = { a1: 120, a2: 172 + wave(t, 0.5) * 18 }
-  const friendArm = mixPose({ a1: HANG.a1 + friendStride * 26, a2: HANG.a2 + friendStride * 26 }, wavePose, span(t, TURN + 0.7, TURN + 1.1))
-  const friendHop = t >= TURN + 0.8 && t < TURN + 1.5 ? -Math.abs(Math.sin((t - TURN - 0.8) * Math.PI * 2)) * 1.6 : 0
-
+  const kid = kidAt(t)
+  const kidHead = personRig(KID_STAND).world.head
+  const joy = during(t, JOY, INK - 0.1, 0.2)
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Sky t={t} />
+        <Backdrop t={t} time={mix(t, 0, 2.2, 1, 2)} sun={null} moon={null} clouds={[]} tufts={[8, 34, 82, 100]} />
+        <CrescentMoon t={t} />
         <Bat t={t} />
-        {/* ともだち */}
-        <Layer opacity={span(t, FRIEND_FROM, FRIEND_FROM + 0.2)}>
-          <ellipse cx={FRIEND_FEET[0] + friendX} cy="97.4" rx="7.5" ry="2" fill="#000000" opacity="0.15" />
-          <Layer x={FRIEND_FEET[0] + friendX} y={FRIEND_FEET[1] + friendHop}>
-            <Layer scale={0.92} origin={[0, 0]}>
-              <Friend step={friendStride} reveal={reveal} turn={turn} arm={friendArm} />
-            </Layer>
-          </Layer>
-        </Layer>
-        {/* 主役の 子ども */}
+        <Friend t={t} />
         <Layer opacity={span(t, WALK_FROM - 0.1, WALK_FROM + 0.1)}>
-          <ellipse cx={29.7 + childX} cy="97.4" rx="8" ry="2.2" fill="#000000" opacity="0.15" />
-          <Layer x={childX} y={bob}>
-            <Child step={stride} mood={mood} nearArm={nearArm} farArm={farArm} headTilt={headTilt} breath={breath} />
-          </Layer>
+          <Person {...kid} />
         </Layer>
-        <Question t={t} />
+        <Question x={kidHead[0] + 6} y={kidHead[1] - 16} size={12} t={t} show={during(t, SQUINT + 0.15, CALL, 0.2)} color={SOUND} />
         <SpeechBubble t={t} />
-        <Hearts t={t} />
+        <Hearts t={t} x={FRIEND_X - 8} y={64} show={joy} />
+        <Hearts t={t} x={kidHead[0] - 2} y={kidHead[1] - 8} show={joy} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Ink char={CHAR} progress={ink.progress} tint={ink.tint} />
