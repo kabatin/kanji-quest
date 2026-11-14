@@ -15,25 +15,17 @@
  *   → かぜが ふいて リボンが ふわっと なびく。おひさま の ゆめ が うかんで、子どもは 大よろこび
  *   → 月・竹ざお・リボン の 形に ほね が ひかって、絵が うすくなり、字「外」が のこる
  *
- * 子どもは、ほんものの人の つくり を守る(字の形に合わせるために、体を ゆがめない):
- *   うで は かた から出て ひじ で まがる。くび は みじかい。あるくときは 足を かわりばんこに ふる。
- *   月・竹ざお・リボン だけが、字の線に そのまま 重なる(もともと その形の もの)。
- *   子どもは 前に あるいてくると 大きく 見える(とおくから ちかくへ)。
+ * 子どもは Person。ドアから 左へ walk して、竹ざおの 前で turnAround して 右を むく。
+ * ドアの そばでは 小さく、手前へ くると 大きく(背の高さ を mix で かえる)。
+ * 背景は Backdrop(time で 夕方 → 夜)、家は House、小鳥は Bird、かぜは Wind。
+ * 月・竹ざお・リボン だけが、字の線に そのまま 重なる(もともと その形の もの)。
  */
 import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
-import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Backdrop, Bird, HANG_ARM, House, LOOKS, mixLimb, Person, posture, turnAround, walk, Wind, type Expression } from '../sceneFigures'
 
 const CHAR = '外'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const SHIRT = '#4cbfae'
-const SHIRT_DARK = '#38a091'
-const SHIRT_FAR = '#2f8a7d'
-const PANTS = '#3e5c86'
-const PANTS_DARK = '#34507a'
-const SHOE = '#6b4a36'
 const SUN = '#ffd24a'
 const MOON = '#ffe9a0'
 const MOON_DIM = '#fff3c4'
@@ -43,20 +35,13 @@ const BAMBOO_DARK = '#5f9a47'
 const RIBBON = '#f0508a'
 const RIBBON_LIGHT = '#ffd0e0'
 const GOLD = '#f2b632'
-const GRASS = '#a9d98c'
-const GRASS_DARK = '#7fbf6b'
-const HILL = '#8fae7a'
-const WALL = '#f3e0c4'
-const WALL_SHADE = '#e0c9a4'
-const ROOF = '#8a5a4a'
-const DOOR_WOOD = '#8c5b3c'
 const LIGHT_ROOM = '#ffdc8a'
+const KID_LOOK = { ...LOOKS.boy, top: '#4cbfae', bottom: '#3e5c86' } as const
 
 /** くぎり の時間(秒) */
 const DOOR = 1.5
 const WALK0 = 1.85
 const WALK1 = 3.5
-const TURN1 = 3.85
 /** うらないの ふあん → かぜ → よろこび */
 const WONDER = 3.9
 const GUST = 4.5
@@ -73,44 +58,15 @@ const KNOT: readonly [number, number] = [71.5, 42.5]
 const RIBBON_LEN = Math.hypot(93.75 - 71.5, 63.75 - 42.5)
 const RIBBON_DEG = (Math.atan2(63.75 - 42.5, 93.75 - 71.5) * 180) / Math.PI
 
-/** 家の ドアの 足もと と、子どもが そとに 出る道すじ。ちかづくと 大きくなる */
-const DOOR_FOOT: readonly [number, number] = [94, 94.5]
+/** 家(まんなか x・地面 y・はば)。ドアは 家の まんなか */
+const HOUSE: readonly [number, number, number] = [92, 95, 30]
+/** 子どもが そとに 出る道すじ(足もと)と 背の高さ。ちかづくと 大きくなる */
+const DOOR_FOOT: readonly [number, number] = [92, 94.5]
 const STAND: readonly [number, number] = [50, 96]
-const SCALE_FAR = 0.42
-const SCALE_NEAR = 1.1
+const HEIGHT_FAR = 14
+const HEIGHT_NEAR = 48
 
 /* ───────── けしき ───────── */
-
-function Sky({ t }: SceneProps) {
-  const dusk = span(t, 0.2, 3.2)
-  return (
-    <>
-      <rect x="0" y="0" width="109" height="109" fill="#ffcf99" />
-      <rect x="0" y="48" width="109" height="61" fill="#ff9c6e" opacity={0.6 * (1 - dusk)} />
-      <rect x="0" y="0" width="109" height="109" fill="#5d5fa8" opacity={0.86 * dusk} />
-      {/* くらくなると 出てくる ほし */}
-      {[
-        [10, 22, 2.2, 1.6],
-        [22, 9, 2.6, 2.0],
-        [80, 11, 2.4, 2.4],
-        [97, 27, 2.0, 2.8],
-      ].map(([cx, cy, r, at]) => (
-        <Star key={`${cx}-${cy}`} cx={cx} cy={cy} r={Math.max(0, r * span(t, at, at + 0.5, backOut)) * (1 + 0.12 * wave(t, 1.4, cx))} color="#ffffff" />
-      ))}
-    </>
-  )
-}
-
-/** お日さまが おかの むこうへ しずむ */
-function SettingSun({ t }: SceneProps) {
-  const y = mix(t, 0, 1.7, 60, 100, easeInOut)
-  return (
-    <>
-      <circle cx="57" cy={y} r="13" fill="#ffb347" opacity="0.28" />
-      <circle cx="57" cy={y} r="8" fill="#ffb347" />
-    </>
-  )
-}
 
 /** 月: ひだり(1画目)は かげ、みぎ(2画目)は かがやく ふち。かがやく所だけ、まるく けずった形 */
 const MOON_BODY =
@@ -119,7 +75,7 @@ const MOON_BODY =
 const MOON_LIT =
   'M30.5 34.2 L33.2 28.1 L35.3 22 L35.4 15.8 L44 22 L49.8 26.8 L52.6 35.2 L47.2 47.3 L41 59.1 L33.8 70.3 L25.3 80.5 L14.8 88.5 L15.5 69.1 A23 23 0 0 0 30.5 34.2 Z'
 
-function Moon({ t }: SceneProps) {
+function CrescentMoon({ t }: SceneProps) {
   const rise = span(t, 0.6, 2.4, easeOut)
   const appear = span(t, 0.6, 1.2)
   if (appear <= 0) return null
@@ -140,65 +96,13 @@ function Moon({ t }: SceneProps) {
   )
 }
 
-/** 巣へ かえる 鳥(小さな にぎやかし) */
-function HomeBird({ t }: SceneProps) {
-  const p = span(t, 0.3, 3.3)
-  if (p <= 0 || p >= 1) return null
-  const x = 118 - p * 130
-  const y = 17 + Math.sin(p * 6) * 2.4
-  const flap = 0.4 + 0.6 * Math.abs(wave(t, 0.5))
-  return (
-    <Layer x={x} y={y} scaleY={flap}>
-      <path d="M-4.2 0 Q-2.1 -3.2 0 0 Q2.1 -3.2 4.2 0" fill="none" stroke="#4a3f66" strokeWidth="1.2" strokeLinecap="round" />
-    </Layer>
-  )
-}
-
-function Hills() {
-  return (
-    <>
-      <path d="M-4 94 Q18 86 44 92 Q70 84 113 92 V101 H-4 Z" fill={HILL} />
-      <ellipse cx="54.5" cy="99" rx="58" ry="6.4" fill={GRASS} />
-    </>
-  )
-}
-
-/** かぜで ゆれる 草(かぜが ふくと、右へ たおれる) */
-function Grass({ t }: SceneProps) {
-  const gust = during(t, GUST - 0.1, GUST + 1.1, 0.4)
-  return (
-    <>
-      {[6, 30, 44, 76, 101].map((x, i) => (
-        <Layer key={x} rotate={wave(t, 1.9, i * 0.5) * 3 + gust * 14} origin={[x, 98]}>
-          <path d={`M${x} 98 l1.2 -4.6 l1 3.6 l1.6 -5 l0.9 5.4 Z`} fill={GRASS_DARK} />
-        </Layer>
-      ))}
-    </>
-  )
-}
-
-/* ───────── 家と ドア ───────── */
-
-function House({ t }: SceneProps) {
-  // ドアが あいて、子どもが 出たら しまる
+/** ドアが あくと、中の あかりが 見える(家の ドアの 上に かさねる) */
+function DoorLight({ t }: SceneProps) {
+  const [x, y, w] = HOUSE
   const open = span(t, DOOR, DOOR + 0.4, easeOut) * (1 - span(t, 2.9, 3.3))
-  const window = span(t, 0.8, 3.2)
-  return (
-    <>
-      <rect x="82" y="74" width="23" height="21" rx="1" fill={WALL} />
-      <rect x="82" y="91.5" width="23" height="3.5" fill={WALL_SHADE} />
-      <path d="M79.5 75.5 L93.5 61.5 L107.5 75.5 Z" fill={ROOF} stroke={ROOF} strokeWidth="1.6" strokeLinejoin="round" />
-      {/* まど: くらくなると あかりが つく */}
-      <rect x="84" y="79" width="5" height="5" rx="0.8" fill="#cfd6e4" />
-      <rect x="84" y="79" width="5" height="5" rx="0.8" fill={LIGHT_ROOM} opacity={window} />
-      {/* ドア: あくと 中の あかりが 見える */}
-      <rect x="90" y="79" width="8" height="16" fill={LIGHT_ROOM} />
-      <Layer scaleX={1 - 0.8 * open} origin={[90, 87]}>
-        <rect x="90" y="79" width="8" height="16" fill={DOOR_WOOD} />
-        <circle cx="96" cy="87.5" r="0.8" fill={GOLD} />
-      </Layer>
-    </>
-  )
+  if (open <= 0) return null
+  const h = w * 0.7
+  return <rect x={x - w * 0.11} y={y - h * 0.52} width={w * 0.22} height={h * 0.52} rx="0.8" fill={LIGHT_ROOM} opacity={open} />
 }
 
 /* ───────── うらないの 竹ざお ───────── */
@@ -247,98 +151,6 @@ function Pole({ t }: SceneProps) {
   )
 }
 
-/** かぜ: ひだりから ふいてくる すじ */
-function Wind({ t }: SceneProps) {
-  const p = span(t, GUST - 0.2, GUST + 1.0)
-  if (p <= 0 || p >= 1) return null
-  const fade = Math.sin(p * Math.PI)
-  return (
-    <g opacity={fade * 0.85} fill="none" stroke="#ffffff" strokeWidth="1.2" strokeLinecap="round">
-      {[
-        [58, 0],
-        [66, 0.12],
-        [74, 0.06],
-      ].map(([y, lag]) => {
-        const q = Math.max(0, p - lag)
-        return <path key={y} d="M0 0 q5 -2.4 10 0 q3 1.4 5 -1.4" transform={`translate(${-14 + q * 120} ${y})`} />
-      })}
-    </g>
-  )
-}
-
-/* ───────── 子ども ───────── */
-
-type Mood = 'wonder' | 'happy'
-type ArmPose = { readonly swing: number; readonly bend: number }
-
-/** からだの 長さ(あしもと = 0、うえが マイナス) */
-const SHOULDER_AT: readonly [number, number] = [0, -27.5]
-const ARM_PART = 6.4
-
-/** かた から出て、ひじ で まがる うで。swing = ま下から まえ(左)へ ふった角度 */
-function Arm({ pose, color }: { readonly pose: ArmPose; readonly color: string }) {
-  const rad = (deg: number) => (deg * Math.PI) / 180
-  const elbow = [SHOULDER_AT[0] - Math.sin(rad(pose.swing)) * ARM_PART, SHOULDER_AT[1] + Math.cos(rad(pose.swing)) * ARM_PART] as const
-  const fore = pose.swing + pose.bend
-  const hand = [elbow[0] - Math.sin(rad(fore)) * ARM_PART, elbow[1] + Math.cos(rad(fore)) * ARM_PART] as const
-  return (
-    <>
-      <path d={`M${SHOULDER_AT[0]} ${SHOULDER_AT[1]} L${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={color} strokeWidth="4.4" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hand[0]} cy={hand[1]} r="2.5" fill={SKIN} />
-    </>
-  )
-}
-
-type ChildProps = {
-  readonly step: number
-  readonly mood: Mood
-  readonly nearArm: ArmPose
-  readonly farArm: ArmPose
-  readonly headTilt: number
-}
-
-/** 左むきの 子ども(足もとが 原点)。右を むくときは、まるごと 左右を ひっくり返す */
-function Child({ step, mood, nearArm, farArm, headTilt }: ChildProps) {
-  return (
-    <>
-      <Arm pose={farArm} color={SHIRT_FAR} />
-      <Layer rotate={step * 20} origin={[1.6, -15]}>
-        <rect x="-0.6" y="-15.5" width="4.4" height="14.6" rx="2.2" fill={PANTS_DARK} />
-        <ellipse cx="0.6" cy="-0.9" rx="3.6" ry="1.9" fill={SHOE} />
-      </Layer>
-      <Layer rotate={-step * 20} origin={[-2.4, -15]}>
-        <rect x="-4.6" y="-15.5" width="4.4" height="14.6" rx="2.2" fill={PANTS} />
-        <ellipse cx="-3.6" cy="-0.9" rx="3.6" ry="1.9" fill={SHOE} />
-      </Layer>
-      {/* くび: みじかく、どう と あたま の間を つなぐ */}
-      <rect x="-2.6" y="-30.4" width="4.4" height="4.2" rx="1.8" fill={SKIN_SHADE} />
-      <rect x="-5" y="-29" width="10" height="14.2" rx="5" fill={SHIRT} />
-      <path d="M-3.6 -20 h7.2" stroke={SHIRT_DARK} strokeWidth="1.2" strokeLinecap="round" />
-      <Arm pose={nearArm} color={SHIRT_DARK} />
-      <Layer rotate={headTilt} origin={[-0.4, -27.8]}>
-        <g transform="translate(-0.6 -33.2) scale(0.739) translate(-30.2 -24.6)">
-          <circle cx="30.2" cy="24.6" r="9.2" fill={SKIN} />
-          <path d="M21.5 23 C21.4 13.8 31.8 11.2 37.8 17 C40.2 20.2 40.2 26 38.2 30.2 C37.6 24.4 33.4 20.2 26.6 20.6 C24.4 20.8 22.6 21.8 21.5 23 Z" fill={HAIR} />
-          <circle cx="26.5" cy="28.8" r="2.1" fill="#ff9d9d" opacity="0.55" />
-          {mood === 'wonder' ? (
-            <>
-              <path d="M23.2 21.8 Q25 20.4 27 21.6" fill="none" stroke={HAIR} strokeWidth="1.2" strokeLinecap="round" />
-              <circle cx="25.2" cy="24.8" r="1.4" fill="#2b2b2b" />
-              <circle cx="24.8" cy="24.3" r="0.45" fill="#ffffff" />
-              <ellipse cx="24.4" cy="30.4" rx="1.2" ry="1.6" fill="#b9483f" />
-            </>
-          ) : (
-            <>
-              <path d="M23.8 24.9 Q25.4 26.6 27 24.9" fill="none" stroke="#2b2b2b" strokeWidth="1.3" strokeLinecap="round" />
-              <path d="M22.4 28.6 Q24.6 33.2 27.4 29.2 Z" fill="#b9483f" />
-            </>
-          )}
-        </g>
-      </Layer>
-    </>
-  )
-}
-
 /** うかぶ ゆめ: 「あした」の 空。はじめは くもって、かぜの あと おひさま が 出る */
 function Dream({ t }: SceneProps) {
   const pop = span(t, WONDER + 0.1, WONDER + 0.6, backOut)
@@ -368,62 +180,52 @@ function Dream({ t }: SceneProps) {
   )
 }
 
+/* ───────── 子ども ───────── */
+
 function Kid({ t }: SceneProps) {
-  const appear = span(t, DOOR + 0.2, DOOR + 0.5)
-  if (appear <= 0) return null
+  if (t < DOOR + 0.2) return null
+  const w = walk(t, { from: DOOR_FOOT[0], to: STAND[0], start: WALK0, end: WALK1, build: 'child', height: 34, step: 10 })
+  // ドアの そばは 小さく、ちかづくほど 大きく(足もと も ドア から 立つ場所へ)
+  const height = mix(t, WALK0, WALK1, HEIGHT_FAR, HEIGHT_NEAR, easeOut)
+  const y = mix(t, WALK0, WALK1, DOOR_FOOT[1], STAND[1], easeOut)
   const walking = t < WALK1
-  // あるく: ドアから 立ちどまる 場所へ。ちかづくほど 大きくなる
-  const slow = 1 - span(t, WALK1 - 0.3, WALK1)
-  const stride = walking && t >= WALK0 ? Math.sin((t - WALK0) * Math.PI * 2 * 2.2) * slow : 0
-  const x = mix(t, WALK0, WALK1, DOOR_FOOT[0], STAND[0], easeOut)
-  const footY = mix(t, WALK0, WALK1, DOOR_FOOT[1], STAND[1], easeOut)
-  const scale = mix(t, WALK0, WALK1, SCALE_FAR, SCALE_NEAR, easeOut)
-  // はじめは 左(月のほう)を むいて あるき、竹ざおの前で 右を むく
-  const facing = mix(t, WALK1, TURN1, 1, -1)
-  const bob = -Math.abs(stride) * 1.2
-  // うで: あるくと ふる / ふあんなときは リボンを ゆびさす / よろこぶと ばんざい
-  const base = walking ? stride * 24 : 3
-  const point = span(t, WALK1 + 0.2, WONDER + 0.1, easeOut) * (1 - span(t, GUST + 0.4, GUST + 0.8))
-  const cheer = span(t, CHEER, CHEER + 0.35, backOut)
-  const arm1 = base + (135 - base) * point
-  const sway = wave(t, 0.4) * 9 * span(t, CHEER + 0.5, CHEER + 0.8) * (1 - span(t, INK - 0.4, INK - 0.1))
-  const nearArm: ArmPose = { swing: arm1 + (245 - arm1) * cheer + sway, bend: walking ? 12 : 8 * (1 - cheer) - 28 * cheer }
-  const farBase = walking ? -stride * 24 : 3
-  const farArm: ArmPose = { swing: farBase + (118 - farBase) * cheer - sway, bend: walking ? 12 : 8 * (1 - cheer) + 30 * cheer }
-  // つきを 見あげる → リボンを 見る → うれしくて ぴょん
+  // つきを 見あげる → リボンを 見る
   const moonLook = span(t, 2.3, 2.8) * (1 - span(t, WALK1 - 0.2, WALK1))
   const wonder = span(t, WALK1, WONDER) * (1 - span(t, GUST + 0.3, GUST + 0.7))
-  const headTilt = 14 * moonLook + 9 * wonder + 4 * span(t, CHEER, CHEER + 0.3)
-  const mood: Mood = t < GUST + 0.6 ? 'wonder' : 'happy'
+  // ふあんな ときは リボンを ゆびさす / よろこぶと ばんざい
+  const point = span(t, WALK1 + 0.2, WONDER + 0.1, easeOut) * (1 - span(t, GUST + 0.4, GUST + 0.8))
+  const cheer = span(t, CHEER, CHEER + 0.35, backOut)
+  const sway = wave(t, 0.4) * 9 * span(t, CHEER + 0.5, CHEER + 0.8) * (1 - span(t, INK - 0.4, INK - 0.1))
+  const banzai = posture('banzai', 'right')
+  const pointing = mixLimb(HANG_ARM, { to: [64, 45] }, point)
+  const standPose = {
+    leftArm: mixLimb(pointing, banzai.leftArm ?? HANG_ARM, cheer),
+    rightArm: mixLimb(HANG_ARM, { swing: 160 + sway, bend: 14 }, cheer),
+    head: -9 * wonder,
+  }
+  const pose = walking ? { ...w.pose, head: -12 * moonLook } : standPose
+  const facing = walking ? { facing: w.facing } : turnAround(t, WALK1, 'left', 'right')
+  const face: Expression = t < GUST + 0.6 ? (t < WONDER ? 'normal' : 'worried') : 'joy'
   const hop = t > CHEER + 0.2 ? Math.abs(Math.sin((t - CHEER - 0.2) * Math.PI * 1.7)) * 4.2 * (1 - span(t, INK - 0.35, INK - 0.05)) : 0
-  return (
-    <Layer opacity={appear}>
-      <ellipse cx={x} cy={footY + 0.8} rx={7 * scale} ry={1.9 * scale} fill="#000000" opacity="0.14" />
-      <Layer x={x} y={footY + bob - hop * scale} scale={scale}>
-        <Layer scaleX={facing}>
-          <Child step={stride} mood={mood} nearArm={nearArm} farArm={farArm} headTilt={headTilt} />
-        </Layer>
-      </Layer>
-    </Layer>
-  )
+  return <Person x={w.x} y={y} height={height} build="child" {...facing} pose={pose} look={KID_LOOK} face={face} lift={(hop * height) / 44} />
 }
 
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 5)
   // できあがりで、字が ぽん と はずむ
   const bump = Math.sin(span(t, DONE - 0.9, DONE - 0.45) * Math.PI) * 0.06
+  const sunY = mix(t, 0, 1.7, 60, 100, easeInOut)
+  const birdP = span(t, 0.3, 3.3)
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Sky t={t} />
-        <SettingSun t={t} />
-        <Moon t={t} />
-        <HomeBird t={t} />
-        <Hills />
-        <House t={t} />
-        <Grass t={t} />
+        <Backdrop t={t} sun={[57, sunY]} clouds={[]} tufts={[6, 30, 44, 76, 101]} time={1 + span(t, 0.2, 3.2)} moon={null} />
+        <CrescentMoon t={t} />
+        {birdP > 0 && birdP < 1 && <Bird x={118 - birdP * 130} y={17 + Math.sin(birdP * 6) * 2.4} t={t} flying facing="left" size={0.9} />}
+        <House x={HOUSE[0]} y={HOUSE[1]} width={HOUSE[2]} grow={span(t, 0, 0.4)} light={span(t, 0.8, 3.2)} />
+        <DoorLight t={t} />
         <Pole t={t} />
-        <Wind t={t} />
+        <Wind t={t} x={40} y={60} dir={1} reach={34} show={during(t, GUST - 0.2, GUST + 1.0, 0.3)} color="#ffffff" />
         <Kid t={t} />
         <Dream t={t} />
       </Layer>

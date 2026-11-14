@@ -16,12 +16,13 @@
  *   → 「ここに しよう!」と ぼうを 土もりに ぐいっと さす(つちけむり)
  *   → 手を あげて ぴょんぴょん よろこぶ → ほね が ひかって、絵が うすくなり 字「場」が のこる
  *
- * 人は、ほんものの 人の つくり を守る(字の形に合わせるために 体を ゆがめない):
- *   うで は かた から出て ひじ で まがる(`limb` が かた と 手の位置から ひじ を 決める)。
- *   くび は みじかく、どう の まんなか の上。字の形に なるのは、さいごの しゅんかん だけ。
+ * 人は Person。あるきは walk(左へ)。ぼうを もつ 両手は { to } で ぼうの 手もとへ、ぼうは 子の うしろに 描く(手が ぼうの まえ)。
+ * さしたあと ぼうから 手を はなして ばんざい(posture('banzai'))。ためいき・つちけむり・雲・小鳥 は 共通部品。
  */
-import { during, easeIn, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { during, easeIn, easeOut, inkTiming, span, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Bird, Clouds, Dust, HANG_ARM, LOOKS, mixLimb, PALETTE, Person, personRig, posture, Sigh, walk } from '../sceneFigures'
+import type { Expression } from '../sceneFigures'
 
 const CHAR = '場'
 
@@ -30,7 +31,7 @@ const SUN = '#ffd24a'
 const SUN_CORE = '#ffe784'
 const FIELD = '#c5e8a9'
 const FIELD_FAR = '#e2f2d2'
-const LEAF = '#55b86e'
+const LEAF = PALETTE.leaf
 const LEAF_DARK = '#3f9c59'
 const EARTH = '#b27b52'
 const EARTH_DARK = '#966340'
@@ -40,15 +41,7 @@ const PLANK = '#e6b878'
 const NAIL = '#6b4a36'
 const SUNNY = '#fff1a6'
 const BEAM = '#ffd24a'
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const SHIRT = '#e8654f'
-const SHIRT_DARK = '#cf4f3b'
-const PANTS = '#3e5c86'
-const PANTS_DARK = '#34507a'
-const SHOE = '#6b4a36'
-const DUST = '#dcc7a2'
+const CHILD_LOOK = { ...LOOKS.boy, top: '#e8654f', bottom: '#3e5c86' } as const
 
 /** くぎり の時間(秒) */
 const ENTER = 0.5
@@ -68,34 +61,22 @@ const DURATION = 11
 
 type Pt = readonly [number, number]
 
-/** 子の 足もと(画面の ざひょう)と、ぼうを もつ手 */
+/** 子の 足もと(y)・背の高さ・とまる x */
 const FEET_Y = 70
+const CHILD_HEIGHT = 40
 const CHILD_STOP = 44
 /** ぼうの よこ(子の まえ)。ぼうは 2画目の x のあたり */
 const GRIP_X = -14.7
-/** ぼうを かついで あるくとき、地面から うかせる 高さ */
+/** ぼうを かついで あるくとき、地面から うかせる 高さ と、手を かける 高さ */
 const CARRY = 5
-/** 土もりの 上の ぼうの 根もと(2画目の おわり)と、いたの 中心 */
+const GRIP_HEIGHT = 19
+/** 土もりの 上の ぼうの 根もと(2画目の おわり)と、お日さまの いち */
 const STAKE_FOOT: Pt = [29.3, 62]
 const SUN_HOME: Pt = [67.5, 26]
 const SUN_R = 10.5
 
-/** かた と 手の位置から、ひじ の位置を きめる(2本の ぶぶん は おなじ長さ)。手が とどかない ときは のばせる所まで。 */
-function limb(shoulder: Pt, hand: Pt, part: number, side: 1 | -1): { readonly elbow: Pt; readonly hand: Pt } {
-  const dx = hand[0] - shoulder[0]
-  const dy = hand[1] - shoulder[1]
-  const dist = Math.max(Math.hypot(dx, dy), 0.001)
-  const reach = Math.min(dist, part * 2 * 0.99)
-  const ux = dx / dist
-  const uy = dy / dist
-  const half = reach / 2
-  const bulge = Math.sqrt(Math.max(part * part - half * half, 0))
-  const elbow: Pt = [shoulder[0] + ux * half - uy * bulge * side, shoulder[1] + uy * half + ux * bulge * side]
-  return { elbow, hand: [shoulder[0] + ux * reach, shoulder[1] + uy * reach] }
-}
-
 /** 場所を ひろげる 野原と 土もり(絵の うしろ側) */
-function Land({ t }: SceneProps) {
+function Land({ t }: { readonly t: number }) {
   const appear = span(t, 0, 0.7, easeOut)
   return (
     <Layer opacity={appear} origin={[54.5, 98]} scaleY={0.9 + 0.1 * appear}>
@@ -121,7 +102,7 @@ function Land({ t }: SceneProps) {
 }
 
 /** お日さま。ちへいせん の うしろから のぼる(野原を あとから かさねて かくす)。 */
-function Sun({ t }: SceneProps) {
+function RisingSun({ t }: { readonly t: number }) {
   const rise = span(t, SUNRISE, SUNRISE + 1.8, easeOut)
   const y = SUN_HOME[1] + (1 - rise) * 32
   return (
@@ -137,21 +118,8 @@ function Sun({ t }: SceneProps) {
   )
 }
 
-/** ゆっくり ながれる 雲 */
-function Clouds({ t }: SceneProps) {
-  const drift = t * 0.9
-  return (
-    <g fill="#ffffff" opacity="0.9" transform={`translate(${drift} 0)`}>
-      <ellipse cx="12" cy="14" rx="7" ry="3.2" />
-      <ellipse cx="17" cy="12.2" rx="5" ry="3.2" />
-      <ellipse cx="94" cy="21" rx="6" ry="2.7" />
-      <ellipse cx="98.4" cy="19.4" rx="4.2" ry="2.8" />
-    </g>
-  )
-}
-
 /** ひなた(10画目の ふち)と、ひかりの すじ(9・11・12画目)。お日さまが のぼると 野原に ひろがる。 */
-function Sunlight({ t }: SceneProps) {
+function Sunlight({ t }: { readonly t: number }) {
   const spread = span(t, SUNRISE + 0.6, SUNRISE + 2.2, easeOut)
   if (spread <= 0) return null
   return (
@@ -182,188 +150,52 @@ function Stake({ dx, dy }: { readonly dx: number; readonly dy: number }) {
   )
 }
 
-type Mood = 'sad' | 'surprised' | 'happy'
-
-type ChildProps = {
-  /** あしを ふる角度(あるくとき) */
-  readonly step: number
-  readonly mood: Mood
-  /** あたまの かたむき(+ で 上を見る) */
-  readonly headTilt: number
-  /** 手の 位置(子の 足もとが 0,0 の ざひょう) */
-  readonly nearHand: Pt
-  readonly farHand: Pt
-  readonly breath: number
-  readonly sigh: number
-}
-
-const ARM_PART = 8.6
-/** かた(てまえ・むこう) */
-const NEAR_SHOULDER: Pt = [0.8, -21]
-const FAR_SHOULDER: Pt = [-0.8, -21.2]
-
-function Arm({ shoulder, target, color, side }: { readonly shoulder: Pt; readonly target: Pt; readonly color: string; readonly side: 1 | -1 }) {
-  const { elbow, hand } = limb(shoulder, target, ARM_PART, side)
-  return (
-    <>
-      <path d={`M${shoulder[0]} ${shoulder[1]} L${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={color} strokeWidth="4.4" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hand[0]} cy={hand[1]} r="2.5" fill={SKIN} />
-    </>
-  )
-}
-
-function Face({ mood }: { readonly mood: Mood }) {
-  if (mood === 'sad') {
-    return (
-      <>
-        <path d="M-5.6 -32.2 L-2.4 -31.2" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-        <circle cx="-3.6" cy="-29.4" r="1.05" fill="#2b2b2b" />
-        <path d="M-5.2 -24.8 Q-3.6 -26.4 -1.8 -24.8" fill="none" stroke="#b9483f" strokeWidth="1.1" strokeLinecap="round" />
-      </>
-    )
-  }
-  if (mood === 'surprised') {
-    return (
-      <>
-        <path d="M-5.6 -32.6 L-2.4 -33" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-        <circle cx="-3.6" cy="-29.6" r="1.5" fill="#2b2b2b" />
-        <circle cx="-4.1" cy="-30.1" r="0.5" fill="#ffffff" />
-        <ellipse cx="-3.9" cy="-25.4" rx="1.1" ry="1.5" fill="#b9483f" />
-      </>
-    )
-  }
-  return (
-    <>
-      <path d="M-5.4 -29 Q-3.6 -31.2 -1.8 -29" fill="none" stroke="#2b2b2b" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M-5.6 -26.2 Q-3.6 -23.4 -1.2 -26.2 Z" fill="#b9483f" />
-    </>
-  )
-}
-
-function Child({ step, mood, headTilt, nearHand, farHand, breath, sigh }: ChildProps) {
-  return (
-    <>
-      <Arm shoulder={FAR_SHOULDER} target={farHand} color={SHIRT_DARK} side={-1} />
-      {/* あし: こし から ふる */}
-      <Layer rotate={step * 20} origin={[0.8, -12]}>
-        <rect x="-1.4" y="-13" width="4.4" height="12.6" rx="2.2" fill={PANTS_DARK} />
-        <ellipse cx="0" cy="-0.8" rx="3.6" ry="1.9" fill={SHOE} />
-      </Layer>
-      <Layer rotate={-step * 20} origin={[-0.8, -12]}>
-        <rect x="-3" y="-13" width="4.4" height="12.6" rx="2.2" fill={PANTS} />
-        <ellipse cx="-1.6" cy="-0.8" rx="3.6" ry="1.9" fill={SHOE} />
-      </Layer>
-      {/* くび: みじかく、どう と あたま の間 */}
-      <rect x="-2" y="-27.2" width="3.6" height="4.4" rx="1.6" fill={SKIN_SHADE} />
-      <Layer scaleX={1 + breath * 0.03} origin={[0, -12]}>
-        <rect x="-5.2" y="-25.6" width="10.4" height="14.6" rx="4.4" fill={SHIRT} />
-        <path d="M-4.6 -15.4 h9.2" stroke={SHIRT_DARK} strokeWidth="1.2" strokeLinecap="round" />
-      </Layer>
-      <Arm shoulder={NEAR_SHOULDER} target={nearHand} color={SHIRT} side={-1} />
-      <Layer rotate={headTilt} origin={[-0.2, -24]}>
-        <circle cx="-0.5" cy="-29.5" r="6.2" fill={SKIN} />
-        <path d="M-5.7 -31 C-6.3 -37.5 4 -38.4 6 -33 C6.6 -31 6.3 -28 5.7 -26 C5 -30 1 -32.8 -3 -32.2 C-4.4 -32 -5.2 -31.5 -5.7 -31 Z" fill={HAIR} />
-        <path d="M-1 -35.6 Q-0.4 -38.6 1.2 -36.6" fill="none" stroke={HAIR} strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="-4.2" cy="-26.6" r="1.5" fill="#ff9d9d" opacity="0.55" />
-        <Face mood={mood} />
-      </Layer>
-      {/* しょんぼりの ためいき */}
-      {sigh > 0 && (
-        <g opacity={sigh}>
-          <ellipse cx={-9 - (1 - sigh) * 6} cy={-25 - (1 - sigh) * 4} rx="2.6" ry="1.8" fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.6" />
-          <ellipse cx={-13 - (1 - sigh) * 6} cy={-26.6 - (1 - sigh) * 3} rx="1.4" ry="1" fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.5" />
-        </g>
-      )}
-    </>
-  )
-}
-
-/** ぼうを さしたとき の つちけむり */
-function Dust({ t, at, size }: { readonly t: number; readonly at: number; readonly size: number }) {
-  const p = span(t, at, at + 0.5, easeOut)
-  if (p <= 0 || p >= 1) return null
-  return (
-    <g opacity={1 - p} fill={DUST}>
-      <ellipse cx={STAKE_FOOT[0] - 3 - p * 7 * size} cy={STAKE_FOOT[1] + 1.4 - p * 2.6} rx={1.6 + p * 2.2 * size} ry={1.2 + p * 1.6 * size} />
-      <ellipse cx={STAKE_FOOT[0] + 3 + p * 7 * size} cy={STAKE_FOOT[1] + 1.4 - p * 2.6} rx={1.6 + p * 2.2 * size} ry={1.2 + p * 1.6 * size} />
-    </g>
-  )
-}
-
-/** お日さまの 空を よこぎる 小鳥 */
-function Bird({ t }: SceneProps) {
-  const p = span(t, SUNRISE + 0.8, SUNRISE + 3.4)
-  if (p <= 0 || p >= 1) return null
-  const x = 116 - p * 128
-  const y = 10 + Math.sin(p * 7) * 2
-  const flap = wave(t, 0.3) * 24
-  return (
-    <Layer x={x} y={y}>
-      <path d="M-4 0.4 l-2.6 0.8 l2.4 0.8 Z" fill="#f2b632" />
-      <ellipse cx="0" cy="0" rx="4.2" ry="2.8" fill="#6c8fd8" />
-      <circle cx="-3.2" cy="-1.8" r="2.2" fill="#6c8fd8" />
-      <circle cx="-3.9" cy="-2.2" r="0.5" fill="#2b2b2b" />
-      <path d="M3.4 0 l3.6 -1 l-2.2 2.4 Z" fill="#4a6fc0" />
-      <Layer rotate={flap} origin={[0.4, -0.8]}>
-        <path d="M-1.4 -1 Q1.6 -5 4.4 -0.8 Q1.6 0.6 -1.4 -1 Z" fill="#4a6fc0" />
-      </Layer>
-    </Layer>
-  )
-}
-
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 12)
 
   // 朝の くらさ: お日さまが のぼると 明るくなる
   const dawn = span(t, SUNRISE, SUNRISE + 1.6)
 
-  // あるく: 右から しるしの ぼうを かついで きて、土もりの 前で 止まる
-  const walking = 1 - span(t, ARRIVE - 0.4, ARRIVE)
-  const stride = t < ENTER ? 0 : Math.sin((t - ENTER) * Math.PI * 2 * 1.5) * walking
-  const childX = mix(t, ENTER, ARRIVE, 150, CHILD_STOP, easeOut)
-  const bob = -Math.abs(stride) * 1.2
+  // あるく: 右から しるしの ぼうを かついで きて、土もりの 前で 止まる(左むき)
+  const w = walk(t, { from: 150, to: CHILD_STOP, start: ENTER, end: ARRIVE, build: 'child', height: CHILD_HEIGHT, step: 13 })
 
   // ぼうを さす: 3回に わけて ぐいっと 下げる(かついで いる間は うかせる)
   const lift = CARRY - 3.2 * span(t, PUSH, PUSH + 0.25, easeIn) + 1.8 * span(t, PUSH + 0.25, PUSH + 0.5, easeOut) - 3.6 * span(t, PUSH + 0.5, PLANTED, easeIn)
 
-  // 気持ち: しょんぼり → お日さまに びっくり → にっこり
-  const mood: Mood = t < NOTICE ? 'sad' : t < SMILE ? 'surprised' : 'happy'
-  const headTilt = -9 + 23 * span(t, NOTICE, NOTICE + 0.3) - 9 * span(t, SMILE, SMILE + 0.4) + 7 * span(t, CHEER, CHEER + 0.3) + stride * 1.5
-  const sigh = during(t, ARRIVE + 0.1, SUNRISE + 0.4, 0.2)
+  // 気持ち: しょんぼり → お日さまに びっくり → にっこり → 大よろこび
+  const face: Expression = t < NOTICE ? 'sad' : t < SMILE ? 'surprised' : t < CHEER ? 'smile' : 'joy'
+  const head = 9 - 17 * span(t, NOTICE, NOTICE + 0.3) + 8 * span(t, SMILE, SMILE + 0.4) - 4 * span(t, CHEER, CHEER + 0.3)
 
-  // よろこぶ: ぼうから 手をはなして、ばんざい ぴょんぴょん(2かい)
+  // ぼうを もつ 手(ぼうの よこ)。よろこぶ とき は 手を はなして ばんざい
   const release = span(t, CHEER - 0.1, CHEER + 0.2, easeOut)
   const hop = t >= CHEER && t < CHEER + 0.8 ? Math.abs(Math.sin(((t - CHEER) / 0.4) * Math.PI)) * 5 : 0
-  const gripNear: Pt = [GRIP_X + 0.3, -19 - lift + 0.4]
-  const gripFar: Pt = [GRIP_X - 0.3, -19.4 - lift]
-  const cheerNear: Pt = [-7, -35]
-  const cheerFar: Pt = [6, -36]
-  const nearHand: Pt = [gripNear[0] + (cheerNear[0] - gripNear[0]) * release, gripNear[1] + (cheerNear[1] - gripNear[1]) * release]
-  const farHand: Pt = [gripFar[0] + (cheerFar[0] - gripFar[0]) * release, gripFar[1] + (cheerFar[1] - gripFar[1]) * release]
-  const breath = wave(t, 1.6)
-
-  // ぼう: ぼうの よこ が 子の まえ。手を はなす まえ は 子と いっしょに うごく
-  const stakeDx = childX + GRIP_X - STAKE_FOOT[0]
-  const stakeDy = -lift + bob
+  const gripX = w.x + GRIP_X
+  const gripY = FEET_Y - GRIP_HEIGHT - lift
+  const banzai = posture('banzai', 'left')
+  const nearArm = mixLimb({ to: [gripX + 0.3, gripY + 0.4] }, banzai.rightArm ?? HANG_ARM, release)
+  const farArm = mixLimb({ to: [gripX - 0.3, gripY - 0.4] }, banzai.leftArm ?? HANG_ARM, release)
   const planted = t >= PLANTED
+  const stake = planted ? <Stake dx={0} dy={0} /> : <Stake dx={gripX - STAKE_FOOT[0]} dy={-lift} />
+  const kid = { ...w, y: FEET_Y, look: CHILD_LOOK, face, lift: hop, pose: { ...w.pose, rightArm: nearArm, leftArm: farArm, head } } as const
+  const headAt = personRig({ ...kid, pose: {} }).world.head
 
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Sun t={t} />
+        <RisingSun t={t} />
         <Land t={t} />
-        <Clouds t={t} />
+        <Clouds t={t} at={[[12, 14, 1], [94, 21, 0.85]]} speed={0.9} />
         <Sunlight t={t} />
-        <Stake dx={planted ? 0 : stakeDx} dy={planted ? 0 : stakeDy} />
         {/* ぼうの 根もとの ほった土 */}
         {planted && <ellipse cx={STAKE_FOOT[0]} cy={STAKE_FOOT[1] + 1.6} rx="5.4" ry="1.8" fill={EARTH_LIGHT} />}
-        <Dust t={t} at={PUSH + 0.25} size={0.7} />
-        <Dust t={t} at={PLANTED - 0.05} size={1.1} />
-        <ellipse cx={childX} cy={FEET_Y + 0.6} rx={7 - hop * 0.3} ry="1.8" fill="#000000" opacity={0.12 * span(t, ENTER, ENTER + 0.4)} />
-        <Layer x={childX} y={FEET_Y + bob - hop}>
-          <Child step={stride} mood={mood} headTilt={headTilt} nearHand={nearHand} farHand={farHand} breath={breath} sigh={sigh} />
+        <Dust x={STAKE_FOOT[0]} y={STAKE_FOOT[1] + 1.4} p={span(t, PUSH + 0.25, PUSH + 0.75, easeOut)} reach={5} />
+        <Dust x={STAKE_FOOT[0]} y={STAKE_FOOT[1] + 1.4} p={span(t, PLANTED - 0.05, PLANTED + 0.45, easeOut)} reach={7} />
+        {stake}
+        <Layer opacity={span(t, ENTER - 0.1, ENTER + 0.2)}>
+          <Person {...kid} />
         </Layer>
-        <Bird t={t} />
+        <Sigh x={headAt[0] - 6} y={headAt[1]} p={span(t, ARRIVE + 0.1, SUNRISE + 0.4)} show={during(t, ARRIVE + 0.1, SUNRISE + 0.4, 0.2)} />
+        <Bird x={116 - span(t, SUNRISE + 0.8, SUNRISE + 3.4) * 128} y={10 + Math.sin(span(t, SUNRISE + 0.8, SUNRISE + 3.4) * 7) * 2} t={t} flying facing="left" size={0.9} />
         <rect x="0" y="0" width="109" height="109" fill={SKY_DIM} opacity={0.3 * (1 - dawn)} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />

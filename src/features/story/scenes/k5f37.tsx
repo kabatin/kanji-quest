@@ -16,18 +16,18 @@
  *   → 虫は びっくり、でも どこも いたくない。弓の つるも ぴん と ふるえて もとどおり
  *   → 風が やんで お日さま。虫は むねを はって えっへん → ほね が ひかって、絵が うすくなり、字「強」が のこる
  *
+ * 背景(お日さま・おか・雲・のはら)は Backdrop、風は Wind。虫と弓と どんぐり は 部品が ないので ここで 描く。
+ *
  * ほんものの つくり を守る(字の形に合わせるために ゆがめない):
  *   虫(かぶとむし)は、まるい から・かた・あたまの つの・体の下から 3本の あし(ひざで まがる)。
  *   弓は 木の うでが そり、つるは 両はし を むすんで ぴんと はる。風は 右から 左へ。
  */
 import { backOut, during, easeIn, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Backdrop, Cloud, PALETTE, Tuft, Wind } from '../sceneFigures'
 
 const CHAR = '強'
 
-const SUN = '#ffd24a'
-const HILL = '#e2f2d2'
-const GRASS = '#c5e8a9'
 const LEAF = '#55b86e'
 const LEAF_DARK = '#3f9c59'
 const LEAF_LIGHT = '#8bd69a'
@@ -45,9 +45,8 @@ const LEG = '#2c3c70'
 const EYE = '#2b2b2b'
 const MOUTH = '#b9483f'
 const CHEEK = '#ff9d9d'
-const WIND_LINE = '#a9cdec'
+/** 風の ときの くもは ふつうの 白い 雲より はい色 */
 const CLOUD = '#a3b0c2'
-const CLOUD_SHADE = '#8494aa'
 const NUT = '#c98a4b'
 const NUT_CAP = '#7a4f2c'
 
@@ -81,42 +80,25 @@ const windAt = (t: number) => during(t, WIND, WIND_END, 0.5)
 
 /* ───────── まわりの けしき ───────── */
 
-function Ground({ t }: SceneProps) {
+/** 風で 草が 左へ なびく(のはらと おか と お日さま は Backdrop) */
+function WindyGrass({ t }: SceneProps) {
   const wind = windAt(t)
   return (
     <>
-      <path d="M-4 99 Q18 74 44 90 Q72 68 113 93 V101 H-4 Z" fill={HILL} />
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.6" fill={GRASS} />
-      {/* 草は 風で 左へ なびく */}
       {[8, 22, 60, 82, 100].map((x) => (
         <Layer key={x} rotate={-wind * 16 + wave(t, 0.5, x) * 2 * wind} origin={[x + 1.5, 97.5]}>
-          <path d={`M${x} 97.5 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
+          <Tuft x={x} y={97.5} color={PALETTE.leaf} />
         </Layer>
       ))}
     </>
   )
 }
 
-/** お日さま。風が ふくと 小さな くもが かくして、風が やむと また でてくる */
-function Sky({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
+/** 風が ふくと 小さな くもが お日さま(96, 13)を かくして、風が やむと また でてくる */
+function StormCloud({ t }: SceneProps) {
   const cloudX = mix(t, WIND - 0.4, WIND + 0.5, 62, 0, easeOut) + mix(t, WIND_END - 0.3, WIND_END + 0.8, 0, 62, easeOut)
-  return (
-    <>
-      <Layer opacity={sun} rotate={t * 14} origin={[96, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="95.2" y="1.6" width="1.6" height="4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 96 13)`} />
-        ))}
-      </Layer>
-      <circle cx="96" cy="13" r={6.2 * sun} fill={SUN} />
-      <Layer x={cloudX}>
-        <ellipse cx="96" cy="16" rx="13" ry="5.4" fill={CLOUD_SHADE} />
-        <circle cx="90" cy="12" r="6" fill={CLOUD} />
-        <circle cx="99" cy="10" r="7.4" fill={CLOUD} />
-        <ellipse cx="96" cy="14.4" rx="13" ry="4.6" fill={CLOUD} />
-      </Layer>
-    </>
-  )
+  if (cloudX >= 61) return null
+  return <Cloud x={cloudX + 91} y={15} size={1.7} color={CLOUD} opacity={1} />
 }
 
 /* ───────── 弓 ───────── */
@@ -320,14 +302,12 @@ function Beetle({ t }: SceneProps) {
 /** 風の すじ。右から 左へ ながれる */
 function WindLines({ t }: SceneProps) {
   const wind = windAt(t)
-  if (wind <= 0) return null
   return (
-    <g opacity={wind * 0.85} fill="none" stroke={WIND_LINE} strokeWidth="1.4" strokeLinecap="round">
-      {[24, 36, 48, 60, 80].map((y, i) => {
-        const x = 128 - ((t * 95 + i * 43) % 160)
-        return <path key={y} d="M0 0 H20 q4 0 4 -2.6 q0 -2.6 -2.8 -2.4" transform={`translate(${x} ${y})`} />
-      })}
-    </g>
+    <>
+      {[28, 52, 76].map((y, i) => (
+        <Wind key={y} t={t + i * 0.3} x={112} y={y} dir={-1} reach={110} show={wind} />
+      ))}
+    </>
   )
 }
 
@@ -399,8 +379,9 @@ function Scene({ t }: SceneProps) {
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Ground t={t} />
-        <Sky t={t} />
+        <Backdrop t={t} sun={[96, 13]} clouds={[[-4, 30, 1]]} tufts={[]} />
+        <WindyGrass t={t} />
+        <StormCloud t={t} />
         <Bow t={t} />
         <Beetle t={t} />
         <WindLines t={t} />

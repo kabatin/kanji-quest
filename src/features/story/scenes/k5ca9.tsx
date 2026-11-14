@@ -17,44 +17,25 @@
  *   → 大きな いわを 見て ほっと して、子は うれしくて とびはねる
  *   → ほね が ひかって、絵が うすくなり、字「岩」が のこる
  *
- * 子も いわも、ほんものの つくり を守る(字の形に合わせるために ゆがめない):
- *   うで は かた から出て ひじ で まがる。くび は みじかく どう の上。
+ * 子は Person(あるきは walk、うでを 上げる ときは mixLimb、せおうのは pack)。山は Mountain。
+ * いわ・がけ は 場面で 描く(ほんものの つくり を守る・字の形に合わせるために ゆがめない):
  *   いわは とおくに ある ときは 小さく、ちかづく(ころげおちて くる)と 大きく 見える。
  *   いわは かどの まるい かたまりで、おちると 地面に ついた とき つぶれて はずむ。
  */
-import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeIn, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Backdrop, Dust, HANG_ARM, LOOKS, Meadow, Mountain, mixLimb, Person, personRig, Sweat, walk, type MountainShape, type PersonProps } from '../sceneFigures'
 
 const CHAR = '岩'
 
-const SUN = '#ffd24a'
-const GRASS = '#c5e8a9'
-const LEAF = '#55b86e'
-const FOOT = '#b6d89c'
-const PEAK_FAR = '#86b3a9'
-const PEAK_FAR_DARK = '#6f9c93'
-const PEAK = '#7fae95'
-const PEAK_DARK = '#659a82'
-const SNOW = '#ffffff'
 const CLIFF = '#c0a082'
 const CLIFF_TOP = '#d6bb9b'
 const CLIFF_CRACK = '#a8876a'
+const FOOT = '#b6d89c'
 const ROCK = '#8e98a4'
 const ROCK_DARK = '#737d89'
 const ROCK_LIGHT = '#b4bdc7'
 const MOSS = '#6fbf73'
-const DUST = '#eadfcb'
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const SHIRT = '#e8654a'
-const SHIRT_DARK = '#cc4f36'
-const SHIRT_FAR = '#b6422d'
-const PANTS = '#3e5c86'
-const PANTS_DARK = '#34507a'
-const SHOE = '#6b4a36'
-const PACK = '#f0a53c'
-const PACK_DARK = '#d48c26'
 
 /** くぎり の時間(秒) */
 const WALK = 0.7
@@ -82,41 +63,22 @@ const ROCK_H = 12.5
 const ROCK_EMBED: readonly [number, number] = [66, 36]
 const ROCK_LEDGE: readonly [number, number] = [72, 44]
 
-/* ───────── 山・がけ・地面 ───────── */
-
-function Sky({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
-  return (
-    <>
-      <Layer opacity={sun} rotate={t * 14} origin={[13, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="12.2" y="1.8" width="1.6" height="3.6" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 13 13)`} />
-        ))}
-      </Layer>
-      <circle cx="13" cy="13" r={5.4 * sun} fill={SUN} />
-      {/* ゆっくり ながれる 雲(おくゆき を出す) */}
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.2} 0)`}>
-        <ellipse cx="88" cy="6" rx="6" ry="2.6" />
-        <ellipse cx="92.5" cy="4.6" rx="4.2" ry="2.8" />
-      </g>
-    </>
-  )
-}
+/* ───────── 山・がけ ───────── */
 
 /** 3つの みね。まんなかが いちばん 高い。みね の 中心が、1・2・3画目の 縦線の 場所 */
-function Mountain({ t }: SceneProps) {
-  const rise = span(t, 0, 0.9, backOut)
+const PEAK_LEFT: MountainShape = { top: [30, 19], foot: 56, half: 26 }
+const PEAK_RIGHT: MountainShape = { top: [85, 17], foot: 56, half: 24 }
+const PEAK_MAIN: MountainShape = { top: [55, 10], foot: 56, half: 33 }
+
+function Peaks({ t }: SceneProps) {
+  const rise = span(t, 0, 0.9, easeOut)
   const shake = wave(t, 0.09) * 0.8 * during(t, RUMBLE, FALL + 0.3, 0.15)
   return (
-    <Layer x={shake} scaleX={0.85 + 0.15 * rise} scaleY={rise} origin={[55, 56]}>
-      <path d="M30 19 L4 56 H56 Z" fill={PEAK_FAR} />
-      <path d="M30 19 L56 56 H30 Z" fill={PEAK_FAR_DARK} />
-      <path d="M85 17 L61 56 H109 Z" fill={PEAK_FAR} />
-      <path d="M85 17 L109 56 H85 Z" fill={PEAK_FAR_DARK} />
-      <path d="M55 10 L22 56 H88 Z" fill={PEAK} />
-      <path d="M55 10 L88 56 H55 Z" fill={PEAK_DARK} />
-      <path d="M55 10 L47.6 20.4 L52 19 L55 23 L58.4 19 L62.4 20.4 Z" fill={SNOW} />
-    </Layer>
+    <>
+      <Mountain shape={PEAK_LEFT} rise={rise} shake={shake} far />
+      <Mountain shape={PEAK_RIGHT} rise={rise} shake={shake} far />
+      <Mountain shape={PEAK_MAIN} rise={rise} shake={shake} snow={22} />
+    </>
   )
 }
 
@@ -125,7 +87,7 @@ function Cliff({ t }: SceneProps) {
   const grow = span(t, 0.35, 1.0, backOut)
   return (
     <>
-      <path d="M-2 63 Q28 52 55 58 Q84 50 111 61 V99 H-2 Z" fill={FOOT} opacity={span(t, 0.3, 0.8)} />
+      <path d="M-2 63 Q28 52 55 58 Q84 50 111 61 V99 H-2 Z" fill={FOOT} opacity={span(t, 0, 0.3)} />
       <Layer scaleY={grow} origin={[55, 97]}>
         <path d="M17 52 L94 50.5 L95 97 L11 97 L14 93.3 L41 58 L17 58.5 Z" fill={CLIFF} stroke={CLIFF} strokeWidth="3" strokeLinejoin="round" />
         <path d="M17 52 L94 50.5 L94 54 L17 55.5 Z" fill={CLIFF_TOP} />
@@ -136,14 +98,7 @@ function Cliff({ t }: SceneProps) {
 }
 
 function Foreground() {
-  return (
-    <>
-      <ellipse cx="54.5" cy="98.4" rx="53" ry="4.6" fill={GRASS} />
-      {[6, 46, 80, 102].map((x) => (
-        <path key={x} d={`M${x} 97.6 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
-    </>
-  )
+  return <Meadow y={98.4} tufts={[6, 46, 80, 102]} />
 }
 
 /* ───────── いわ ───────── */
@@ -214,149 +169,39 @@ function Pebbles({ t }: SceneProps) {
   )
 }
 
-/** ごろん と ついた とき の つちけむり */
-function Dust({ t }: SceneProps) {
-  const p = span(t, LAND, LAND + 0.8, easeOut)
-  if (p <= 0 || p >= 1) return null
-  return (
-    <g opacity={(1 - p) * 0.75} fill={DUST}>
-      {/* いわの りょうがわ から もくもく ひろがる(いわの したには ならべない) */}
-      {[
-        [-26, 91, 3],
-        [-31, 88, 2.4],
-        [-24, 85, 2],
-        [26, 91, 3],
-        [31, 88, 2.4],
-        [24, 85, 2],
-      ].map(([dx, y, r]) => (
-        <circle key={dx} cx={ROCK_REST[0] + dx * (1 + p * 0.5)} cy={y - p * 5} r={r * (0.7 + p * 1.4)} />
-      ))}
-    </g>
-  )
-}
-
 /* ───────── 子(しゅやく) ───────── */
 
-type Mood = 'tired' | 'surprised' | 'happy'
-/** うで の かっこう。swing = ま下から まえへ ふった角度(180 で まっすぐ 上)/ bend = ひじ の まがり */
-type ArmPose = { readonly swing: number; readonly bend: number }
-
-/** 子は 右むき。足もと が (0,0)、上が ー。かた は どう の上はし。 */
-const SHOULDER: readonly [number, number] = [0, -29]
-const ARM_PART = 8.2
-
-/** かた から出て、ひじ で まがる うで。かた・ひじ・手 の じゅんに つながる。 */
-function Arm({ pose, color }: { readonly pose: ArmPose; readonly color: string }) {
-  const rad = (deg: number) => (deg * Math.PI) / 180
-  const elbow = [SHOULDER[0] + Math.sin(rad(pose.swing)) * ARM_PART, SHOULDER[1] + Math.cos(rad(pose.swing)) * ARM_PART] as const
-  const fore = pose.swing + pose.bend
-  const hand = [elbow[0] + Math.sin(rad(fore)) * ARM_PART, elbow[1] + Math.cos(rad(fore)) * ARM_PART] as const
-  return (
-    <>
-      <path d={`M${SHOULDER[0]} ${SHOULDER[1]} L${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={color} strokeWidth="4.2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hand[0]} cy={hand[1]} r="2.6" fill={SKIN} />
-    </>
-  )
-}
-
-function Face({ mood }: { readonly mood: Mood }) {
-  return (
-    <>
-      <circle cx="3" cy="-36.2" r="1.5" fill="#ff9d9d" opacity="0.55" />
-      {mood === 'tired' && (
-        <>
-          <path d="M2.4 -41.4 l3.6 1.1" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-          <circle cx="4.3" cy="-39" r="0.95" fill="#2b2b2b" />
-          <path d="M4.8 -34.6 q1.6 -1.3 3.1 0" fill="none" stroke="#b9483f" strokeWidth="1" strokeLinecap="round" />
-        </>
-      )}
-      {mood === 'surprised' && (
-        <>
-          <path d="M2.4 -42.6 l3.6 -0.6" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-          <circle cx="4.5" cy="-39.4" r="1.9" fill="#ffffff" stroke="#2b2b2b" strokeWidth="0.5" />
-          <circle cx="4.9" cy="-39.4" r="0.95" fill="#2b2b2b" />
-          <ellipse cx="6.2" cy="-34.8" rx="1.2" ry="1.6" fill="#b9483f" />
-        </>
-      )}
-      {mood === 'happy' && (
-        <>
-          <path d="M2.8 -38.8 Q4.4 -41 6 -38.8" fill="none" stroke="#2b2b2b" strokeWidth="1.1" strokeLinecap="round" />
-          <path d="M3.6 -35.6 Q5.6 -32.6 7.4 -35.8 Z" fill="#b9483f" />
-        </>
-      )}
-    </>
-  )
-}
-
-type ChildProps = { readonly step: number; readonly mood: Mood; readonly nearArm: ArmPose; readonly farArm: ArmPose; readonly headTilt: number }
-
-function Child({ step, mood, nearArm, farArm, headTilt }: ChildProps) {
-  return (
-    <>
-      {/* むこうの うで: どう の うしろに かくれる */}
-      <Arm pose={farArm} color={SHIRT_FAR} />
-      <Layer rotate={step * 17} origin={[0.8, -17]}>
-        <rect x="-1.4" y="-18" width="4.4" height="18" rx="2.2" fill={PANTS_DARK} />
-        <ellipse cx="1.8" cy="-0.8" rx="3.6" ry="2" fill={SHOE} />
-      </Layer>
-      <Layer rotate={-step * 17} origin={[-0.8, -17]}>
-        <rect x="-3" y="-18" width="4.4" height="18" rx="2.2" fill={PANTS} />
-        <ellipse cx="0.2" cy="-0.8" rx="3.6" ry="2" fill={SHOE} />
-      </Layer>
-      {/* せおっている リュック(せなか = 左がわ) */}
-      <rect x="-10" y="-29" width="6.4" height="12.6" rx="2.8" fill={PACK} />
-      <rect x="-9.4" y="-24" width="4" height="2.2" rx="1" fill={PACK_DARK} />
-      {/* くび: どう と あたま の間を みじかく つなぐ */}
-      <rect x="-1.8" y="-34" width="3.6" height="6" rx="1.6" fill={SKIN_SHADE} />
-      <rect x="-5.6" y="-31.6" width="11.2" height="16.8" rx="5" fill={SHIRT} />
-      <path d="M-4.4 -20.4 h8.8" stroke={SHIRT_DARK} strokeWidth="1.2" strokeLinecap="round" />
-      <Arm pose={nearArm} color={SHIRT_DARK} />
-      <Layer rotate={headTilt} origin={[0, -32]}>
-        <circle cx="0.5" cy="-38.5" r="7.2" fill={SKIN} />
-        <path d="M-6.7 -38.5 C-8 -48 5 -49.5 7.4 -41.5 C3 -44.5 -2.5 -43 -6.7 -38.5 Z" fill={HAIR} />
-        <Face mood={mood} />
-      </Layer>
-    </>
-  )
-}
-
-/** あるいている間の あせ。うしろ(左)へ とぶ。 */
-function Sweat({ t }: SceneProps) {
-  const show = during(t, WALK + 0.2, RUMBLE, 0.2)
-  if (show <= 0) return null
-  return (
-    <g opacity={show}>
-      {[0, 0.45].map((offset) => {
-        const p = ((t + offset) % 0.9) / 0.9
-        return <path key={offset} d="M0 -2.2 Q1.8 0.5 0 1.8 Q-1.8 0.5 0 -2.2 Z" fill="#7cc4f2" transform={`translate(${-9 - p * 6} ${-43 + p * 8}) rotate(35)`} opacity={1 - p} />
-      })}
-    </g>
-  )
-}
+const KID_HEIGHT = 42
+const KID_LOOK = { ...LOOKS.boy, top: '#e8654a', bottom: '#3e5c86' } as const
+const ARMS_UP = { swing: 125, bend: 25 }
 
 /** 子の いま の ようす(場所・あし・うで・かお)を t から 決めて 描く */
 function KidScene({ t }: SceneProps) {
-  // 場所: 左から あるいてくる → びっくりして 1歩 さがる → いわに ちかづく
-  const x = t < STAND ? mix(t, WALK, STAND, -24, 24, easeOut) : t < STARTLE ? 24 : t < RELIEF ? mix(t, STARTLE, STARTLE + 0.4, 24, 20, easeOut) : mix(t, RELIEF, RELIEF + 0.7, 20, 29, easeInOut)
-  const walking = span(t, WALK, WALK + 0.15) * (1 - span(t, STAND - 0.25, STAND)) + span(t, RELIEF, RELIEF + 0.1) * (1 - span(t, RELIEF + 0.6, RELIEF + 0.7))
-  const stride = Math.sin(t * Math.PI * 2 * 1.8) * walking
+  // 場所: 左から あるいてくる → びっくり して たちどまる → いわに ちかづく
+  const plan = { build: 'child', height: KID_HEIGHT, armSwing: 14 } as const
+  const w = t < RELIEF ? walk(t, { ...plan, from: -24, to: 24, start: WALK, end: STAND }) : walk(t, { ...plan, from: 24, to: 29, start: RELIEF, end: RELIEF + 0.7 })
   // はね: びっくり(1回)と、うれしくて(なんども)
   const startleHop = Math.sin(span(t, STARTLE, STARTLE + 0.45) * Math.PI) * 4
   const cheerHop = t >= CHEER ? Math.abs(Math.sin(((t - CHEER) / 0.35) * Math.PI)) * 4 : 0
-  const bob = -Math.abs(stride) * 1.2 - startleHop - cheerHop
-  // うで: びっくり と よろこび で 上へ あげる。あげていない ときは、あるく ふり か だらんと たれる
+  // うで: びっくり と よろこび で 上へ あげる
   const armsUp = Math.max(span(t, STARTLE, STARTLE + 0.25, backOut) * (1 - span(t, RELIEF - 0.1, RELIEF + 0.2)), span(t, CHEER, CHEER + 0.25, backOut))
-  const base = (sign: number) => 3 + sign * stride * 26
-  const nearArm: ArmPose = { swing: base(1) * (1 - armsUp) + 158 * armsUp, bend: 14 * (1 - armsUp) + 8 * armsUp }
-  const farArm: ArmPose = { swing: base(-1) * (1 - armsUp) + 176 * armsUp, bend: 14 * (1 - armsUp) }
   // あたま: つかれて 下を むく → 山を 見あげる → いわを 見て もどる
-  const tilt = t < STARTLE ? mix(t, STAND, STAND + 0.4, 5, -16) : t < RELIEF ? mix(t, STARTLE, STARTLE + 0.25, -16, -6) : mix(t, RELIEF, RELIEF + 0.4, -6, 0)
-  const mood: Mood = t < RUMBLE ? 'tired' : t < RELIEF ? 'surprised' : 'happy'
+  const tilt = t < STARTLE ? mix(t, STAND, STAND + 0.4, 5, -12) : t < RELIEF ? mix(t, STARTLE, STARTLE + 0.25, -12, -5) : mix(t, RELIEF, RELIEF + 0.4, -5, 0)
+  const props: PersonProps = {
+    ...w,
+    y: GROUND + 0.5,
+    look: KID_LOOK,
+    pack: { kind: 'rucksack', color: '#f0a53c' },
+    face: t < RUMBLE ? 'worried' : t < RELIEF ? 'surprised' : 'joy',
+    lift: startleHop + cheerHop,
+    pose: { ...w.pose, leftArm: mixLimb(w.pose.leftArm ?? HANG_ARM, ARMS_UP, armsUp), rightArm: mixLimb(w.pose.rightArm ?? HANG_ARM, ARMS_UP, armsUp), head: tilt },
+  }
+  const head = personRig(props).world.head
   return (
-    <Layer x={x} y={GROUND + bob} scale={0.9}>
-      <Child step={stride} mood={mood} nearArm={nearArm} farArm={farArm} headTilt={tilt} />
-      <Sweat t={t} />
-    </Layer>
+    <>
+      <Person {...props} />
+      <Sweat t={t} x={head[0] - 5} y={head[1] - 2} show={during(t, WALK + 0.2, RUMBLE, 0.2)} />
+    </>
   )
 }
 
@@ -369,15 +214,14 @@ function Scene({ t }: SceneProps) {
   return (
     <>
       <Layer opacity={ink.picture} y={thud}>
-        <Sky t={t} />
-        <Mountain t={t} />
+        <Backdrop t={t} clouds={[[88, 6, 0.8]]} tufts={[]} />
+        <Peaks t={t} />
         <Cliff t={t} />
         <Pebbles t={t} />
         <Rock t={t} />
         <Foreground />
-        <Dust t={t} />
+        <Dust x={ROCK_REST[0]} y={94} p={span(t, LAND, LAND + 0.8, easeOut)} reach={26} />
         <Layer opacity={span(t, WALK - 0.1, WALK + 0.15)}>
-          <ellipse cx={mix(t, WALK, STAND, -24, 24, easeOut) + 1} cy="97.4" rx="7" ry="1.8" fill="#000000" opacity="0.1" />
           <KidScene t={t} />
         </Layer>
       </Layer>

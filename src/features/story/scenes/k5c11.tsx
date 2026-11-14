@@ -20,13 +20,10 @@
  */
 import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Backdrop, Dust, Notice } from '../sceneFigures'
 
 const CHAR = '少'
 
-const SUN = '#ffd24a'
-const HILL = '#e2f2d2'
-const GRASS = '#c5e8a9'
-const LEAF = '#55b86e'
 const WOOD = '#d9a66a'
 const WOOD_DARK = '#bd8750'
 const BARK = '#8c5b3c'
@@ -206,48 +203,19 @@ function Grain({ place }: { readonly place: GrainPlace }) {
   )
 }
 
-/** つぶが ぬのに おちた しゅんかんの ちいさな ほこり */
-function Dust({ t }: SceneProps) {
+/** つぶが ぬのに おちた しゅんかんの ちいさな ほこり(共通部品 Dust) */
+function LandDust({ t }: SceneProps) {
+  const end = rampAt(1)
   return (
     <>
-      {MOUND.map((_, i) => {
-        const at = arriveAt(i)
-        const show = during(t, at, at + 0.4, 0.1)
-        if (show <= 0) return null
-        const grow = span(t, at, at + 0.4, easeOut)
-        const end = rampAt(1)
-        return <circle key={i} cx={end.x - 1 - grow * 3} cy={MAT_Y - 0.5 - grow * 1.5} r={0.8 + grow * 1.6} fill="#ffffff" opacity={show * 0.7} />
-      })}
+      {MOUND.map((_, i) => (
+        <Dust key={i} x={end.x - 3} y={MAT_Y} p={span(t, arriveAt(i), arriveAt(i) + 0.4, easeOut)} reach={3} />
+      ))}
     </>
   )
 }
 
 /* ───────── まわりの けしき ───────── */
-
-function Ground({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
-  return (
-    <>
-      <Layer opacity={sun} rotate={t * 14} origin={[13, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="12.2" y="1.6" width="1.6" height="4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 13 13)`} />
-        ))}
-      </Layer>
-      <circle cx="13" cy="13" r={6.2 * sun} fill={SUN} />
-      <path d="M-4 99 Q18 78 44 92 Q72 72 113 94 V101 H-4 Z" fill={HILL} />
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.4} 0)`}>
-        <ellipse cx="42" cy="12" rx="7" ry="3.2" />
-        <ellipse cx="47" cy="10.2" rx="4.6" ry="3.2" />
-        <ellipse cx="96" cy="14" rx="6" ry="2.8" />
-        <ellipse cx="100" cy="12.4" rx="4.2" ry="2.9" />
-      </g>
-      <ellipse cx="54.5" cy="98.5" rx="51" ry="5" fill={GRASS} />
-      {[46, 62, 70].map((x) => (
-        <path key={x} d={`M${x} 98 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
-    </>
-  )
-}
 
 /** つぶの やまを のせた 木のはこ と、それに もたれた いた(4画目) と、つぶを うける ぬの */
 function Stage({ t }: SceneProps) {
@@ -367,17 +335,9 @@ function Rumble({ t }: SceneProps) {
   )
 }
 
-/** つぶを みつけた「！」 */
+/** つぶを みつけた「はっ」(あたまの まわりの すじ) */
 function Bang({ t }: SceneProps) {
-  const pop = span(t, NOTICE, NOTICE + 0.3, backOut)
-  const show = during(t, NOTICE, PUSH - 0.1, 0.1)
-  if (show <= 0 || pop <= 0) return null
-  return (
-    <Layer scale={pop} origin={[-3, -22]} opacity={show}>
-      <rect x="-3.8" y="-30.5" width="1.7" height="5.2" rx="0.85" fill="#e8534a" />
-      <circle cx="-2.95" cy="-22.9" r="1" fill="#e8534a" />
-    </Layer>
-  )
+  return <Notice x={-3.4} y={-14.4} r={4.3} show={during(t, NOTICE, PUSH - 0.1, 0.1)} dir={-1} />
 }
 
 /** おす・もどす の うで と、体の かたむき。7回目は、さいごの 3つぶを とばす。 */
@@ -424,9 +384,9 @@ function Scene({ t }: SceneProps) {
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Ground t={t} />
+        <Backdrop t={t} clouds={[[44, 11, 1], [97, 13, 0.85]]} tufts={[46, 62, 70]} />
         <Stage t={t} />
-        <Dust t={t} />
+        <LandDust t={t} />
         {HEAP.map((_, i) => (
           <Grain key={i} place={grainPlace(i, t)} />
         ))}

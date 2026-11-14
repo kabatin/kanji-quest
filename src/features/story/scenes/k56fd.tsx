@@ -19,25 +19,17 @@
  *   → きつねは かこいに ぶつかって、はいれず しょんぼり かえっていく
  *   → こどもは「やったー!」と ばんざい → ほね が ひかって、絵が うすくなり、字「国」が のこる
  *
- * 人・きつねは、ほんものの つくり を守る(字の形に合わせるために ゆがめない):
- *   こどもの うで は かた から出て ひじ で まがる。くび は みじかく、どう の まんなか の上。
+ * こどもは Person(共通部品)。あるきは walk、ふりむきは turnAround、うで は 角度({ swing, bend })。
+ * 背景は Backdrop。きつね(動物)は 部品が ないので 元の絵のまま:
  *   きつねは よつあし で、みみ は あたまの上、しっぽ は おしりから。
  *   石がきは、下から つみあがる(上から ぶらさがらない)。
  */
 import { backOut, during, easeIn, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Backdrop, CLOTHES, LOOKS, mixLimb, Person, personRig, Sweat, turnAround, walk, type Expression, type Limb } from '../sceneFigures'
 
 const CHAR = '国'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const TUNIC = '#4f9be0'
-const TUNIC_DARK = '#3c82c4'
-const PANTS = '#3e5c86'
-const SHOE = '#6b4a36'
-const CHEEK = '#ff9d9d'
-const MOUTH = '#b9483f'
 const EYE = '#2b2b2b'
 
 const FOX = '#f08a3c'
@@ -57,11 +49,6 @@ const STONE = '#b8a58e'
 const STONE_DARK = '#8f7d68'
 const STONE_LIGHT = '#dccfbb'
 
-const GRASS = '#c5e8a9'
-const GRASS_DARK = '#a9d98a'
-const LEAF = '#55b86e'
-const SUN = '#ffd24a'
-const HILL = '#e2f2d2'
 
 /** くぎり の時間(秒) */
 const KID_IN = 0.9
@@ -89,37 +76,11 @@ const GROUND = 97
 const FOX_STOP = 2
 /** こどもが たつ 場所(かこいの 右そと) */
 const KID_AT = 98
-const KID_SCALE = 0.9
+const KID_HEIGHT = 42
 const FOX_SCALE = 0.85
 
 /** 2画目の うち、上の よこ線 が おわって 右がわの たて線 に かわる 長さの わりあい */
 const CORNER = 0.46
-
-/* ───────── 地面 ───────── */
-
-function Ground({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
-  return (
-    <>
-      <Layer opacity={sun} rotate={t * 14} origin={[100, 11]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="99.2" y="0.2" width="1.6" height="3.6" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 100 11)`} />
-        ))}
-      </Layer>
-      <circle cx="100" cy="11" r={5.4 * sun} fill={SUN} />
-      <path d="M-4 99 Q18 78 44 91 Q72 72 113 93 V101 H-4 Z" fill={HILL} />
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.4} 0)`}>
-        <ellipse cx="6" cy="6" rx="6" ry="2.8" />
-        <ellipse cx="10.5" cy="4.6" rx="4.4" ry="2.8" />
-      </g>
-      <rect x="-4" y="98" width="117" height="12" fill={GRASS_DARK} />
-      <ellipse cx="54.5" cy="98.4" rx="64" ry="6" fill={GRASS} />
-      {[6, 40, 68, 104].map((x) => (
-        <path key={x} d={`M${x} 99 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
-    </>
-  )
-}
 
 /* ───────── たからの 台 と 玉 ───────── */
 
@@ -224,143 +185,56 @@ function Walls({ t }: SceneProps) {
 /* ───────── こども(主役) ───────── */
 
 type KidMood = 'happy' | 'wonder' | 'worry' | 'effort' | 'cheer'
-/** うで の かっこう。angle = ま下から 外へ ひらいた角度 / bend = ひじ で さらに ひらく角度 */
-type ArmPose = { readonly angle: number; readonly bend: number }
 
-const ARM_PART = 6.2
-const SHOULDER_X = 6.2
-const SHOULDER_Y = -24.2
-const rad = (deg: number) => (deg * Math.PI) / 180
+const FACES: Readonly<Record<KidMood, Expression>> = { happy: 'smile', wonder: 'surprised', worry: 'worried', effort: 'strain', cheer: 'joy' }
+/** 「やったー!」で 正面を むく 時間(0.3秒 かけて ふりむく) */
+const CHEER_AT = WALL_END + 0.1
+const BANZAI: Limb = { swing: 155, bend: 15 }
 
-/** かた から出て、ひじ で まがる うで。side は 左 -1 / 右 1。 */
-function KidArm({ pose, side }: { readonly pose: ArmPose; readonly side: -1 | 1 }) {
-  const sx = side * SHOULDER_X
-  const ex = sx + side * Math.sin(rad(pose.angle)) * ARM_PART
-  const ey = SHOULDER_Y + Math.cos(rad(pose.angle)) * ARM_PART
-  const fore = pose.angle + pose.bend
-  const hx = ex + side * Math.sin(rad(fore)) * ARM_PART
-  const hy = ey + Math.cos(rad(fore)) * ARM_PART
-  return (
-    <>
-      <path d={`M${sx} ${SHOULDER_Y} L${ex} ${ey} L${hx} ${hy}`} fill="none" stroke={TUNIC_DARK} strokeWidth="3.8" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hx} cy={hy} r="2.3" fill={SKIN} />
-    </>
-  )
+function kidMood(t: number): KidMood {
+  if (t < KID_STOP) return 'happy'
+  if (t < WORRY) return 'wonder'
+  if (t < WALL1) return 'worry'
+  if (t < CHEER_AT) return 'effort'
+  return 'cheer'
 }
 
-function KidFace({ mood, sweat }: { readonly mood: KidMood; readonly sweat: number }) {
-  return (
-    <>
-      <ellipse cx="-5" cy="-30.4" rx="1.9" ry="1.1" fill={CHEEK} opacity="0.55" />
-      <ellipse cx="5" cy="-30.4" rx="1.9" ry="1.1" fill={CHEEK} opacity="0.55" />
-      {mood === 'happy' && (
-        <>
-          <circle cx="-3.6" cy="-33.6" r="1.1" fill={EYE} />
-          <circle cx="2" cy="-33.6" r="1.1" fill={EYE} />
-          <path d="M-2.4 -30 Q-0.4 -28 1.6 -30" fill="none" stroke={MOUTH} strokeWidth="1.1" strokeLinecap="round" />
-        </>
-      )}
-      {mood === 'wonder' && (
-        <>
-          <ellipse cx="-3.4" cy="-33.8" rx="2" ry="2.3" fill="#ffffff" />
-          <ellipse cx="2.2" cy="-33.8" rx="2" ry="2.3" fill="#ffffff" />
-          <circle cx="-4" cy="-34.1" r="1.2" fill={EYE} />
-          <circle cx="1.6" cy="-34.1" r="1.2" fill={EYE} />
-          <ellipse cx="-1" cy="-29.4" rx="1.3" ry="1.7" fill={MOUTH} />
-        </>
-      )}
-      {mood === 'worry' && (
-        <>
-          <circle cx="-3.9" cy="-33.4" r="1.2" fill={EYE} />
-          <circle cx="1.7" cy="-33.4" r="1.2" fill={EYE} />
-          <path d="M-6 -36.2 L-2.2 -37.4 M2.2 -37.4 L5.6 -36.2" fill="none" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-          <path d="M-3 -29.4 Q-1.8 -30.6 -0.6 -29.6 Q0.6 -28.6 1.8 -29.8" fill="none" stroke={MOUTH} strokeWidth="1.1" strokeLinecap="round" />
-          <path d="M7 -36.4 Q8.6 -34 7 -33 Q5.4 -34 7 -36.4 Z" fill="#7cc4f2" transform={`translate(0 ${sweat * 2.4})`} opacity={1 - sweat * 0.5} />
-        </>
-      )}
-      {mood === 'effort' && (
-        <>
-          <path d="M-5.4 -35 L-2.8 -33.8 L-5.4 -32.6 M3.6 -35 L1 -33.8 L3.6 -32.6" fill="none" stroke={EYE} strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M-3 -29.6 h4.2" stroke={MOUTH} strokeWidth="1.3" strokeLinecap="round" />
-        </>
-      )}
-      {mood === 'cheer' && (
-        <>
-          <path d="M-5.4 -33 Q-3.8 -35.4 -2.2 -33 M0.6 -33 Q2.2 -35.4 3.8 -33" fill="none" stroke={EYE} strokeWidth="1.2" strokeLinecap="round" />
-          <path d="M-3.4 -30.6 Q-0.2 -26.4 3 -30.6 Z" fill={MOUTH} />
-        </>
-      )}
-    </>
-  )
+/** 横むきの うで(まえへ + の 角度)。びっくり → しんぱい → ちからを こめて おす */
+function sideArms(t: number): { readonly leftArm: Limb; readonly rightArm: Limb } {
+  const surprise = during(t, KID_STOP, WORRY, 0.25)
+  const worry = during(t, WORRY, WALL1 - 0.2, 0.2) * (0.8 + 0.2 * wave(t, 0.25))
+  const push = span(t, WALL1 - 0.3, WALL1 + 0.15, easeOut) * (1 - span(t, WALL_END, WALL_END + 0.3))
+  const base = 8 + 42 * surprise + 16 * worry + 76 * push
+  const bend = 6 + 4 * surprise + 8 * worry + 8 * push
+  const wiggle = wave(t, 0.28) * 4 * push
+  return { leftArm: { swing: Math.max(0, base + wiggle), bend }, rightArm: { swing: Math.max(0, base - wiggle), bend } }
 }
 
-type KidProps = { readonly mood: KidMood; readonly left: ArmPose; readonly right: ArmPose; readonly stride: number; readonly sweat: number }
-
-/** こども(足もとが 0,0)。まえ向きの 体で、目だけ 左(玉・きつね の ほう)を 見る。 */
-function Kid({ mood, left, right, stride, sweat }: KidProps) {
-  return (
-    <>
-      {/* あし: こしから。あるくときは かわりばんこに ふる */}
-      <Layer rotate={stride * 18} origin={[-3.2, -12]}>
-        <rect x="-5" y="-12" width="3.6" height="11.6" rx="1.8" fill={PANTS} />
-        <ellipse cx="-3.4" cy="-0.8" rx="3.2" ry="1.8" fill={SHOE} />
-      </Layer>
-      <Layer rotate={-stride * 18} origin={[3.2, -12]}>
-        <rect x="1.4" y="-12" width="3.6" height="11.6" rx="1.8" fill={PANTS} />
-        <ellipse cx="3.4" cy="-0.8" rx="3.2" ry="1.8" fill={SHOE} />
-      </Layer>
-      {/* くび: みじかく、どう と あたま の間に ちょっと 見える */}
-      <rect x="-2" y="-29" width="4" height="4" rx="1.6" fill={SKIN_SHADE} />
-      {/* どう */}
-      <rect x="-6.6" y="-27" width="13.2" height="16.4" rx="5.4" fill={TUNIC} />
-      <path d="M-5.6 -15.4 h11.2" stroke={TUNIC_DARK} strokeWidth="1.5" strokeLinecap="round" />
-      <KidArm pose={left} side={-1} />
-      <KidArm pose={right} side={1} />
-      {/* あたま */}
-      <circle cx="0" cy="-33.5" r="7.4" fill={SKIN} />
-      <path d="M-7.6 -33 C-8.2 -41.6 8.2 -42.2 7.6 -33.4 C5.4 -37.4 -4 -38 -7.6 -33 Z" fill={HAIR} />
-      <path d="M-1 -40.6 Q0 -43.6 1.8 -41.4" fill="none" stroke={HAIR} strokeWidth="1.6" strokeLinecap="round" />
-      <KidFace mood={mood} sweat={sweat} />
-    </>
-  )
+/** こども の 場所と かっこう。右から あるいてきて 玉を 見て、うで で ちからを こめ、さいごに 正面を むいて ばんざい */
+function kidAt(t: number) {
+  const walking = walk(t, { from: 136, to: KID_AT, start: KID_IN, end: KID_STOP, build: 'child', height: KID_HEIGHT })
+  const turn = turnAround(t, CHEER_AT, 'left', 'front')
+  const mood = kidMood(t)
+  // ばんざい の ときは ぴょんぴょん はねる
+  const cheerOn = span(t, CHEER_AT + 0.1, CHEER_AT + 0.4)
+  const hop = Math.abs(Math.sin(((t - WALL_END) * Math.PI) / 0.55)) * 3.2 * cheerOn
+  const frontArm = mixLimb({ swing: 8, bend: 6 }, BANZAI, span(t, CHEER_AT + 0.15, CHEER_AT + 0.55, backOut))
+  const pose = t < KID_STOP ? walking.pose : t < CHEER_AT + 0.15 ? sideArms(t) : { leftArm: frontArm, rightArm: frontArm }
+  return { placement: { ...walking, ...turn, y: GROUND, lift: hop, pose }, face: FACES[mood] }
 }
 
 /** 「ふんっ」と ちからを こめる ときの、あたまの上の 3本の すじ */
-function EffortLines({ t }: SceneProps) {
+function EffortLines({ t, head, r }: SceneProps & { readonly head: readonly [number, number]; readonly r: number }) {
   const show = span(t, WALL1 - 0.2, WALL1 + 0.1) * (1 - span(t, WALL_END - 0.1, WALL_END + 0.15))
   if (show <= 0) return null
   const pulse = 0.5 + 0.5 * wave(t, 0.34)
   return (
     <g opacity={show} stroke="#ffffff" strokeWidth="1.2" strokeLinecap="round">
       {[-1, 0, 1].map((k) => (
-        <path key={k} d={`M${k * 6.6} ${-45.5 - pulse * 0.8} l${k * 1.6} ${-2.6}`} />
+        <path key={k} d={`M${head[0] + k * 5} ${head[1] - r - 2 - pulse * 0.8} l${k * 1.6} ${-2.6}`} />
       ))}
     </g>
   )
-}
-
-/** うで の かっこう を 時間から きめる(あるく → びっくり → しんぱい → ちからを こめる → ばんざい) */
-function armPoses(t: number, stride: number): { readonly left: ArmPose; readonly right: ArmPose } {
-  const surprise = during(t, KID_STOP, WORRY, 0.25)
-  const worry = during(t, WORRY, WALL1 - 0.2, 0.2) * (0.8 + 0.2 * wave(t, 0.25))
-  const push = span(t, WALL1 - 0.3, WALL1 + 0.15, easeOut) * (1 - span(t, WALL_END, WALL_END + 0.3))
-  const cheer = span(t, WALL_END + 0.1, WALL_END + 0.5, backOut)
-  const base = 8 + 42 * surprise + 16 * worry + 114 * push + 140 * cheer
-  const bend = 6 + 4 * surprise + 8 * worry + 34 * push + 4 * cheer
-  const wiggle = wave(t, 0.28) * 4 * push + wave(t, 0.5) * 7 * cheer
-  const swing = stride * 12
-  return {
-    left: { angle: Math.max(0, base + swing + wiggle), bend },
-    right: { angle: Math.max(0, base - swing - wiggle), bend },
-  }
-}
-
-function kidMood(t: number): KidMood {
-  if (t < KID_STOP) return 'happy'
-  if (t < WORRY) return 'wonder'
-  if (t < WALL1) return 'worry'
-  if (t < WALL_END + 0.1) return 'effort'
-  return 'cheer'
 }
 
 /* ───────── きつね ───────── */
@@ -489,33 +363,22 @@ function FoxActor({ t }: SceneProps) {
 
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 8)
-
-  // こども: 右から あるいてきて、玉の まえで 立ちどまる
-  const walking = t >= KID_IN ? 1 - span(t, KID_STOP - 0.35, KID_STOP) : 0
-  const stride = Math.sin((t - KID_IN) * Math.PI * 2 * 1.8) * walking
-  const kidX = mix(t, KID_IN, KID_STOP, 136, KID_AT, easeOut)
-  // ばんざい の ときは ぴょんぴょん はねる(ちゅうに うくので、かげは ちいさく)
-  const cheerOn = span(t, WALL_END + 0.1, WALL_END + 0.4)
-  const hop = Math.abs(Math.sin(((t - WALL_END) * Math.PI) / 0.55)) * 3.2 * cheerOn
-  const bob = -Math.abs(stride) * 1.2 - hop
-  const arms = armPoses(t, stride)
-  const sweat = (t * 1.6) % 1
+  const kid = kidAt(t)
+  const rig = personRig(kid.placement)
+  const head = rig.world.head
+  const worry = during(t, WORRY, WALL1 - 0.2, 0.2)
 
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Ground t={t} />
+        <Backdrop t={t} sun={[100, 11]} clouds={[[1, 6, 0.9]]} ground={98} />
         <Stand t={t} />
         <Walls t={t} />
         <FoxActor t={t} />
         <BumpBurst t={t} />
-        <Layer opacity={span(t, KID_IN - 0.1, KID_IN + 0.1)}>
-          <ellipse cx={kidX} cy={GROUND + 0.4} rx={8.4 - hop * 0.6} ry="2.2" fill="#000000" opacity="0.12" />
-          <Layer x={kidX} y={GROUND + bob} scale={KID_SCALE} origin={[0, 0]}>
-            <Kid mood={kidMood(t)} left={arms.left} right={arms.right} stride={stride} sweat={sweat} />
-            <EffortLines t={t} />
-          </Layer>
-        </Layer>
+        <Person {...kid.placement} look={{ ...LOOKS.boy, top: CLOTHES.blue.top }} face={kid.face} />
+        <Sweat t={t} x={head[0] + 5} y={head[1] - 4} show={worry} dir={1} />
+        <EffortLines t={t} head={head} r={rig.body.headR * rig.scale} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Ink char={CHAR} progress={ink.progress} tint={ink.tint} />

@@ -14,25 +14,16 @@
  *   → 中は おひさまの にわ。ちょうちょが いた! 子どもは とびはねて よろこぶ
  *   → ほね が ひかって、絵が うすくなり、字「戸」が のこる
  *
- * とびら・人は、ほんものの つくり を守る(字の形に合わせるために ゆがめない):
- *   とびらは 右の ちょうつがい を じく に、おすと むこうへ ひらく(ひらくほど 左はし が ちぢみ、ゆかは 少し ななめに 見える)。
+ * 子どもは Person(あるきは walk、おす手は { to })、ちょうちょは Butterfly、にわの 木と 花は Tree・Flower、
+ * 空は Backdrop。とびら(右の ちょうつがい を じく に ひらく)・門・かべ は 部品に ないので ここで 描く。
  *   門には 左にも とびらが あって、そちらは しまったまま(かたほうだけ ひらく)。
- *   人は うで が かた から出て ひじ で まがる。おす手は とびらの 面に つき、おわると だらんと おりる。
  */
 import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Backdrop, Butterfly, Flower, mixLimb, PALETTE, Person, personRig, Sweat, Tree, Tuft, walk, type Limb } from '../sceneFigures'
 
 const CHAR = '戸'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const TUNIC = '#f0866a'
-const TUNIC_DARK = '#d86d52'
-const TUNIC_FAR = '#b95a44'
-const PANTS = '#3e5c86'
-const PANTS_DARK = '#34507a'
-const SHOE = '#6b4a36'
 const BARK = '#8c5b3c'
 const BARK_DARK = '#70452b'
 const DOOR = '#c98a54'
@@ -42,13 +33,9 @@ const GLASS_LIGHT = '#eaf8ff'
 const WALL = '#f2e3c6'
 const WALL_SHADE = '#e0cba5'
 const WALL_CAP = '#c9ae86'
-const GRASS = '#c5e8a9'
-const LEAF = '#55b86e'
-const LEAF_DARK = '#3f9c59'
-const LEAF_LIGHT = '#8bd69a'
-const SUN = '#ffd24a'
 const WING = '#c78bf0'
-const WING_LIGHT = '#ecd2fb'
+const WING_DARK = '#a46ad0'
+const PERSON_LOOK = { top: '#f0866a', bottom: '#3e5c86' } as const
 
 /** くぎり の時間(秒) */
 const ENTER = 0.7
@@ -127,18 +114,6 @@ function GateLeaf({ open }: { readonly open: number }) {
   )
 }
 
-/* ───────── 門・にわ ───────── */
-
-function Backdrop({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
-  return (
-    <>
-      <circle cx="99" cy="5" r={4.6 * sun} fill={SUN} />
-      <path d="M-4 99 Q18 84 44 94 Q72 80 113 95 V101 H-4 Z" fill="#e2f2d2" />
-    </>
-  )
-}
-
 /** かべ・門の はしら・はり。 */
 function Wall() {
   return (
@@ -175,24 +150,14 @@ function Garden({ t }: SceneProps) {
       <rect x="3" y="33" width="75" height="64" fill="#fff6c8" opacity="0.35" />
       <rect x="3" y="64" width="75" height="33" fill="#a8dc82" />
       <path d="M3 66 Q18 60 34 66 V70 H3 Z" fill="#8fcf72" />
-      {/* 木 */}
-      <rect x="19" y="52" width="3" height="19" rx="1.2" fill={BARK} />
-      <circle cx="21" cy="46" r="9" fill={LEAF_DARK} />
-      <circle cx="18.5" cy="43.5" r="6.6" fill={LEAF} />
-      <circle cx="16.5" cy="41" r="2.6" fill={LEAF_LIGHT} />
-      <circle cx="24.5" cy="48" r="1.5" fill="#e8534a" />
-      {/* 花 */}
+      <Tree x={21} y={71} height={30} fruit />
       {[
-        [8, 86, '#ff8fab'],
-        [14, 90, '#ffd24a'],
-        [19.5, 86.5, '#ff8fab'],
-        [25, 91, '#ffffff'],
+        [8, 92, '#ff8fab'],
+        [14, 95, PALETTE.sun],
+        [19.5, 92.4, '#ff8fab'],
+        [25, 96, '#ffffff'],
       ].map(([x, y, color]) => (
-        <g key={String(x)} transform={`rotate(${wave(t, 2.2, Number(x) * 0.1) * 5} ${x} ${Number(y) + 4})`}>
-          <path d={`M${x} ${Number(y) + 1} v5`} stroke={LEAF_DARK} strokeWidth="1" strokeLinecap="round" />
-          <circle cx={x} cy={y} r="2.1" fill={String(color)} />
-          <circle cx={x} cy={y} r="0.8" fill="#ffb347" />
-        </g>
+        <Flower key={String(x)} x={Number(x)} y={Number(y)} color={String(color)} size={0.7} sway={wave(t, 2.2, Number(x) * 0.1) * 5} />
       ))}
     </>
   )
@@ -214,32 +179,11 @@ function FrameFront() {
 function FrontGround() {
   return (
     <>
-      <rect x="-2" y="96" width="113" height="12" fill={GRASS} />
+      <rect x="-2" y="96" width="113" height="12" fill={PALETTE.grass} />
       {[6, 40, 66, 90, 106].map((x) => (
-        <path key={x} d={`M${x} 98 l1.4 -3.8 l1 3.4 l1.6 -4.4 l0.8 4.8 Z`} fill={LEAF} />
+        <Tuft key={x} x={x} y={98} />
       ))}
     </>
-  )
-}
-
-/* ───────── ちょうちょ ───────── */
-
-function Butterfly({ t, x, y, size = 1 }: SceneProps & { readonly x: number; readonly y: number; readonly size?: number }) {
-  const flap = 0.3 + 0.7 * Math.abs(wave(t, 0.34))
-  const wings = (side: 1 | -1) => (
-    <g transform={`scale(${side * flap} 1)`}>
-      <ellipse cx="3.4" cy="-1.8" rx="3.6" ry="2.7" fill={WING} transform="rotate(-18 3.4 -1.8)" />
-      <ellipse cx="2.6" cy="1.8" rx="2.6" ry="2" fill={WING} />
-      <circle cx="3.8" cy="-1.9" r="0.9" fill={WING_LIGHT} />
-    </g>
-  )
-  return (
-    <g transform={`translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${size})`}>
-      {wings(1)}
-      {wings(-1)}
-      <ellipse cx="0" cy="0" rx="0.8" ry="2.7" fill={HAIR} />
-      <path d="M0 -2.4 q-0.9 -1.8 -2.2 -2.2 M0 -2.4 q0.9 -1.8 2.2 -2.2" fill="none" stroke={HAIR} strokeWidth="0.5" strokeLinecap="round" />
-    </g>
   )
 }
 
@@ -251,132 +195,51 @@ function ButterflyAbove({ t }: SceneProps) {
   const y = 5 + 1.6 * wave(t, 0.8) + 9 * span(t, 3.4, 3.9)
   return (
     <Layer opacity={show}>
-      <Butterfly t={t} x={x} y={y} />
+      <Butterfly t={t} x={x} y={y} color={WING} dark={WING_DARK} />
     </Layer>
   )
 }
 
 /* ───────── 子ども(主役) ───────── */
 
-type Mood = 'wonder' | 'sad' | 'push' | 'joy'
+/** 子どもの 背の高さ、と とびらの前で とまる ところ(おしながら 少し すすむ) */
+const KID_HEIGHT = 46
+const STAND_AT = 12
+const PUSH_TO = 16
+/** よろこんで 上へ のばす うで */
+const CHEER_ARM = { swing: 150, bend: 14 } as const
 
-/** うで の ながさ(かた→ひじ、ひじ→手 の それぞれ) */
-const ARM_PART = 8
-const SHOULDER_NEAR: Point = [1, -32]
-const SHOULDER_FAR: Point = [-1, -32]
-
-/** かた と 手 の位置から、ひじ を きめる。うでが とどかないときは のばしきった ところ まで。 */
-function armJoints(shoulder: Point, target: Point): { readonly elbow: Point; readonly hand: Point } {
-  const dx = target[0] - shoulder[0]
-  const dy = target[1] - shoulder[1]
-  const dist = Math.hypot(dx, dy) || 0.001
-  const reach = Math.min(dist, ARM_PART * 2 - 0.02)
-  const ux = dx / dist
-  const uy = dy / dist
-  const hand: Point = [shoulder[0] + ux * reach, shoulder[1] + uy * reach]
-  const mid: Point = [shoulder[0] + (ux * reach) / 2, shoulder[1] + (uy * reach) / 2]
-  const h = Math.sqrt(Math.max(0, ARM_PART ** 2 - (reach / 2) ** 2))
-  const a: Point = [mid[0] - uy * h, mid[1] + ux * h]
-  const b: Point = [mid[0] + uy * h, mid[1] - ux * h]
-  // ひじ は したを むく(おなじ たかさ なら うしろ)
-  const elbow = a[1] > b[1] + 0.01 || (Math.abs(a[1] - b[1]) <= 0.01 && a[0] < b[0]) ? a : b
-  return { elbow, hand }
+/** 子どもの 場所と かっこう。あるいてくる → とびらの ところで おす(足が すこし まえへ) */
+function kidAt(t: number, open: number) {
+  const came = walk(t, { from: -14, to: STAND_AT, start: ENTER, end: ARRIVE, build: 'child', height: KID_HEIGHT })
+  const pushed = walk(t, { from: STAND_AT, to: PUSH_TO, start: PUSH, end: RELEASE, build: 'child', height: KID_HEIGHT, step: 3 })
+  const walking = t < PUSH ? came : pushed
+  const pushW = span(t, PUSH - 0.3, PUSH) * (1 - span(t, RELEASE, RELEASE + 0.35))
+  const cheerW = span(t, RELEASE + 0.3, RELEASE + 0.7, easeOut)
+  const hop = span(t, 5.2, 6.2)
+  const lift = Math.abs(Math.sin(hop * Math.PI * 2)) * 6
+  // 手: ふだんは だらんと おろす(あるくときは ふる)。おすときは とびらの 面。うれしいときは 上へ
+  const door = doorPoint(open, 0.22, 0.52)
+  const idleNear: Limb = walking.pose.leftArm ?? { swing: 4, bend: 8 }
+  const idleFar: Limb = walking.pose.rightArm ?? { swing: 2, bend: 8 }
+  const wiggle = wave(t, 0.4) * 8 * cheerW
+  const leftArm = mixLimb(mixLimb(idleNear, { to: door }, pushW), { ...CHEER_ARM, swing: CHEER_ARM.swing + wiggle }, cheerW)
+  const rightArm = mixLimb(mixLimb(idleFar, { to: [door[0] - 0.8, door[1] + 2.2] }, pushW), { ...CHEER_ARM, swing: CHEER_ARM.swing - wiggle }, cheerW)
+  const face = t < GONE ? 'smile' : t < PUSH ? 'sad' : t < RELEASE + 0.2 ? 'strain' : 'joy'
+  // ちょうちょ を 見あげる → がっくり うつむく → ふんばる → よろこんで 見あげる
+  const head = -14 * span(t, 1.4, 1.8) * (1 - span(t, GONE - 0.1, GONE + 0.4)) + 5 * span(t, GONE + 0.1, GONE + 0.4) * (1 - span(t, PUSH - 0.2, PUSH + 0.1)) + 2 * pushW - 8 * span(t, RELEASE + 0.3, RELEASE + 0.7)
+  return {
+    x: walking.x,
+    y: GROUND_Y,
+    facing: 'right',
+    build: 'child',
+    height: KID_HEIGHT,
+    lift,
+    face,
+    look: PERSON_LOOK,
+    pose: { ...walking.pose, leftArm, rightArm, torso: 3 * pushW, head },
+  } as const
 }
-
-function Arm({ shoulder, target, color }: { readonly shoulder: Point; readonly target: Point; readonly color: string }) {
-  const { elbow, hand } = armJoints(shoulder, target)
-  return (
-    <>
-      <path d={`M${shoulder[0]} ${shoulder[1]} L${elbow[0].toFixed(2)} ${elbow[1].toFixed(2)} L${hand[0].toFixed(2)} ${hand[1].toFixed(2)}`} fill="none" stroke={color} strokeWidth="4.4" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hand[0]} cy={hand[1]} r="2.5" fill={SKIN} />
-    </>
-  )
-}
-
-function Face({ mood }: { readonly mood: Mood }) {
-  return (
-    <>
-      <ellipse cx="3" cy="-39.4" rx="1.9" ry="1.2" fill="#ff9d9d" opacity="0.55" />
-      {mood === 'wonder' && (
-        <>
-          <circle cx="4.4" cy="-42.4" r="1.05" fill="#2b2b2b" />
-          <ellipse cx="5" cy="-38.6" rx="0.9" ry="1.15" fill="#b9483f" />
-        </>
-      )}
-      {mood === 'sad' && (
-        <>
-          <circle cx="4.4" cy="-42" r="1.05" fill="#2b2b2b" />
-          <path d="M2.8 -44.4 L5.8 -45.6" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-          <path d="M3.4 -37.8 Q4.8 -39.4 6.2 -37.8" fill="none" stroke="#b9483f" strokeWidth="1.1" strokeLinecap="round" />
-        </>
-      )}
-      {mood === 'push' && (
-        <>
-          <path d="M3.4 -43.6 L5.4 -42.4 L3.4 -41.2" fill="none" stroke="#2b2b2b" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
-          <rect x="3.4" y="-39.4" width="3.4" height="1.5" rx="0.7" fill="#ffffff" stroke="#b9483f" strokeWidth="0.6" />
-        </>
-      )}
-      {mood === 'joy' && (
-        <>
-          <path d="M3.2 -42 Q4.6 -44.2 6 -42" fill="none" stroke="#2b2b2b" strokeWidth="1.1" strokeLinecap="round" />
-          <path d="M3.2 -39.6 Q4.9 -36.6 6.6 -39.6 Z" fill="#b9483f" />
-        </>
-      )}
-    </>
-  )
-}
-
-type ChildProps = {
-  readonly step: number
-  readonly mood: Mood
-  readonly near: Point
-  readonly far: Point
-  readonly headTilt: number
-}
-
-/** あしもと(0,0)が 地面の 子ども。右むき。からだは 小さく、あたま は 大きめ。 */
-function Child({ step, mood, near, far, headTilt }: ChildProps) {
-  return (
-    <>
-      {/* むこうの うで: どう の うしろ */}
-      <Arm shoulder={SHOULDER_FAR} target={far} color={TUNIC_FAR} />
-      {/* あし: うしろ・まえ(あるくとき かわりばんこ) */}
-      <Layer rotate={step * 20} origin={[0, -15]}>
-        <rect x="-3.2" y="-16" width="4.2" height="15.4" rx="2.1" fill={PANTS_DARK} />
-        <ellipse cx="-1.4" cy="-0.8" rx="4" ry="2.2" fill={SHOE} />
-      </Layer>
-      <Layer rotate={-step * 20} origin={[0, -15]}>
-        <rect x="0.4" y="-16" width="4.2" height="15.4" rx="2.1" fill={PANTS} />
-        <ellipse cx="2.6" cy="-0.8" rx="4" ry="2.2" fill={SHOE} />
-      </Layer>
-      {/* くび: みじかく、どう と あたま の あいだ */}
-      <rect x="-1.4" y="-38" width="4.2" height="6" rx="2" fill={SKIN_SHADE} />
-      {/* どう */}
-      <rect x="-5.2" y="-35.5" width="10.4" height="22" rx="4.6" fill={TUNIC} />
-      <path d="M-4 -19 h8" stroke={TUNIC_DARK} strokeWidth="1.3" strokeLinecap="round" />
-      {/* てまえの うで */}
-      <Arm shoulder={SHOULDER_NEAR} target={near} color={TUNIC_DARK} />
-      {/* あたま */}
-      <Layer rotate={headTilt} origin={[0, -36]}>
-        <circle cx="-1.4" cy="-41.4" r="1.6" fill={SKIN_SHADE} />
-        <circle cx="1.2" cy="-42" r="6.5" fill={SKIN} />
-        <path d="M-5.3 -41.5 C-5.9 -49.2 5.4 -51 7.4 -44.8 C5 -46.6 1.6 -46 -0.4 -43.2 C-1.6 -41.8 -3.6 -41.4 -5.3 -41.5 Z" fill={HAIR} />
-        <path d="M0.6 -48.2 Q1.2 -51.2 2.8 -49.2 Q3.8 -51.4 4.6 -48.8" fill="none" stroke={HAIR} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-        <Face mood={mood} />
-      </Layer>
-    </>
-  )
-}
-
-/** おしているときの あせ。 */
-function Sweat({ t, cx, y }: SceneProps & { readonly cx: number; readonly y: number }) {
-  const show = during(t, PUSH + 0.1, RELEASE + 0.1, 0.2)
-  if (show <= 0) return null
-  const p = ((t - PUSH) % 0.7) / 0.7
-  return <path d="M0 -2 Q1.8 0.6 0 1.8 Q-1.8 0.6 0 -2 Z" fill="#7cc4f2" opacity={show * (1 - p)} transform={`translate(${(cx - 4.6).toFixed(2)} ${(y - 46 + p * 6).toFixed(2)})`} />
-}
-
-/* ───────── ぜんたい ───────── */
 
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 4)
@@ -384,63 +247,34 @@ function Scene({ t }: SceneProps) {
   // とびら: おしている間に 0 → 0.57 ぐらいまで、てを はなしても いきおいで さいごまで ひらく
   const open = span(t, PUSH, OPENED, easeInOut)
   const wall = span(t, 0, 0.55, backOut)
-
-  // 子ども: あるいてくる → とびらの ところで おす(足が すこし まえへ) → おわって うしろへ さがる
-  const walking = t < ENTER ? 0 : 1 - span(t, ARRIVE - 0.2, ARRIVE)
-  const stride = Math.sin((t - ENTER) * Math.PI * 2 * 1.9) * walking
-  const cx = mix(t, ENTER, ARRIVE, -14, 10, easeOut) + 7 * span(t, PUSH, RELEASE) - 7 * span(t, RELEASE, OPENED + 0.1, easeInOut)
-  const pushW = span(t, PUSH - 0.3, PUSH) * (1 - span(t, RELEASE, RELEASE + 0.35))
-  const cheerW = span(t, RELEASE + 0.3, RELEASE + 0.7, easeOut)
-  const hop = span(t, 5.2, 6.2)
-  const jump = -Math.abs(Math.sin(hop * Math.PI * 2)) * 6
-  const bob = -Math.abs(stride) * 1.2
-  const lean = 3 * pushW
-  const feetY = GROUND_Y + jump + bob
-
-  // 手: ふだんは だらんと おろす(あるくときは ふる)。おすときは とびらの 面。うれしいときは 上へ。
-  const hangNear: Point = [2.5 + stride * 7, -17.5]
-  const hangFar: Point = [-1 - stride * 7, -17.5]
-  const door = doorPoint(open, 0.22, 0.52)
-  const pushNear: Point = [door[0] - cx, door[1] - feetY]
-  const pushFar: Point = [pushNear[0] - 0.8, pushNear[1] + 2.2]
-  const wiggle = wave(t, 0.4) * 1.4 * cheerW
-  const cheerNear: Point = [7.5 + wiggle, -47]
-  const cheerFar: Point = [-6.5 - wiggle, -47]
-  const near = lerpPoint(lerpPoint(hangNear, pushNear, pushW), cheerNear, cheerW)
-  const far = lerpPoint(lerpPoint(hangFar, pushFar, pushW), cheerFar, cheerW)
-
-  const mood: Mood = t < GONE ? 'wonder' : t < PUSH ? 'sad' : t < RELEASE + 0.2 ? 'push' : 'joy'
-  // ちょうちょ を 見あげる → がっくり うつむく → ふんばる → よろこんで 見あげる
-  const headTilt = -14 * span(t, 1.4, 1.8) * (1 - span(t, GONE - 0.1, GONE + 0.4)) + 5 * span(t, GONE + 0.1, GONE + 0.4) * (1 - span(t, PUSH - 0.2, PUSH + 0.1)) + 2 * pushW - 8 * span(t, RELEASE + 0.3, RELEASE + 0.7)
+  const kid = kidAt(t, open)
+  const head = personRig(kid).world.head
 
   // ちょうちょ: にわで ひらひら → ひらいたら 子どもの あたまの 上へ
   const garden = t >= RELEASE - 0.2 && t < OPENED + 0.1
   const fly = span(t, OPENED + 0.1, OPENED + 0.7, easeInOut)
   const gardenBf: Point = [17 + 3 * wave(t, 1.6), 41 + 2.2 * wave(t, 1.1, 0.3)]
   const w = (t - OPENED) * 3.2
-  const orbit: Point = [cx + 9 + 4.5 * Math.cos(w), 37 + 2.5 * Math.sin(2 * w)]
+  const orbit: Point = [kid.x + 9 + 4.5 * Math.cos(w), 37 + 2.5 * Math.sin(2 * w)]
   const flyBf = lerpPoint(gardenBf, orbit, fly)
 
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Backdrop t={t} />
+        <Backdrop t={t} sun={[99, 5]} clouds={[]} />
         <ButterflyAbove t={t} />
         <Layer scaleY={wall} origin={[54.5, 98]}>
           <Wall />
           <LeftLeaf />
           <Garden t={t} />
-          {garden && <Butterfly t={t} x={gardenBf[0]} y={gardenBf[1]} />}
+          {garden && <Butterfly t={t} x={gardenBf[0]} y={gardenBf[1]} color={WING} dark={WING_DARK} />}
           <GateLeaf open={open} />
           <FrameFront />
         </Layer>
         <FrontGround />
-        <ellipse cx={cx} cy={GROUND_Y + 0.8} rx={7.5 - jump * 0.3} ry="1.8" fill="#000000" opacity="0.12" />
-        <Layer x={cx} y={feetY} rotate={lean}>
-          <Child step={stride} mood={mood} near={near} far={far} headTilt={headTilt} />
-        </Layer>
-        <Sweat t={t} cx={cx} y={feetY} />
-        {t >= OPENED + 0.1 && <Butterfly t={t} x={flyBf[0]} y={flyBf[1]} />}
+        <Person {...kid} />
+        <Sweat t={t} x={head[0] - 5} y={head[1] - 2} show={during(t, PUSH + 0.1, RELEASE + 0.1, 0.2)} />
+        {t >= OPENED + 0.1 && <Butterfly t={t} x={flyBf[0]} y={flyBf[1]} color={WING} dark={WING_DARK} />}
         {/* ひらいた むこうの ひかり */}
         {t > OPENED - 0.4 && (
           <>

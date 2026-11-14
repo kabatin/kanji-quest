@@ -15,25 +15,17 @@
  *   → いたが ぴたっと とまる → ひだり手に 赤い わっか(ひだり手の しるし)。木づちを しっかり もって にっこり
  *   → ほね が ひかって、絵が うすくなり、字「左」が のこる
  *
- * 人と どうぐは、ほんものの つくり を守る(字の形に合わせるために ゆがめない):
- *   うで は かた から出て ひじ で まがる(手が とどく ところへ、2本の ほねで 計算する)。
+ * 子どもは Person(あるきは walk、木づちを もつ 手は { to } で 点に おく)。木づちは held で 手に もたせる。
+ * 背景は Backdrop、あせ は Sweat。こうさくだい・くぎ・木づち・赤い わっか は 場面で 描く。
  *   くぎは、いたに さしてあって、うつたびに 少しずつ 入っていく。
  *   木づちを しっかり もった さいごの しゅんかんだけ、うで と えが 1画目の線に だいたい重なる。
  */
 import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Backdrop, LOOKS, Person, personRig, Sweat, walk, type PersonProps } from '../sceneFigures'
 
 const CHAR = '左'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const TUNIC = '#f0a23c'
-const TUNIC_DARK = '#d98a26'
-const TUNIC_FAR = '#bd7620'
-const PANTS = '#3e5c86'
-const PANTS_DARK = '#34507a'
-const SHOE = '#6b4a36'
 const WOOD_BOARD = '#d29a5e'
 const WOOD_POST = '#b9814b'
 const WOOD_BASE = '#9a6638'
@@ -44,9 +36,6 @@ const MALLET_BAND = '#7c4f2a'
 const NAIL = '#9aa5b3'
 const NAIL_LIGHT = '#d8e0ea'
 const BAND_RED = '#e8534a'
-const LEAF = '#55b86e'
-const GRASS = '#c5e8a9'
-const SUN = '#ffd24a'
 
 /** くぎり の時間(秒) */
 const WALK = 0.5
@@ -59,10 +48,11 @@ const INK = 6.5
 const DONE = 8.8
 const DURATION = 9.4
 
-/** かた(うでの じく)と、うでの 2本の ながさ */
-const SHOULDER: readonly [number, number] = [27, 40]
-const UPPER = 11
-const FORE = 13
+/** 子どもの こし の x(立ちどまった ところ)と 背。手の 点は、この こし から 見た 位置 */
+const KID_X = 27
+const KID_HEIGHT = 70
+const KID_LOOK = { ...LOOKS.boy, top: '#f0a23c', bottom: '#3e5c86' } as const
+
 /** 木づちの えの ながさ(手 から 先の あたま まで) */
 const MALLET = 34
 /** くぎの いち(いたの 上) */
@@ -97,54 +87,6 @@ function handPoseAt(t: number): HandPose {
   }
   const last = HITS[HITS.length - 1] + 0.12
   return t < last ? STRIKE : lerpPose(t, last, HOLD, STRIKE, FIRM)
-}
-
-/** 2本の ほね(かた → ひじ → 手)。ひじ は 下がわ に まがる。 */
-function elbowFor(hand: readonly [number, number]): readonly [number, number] {
-  const dx = hand[0] - SHOULDER[0]
-  const dy = hand[1] - SHOULDER[1]
-  const reach = Math.min(Math.max(Math.hypot(dx, dy), Math.abs(UPPER - FORE) + 0.01), UPPER + FORE - 0.01)
-  const base = Math.atan2(dy, dx)
-  const cosA = (UPPER * UPPER + reach * reach - FORE * FORE) / (2 * UPPER * reach)
-  const a = base + Math.acos(Math.min(Math.max(cosA, -1), 1))
-  return [SHOULDER[0] + UPPER * Math.cos(a), SHOULDER[1] + UPPER * Math.sin(a)]
-}
-
-/** てがとどく ところまで しか うでは のびない: 手の いちを、とどく はんいに おさめる */
-function reachableHand(hand: readonly [number, number]): readonly [number, number] {
-  const dx = hand[0] - SHOULDER[0]
-  const dy = hand[1] - SHOULDER[1]
-  const d = Math.hypot(dx, dy)
-  const max = UPPER + FORE - 0.02
-  if (d <= max) return hand
-  return [SHOULDER[0] + (dx / d) * max, SHOULDER[1] + (dy / d) * max]
-}
-
-/* ───────── 景色 ───────── */
-
-function Ground({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
-  return (
-    <>
-      <Layer opacity={sun} rotate={t * 14} origin={[93, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="92.2" y="1.6" width="1.6" height="4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 93 13)`} />
-        ))}
-      </Layer>
-      <circle cx="93" cy="13" r={6.2 * sun} fill={SUN} />
-      <path d="M-4 99 Q18 78 44 92 Q72 72 113 95 V101 H-4 Z" fill="#e2f2d2" />
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.6} 0)`}>
-        <ellipse cx="6" cy="12" rx="7" ry="3.2" />
-        <ellipse cx="11" cy="10.4" rx="5" ry="3.2" />
-        <ellipse cx="60" cy="8" rx="6" ry="2.6" />
-        <ellipse cx="64.5" cy="6.6" rx="4.4" ry="2.8" />
-      </g>
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.6" fill={GRASS} />
-      {[8, 46, 100].map((x) => (
-        <path key={x} d={`M${x} 97.5 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
-    </>
-  )
 }
 
 /* ───────── こうさくだい(工) ───────── */
@@ -189,18 +131,6 @@ function Stand({ t }: SceneProps) {
   )
 }
 
-/* ───────── 子ども ───────── */
-
-type Mood = 'worried' | 'resolute' | 'happy'
-
-type KidProps = {
-  readonly step: number
-  readonly mood: Mood
-  readonly pose: HandPose
-  readonly sweat: number
-  readonly t: number
-}
-
 /** 木づち。手が さきに あり、えは 手より すこし 後ろから のびる。 */
 function Mallet({ hand, angle }: { readonly hand: readonly [number, number]; readonly angle: number }) {
   const rotate = 90 - angle
@@ -211,77 +141,6 @@ function Mallet({ hand, angle }: { readonly hand: readonly [number, number]; rea
       <rect x={MALLET - 5} y="-6.6" width="2.6" height="13.2" rx="1.2" fill={MALLET_BAND} opacity="0.55" />
       <rect x={MALLET + 4.2} y="-6.6" width="1.8" height="13.2" rx="0.9" fill={MALLET_BAND} opacity="0.55" />
     </g>
-  )
-}
-
-function Face({ mood }: { readonly mood: Mood }) {
-  // 右むき。目と口は あたまの 右がわ
-  return (
-    <>
-      <circle cx="35.4" cy="29.2" r="2.1" fill="#ff9d9d" opacity="0.55" />
-      {mood === 'worried' ? (
-        <>
-          <path d="M31.6 21.6 l4.4 -1.6" stroke={HAIR} strokeWidth="1.2" strokeLinecap="round" />
-          <circle cx="34" cy="25" r="1.2" fill="#2b2b2b" />
-          <path d="M34.2 31.6 q1.6 -1.4 3.4 0" fill="none" stroke="#b9483f" strokeWidth="1.2" strokeLinecap="round" />
-        </>
-      ) : mood === 'resolute' ? (
-        <>
-          <path d="M31.6 20 l4.6 1.8" stroke={HAIR} strokeWidth="1.3" strokeLinecap="round" />
-          <circle cx="34" cy="24.6" r="1.3" fill="#2b2b2b" />
-          <path d="M34 31 h3.4" stroke="#b9483f" strokeWidth="1.3" strokeLinecap="round" />
-        </>
-      ) : (
-        <>
-          <path d="M32.2 25.8 Q34 23.4 35.8 25.8" fill="none" stroke="#2b2b2b" strokeWidth="1.3" strokeLinecap="round" />
-          <path d="M33.4 29.6 Q35.8 33.6 38 29.8 Z" fill="#b9483f" />
-        </>
-      )}
-    </>
-  )
-}
-
-function Kid({ step, mood, pose, sweat, t }: KidProps) {
-  const hand = reachableHand(pose.hand)
-  const elbow = elbowFor(hand)
-  // とおい うで は 体の よこで ぶらぶら(あるくとき だけ ふる)
-  const far = step * 22
-  const farHand = [SHOULDER[0] + Math.sin((far * Math.PI) / 180) * 22, SHOULDER[1] + Math.cos((far * Math.PI) / 180) * 22] as const
-  // 手くびの わっか: ひだり手の しるし
-  const wrist = [hand[0] + (elbow[0] - hand[0]) * 0.2, hand[1] + (elbow[1] - hand[1]) * 0.2] as const
-  const nearWrist = [hand[0] + (elbow[0] - hand[0]) * 0.46, hand[1] + (elbow[1] - hand[1]) * 0.46] as const
-  return (
-    <>
-      <path d={`M${SHOULDER[0]} ${SHOULDER[1]} L${farHand[0]} ${farHand[1]}`} stroke={TUNIC_FAR} strokeWidth="5.6" strokeLinecap="round" />
-      <circle cx={farHand[0]} cy={farHand[1]} r="3.2" fill={SKIN_SHADE} />
-      <Layer rotate={step * 17} origin={[27, 68]}>
-        <rect x="24.2" y="65" width="6.2" height="27.5" rx="3.1" fill={PANTS_DARK} />
-        <ellipse cx="28.4" cy="93.4" rx="5.4" ry="2.8" fill={SHOE} />
-      </Layer>
-      <Layer rotate={-step * 17} origin={[27, 68]}>
-        <rect x="22.4" y="65" width="6.2" height="27.5" rx="3.1" fill={PANTS} />
-        <ellipse cx="26.6" cy="93.4" rx="5.4" ry="2.8" fill={SHOE} />
-      </Layer>
-      {/* くび: どう と あたま を みじかく つなぐ */}
-      <rect x="23.6" y="31.4" width="5.2" height="8" rx="2.4" fill={SKIN_SHADE} />
-      <rect x="20" y="36.6" width="14" height="34" rx="6.8" fill={TUNIC} />
-      <path d="M22 62 h10" stroke={TUNIC_DARK} strokeWidth="1.6" strokeLinecap="round" />
-      {/* 木づち(手の うしろ に えが かくれる) */}
-      <Mallet hand={hand} angle={pose.mallet} />
-      <path d={`M${SHOULDER[0]} ${SHOULDER[1]} L${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={TUNIC_DARK} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
-      <path d={`M${nearWrist[0]} ${nearWrist[1]} L${wrist[0]} ${wrist[1]}`} stroke={BAND_RED} strokeWidth="6.4" strokeLinecap="butt" />
-      <circle cx={hand[0]} cy={hand[1]} r="3.5" fill={SKIN} />
-      {/* あたま(右むき) */}
-      <circle cx="28.6" cy="24.6" r="9.2" fill={SKIN} />
-      <path d="M19.4 25 C18.6 14.4 30 11.2 36.4 16.4 C38.4 18.4 38.4 21 38 22.6 C34 19.6 28.6 19.6 24.2 21.4 C22.4 22.4 20.6 24 19.4 25 Z" fill={HAIR} />
-      <path d="M26 15.6 Q26.6 12.2 28.4 14.4 Q29.8 11.6 30.6 14.8" fill="none" stroke={HAIR} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
-      <Face mood={mood} />
-      {sweat > 0 ? (
-        <g opacity={sweat} transform={`translate(${18 + wave(t, 0.5) * 0.4} ${19 + ((t * 5) % 3)})`}>
-          <path d="M0 -2.4 Q2 0.6 0 2 Q-2 0.6 0 -2.4 Z" fill="#7cc4f2" />
-        </g>
-      ) : null}
-    </>
   )
 }
 
@@ -315,29 +174,45 @@ function Shine({ t }: SceneProps) {
   )
 }
 
+/** 手くびの 赤い わっか(ひだり手の しるし)。手の すぐ 手前の ひじがわ に 巻く */
+function WristBand({ hand, elbow }: { readonly hand: readonly [number, number]; readonly elbow: readonly [number, number] }) {
+  const at = (k: number) => [hand[0] + (elbow[0] - hand[0]) * k, hand[1] + (elbow[1] - hand[1]) * k] as const
+  const a = at(0.3)
+  const b = at(0.5)
+  return <path d={`M${a[0]} ${a[1]} L${b[0]} ${b[1]}`} stroke={BAND_RED} strokeWidth="6" strokeLinecap="butt" />
+}
+
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 5)
 
   // やってくる: 左から あるいて、とまる
-  const walking = 1 - span(t, ARRIVE - 0.25, ARRIVE)
-  const step = t < WALK ? 0 : Math.sin((t - WALK) * Math.PI * 2 * 1.7) * walking
-  const walkX = mix(t, WALK, ARRIVE, -50, 0, easeOut)
-  const bob = -Math.abs(step) * 1.4
-  const mood: Mood = t < RAISE ? 'worried' : t < HITS[2] + 0.1 ? 'resolute' : 'happy'
+  const w = walk(t, { from: KID_X - 50, to: KID_X, start: WALK, end: ARRIVE, build: 'child', height: KID_HEIGHT, armSwing: 18 })
+  const mood = t < RAISE ? 'worried' : t < HITS[2] + 0.1 ? 'strain' : 'smile'
   const pose = handPoseAt(t)
-  const sweat = during(t, ARRIVE, RAISE, 0.25)
   const bump = Math.sin(span(t, DONE - 0.9, DONE - 0.45) * Math.PI) * 0.06
+
+  const base: PersonProps = {
+    ...w,
+    y: 96,
+    look: KID_LOOK,
+    face: mood,
+    // 木づちを もつ のは ひだり手(右むき では てまえ の 手)。手は 点に おく
+    pose: { ...w.pose, leftArm: { to: [w.x + pose.hand[0] - KID_X, pose.hand[1]] } },
+  }
+  const rig = personRig(base)
+  const hand = rig.world.arms.left.end
+  const elbow = rig.world.arms.left.mid
+  const head = rig.world.head
 
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Ground t={t} />
+        <Backdrop t={t} sun={[93, 13]} clouds={[[6, 12, 1], [60, 8, 0.9]]} tufts={[8, 46, 100]} />
         <Stand t={t} />
         <Layer opacity={span(t, WALK - 0.1, WALK + 0.15)}>
-          <ellipse cx={26 + walkX} cy="97.4" rx="9" ry="2.4" fill="#000000" opacity="0.12" />
-          <Layer x={walkX} y={bob}>
-            <Kid step={step} mood={mood} pose={pose} sweat={sweat} t={t} />
-          </Layer>
+          <Person {...base} held={<Mallet hand={hand} angle={pose.mallet} />} />
+          <WristBand hand={hand} elbow={elbow} />
+          <Sweat t={t} x={head[0] - 5} y={head[1] - 6} show={during(t, ARRIVE, RAISE, 0.25)} />
         </Layer>
         <Puffs t={t} />
         <Shine t={t} />

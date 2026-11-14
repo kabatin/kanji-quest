@@ -17,24 +17,18 @@
  *   → ほね が ひかって、絵が うすくなり、字「時」が のこる
  *
  * 人・家・とうは、ほんものの つくり を守る(字の形に合わせるために、ゆがめない):
- *   子どもの うで は かた から出て ひじ で まがる。くび は みじかく、あたま は どう の まんなか の上。
+ *   子どもは 共通部品 Person(うで は かた から ひじ で まがる)。
  *   とうの やね は 上ほど せまく、かねは 1ぽんの ひもで つるす。
  *   字の画との かさなりは、だいたいの 場所と 向き(まど=日、やね=横線、はしら=たて線)。
  */
 import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Backdrop, CLOTHES, LOOKS, mixLimb, PALETTE, Person, Sigh, type Expression } from '../sceneFigures'
 
 const CHAR = '時'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const TUNIC = '#ef8a4a'
-const TUNIC_DARK = '#d9742f'
-const PANTS = '#3e5c86'
-const SHOE = '#6b4a36'
-const BARK = '#8c5b3c'
-const BARK_DARK = '#70452b'
+const BARK = PALETTE.bark
+const BARK_DARK = PALETTE.barkDark
 const WALL = '#f6e6cb'
 const WALL_SHADE = '#e8d2ae'
 const ROOF_HOUSE = '#d8604f'
@@ -44,15 +38,10 @@ const TOWER_WALL = '#f2dcc0'
 const INSIDE = '#6b4a36'
 const GOLD = '#f2b632'
 const GOLD_DARK = '#d99a1e'
-const GRASS = '#c5e8a9'
-const LEAF = '#55b86e'
 const SUN = '#ffd24a'
 const SUN_LOW = '#ff8a3d'
 const SKY_DAY = '#9fd8f5'
 const SKY_EVENING = '#ffb36b'
-const EYE = '#2b2b2b'
-const MOUTH = '#b9483f'
-const CHEEK = '#ff9d9d'
 
 /** くぎり の時間(秒) */
 const LOOK = 1.2
@@ -63,15 +52,12 @@ const INK = 6.4
 const DONE = 9.3
 const DURATION = 9.9
 
-/** 子どもの 足もと の まんなか と、体の おおきさ(まわりの 家・とうに 合わせて すこし 小さく) */
+/** 子どもの 足もと の まんなか と、背の高さ(まわりの 家・とうに 合わせて 小さめ) */
 const CHILD_X = 51.5
 const CHILD_FEET = 96
-const CHILD_SCALE = 0.8
-/** 子どもの かた(うでの つけね)の 高さ と あたま の まんなか */
-const SHOULDER_Y = 79.5
-const HEAD_Y = 69
-/** うでの 1ぶし の 長さ(かた→ひじ、ひじ→手) */
-const ARM_PART = 7
+const CHILD_HEIGHT = 32
+/** お日さまを ゆびさす 先(まどの 中ほど) */
+const SUN_AIM: readonly [number, number] = [30, 56]
 
 /** まどの 中(空が 見える ところ)。1〜4画目の わく の 中。 */
 const WIN = { x: 16.6, y: 29.6, w: 21, h: 47.4 }
@@ -90,34 +76,8 @@ function lerpColor(a: string, b: string, k: number): string {
   return `#${part(0)}${part(1)}${part(2)}`
 }
 
-function Ground() {
-  return (
-    <>
-      {/* とおくの おか(おくゆき を出す) */}
-      <path d="M-4 99 Q18 78 44 91 Q72 70 113 93 V101 H-4 Z" fill="#e2f2d2" />
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.6" fill={GRASS} />
-      {[6, 47, 88, 102].map((x) => (
-        <path key={x} d={`M${x} 97.5 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
-    </>
-  )
-}
-
-/** ゆっくり ながれる 雲。夕やけが ちかづくと、すこし ピンクに なる。 */
-function Clouds({ t }: SceneProps) {
-  const tone = lerpColor('#ffffff', '#ffe3d0', span(t, 1.2, 4.4))
-  return (
-    <g fill={tone} opacity="0.92" transform={`translate(${t * 1.5} 0)`}>
-      <ellipse cx="54" cy="12" rx="7" ry="3.2" />
-      <ellipse cx="59" cy="10.4" rx="5" ry="3.2" />
-      <ellipse cx="92" cy="20" rx="6" ry="2.8" />
-      <ellipse cx="96.5" cy="18.4" rx="4.2" ry="2.8" />
-    </g>
-  )
-}
-
 /** 小さな 家。まどの 外に、お日さまが 上から 下へ うごいていく。 */
-function House({ t }: SceneProps) {
+function Cottage({ t }: SceneProps) {
   const rise = span(t, 0, 0.6, backOut)
   const evening = span(t, LOOK, BELL, easeInOut)
   const sunY = mix(t, LOOK - 0.2, BELL, 38, 66, easeInOut)
@@ -229,94 +189,7 @@ function Tower({ t }: SceneProps) {
 
 type Mood = 'curious' | 'bored' | 'happy'
 
-/** うで の かっこう。a1 = かた→ひじ、a2 = ひじ→手 の むき(ま下が 0、そとへ ひらくほど 大きい。左のうでは マイナス) */
-type ArmPose = { readonly a1: number; readonly a2: number }
-
-/** かた から出て、ひじ で まがる うで。かた・ひじ・手 の じゅんに つながる。 */
-function Arm({ side, pose }: { readonly side: -1 | 1; readonly pose: ArmPose }) {
-  const rad = (deg: number) => (deg * Math.PI) / 180
-  const sx = CHILD_X + side * 5.4
-  const ex = sx + Math.sin(rad(pose.a1)) * ARM_PART
-  const ey = SHOULDER_Y + Math.cos(rad(pose.a1)) * ARM_PART
-  const hx = ex + Math.sin(rad(pose.a2)) * ARM_PART
-  const hy = ey + Math.cos(rad(pose.a2)) * ARM_PART
-  return (
-    <>
-      <path d={`M${sx} ${SHOULDER_Y} L${ex} ${ey} L${hx} ${hy}`} fill="none" stroke={TUNIC_DARK} strokeWidth="4.4" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hx} cy={hy} r="2.5" fill={SKIN} />
-    </>
-  )
-}
-
-function Face({ mood, look }: { readonly mood: Mood; readonly look: number }) {
-  const eyeY = HEAD_Y + 0.8
-  const eyes = [-2.7, 2.7].map((dx) => CHILD_X + dx)
-  return (
-    <>
-      <circle cx={CHILD_X - 4.4} cy={HEAD_Y + 3.2} r="1.5" fill={CHEEK} opacity="0.5" />
-      <circle cx={CHILD_X + 4.4} cy={HEAD_Y + 3.2} r="1.5" fill={CHEEK} opacity="0.5" />
-      {mood === 'happy'
-        ? eyes.map((x) => <path key={x} d={`M${x - 1.5} ${eyeY + 0.6} Q${x} ${eyeY - 1.6} ${x + 1.5} ${eyeY + 0.6}`} fill="none" stroke={EYE} strokeWidth="1.1" strokeLinecap="round" />)
-        : eyes.map((x) => <circle key={x} cx={x + look} cy={eyeY} r={mood === 'curious' ? 1.3 : 1.1} fill={EYE} />)}
-      {mood === 'bored' &&
-        eyes.map((x) => <path key={x} d={`M${x - 1.8} ${eyeY - 0.5} H${x + 1.8}`} stroke={SKIN} strokeWidth="1.3" />)}
-      {mood === 'happy' && <path d={`M${CHILD_X - 2.6} ${HEAD_Y + 3.2} Q${CHILD_X} ${HEAD_Y + 7.2} ${CHILD_X + 2.6} ${HEAD_Y + 3.2} Z`} fill={MOUTH} />}
-      {mood === 'curious' && <ellipse cx={CHILD_X + look * 0.8} cy={HEAD_Y + 4.4} rx="1.1" ry="1.5" fill={MOUTH} />}
-      {mood === 'bored' && <path d={`M${CHILD_X - 1.6} ${HEAD_Y + 4.6} H${CHILD_X + 1.6}`} stroke={MOUTH} strokeWidth="1.1" strokeLinecap="round" />}
-    </>
-  )
-}
-
-type ChildProps = {
-  readonly mood: Mood
-  readonly look: number
-  readonly leftArm: ArmPose
-  readonly rightArm: ArmPose
-  readonly headTilt: number
-  /** あしを とんとん する(ぼんやりの とき) */
-  readonly tap: number
-}
-
-function Child({ mood, look, leftArm, rightArm, headTilt, tap }: ChildProps) {
-  const neckY = HEAD_Y + 5
-  return (
-    <>
-      {/* あし: こしから ま下へ */}
-      <rect x={CHILD_X - 4.6} y="86" width="4" height="8.6" rx="2" fill={PANTS} />
-      <Layer rotate={tap} origin={[CHILD_X + 2.6, 87]}>
-        <rect x={CHILD_X + 0.6} y="86" width="4" height="8.6" rx="2" fill={PANTS} />
-        <ellipse cx={CHILD_X + 3} cy="95" rx="3.6" ry="1.9" fill={SHOE} />
-      </Layer>
-      <ellipse cx={CHILD_X - 2.6} cy="95" rx="3.6" ry="1.9" fill={SHOE} />
-      {/* くび: みじかく、どう と あたま の間 */}
-      <rect x={CHILD_X - 1.8} y={neckY - 1.5} width="3.6" height="6" rx="1.6" fill={SKIN_SHADE} />
-      {/* どう */}
-      <rect x={CHILD_X - 6.4} y="77" width="12.8" height="11.5" rx="4.6" fill={TUNIC} />
-      <path d={`M${CHILD_X - 4.6} 85 h9.2`} stroke={TUNIC_DARK} strokeWidth="1.2" strokeLinecap="round" />
-      <Arm side={-1} pose={leftArm} />
-      <Arm side={1} pose={rightArm} />
-      {/* あたま: くびの ねもとを じく に かたむく */}
-      <Layer rotate={headTilt} origin={[CHILD_X, neckY]}>
-        <circle cx={CHILD_X} cy={HEAD_Y} r="6.2" fill={SKIN} />
-        <path d={`M${CHILD_X - 6.4} ${HEAD_Y - 1.4} C${CHILD_X - 7} ${HEAD_Y - 8.6} ${CHILD_X + 7} ${HEAD_Y - 8.6} ${CHILD_X + 6.4} ${HEAD_Y - 1.4} C${CHILD_X + 3.6} ${HEAD_Y - 4.8} ${CHILD_X - 3.6} ${HEAD_Y - 4.8} ${CHILD_X - 6.4} ${HEAD_Y - 1.4} Z`} fill={HAIR} />
-        <Face mood={mood} look={look} />
-      </Layer>
-    </>
-  )
-}
-
-/** ぼんやり している ときの「ふう」。あたまの よこへ のぼる。 */
-function Sigh({ t }: SceneProps) {
-  const show = during(t, TIRED + 0.2, BELL - 0.1, 0.25)
-  if (show <= 0) return null
-  const p = span(t, TIRED + 0.2, BELL - 0.1, easeOut)
-  return (
-    <g opacity={show}>
-      <ellipse cx={59.5 + p * 3} cy={68 - p * 4} rx={2.2 + p * 1.8} ry={1.5 + p * 1.2} fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.6" />
-      <ellipse cx={56.5 + p * 1.5} cy={70 - p * 1.5} rx={1.1 + p * 0.7} ry={0.8 + p * 0.5} fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.5" />
-    </g>
-  )
-}
+const FACES: Record<Mood, Expression> = { curious: 'surprised', bored: 'sleepy', happy: 'joy' }
 
 /** かげ。お日さまが 左の まどに あるので、右へ のびる。おそくなるほど ながい。 */
 function Shadow({ t }: SceneProps) {
@@ -324,51 +197,56 @@ function Shadow({ t }: SceneProps) {
   return <ellipse cx={CHILD_X + 3 + len / 2} cy="97.2" rx={len / 2 + 3} ry="1.8" fill="#000000" opacity="0.13" />
 }
 
-function Scene({ t }: SceneProps) {
-  const ink = inkTiming(t, INK, DONE, 10)
-
-  // 子ども: とことこ 出てくる(ぽん と 大きくなる)
+/** 主役の 子ども。まえむき。まどを ゆびさす → ぼんやり あしを とんとん → ばんざい で とびはねる */
+function Child({ t }: SceneProps) {
   const appear = span(t, 0.7, 1.2, backOut)
-  // お日さまを ゆびさす(ひだり のうで)→ ぼんやり で おろす → よろこびで ばんざい
+  if (appear <= 0) return null
   const point = span(t, LOOK + 0.1, LOOK + 0.6, backOut) * (1 - span(t, TIRED - 0.2, TIRED + 0.3))
   const cheer = span(t, CHEER, CHEER + 0.3, backOut)
-  const lerp = (a: number, b: number, k: number) => a + (b - a) * k
-  const leftArm: ArmPose =
-    t >= BELL
-      ? { a1: lerp(-4, -150, cheer), a2: lerp(-2, -168, cheer) }
-      : { a1: lerp(-4, -122, point), a2: lerp(-2, -130, point) }
-  const rightArm: ArmPose = t >= BELL ? { a1: lerp(4, 150, cheer), a2: lerp(2, 168, cheer) } : { a1: 4, a2: 2 }
-
-  // きもち: あっ→ ぼんやり → びっくり → うれしい
+  const hang = { swing: 6, bend: 4 }
+  // 画面の 左の うで = この子の 右うで。まどの 方へ のばす
+  const rightArm = t >= BELL ? mixLimb(hang, { swing: 150, bend: 14 }, cheer) : mixLimb(hang, { to: SUN_AIM }, point)
+  const leftArm = t >= BELL ? mixLimb(hang, { swing: 150, bend: 14 }, cheer) : hang
   const mood: Mood = t < TIRED ? 'curious' : t < BELL ? 'bored' : t < CHEER - 0.15 ? 'curious' : 'happy'
   // まどの ほう(左)を 見ている。かねが なったら、とうの ほう(右)を 見る
-  const look = t < BELL ? -0.9 : t < CHEER ? 0.9 : 0
-  const headTilt = t < TIRED ? -6 : t < BELL ? -2 + wave(t, 2.4) * 1.2 : t < CHEER ? 5 : 0
-  const tap = t >= TIRED && t < BELL ? Math.max(0, wave(t, 0.7)) * 9 : 0
-
+  const gaze = t < BELL ? -0.9 : t < CHEER ? 0.9 : 0
+  const head = t < TIRED ? -6 : t < BELL ? -2 + wave(t, 2.4) * 1.2 : t < CHEER ? 5 : 0
+  const tap = t >= TIRED && t < BELL ? Math.max(0, wave(t, 0.7)) * 28 : 0
   // よろこびの ジャンプ(2かい)
   const hopSpan = (t - CHEER) / 0.6
   const hop = hopSpan > 0 && hopSpan < 2 ? Math.abs(Math.sin(hopSpan * Math.PI)) * 4 : 0
-  const squash = 1 - (hop === 0 && hopSpan > 0 && hopSpan < 2.4 ? 0.04 : 0)
+  return (
+    <Layer scale={appear} origin={[CHILD_X, CHILD_FEET]}>
+      <Person
+        x={CHILD_X}
+        y={CHILD_FEET}
+        build="child"
+        height={CHILD_HEIGHT}
+        facing="front"
+        look={{ ...LOOKS.boy, top: CLOTHES.orange.top, bottom: CLOTHES.orange.bottom }}
+        face={FACES[mood]}
+        gaze={gaze}
+        lift={hop}
+        pose={{ rightArm, leftArm, head, leftLeg: { swing: 0, bend: 0, fore: tap, foreBend: tap } }}
+      />
+    </Layer>
+  )
+}
 
+function Scene({ t }: SceneProps) {
+  const ink = inkTiming(t, INK, DONE, 10)
+  const evening = span(t, LOOK, BELL, easeInOut)
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Clouds t={t} />
-        <Ground />
-        <House t={t} />
+        <Backdrop t={t} sun={null} time={evening * 0.9} clouds={[[46, 4, 0.8], [88, 14, 0.7]]} tufts={[6, 47, 88, 102]} />
+        <Cottage t={t} />
         <Tower t={t} />
-        <Layer opacity={appear}>
+        <Layer opacity={span(t, 0.7, 1.2)}>
           <Shadow t={t} />
         </Layer>
-        <Layer scale={appear} origin={[CHILD_X, CHILD_FEET]}>
-          <Layer y={-hop} scaleX={1} scaleY={squash} origin={[CHILD_X, CHILD_FEET]}>
-            <Layer scale={CHILD_SCALE} origin={[CHILD_X, CHILD_FEET]}>
-              <Child mood={mood} look={look} leftArm={leftArm} rightArm={rightArm} headTilt={headTilt} tap={tap} />
-            </Layer>
-          </Layer>
-        </Layer>
-        <Sigh t={t} />
+        <Child t={t} />
+        <Sigh x={47} y={74} p={span(t, TIRED + 0.2, BELL - 0.1, easeOut)} show={during(t, TIRED + 0.2, BELL - 0.1, 0.25)} dir={-1} />
         <Ring t={t} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />

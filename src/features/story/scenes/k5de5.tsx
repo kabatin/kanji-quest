@@ -10,46 +10,27 @@
  * ながれ
  *   石と どだいと はしらが できる → 大工さんが 長い いたを かついで、ふうふう あるいてくる
  *   → 地面で さびしそうな 小鳥に 気づく(「!」)→ いたを はしらの上に のせる
- *   → かなづちで トントントン(3かい)→ すこし さがって ながめる
+ *   → かなづちで トントントン(3かい)→ 見上げて ながめる
  *   → 小鳥が とんできて いたに とまり、大工さんも 小鳥も にっこり
  *   → ほね が ひかって、絵が うすくなり、字「工」が のこる
  *
- * 大工さんは、ほんものの人の つくり を守る(字の形に合わせるために、体を ゆがめない):
- *   うで は かた から出て ひじ で まがる(ひじ の場所は、手の とどく場所から 計算する)。
- *   いたを 上に もつときは、うで を まっすぐ のばして、つまさき で 立つくらい。
- *   くび は みじかく、どう の まんなか の上。
+ * 大工さんは Person(あるきは walk、手は { to } で いたと かなづちへ)。かなづちは held で 手に もたせる。
+ * 小鳥は Bird、「!」は Notice、あせ は Sweat、ためいき は Sigh。はちまきは headwear。
+ * いたを 上に もつときは、うで を まっすぐ のばして、とどく ところまで。
  */
-import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, linear, mix, span, wave, type SceneModule } from '../sceneKit'
+import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Backdrop, Bird, LOOKS, Notice, Person, personRig, Sigh, Sweat, walk, type PersonProps } from '../sceneFigures'
+import type { ReactNode } from 'react'
 
 const CHAR = '工'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const COAT = '#e8944a'
-const COAT_DARK = '#cc7a33'
-const COAT_FAR = '#b36a2b'
-const PANTS = '#4a5f86'
-const PANTS_DARK = '#3d4f72'
-const SHOE = '#6b4a36'
-const BELT = '#8b5a3a'
-const TOWEL = '#ffffff'
 const BARK = '#8c5b3c'
 const STONE = '#b8b2a7'
 const STONE_DARK = '#9a948a'
-const GRASS = '#c5e8a9'
-const LEAF = '#55b86e'
-const SUN = '#ffd24a'
 const IRON = '#8d949e'
 const IRON_DARK = '#6d747e'
-const BIRD = '#ffc94a'
-const BIRD_DARK = '#e8a92f'
-const BIRD_BELLY = '#fff1b8'
-const BEAK = '#f08a3c'
-const TWIG = '#7a5230'
-const CHEEK = '#ff9d9d'
-const MOUTH = '#b9483f'
+const TOWEL = '#ffffff'
 
 /** くぎり の時間(秒) */
 const WALK_FROM = 0.5
@@ -79,41 +60,17 @@ const DURATION = 10.1
 const FLOOR = 98
 /** 大工さんが いたを もつ ばしょ(はしらの 左がわ) */
 const STAND_X = 35
-/** 大工さんの かた(足もとから 見た 位置)と、うで の ぶぶん の長さ */
-const SHOULDER: readonly [number, number] = [0, -41]
-const ARM_PART = 13.5
-/** いたを かついで あるくとき、いたは 字の位置より 少し 上を とおる(はしらの てっぺん に ぶつからない) */
+/** いたを かついで あるくとき、いたは 字の位置より 少し 上を とおる */
 const CARRY_LIFT = 4
-/** いたの 左はしから 手までの きょり(字の 1画目の 上で、手が ふれる 所) */
+/** いたの 左はし から 手までの きょり(字の 1画目の 上で、手が ふれる 所)。大工さんの こし の x から 見た 位置 */
 const HAND_ON_PLANK: readonly [number, number] = [7.5, -66.5]
 const HAND_ON_PLANK_FAR: readonly [number, number] = [3.5, -66.5]
+/** 大工さんの 背 と 見た目 */
+const CARPENTER_HEIGHT = 60
+const CARPENTER_LOOK = { ...LOOKS.man, top: '#e8944a', bottom: '#4a5f86' } as const
 
 type Point = readonly [number, number]
 const lerp2 = (a: Point, b: Point, k: number): Point => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k]
-
-function Ground({ t }: { readonly t: number }) {
-  const sun = span(t, 0, 0.6, easeOut)
-  return (
-    <>
-      <Layer opacity={sun} rotate={t * 14} origin={[13, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="12.2" y="1.6" width="1.6" height="4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 13 13)`} />
-        ))}
-      </Layer>
-      <circle cx="13" cy="13" r={6.2 * sun} fill={SUN} />
-      <path d="M-4 99 Q18 78 44 92 Q72 72 113 94 V101 H-4 Z" fill="#e2f2d2" />
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.6} 0)`}>
-        <ellipse cx="62" cy="12" rx="7" ry="3.2" />
-        <ellipse cx="67" cy="10.4" rx="5" ry="3.2" />
-        <ellipse cx="96" cy="16" rx="6" ry="2.8" />
-      </g>
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.6" fill={GRASS} />
-      {[6, 44, 70, 101].map((x) => (
-        <path key={x} d={`M${x} 97.5 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
-    </>
-  )
-}
 
 /** どだいを うける 2つの 石 */
 function Stones({ t }: { readonly t: number }) {
@@ -149,37 +106,7 @@ function Frame({ t }: { readonly t: number }) {
   )
 }
 
-type Mood = 'effort' | 'surprise' | 'work' | 'happy'
-
-/** かた から ひじ を通って 手 へ。手が とどかない ときは、まっすぐ のばして とどく所まで。 */
-function elbowFor(hand: Point): { readonly elbow: Point; readonly hand: Point } {
-  const dx = hand[0] - SHOULDER[0]
-  const dy = hand[1] - SHOULDER[1]
-  const dist = Math.hypot(dx, dy) || 1
-  const d = Math.min(dist, ARM_PART * 2 - 0.01)
-  const ux = dx / dist
-  const uy = dy / dist
-  const mid: Point = [SHOULDER[0] + (ux * d) / 2, SHOULDER[1] + (uy * d) / 2]
-  const height = Math.sqrt(Math.max(ARM_PART ** 2 - (d / 2) ** 2, 0))
-  const a: Point = [mid[0] - uy * height, mid[1] + ux * height]
-  const b: Point = [mid[0] + uy * height, mid[1] - ux * height]
-  // ひじ は 下か うしろ へ まがる
-  const pick = Math.abs(a[1] - b[1]) < 0.5 ? (a[0] < b[0] ? a : b) : a[1] > b[1] ? a : b
-  return { elbow: pick, hand: [SHOULDER[0] + ux * d, SHOULDER[1] + uy * d] }
-}
-
-function Arm({ target, color, hammerAngle }: { readonly target: Point; readonly color: string; readonly hammerAngle?: number }) {
-  const { elbow, hand } = elbowFor(target)
-  return (
-    <>
-      <path d={`M${SHOULDER[0]} ${SHOULDER[1]} L${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={color} strokeWidth="5.6" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hand[0]} cy={hand[1]} r="3.1" fill={SKIN} />
-      {hammerAngle !== undefined ? <Hammer x={hand[0]} y={hand[1]} angle={hammerAngle} /> : null}
-    </>
-  )
-}
-
-/** かなづち。angle 0 = え が 上、かお(うつ面)が 右。 */
+/** かなづち。angle 0 = え が 上、かお(うつ面)が 右。手(x, y)に にぎられる。 */
 function Hammer({ x, y, angle }: { readonly x: number; readonly y: number; readonly angle: number }) {
   return (
     <g transform={`translate(${x} ${y}) rotate(${angle})`}>
@@ -190,149 +117,15 @@ function Hammer({ x, y, angle }: { readonly x: number; readonly y: number; reado
   )
 }
 
-function Face({ mood }: { readonly mood: Mood }) {
+/** はちまき(白い てぬぐい。あたまの まんなか が 0,0、半径 1。右むき)。うしろで むすんだ はし が ゆれる */
+function Headband({ flutter }: { readonly flutter: number }): ReactNode {
   return (
-    <>
-      <circle cx="3.2" cy="-48.6" r="1.8" fill={CHEEK} opacity="0.55" />
-      {mood === 'effort' ? (
-        <>
-          <path d="M3.2 -55 L7.4 -53.6" stroke={HAIR} strokeWidth="1.2" strokeLinecap="round" />
-          <circle cx="5.4" cy="-52" r="1.1" fill="#2b2b2b" />
-          <path d="M4.2 -47.2 h3.6" stroke={MOUTH} strokeWidth="1.3" strokeLinecap="round" />
-        </>
-      ) : null}
-      {mood === 'surprise' ? (
-        <>
-          <path d="M3.4 -56 Q5.4 -57.4 7.6 -56" fill="none" stroke={HAIR} strokeWidth="1.1" strokeLinecap="round" />
-          <circle cx="5.4" cy="-52" r="1.5" fill="#2b2b2b" />
-          <ellipse cx="6" cy="-47" rx="1.3" ry="1.8" fill={MOUTH} />
-        </>
-      ) : null}
-      {mood === 'work' ? (
-        <>
-          <path d="M3.4 -54.6 L7.4 -54.2" stroke={HAIR} strokeWidth="1.1" strokeLinecap="round" />
-          <circle cx="5.4" cy="-52" r="1.15" fill="#2b2b2b" />
-          <path d="M4 -47.8 Q6 -46 8 -48" fill="none" stroke={MOUTH} strokeWidth="1.2" strokeLinecap="round" />
-        </>
-      ) : null}
-      {mood === 'happy' ? (
-        <>
-          <path d="M3.8 -52 Q5.4 -54.2 7 -52" fill="none" stroke="#2b2b2b" strokeWidth="1.25" strokeLinecap="round" />
-          <path d="M3.8 -48.2 Q6.4 -43.6 9 -48.4 Z" fill={MOUTH} />
-        </>
-      ) : null}
-    </>
-  )
-}
-
-type CarpenterProps = {
-  readonly stride: number
-  readonly mood: Mood
-  readonly nearHand: Point
-  readonly farHand: Point
-  /** かなづちを もっているとき の かくど(もっていなければ なし) */
-  readonly hammerAngle?: number
-  readonly headTilt: number
-  readonly flutter: number
-}
-
-/** 大工さん(右むき)。足もとが (0, 0)。上へ いくほど y が マイナス。 */
-function Carpenter({ stride, mood, nearHand, farHand, hammerAngle, headTilt, flutter }: CarpenterProps) {
-  return (
-    <>
-      {/* むこうの うで: どう の うしろ */}
-      <Arm target={farHand} color={COAT_FAR} />
-      <Layer rotate={-stride * 22} origin={[0, -26]}>
-        <rect x="-3" y="-26" width="6" height="24" rx="3" fill={PANTS_DARK} />
-        <ellipse cx="1.8" cy="-1.6" rx="5.2" ry="2.6" fill={SHOE} />
-      </Layer>
-      <Layer rotate={stride * 22} origin={[0, -26]}>
-        <rect x="-3" y="-26" width="6" height="24" rx="3" fill={PANTS} />
-        <ellipse cx="1.8" cy="-1.6" rx="5.2" ry="2.6" fill={SHOE} />
-      </Layer>
-      {/* くび: みじかく、どう と あたま を つなぐ */}
-      <rect x="-2.6" y="-47" width="5.2" height="7" rx="2.2" fill={SKIN_SHADE} />
-      {/* どう */}
-      <rect x="-7.2" y="-44" width="14.4" height="20" rx="6" fill={COAT} />
-      <rect x="-7.2" y="-30" width="14.4" height="3" fill={BELT} />
-      <rect x="-1" y="-30.4" width="3" height="3.8" rx="0.8" fill="#d9b25a" />
-      <path d="M-4.4 -38 v4" stroke={COAT_DARK} strokeWidth="1.4" strokeLinecap="round" />
-      {/* てまえの うで */}
-      <Arm target={nearHand} color={COAT_DARK} hammerAngle={hammerAngle} />
-      {/* あたま */}
-      <Layer rotate={headTilt} origin={[0, -45]}>
-        <circle cx="1" cy="-52" r="8.5" fill={SKIN} />
-        <circle cx="-1.6" cy="-51" r="1.7" fill={SKIN_SHADE} />
-        <path d="M-7.3 -52 C-8 -62.4 4 -63.6 8.6 -57.6 C3 -57 -3 -55.4 -7.3 -52 Z" fill={HAIR} />
-        {/* はちまき(白い てぬぐい): うしろで むすんだ はし が ゆれる */}
-        <path d="M-7.6 -55.6 Q1 -62.6 9.4 -56" fill="none" stroke={TOWEL} strokeWidth="3" strokeLinecap="round" />
-        <path d={`M-7.4 -55.4 l${-4.2 - flutter} 1.6 M-7.4 -55.4 l${-3.4 - flutter} ${3.4 + flutter * 0.4}`} fill="none" stroke={TOWEL} strokeWidth="2" strokeLinecap="round" />
-        <circle cx="9.6" cy="-50.4" r="1.1" fill={SKIN_SHADE} />
-        <Face mood={mood} />
-      </Layer>
-    </>
-  )
-}
-
-/** いたを かついで あるく間の あせ。あたまの うしろへ とぶ。 */
-function Sweat({ t }: { readonly t: number }) {
-  const show = during(t, WALK_FROM + 0.6, ARRIVE + 0.1, 0.2)
-  if (show <= 0) return null
-  return (
-    <g opacity={show}>
-      {[0, 0.45].map((offset) => {
-        const p = ((t + offset) % 0.9) / 0.9
-        return <path key={offset} d="M0 -2.4 Q2 0.6 0 2 Q-2 0.6 0 -2.4 Z" fill="#7cc4f2" transform={`translate(${-9 - p * 6} ${-60 + p * 9}) rotate(25)`} opacity={1 - p} />
-      })}
+    <g fill="none" stroke={TOWEL} strokeLinecap="round">
+      <path d="M-0.96 -0.3 Q0 -0.85 0.96 -0.3" strokeWidth="0.34" />
+      <g transform={`rotate(${flutter} -0.96 -0.3)`}>
+        <path d="M-0.96 -0.3 Q-1.3 0 -1.28 0.5 M-0.96 -0.3 Q-1.35 -0.2 -1.5 0.2" strokeWidth="0.2" />
+      </g>
     </g>
-  )
-}
-
-/** 小鳥に 気づいた しるしの「!」(字ではなく、ぼうと てん) */
-function Notice({ t }: { readonly t: number }) {
-  const show = during(t, NOTICE + 0.1, SETTLE + 0.1, 0.15)
-  if (show <= 0) return null
-  const pop = span(t, NOTICE + 0.1, NOTICE + 0.4, backOut)
-  return (
-    <Layer x={21} y={44} scale={pop} origin={[0, 6]} opacity={show}>
-      <rect x="-1.5" y="-8" width="3" height="9" rx="1.5" fill="#f2a23a" />
-      <circle cx="0" cy="4" r="1.7" fill="#f2a23a" />
-    </Layer>
-  )
-}
-
-type BirdProps = {
-  readonly mood: 'sad' | 'happy'
-  readonly flap: number
-  readonly peck: number
-  readonly beakOpen: boolean
-}
-
-/** 小鳥(左むき)。足もとが (0, 0)。くちばし に 小えだ を くわえている。 */
-function Bird({ mood, flap, peck, beakOpen }: BirdProps) {
-  const droop = mood === 'sad' ? 1 : 0
-  const headY = -8.6 + droop * 1 + peck
-  return (
-    <>
-      <path d="M-1.4 -1.6 V0 M1.4 -1.6 V0" stroke={BEAK} strokeWidth="0.9" strokeLinecap="round" />
-      <path d={`M4 -5.4 l6 ${-3 + droop * 3.6} l-1.2 5 Z`} fill={BIRD_DARK} />
-      <ellipse cx="0" cy="-5" rx="5.3" ry="4.3" fill={BIRD} />
-      <ellipse cx="-0.6" cy="-3.6" rx="3.4" ry="2.4" fill={BIRD_BELLY} />
-      <Layer rotate={flap} origin={[1.5, -7]}>
-        <ellipse cx="1.4" cy="-5.2" rx="3.6" ry="2.2" fill={BIRD_DARK} />
-      </Layer>
-      <circle cx="-4" cy={headY} r="3.4" fill={BIRD} />
-      <path d={`M-6.9 ${headY - 0.2} l${beakOpen ? -3.2 : -2.8} ${beakOpen ? -0.4 : 0.6} l${beakOpen ? 3 : 2.6} ${beakOpen ? 1.6 : 1.2} Z`} fill={BEAK} />
-      <path d={`M-9.6 ${headY + 0.2} L-16 ${headY - 2.4} M-13 ${headY - 1.2} l-1.4 -2`} fill="none" stroke={TWIG} strokeWidth="0.8" strokeLinecap="round" />
-      {mood === 'sad' ? (
-        <>
-          <circle cx="-5.2" cy={headY - 0.7} r="0.75" fill="#2b2b2b" />
-          <path d={`M-7 ${headY - 3.2} L-4.2 ${headY - 2.2}`} stroke="#2b2b2b" strokeWidth="0.7" strokeLinecap="round" />
-        </>
-      ) : (
-        <path d={`M-6.2 ${headY - 0.6} Q-5 ${headY - 2.2} -3.8 ${headY - 0.6}`} fill="none" stroke="#2b2b2b" strokeWidth="0.8" strokeLinecap="round" />
-      )}
-    </>
   )
 }
 
@@ -368,18 +161,14 @@ function KnockFlash({ t }: { readonly t: number }) {
 function Scene({ t }: { readonly t: number }) {
   const ink = inkTiming(t, INK, DONE, 3)
 
-  // あるく: いたを かついで 左から。ついたら すこし さがって ながめる
-  const carryX = mix(t, WALK_FROM, ARRIVE, -16, STAND_X, linear)
-  const backX = mix(t, BACK, BACK_END, 0, -16, easeInOut)
-  const x = carryX + backX
-  const walking = Math.min(span(t, WALK_FROM, WALK_FROM + 0.15), 1 - span(t, ARRIVE - 0.2, ARRIVE)) + Math.min(span(t, BACK, BACK + 0.1), 1 - span(t, BACK_END - 0.15, BACK_END))
-  const stride = Math.sin(t * Math.PI * 2 * 0.8) * walking
-  const bob = -Math.abs(stride) * 1.2
+  // あるく: いたを かついで 左から
+  const w = walk(t, { from: -16, to: STAND_X, start: WALK_FROM, end: ARRIVE, build: 'adult', height: CARPENTER_HEIGHT, armSwing: 10 })
+  const x = w.x
+  const walking = w.moving ? 1 : 0
 
   // いたの たかさ: かついで あるくときは 少し 上、はしらの上に のせると 字の位置
   const settle = span(t, SETTLE, SETTLE + 0.5, easeOut)
-  const plankX = carryX - STAND_X
-  const plankY = -CARRY_LIFT * (1 - settle) + (t < NAIL ? bob : 0)
+  const plankY = -CARRY_LIFT * (1 - settle)
 
   // かなづち: かまえて(pull)、トン と うつ。3かい
   const cycle = (t - KNOCK_FIRST + KNOCK_EVERY) / KNOCK_EVERY
@@ -387,7 +176,7 @@ function Scene({ t }: { readonly t: number }) {
   const c = cycle % 1
   const pull = knocking ? (c < 0.7 ? easeOut(c / 0.7) : 1 - easeIn((c - 0.7) / 0.3)) : 0
 
-  // 手の場所(足もとから 見た 場所)。いたを もつ → かなづち → やすめ → ばんざい
+  // 手の場所(こしの x・地面から 見た 場所)。いたを もつ → かなづち → やすめ → ばんざい
   const carryNear: Point = [HAND_ON_PLANK[0], HAND_ON_PLANK[1] + CARRY_LIFT * settle]
   const carryFar: Point = [HAND_ON_PLANK_FAR[0], HAND_ON_PLANK_FAR[1] + CARRY_LIFT * settle]
   const toNail = span(t, NAIL - 0.05, NAIL + 0.2, easeInOut)
@@ -396,24 +185,40 @@ function Scene({ t }: { readonly t: number }) {
   const cheerNear: Point = [9, -64]
   const toRest = span(t, NAIL_END, BACK, easeInOut)
   const toCheer = span(t, BACK_END - 0.05, BACK_END + 0.4, backOut)
-  const nearHand = lerp2(lerp2(lerp2(carryNear, nailNear, toNail), restNear, toRest), cheerNear, toCheer)
+  const nearRel = lerp2(lerp2(lerp2(carryNear, nailNear, toNail), restNear, toRest), cheerNear, toCheer)
   const farHang: Point = [2, -21]
-  const farCheer: Point = [-4, -64]
-  const farHand = lerp2(lerp2(lerp2(carryFar, farHang, toNail), farHang, toRest), farCheer, toCheer)
+  const farCheer: Point = [4, -62]
+  const farRel = lerp2(lerp2(lerp2(carryFar, farHang, toNail), farHang, toRest), farCheer, toCheer)
+  const abs = (p: Point): Point => [x + p[0], FLOOR + p[1]]
   const hasHammer = t >= NAIL - 0.05
-  const hammerAngle = hasHammer ? mix(t, NAIL_END, BACK, -30 * pull + 3, 170) + (toCheer > 0 ? (20 - 170) * Math.min(toCheer, 1) : 0) : undefined
+  const hammerAngle = mix(t, NAIL_END, BACK, -30 * pull + 3, 170) + (toCheer > 0 ? (20 - 170) * Math.min(toCheer, 1) : 0)
 
-  const mood: Mood = t < NOTICE ? 'effort' : t < SETTLE ? 'surprise' : t < FLY ? 'work' : 'happy'
-  const headTilt = 9 * during(t, NOTICE, SETTLE + 0.4, 0.2)
-  const flutter = Math.abs(wave(t, 0.4)) * walking * 1.6
+  const face = t < NOTICE ? 'strain' : t < SETTLE ? 'surprised' : t < FLY ? 'normal' : 'joy'
+  // 小鳥を 見おろす → かなづちを うつ → 見上げて ながめる
+  const nod = 9 * during(t, NOTICE, SETTLE + 0.4, 0.2) - 10 * during(t, BACK, FLY_END + 0.3, 0.2)
+  const flutter = Math.abs(wave(t, 0.4)) * walking * 8
+  const base: PersonProps = {
+    x,
+    y: FLOOR,
+    build: 'adult',
+    height: CARPENTER_HEIGHT,
+    facing: 'right',
+    look: CARPENTER_LOOK,
+    face,
+    headwear: <Headband flutter={flutter} />,
+    pose: { ...w.pose, leftArm: { to: abs(nearRel) }, rightArm: { to: abs(farRel) }, head: nod },
+  }
+  const rig = personRig(base)
+  const hand = rig.world.arms.left.end
+  const headPos = rig.world.head
+  const headR = rig.body.headR * rig.scale
 
   // 小鳥: 地面で さびしそう → いたが できて とんでくる → とまって うたう
   const appear = span(t, 0.7, 1.1, backOut)
   const fly = span(t, FLY, FLY_END, easeInOut)
   const birdX = mix(t, FLY, FLY_END, 97, 74)
-  const birdY = 94 + (25.5 - 94) * fly - Math.sin(fly * Math.PI) * 16
+  const birdY = 89 + (24 - 89) * fly - Math.sin(fly * Math.PI) * 16
   const flying = fly > 0 && fly < 1
-  const birdMood = t < FLY ? 'sad' : 'happy'
   const peck = t < FLY ? Math.max(0, wave(t, 1.4)) * 0.8 : 0
   const hop = t >= FLY_END ? Math.abs(wave(t, 0.8)) * 0.8 : 0
   const bump = Math.sin(span(t, DONE - 0.9, DONE - 0.45) * Math.PI) * 0.06
@@ -421,25 +226,21 @@ function Scene({ t }: { readonly t: number }) {
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Ground t={t} />
+        <Backdrop t={t} clouds={[[62, 12, 1], [96, 16, 0.86]]} tufts={[6, 44, 70, 101]} />
         <Stones t={t} />
         <Frame t={t} />
-        <Layer x={plankX} y={plankY} opacity={span(t, WALK_FROM, WALK_FROM + 0.2)}>
+        <Layer x={w.x - STAND_X} y={plankY} opacity={span(t, WALK_FROM, WALK_FROM + 0.2)}>
           <Bone char={CHAR} n={1} color={BARK} width={5.2} />
         </Layer>
         <KnockFlash t={t} />
         <Layer opacity={span(t, WALK_FROM, WALK_FROM + 0.2)}>
-          <ellipse cx={x} cy={FLOOR - 0.6} rx="9" ry="2.2" fill="#000000" opacity="0.12" />
-          <g transform={`translate(${x} ${FLOOR + bob})`}>
-            <Carpenter stride={stride} mood={mood} nearHand={nearHand} farHand={farHand} hammerAngle={hammerAngle} headTilt={headTilt} flutter={flutter} />
-            <Sweat t={t} />
-          </g>
+          <Person {...base} held={hasHammer ? <Hammer x={hand[0]} y={hand[1]} angle={hammerAngle} /> : undefined} />
+          <Sweat t={t} x={headPos[0] - 6} y={headPos[1] - 2} show={during(t, WALK_FROM + 0.6, ARRIVE + 0.1, 0.2)} />
         </Layer>
-        <Notice t={t} />
+        <Notice x={headPos[0]} y={headPos[1]} r={headR} show={during(t, NOTICE + 0.1, SETTLE + 0.1, 0.15)} dir={1} />
         <Layer opacity={appear}>
-          <Layer x={birdX} y={birdY - hop} scale={t < FLY ? appear : 1} origin={[0, 0]}>
-            <Bird mood={birdMood} flap={flying ? wave(t, 0.14) * 35 : 0} peck={peck} beakOpen={t >= FLY_END && wave(t, 0.8) > 0.2} />
-          </Layer>
+          <Bird x={birdX} y={birdY - hop - peck} t={t} flying={flying} facing="left" size={1.4} />
+          <Sigh x={birdX - 8} y={birdY - 3} p={(t % 1.6) / 1.6} show={during(t, 1.1, FLY - 0.2, 0.2)} dir={-1} />
         </Layer>
         <Note t={t} />
       </Layer>

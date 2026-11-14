@@ -13,22 +13,16 @@
  *   → さいごの 左の さくで ぐるりと かこめた → じょうろで 水を やると 芽が 花に そだつ
  *   → ほね が ひかって、絵が うすくなり、字「園」が のこる
  *
- * 子どもと うさぎは、ほんものの つくり を守る(字の形に合わせるために、体を ゆがめない):
- *   うで は かた から出て ひじ で まがる。くび は みじかく どう の上。うさぎは 長い耳、ちいさな しっぽ。
+ * 子どもは Person(共通部品)。かなづち・じょうろ は 手に もつ 1回きりの 物なので、
+ *   手の 場所(personRig)に 合わせて 場面で 描き、held で わたす。うさぎ(動物)は 部品が ないので 元の絵のまま。
  *   さく は、はたけを ぐるりと かこむ 四角い かこい(上から見た 形)。
  */
-import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { CLOTHES, Flower, LOOKS, mixLimb, Notice, Person, personRig, Sun, Sweat, type Expression, type Limb } from '../sceneFigures'
 
 const CHAR = '園'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const SHIRT = '#f2a03d'
-const SHIRT_DARK = '#d98a2a'
-const PANTS = '#3e5c86'
-const SHOE = '#6b4a36'
 const FENCE = '#b57a45'
 const FENCE_DARK = '#8c5b3c'
 const LAWN = '#dff0c8'
@@ -36,7 +30,6 @@ const SOIL = '#c99a6b'
 const SOIL_DARK = '#b3835a'
 const LEAF = '#55b86e'
 const LEAF_DARK = '#3f9c59'
-const SUN = '#ffd24a'
 const RABBIT = '#cdbba7'
 const RABBIT_DARK = '#b3a08c'
 const RABBIT_EAR = '#f1b5b5'
@@ -44,7 +37,6 @@ const CAN = '#5aaee8'
 const CAN_DARK = '#3f8cc8'
 const DROP = '#7cc4f2'
 const EYE = '#2b2b2b'
-const MOUTH = '#b9483f'
 
 /** くぎり の時間(秒) */
 const RABBIT_IN = 1.2
@@ -61,12 +53,10 @@ const INK = 7.0
 const DONE = 10.2
 const DURATION = 10.8
 
-/** 子どもの まんなか(x)。子どもは この線を じく に、左右対称に 描く */
+/** 子どもの まんなか(こし の x)と 足もと、せたけ */
 const KX = 58
-const ARM_LEN = 8
-const SHOULDER_L: readonly [number, number] = [-5.6, 51.5]
-const SHOULDER_R: readonly [number, number] = [5.6, 51.5]
 const FEET_Y = 88
+const KID_HEIGHT = 56
 /** 芽(左はし の 1本)の いち。うさぎが たべに くる */
 const SPROUT_X = 30
 const GROUND_Y = 88
@@ -74,57 +64,35 @@ const GROUND_Y = 88
 const rad = (deg: number) => (deg * Math.PI) / 180
 const lerp = (a: number, b: number, p: number) => a + (b - a) * p
 
-/** うで の かっこう。swing = ま下から 右へ ふった角度 / bend = ひじ の まがり */
-type ArmPose = { readonly swing: number; readonly bend: number }
+type Pt = readonly [number, number]
+type Mood = 'smile' | 'worried' | 'determined' | 'happy'
 
-/** かた → ひじ → 手 の いち(子どもの まんなか が x=0) */
-function armGeom(shoulder: readonly [number, number], pose: ArmPose) {
-  const elbow = [shoulder[0] + Math.sin(rad(pose.swing)) * ARM_LEN, shoulder[1] + Math.cos(rad(pose.swing)) * ARM_LEN] as const
-  const fore = pose.swing + pose.bend
-  const hand = [elbow[0] + Math.sin(rad(fore)) * ARM_LEN, elbow[1] + Math.cos(rad(fore)) * ARM_LEN] as const
-  return { elbow, hand, fore }
-}
+/** 右手(画面の 右)の うで: かなづち の ふりあげ・ふりおろし の 手の 場所 */
+const HAMMER_UP: Limb = { to: [KX + 10, 31] }
+const HAMMER_HIT: Limb = { to: [KX + 16, 56] }
+/** 左手(画面の 左)で じょうろ を かたむける とき の 手 */
+const CAN_HAND: Pt = [KX - 17, 50]
 
 /** かなづち を ふる うで。ふりあげて、ふりおろす(HITS の しゅんかんに 当たる) */
-function hammerPose(t: number): ArmPose {
-  const REST = 12
-  const UP = 150
-  const HIT = 40
-  const toBend = (a: number) => 10 + ((a - REST) * 15) / (UP - REST)
-  const make = (a: number): ArmPose => ({ swing: a, bend: toBend(a) })
-  if (t < RAISE) return make(REST)
+function hammerArm(t: number, rest: Limb): Limb {
+  if (t < RAISE) return rest
   const next = HITS.findIndex((h) => h > t)
-  if (next < 0) return make(mix(t, HITS[HITS.length - 1], HITS[HITS.length - 1] + 0.5, HIT, REST, easeInOut))
+  const last = HITS[HITS.length - 1]
+  if (next < 0) return mixLimb(HAMMER_HIT, rest, easeInOut(span(t, last, last + 0.5)))
   const start = next === 0 ? RAISE : HITS[next - 1]
   const hit = HITS[next]
   const strikeFrom = hit - 0.1
-  if (t >= strikeFrom) return make(lerp(UP, HIT, easeIn(span(t, strikeFrom, hit))))
-  return make(lerp(next === 0 ? REST : HIT, UP, span(t, start, strikeFrom, easeOut)))
+  if (t >= strikeFrom) return mixLimb(HAMMER_UP, HAMMER_HIT, easeIn(span(t, strikeFrom, hit)))
+  return mixLimb(next === 0 ? rest : HAMMER_HIT, HAMMER_UP, span(t, start, strikeFrom, easeOut))
 }
-
-/** かなづち が 当たる 場所(画面の 座標)。どの回も 同じ 姿勢で 当たる */
-const HIT_POSE = hammerPose(HITS[0])
-const HIT_GEOM = armGeom(SHOULDER_R, HIT_POSE)
-const HIT_POINT: readonly [number, number] = [
-  KX + HIT_GEOM.hand[0] + Math.sin(rad(HIT_GEOM.fore)) * 9,
-  HIT_GEOM.hand[1] + Math.cos(rad(HIT_GEOM.fore)) * 9,
-]
-
-type Mood = 'smile' | 'worried' | 'determined' | 'happy'
 
 /* ───────── にわ ───────── */
 
 function Ground({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
   const soil = span(t, 0, 0.6, easeOut)
   return (
     <>
-      <Layer opacity={sun} rotate={t * 14} origin={[9, 9]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="8.3" y="0.8" width="1.4" height="3" rx="0.7" fill={SUN} transform={`rotate(${i * 45} 9 9)`} />
-        ))}
-      </Layer>
-      <circle cx="9" cy="9" r={4.8 * sun} fill={SUN} />
+      <Sun t={t} x={9} y={9} r={4.8} />
       <rect x="3" y="12" width="103" height="87" rx="12" fill={LAWN} />
       <Layer scaleY={soil} origin={[54.5, 94]}>
         <rect x="20" y="21" width="69" height="73" rx="5" fill={SOIL} />
@@ -198,64 +166,21 @@ function Rabbit({ headDown, chew }: { readonly headDown: number; readonly chew: 
 
 /* ───────── 子ども ───────── */
 
-function Face({ mood }: { readonly mood: Mood }) {
-  return (
-    <>
-      <circle cx="-5.6" cy="41.4" r="1.8" fill="#ff9d9d" opacity="0.55" />
-      <circle cx="5.6" cy="41.4" r="1.8" fill="#ff9d9d" opacity="0.55" />
-      {mood === 'happy' ? (
-        <>
-          <path d="M-4.9 38.8 Q-3.3 36.6 -1.7 38.8 M1.7 38.8 Q3.3 36.6 4.9 38.8" fill="none" stroke={EYE} strokeWidth="1.2" strokeLinecap="round" />
-          <path d="M-2.6 41.8 Q0 46 2.6 41.8 Z" fill={MOUTH} />
-        </>
-      ) : (
-        <>
-          <circle cx="-3.3" cy="38.8" r="1.15" fill={EYE} />
-          <circle cx="3.3" cy="38.8" r="1.15" fill={EYE} />
-          {mood === 'worried' && (
-            <>
-              <path d="M-5.2 35.6 L-2 34.6 M5.2 35.6 L2 34.6" fill="none" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-              <ellipse cx="0" cy="43" rx="1.3" ry="1.7" fill={MOUTH} />
-            </>
-          )}
-          {mood === 'determined' && (
-            <>
-              <path d="M-5.2 34.6 L-2 35.8 M5.2 34.6 L2 35.8" fill="none" stroke={HAIR} strokeWidth="1.1" strokeLinecap="round" />
-              <path d="M-1.8 42.8 H1.8" stroke={MOUTH} strokeWidth="1.2" strokeLinecap="round" />
-            </>
-          )}
-          {mood === 'smile' && <path d="M-2.4 42 Q0 44.4 2.4 42" fill="none" stroke={MOUTH} strokeWidth="1.2" strokeLinecap="round" />}
-        </>
-      )}
-    </>
-  )
-}
-
-/** かた から出て、ひじ で まがる うで。手に さきの ものを もたせる。 */
-function Arm({ shoulder, pose, children }: { readonly shoulder: readonly [number, number]; readonly pose: ArmPose; readonly children?: (hand: readonly [number, number], fore: number) => React.ReactNode }) {
-  const { elbow, hand, fore } = armGeom(shoulder, pose)
-  return (
-    <>
-      <path d={`M${shoulder[0]} ${shoulder[1]} L${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={SHIRT_DARK} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hand[0]} cy={hand[1]} r="2.9" fill={SKIN} />
-      {children?.(hand, fore)}
-    </>
-  )
-}
+const FACES: Readonly<Record<Mood, Expression>> = { smile: 'smile', worried: 'worried', determined: 'strain', happy: 'joy' }
 
 /** かなづち。手が にぎった ところから、うでの むき に そって のびる(あたまが さき) */
-function Hammer({ hand, fore }: { readonly hand: readonly [number, number]; readonly fore: number }) {
+function Hammer({ hand, angle }: { readonly hand: Pt; readonly angle: number }) {
   return (
-    <g transform={`translate(${hand[0]} ${hand[1]}) rotate(${-fore})`}>
-      <rect x="-1" y="-2" width="2" height="11" rx="1" fill={FENCE_DARK} />
-      <rect x="-4.2" y="7.4" width="8.4" height="4.2" rx="1.2" fill="#8a96a6" />
-      <rect x="-4.2" y="7.4" width="8.4" height="1.4" rx="0.7" fill="#b9c3d0" />
+    <g transform={`translate(${hand[0]} ${hand[1]}) rotate(${angle})`}>
+      <rect x="-2" y="-1" width="11" height="2" rx="1" fill={FENCE_DARK} />
+      <rect x="7.4" y="-4.2" width="4.2" height="8.4" rx="1.2" fill="#8a96a6" />
+      <rect x="10.2" y="-4.2" width="1.4" height="8.4" rx="0.7" fill="#b9c3d0" />
     </g>
   )
 }
 
 /** じょうろ。ななめに かたむけて 水を そそぐ。 */
-function WateringCan({ hand }: { readonly hand: readonly [number, number] }) {
+function WateringCan({ hand }: { readonly hand: Pt }) {
   return (
     <g transform={`translate(${hand[0]} ${hand[1]}) rotate(-35)`}>
       <path d="M-3.5 1.5 L-9.2 -3" stroke={CAN_DARK} strokeWidth="1.8" strokeLinecap="round" />
@@ -267,42 +192,57 @@ function WateringCan({ hand }: { readonly hand: readonly [number, number] }) {
   )
 }
 
-type KidProps = {
-  readonly mood: Mood
-  readonly left: ArmPose
-  readonly right: ArmPose
-  readonly hammer: number
-  readonly can: number
-  readonly tilt: number
+/** 子どもの 場所・かっこう・きもち(正面)。うで は 点({ to })と 角度で。 */
+function kidAt(t: number) {
+  const mood: Mood = t < WORRY ? 'smile' : t < SCARE - 0.1 ? 'worried' : t < 5.2 ? 'determined' : t < 5.9 ? 'smile' : 'happy'
+  const shake = t >= WORRY && t < RAISE ? wave(t, 0.3) * 6 : 0
+  const joy = span(t, 6.0, 6.8)
+  const jump = Math.abs(Math.sin(joy * Math.PI * 2)) * 3.2 * (joy > 0 && joy < 1 ? 1 : 0)
+  // 右手(画面の 右)で かなづち、左手(画面の 左)で じょうろ
+  const pour = span(t, 5.2, 5.7, easeInOut) * (1 - span(t, WATER_END, WATER_END + 0.35))
+  const hang: Limb = { swing: 12 + shake, bend: 10 }
+  const tilt = mood === 'worried' ? -4 : mood === 'happy' ? 3 : 0
+  return {
+    x: KX,
+    y: FEET_Y,
+    build: 'child' as const,
+    height: KID_HEIGHT,
+    facing: 'front' as const,
+    lift: jump,
+    pose: { leftArm: hammerArm(t, hang), rightArm: mixLimb(hang, { to: CAN_HAND }, pour), head: tilt },
+    face: FACES[mood],
+  }
 }
 
-function Kid({ mood, left, right, hammer, can, tilt }: KidProps) {
+/** 手に もたせる もの(かなづち・じょうろ)。手の 場所は personRig から */
+function KidHeld({ t, rig }: { readonly t: number; readonly rig: ReturnType<typeof personRig> }) {
+  const hammer = span(t, RAISE - 0.15, RAISE) * (1 - span(t, 5.15, 5.4))
+  const can = span(t, 5.2, 5.4) * (1 - span(t, WATER_END, WATER_END + 0.3))
+  const { mid, end } = rig.world.arms.left
+  const angle = (Math.atan2(end[1] - mid[1], end[0] - mid[0]) * 180) / Math.PI
   return (
     <>
-      <rect x="-5.2" y="68" width="4.4" height="18.5" rx="2.2" fill={PANTS} />
-      <rect x="0.8" y="68" width="4.4" height="18.5" rx="2.2" fill={PANTS} />
-      <ellipse cx="-3.4" cy="86.8" rx="4.4" ry="2.4" fill={SHOE} />
-      <ellipse cx="3.4" cy="86.8" rx="4.4" ry="2.4" fill={SHOE} />
-      {/* くび: どう と あたま の間を みじかく つなぐ */}
-      <rect x="-2.2" y="43" width="4.4" height="6" rx="2" fill={SKIN_SHADE} />
-      <rect x="-6.5" y="47" width="13" height="23" rx="5.5" fill={SHIRT} />
-      <path d="M-5 63 h10" stroke={SHIRT_DARK} strokeWidth="1.4" strokeLinecap="round" />
-      <Arm shoulder={SHOULDER_L} pose={left}>
-        {(hand) => (can > 0 ? <Layer opacity={can}><WateringCan hand={hand} /></Layer> : null)}
-      </Arm>
-      <Arm shoulder={SHOULDER_R} pose={right}>
-        {(hand, fore) => (hammer > 0 ? <Layer opacity={hammer}><Hammer hand={hand} fore={fore} /></Layer> : null)}
-      </Arm>
-      <Layer rotate={tilt} origin={[0, 44]}>
-        <circle cx="-8.2" cy="39.4" r="1.9" fill={SKIN} />
-        <circle cx="8.2" cy="39.4" r="1.9" fill={SKIN} />
-        <circle cx="0" cy="38" r="8.4" fill={SKIN} />
-        <path d="M-8.6 36 C-9.2 28 -3 25.4 0 25.6 C4 25.4 9.2 28 8.6 36 C6 32 3 31 0 31.3 C-3 31 -6 32 -8.6 36 Z" fill={HAIR} />
-        <path d="M2 26.4 Q3.2 22.6 5 25 Q6 22 7 25.4" fill="none" stroke={HAIR} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <Face mood={mood} />
-      </Layer>
+      {hammer > 0 && (
+        <Layer opacity={hammer}>
+          <Hammer hand={end} angle={angle} />
+        </Layer>
+      )}
+      {can > 0 && (
+        <Layer opacity={can}>
+          <WateringCan hand={rig.world.arms.right.end} />
+        </Layer>
+      )}
     </>
   )
+}
+
+/** かなづち の あたまの 場所(当たる しゅんかん): 手から うでの むき に 9.5 すすんだ ところ */
+function hammerHead(t: number): Pt {
+  const { mid, end } = personRig(kidAt(t)).world.arms.left
+  const dx = end[0] - mid[0]
+  const dy = end[1] - mid[1]
+  const len = Math.hypot(dx, dy) || 1
+  return [end[0] + (dx / len) * 9.5, end[1] + (dy / len) * 9.5]
 }
 
 /* ───────── かこい(さく) ───────── */
@@ -365,6 +305,7 @@ function Fence({ t }: SceneProps) {
 
 /** かなづち が 当たった しゅんかんの わ */
 function Impact({ t }: SceneProps) {
+  const point = hammerHead(HITS[0])
   return (
     <>
       {HITS.map((h) => {
@@ -372,35 +313,14 @@ function Impact({ t }: SceneProps) {
         if (q <= 0 || q >= 1) return null
         return (
           <g key={h} opacity={1 - q}>
-            <ellipse cx={HIT_POINT[0]} cy={HIT_POINT[1] + 1} rx={2 + 7 * q} ry={1 + 2.4 * q} fill="none" stroke="#ffffff" strokeWidth="1.2" />
-            <circle cx={HIT_POINT[0] - 3 - 4 * q} cy={HIT_POINT[1] - 3 * q} r="0.9" fill="#ffffff" />
-            <circle cx={HIT_POINT[0] + 3 + 4 * q} cy={HIT_POINT[1] - 3.4 * q} r="0.9" fill="#ffffff" />
+            <ellipse cx={point[0]} cy={point[1] + 1} rx={2 + 7 * q} ry={1 + 2.4 * q} fill="none" stroke="#ffffff" strokeWidth="1.2" />
+            <circle cx={point[0] - 3 - 4 * q} cy={point[1] - 3 * q} r="0.9" fill="#ffffff" />
+            <circle cx={point[0] + 3 + 4 * q} cy={point[1] - 3.4 * q} r="0.9" fill="#ffffff" />
           </g>
         )
       })}
     </>
   )
-}
-
-/** 「!」 を ひらめく しゅんかん、子どもの あたまの上に */
-function Alert({ t }: SceneProps) {
-  const show = during(t, IDEA, IDEA + 0.5, 0.12)
-  if (show <= 0) return null
-  const pop = backOut(span(t, IDEA, IDEA + 0.2))
-  return (
-    <Layer opacity={show} scale={pop} origin={[KX + 12, 25]}>
-      <rect x={KX + 10.9} y="14" width="2.4" height="8" rx="1.2" fill="#e8534a" />
-      <circle cx={KX + 12.1} cy="25" r="1.4" fill="#e8534a" />
-    </Layer>
-  )
-}
-
-/** こまっている あいだの あせ */
-function Sweat({ t }: SceneProps) {
-  const show = during(t, WORRY + 0.1, SCARE, 0.2)
-  if (show <= 0) return null
-  const p = ((t * 1.3) % 1)
-  return <path d="M0 -2.4 Q2 0.6 0 2 Q-2 0.6 0 -2.4 Z" fill={DROP} opacity={show * (1 - p)} transform={`translate(${KX + 10.5} ${30 + p * 6})`} />
 }
 
 /** じょうろ から ふる 水 */
@@ -420,21 +340,13 @@ function WaterDrops({ t, tip }: SceneProps & { readonly tip: readonly [number, n
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 13)
 
-  // 子ども: ぽん と あらわれる。きもちは こまる → きりっ → ほっ → うれしい
+  // 子ども: ぽん と あらわれる
   const kidIn = span(t, 0.25, 0.85, backOut)
-  const mood: Mood = t < WORRY ? 'smile' : t < SCARE - 0.1 ? 'worried' : t < 5.2 ? 'determined' : t < 5.9 ? 'smile' : 'happy'
-  const shake = t >= WORRY && t < RAISE ? wave(t, 0.3) * 6 : 0
-  const joy = span(t, 6.0, 6.8)
-  const jump = Math.abs(Math.sin(joy * Math.PI * 2)) * 3.2 * (joy > 0 && joy < 1 ? 1 : 0)
-
-  // うで: こまると ゆれる。かなづち を ふる。さいごに じょうろ で 水を やる
-  const hammerOn = span(t, RAISE - 0.15, RAISE) * (1 - span(t, 5.15, 5.4))
-  const right: ArmPose = t < RAISE ? { swing: 12 + shake, bend: 10 } : hammerPose(t)
-  const pour = span(t, 5.2, 5.7, easeInOut) * (1 - span(t, WATER_END, WATER_END + 0.35))
-  const canOn = span(t, 5.2, 5.4) * (1 - span(t, WATER_END, WATER_END + 0.3))
-  const left: ArmPose = { swing: lerp(-12 - shake, -75, pour), bend: lerp(-10, -10, pour) }
-  const leftHand = armGeom(SHOULDER_L, left).hand
-  const tip: readonly [number, number] = [KX + leftHand[0] - 9.5, leftHand[1] + 2.8]
+  const kid = kidAt(t)
+  const rig = personRig(kid)
+  const head = rig.world.head
+  const headR = rig.body.headR * rig.scale
+  const tip: Pt = [rig.world.arms.right.end[0] - 9.5, rig.world.arms.right.end[1] + 2.8]
 
   // うさぎ: 左から はねて きて、芽を たべる。かなづち の 音に びっくり して 左へ にげる
   const come = span(t, RABBIT_IN, NIBBLE - 0.1, easeOut)
@@ -462,8 +374,8 @@ function Scene({ t }: SceneProps) {
         <Ground t={t} />
         <Layer opacity={span(t, 0.3, 0.7)}>
           <Plant x={SPROUT_X} size={sprout} color="#ff8fb1" />
-          <Plant x={70} size={1} color="#ffd24a" />
-          <Plant x={77.5} size={1} color="#ffffff" />
+          <Flower x={70} y={GROUND_Y} color="#ffd24a" size={1.15} />
+          <Flower x={77.5} y={GROUND_Y} color="#ffffff" size={1.15} />
         </Layer>
         {rabbitShown && (
           <Layer x={rabbitX + 8} y={GROUND_Y + 1 - hop - startle} scaleX={flee > 0 ? 1 : -1}>
@@ -471,12 +383,12 @@ function Scene({ t }: SceneProps) {
           </Layer>
         )}
         <Fence t={t} />
-        <Layer x={KX} y={-jump} opacity={span(t, 0.25, 0.5)} scale={kidIn} origin={[0, FEET_Y]}>
-          <Kid mood={mood} left={left} right={right} hammer={hammerOn} can={canOn} tilt={mood === 'worried' ? -4 : mood === 'happy' ? 3 : 0} />
+        <Layer opacity={span(t, 0.25, 0.5)} scale={kidIn} origin={[KX, FEET_Y]}>
+          <Person {...kid} look={{ ...LOOKS.boy, top: CLOTHES.orange.top }} held={<KidHeld t={t} rig={rig} />} />
         </Layer>
         <Impact t={t} />
-        <Alert t={t} />
-        <Sweat t={t} />
+        <Notice x={head[0]} y={head[1]} r={headR} show={during(t, IDEA, IDEA + 0.5, 0.12)} dir={1} />
+        <Sweat t={t} x={head[0] + headR} y={head[1] - headR} show={during(t, WORRY + 0.1, SCARE, 0.2)} dir={1} />
         <WaterDrops t={t} tip={tip} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />

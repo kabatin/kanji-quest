@@ -23,16 +23,12 @@
  */
 import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Canopy, Clouds, Hills, Meadow, PALETTE, Sigh, Sun } from '../sceneFigures'
 
 const CHAR = '林'
 
-const SKY_SUN = '#ffd24a'
-const BARK = '#8c5b3c'
-const BARK_DARK = '#70452b'
-const LEAF = '#55b86e'
-const LEAF_DARK = '#3f9c59'
-const LEAF_LIGHT = '#8bd69a'
-const GRASS = '#c5e8a9'
+const BARK = PALETTE.bark
+const BARK_DARK = PALETTE.barkDark
 const SOIL = '#8a5a3a'
 const SOIL_DARK = '#6a4128'
 const BODY = '#c9733a'
@@ -89,26 +85,12 @@ const rad = (deg: number) => (deg * Math.PI) / 180
 /* ───────── 景色 ───────── */
 
 function Ground({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
   return (
     <>
-      <Layer opacity={sun} rotate={t * 14} origin={[100, 11]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="99.2" y="-0.4" width="1.6" height="4" rx="0.8" fill={SKY_SUN} transform={`rotate(${i * 45} 100 11)`} />
-        ))}
-      </Layer>
-      <circle cx="100" cy="11" r={5.4 * sun} fill={SKY_SUN} />
-      <path d="M-4 99 Q18 78 44 91 Q72 72 113 93 V101 H-4 Z" fill="#e2f2d2" />
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.4} 0)`}>
-        <ellipse cx="-6" cy="60" rx="7" ry="3.2" />
-        <ellipse cx="-1" cy="58.4" rx="5" ry="3.2" />
-        <ellipse cx="90" cy="50" rx="6" ry="2.8" />
-        <ellipse cx="94.5" cy="48.4" rx="4.4" ry="3" />
-      </g>
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.6" fill={GRASS} />
-      {[6, 18, 46, 84, 102].map((x) => (
-        <path key={x} d={`M${x} 97.5 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
+      <Sun t={t} x={100} y={11} r={5.4} />
+      <Hills />
+      <Clouds t={t} at={[[-6, 60, 0.9], [90, 50, 0.8]]} speed={1.4} />
+      <Meadow tufts={[6, 18, 46, 84, 102]} />
     </>
   )
 }
@@ -150,20 +132,7 @@ function Tree({ x, strokes, crown, trunk, boughs, leaves, sway }: TreeProps) {
           <Bone char={CHAR} n={right} color={BARK} width={5} />
         </Layer>
       )}
-      {leaves > 0 && (
-        <Layer scale={leaves} rotate={sway} origin={[x, 38]}>
-          <g transform={`translate(0 ${crown})`}>
-            <circle cx={x - 12} cy="25" r="11" fill={LEAF_DARK} />
-            <circle cx={x + 12} cy="25" r="11" fill={LEAF_DARK} />
-            <circle cx={x} cy="16.5" r="13.5" fill={LEAF_DARK} />
-            <circle cx={x - 6.5} cy="26" r="9.5" fill={LEAF} />
-            <circle cx={x + 6.5} cy="26" r="9.5" fill={LEAF} />
-            <circle cx={x} cy="21.5" r="10.5" fill={LEAF} />
-            <circle cx={x - 6} cy="14" r="4.2" fill={LEAF_LIGHT} />
-            <circle cx={x + 7.5} cy="17.5" r="3" fill={LEAF_LIGHT} />
-          </g>
-        </Layer>
-      )}
+      <Canopy x={x} y={crown + 19.5} r={22} grow={leaves} sway={sway} />
     </>
   )
 }
@@ -289,17 +258,9 @@ function Squirrel({ mood, nearArm, farArm, headTilt, tailSway, holding }: Squirr
 /* ───────── にぎやかし ───────── */
 
 /** ひとりぼっちの ため息「ふう」。りすの くち から 左うえへ。 */
-function Sigh({ t }: SceneProps) {
+function LonelySigh({ t }: SceneProps) {
   const from = ENTER_TO + 0.5
-  const show = during(t, from, DROP - 0.1, 0.2)
-  if (show <= 0) return null
-  const p = span(t, from, DROP - 0.1, easeOut)
-  return (
-    <g opacity={show}>
-      <ellipse cx={WAIT_X - 8 - p * 5} cy={72 - p * 4} rx={2.4 + p * 2} ry={1.6 + p * 1.3} fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.6" />
-      <ellipse cx={WAIT_X - 4 - p * 3} cy={74 - p * 2} rx={1.2 + p * 0.8} ry={0.9 + p * 0.5} fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.5" />
-    </g>
-  )
+  return <Sigh x={WAIT_X - 11} y={GROUND - 15 * SIZE} p={span(t, from, DROP - 0.1, easeOut)} show={during(t, from, DROP - 0.1, 0.2)} dir={-1} />
 }
 
 /** びっくりの「!」 */
@@ -356,9 +317,9 @@ function Planting({ t }: SceneProps) {
       )}
       {sprout > 0 && sproutFade > 0 && (
         <Layer scale={sprout} opacity={sproutFade} origin={[TRUNK_B, HOLE_Y]}>
-          <path d={`M${TRUNK_B} ${HOLE_Y} q0.8 -4 -0.2 -8`} fill="none" stroke={LEAF_DARK} strokeWidth="1.5" strokeLinecap="round" />
-          <ellipse cx={TRUNK_B - 3.2} cy={HOLE_Y - 8.4} rx="3.4" ry="1.8" fill={LEAF} transform={`rotate(-25 ${TRUNK_B - 3.2} ${HOLE_Y - 8.4})`} />
-          <ellipse cx={TRUNK_B + 2.6} cy={HOLE_Y - 8} rx="3.2" ry="1.7" fill={LEAF_LIGHT} transform={`rotate(25 ${TRUNK_B + 2.6} ${HOLE_Y - 8})`} />
+          <path d={`M${TRUNK_B} ${HOLE_Y} q0.8 -4 -0.2 -8`} fill="none" stroke={PALETTE.leafDark} strokeWidth="1.5" strokeLinecap="round" />
+          <ellipse cx={TRUNK_B - 3.2} cy={HOLE_Y - 8.4} rx="3.4" ry="1.8" fill={PALETTE.leaf} transform={`rotate(-25 ${TRUNK_B - 3.2} ${HOLE_Y - 8.4})`} />
+          <ellipse cx={TRUNK_B + 2.6} cy={HOLE_Y - 8} rx="3.2" ry="1.7" fill={PALETTE.leafLight} transform={`rotate(25 ${TRUNK_B + 2.6} ${HOLE_Y - 8})`} />
         </Layer>
       )}
     </>
@@ -484,7 +445,7 @@ function Scene({ t }: SceneProps) {
           </Layer>
         </Layer>
         <FallingAcorn t={t} handX={WAIT_X - hold1[0] * SIZE} handY={GROUND + hold1[1] * SIZE} />
-        <Sigh t={t} />
+        <LonelySigh t={t} />
         <Bang t={t} />
         <Cheers t={t} x={BACK_X} />
       </Layer>

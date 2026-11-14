@@ -22,10 +22,10 @@
  */
 import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Canopy, Cloud, Hills, PALETTE, Sun } from '../sceneFigures'
 
 const CHAR = '木'
 
-const SUN = '#ffd24a'
 const SOIL = '#a8734a'
 const SOIL_DARK = '#8c5b3c'
 const SOIL_LIGHT = '#c99467'
@@ -33,8 +33,6 @@ const HOLE = '#6d4630'
 const ROOT = '#f4dfb6'
 const BARK = '#8c5b3c'
 const LEAF = '#55b86e'
-const LEAF_DARK = '#3f9c59'
-const LEAF_LIGHT = '#8bd69a'
 const GRASS = '#c5e8a9'
 const FUR = '#c9803f'
 const FUR_DARK = '#a9642c'
@@ -236,17 +234,11 @@ function Acorn({ at }: { readonly at: Pt }) {
 }
 
 function Ground({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
   return (
     <>
-      <Layer opacity={sun} rotate={t * 14} origin={[13, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="12.2" y="1.6" width="1.6" height="4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 13 13)`} />
-        ))}
-      </Layer>
-      <circle cx="13" cy="13" r={6.2 * sun} fill={SUN} />
+      <Sun t={t} />
       {/* とおくの おか(おくゆき) */}
-      <path d="M-4 38 Q18 22 44 33 Q72 20 113 34 V40 H-4 Z" fill="#e2f2d2" />
+      <Hills y={-60} />
       {/* 土の だんめん */}
       <rect x="-2" y={GROUND_Y} width="113" height="73" fill={SOIL} />
       <path d={`M-2 62 Q20 58 40 64 T80 62 T111 66 V111 H-2 Z`} fill={SOIL_DARK} opacity="0.35" />
@@ -304,7 +296,7 @@ function Crumbs({ t }: SceneProps) {
   )
 }
 
-function Cloud({ t }: SceneProps) {
+function RainCloud({ t }: SceneProps) {
   const x = t < CLOUD_OUT ? mix(t, CLOUD_IN, CLOUD_IN + 0.7, 130, 66, easeOut) : mix(t, CLOUD_OUT, CLOUD_OUT + 0.8, 66, 134, easeIn)
   if (x > 125) return null
   const drops = during(t, CLOUD_IN + 0.7, CLOUD_OUT - 0.1, 0.15)
@@ -319,11 +311,8 @@ function Cloud({ t }: SceneProps) {
         })}
       </g>
       <g transform={`translate(${x} 8)`}>
-        <ellipse cx="0" cy="2" rx="12" ry="3.6" fill={CLOUD_DARK} />
-        <circle cx="-5" cy="-1" r="4.4" fill={CLOUD} />
-        <circle cx="1.5" cy="-3" r="5.6" fill={CLOUD} />
-        <circle cx="7" cy="-0.4" r="4" fill={CLOUD} />
-        <ellipse cx="0" cy="1.2" rx="11" ry="2.6" fill={CLOUD} />
+        <Cloud x={-4} y={2} size={1.5} opacity={1} color={CLOUD} />
+        <ellipse cx="0" cy="3.6" rx="11" ry="1.6" fill={CLOUD_DARK} />
       </g>
     </>
   )
@@ -344,15 +333,7 @@ function Tree({ t }: SceneProps) {
       {rootG > 0 && <Bone char={CHAR} n={4} color={ROOT} width={2.8} from={0} to={rootG} />}
       {/* みき: 2画目の うえがわ。じめんから 上へ のびる */}
       {shootG > 0 && <Bone char={CHAR} n={2} color={BARK} width={5.4} from={GROUND_AT - GROUND_AT * shootG} to={GROUND_AT + 0.015} />}
-      <Layer scale={crown} rotate={sway} origin={[54, 24]}>
-        <circle cx="46.5" cy="17" r="7.4" fill={LEAF_DARK} />
-        <circle cx="62" cy="17" r="7.4" fill={LEAF_DARK} />
-        <circle cx="54" cy="12" r="9.4" fill={LEAF_DARK} />
-        <circle cx="49.5" cy="18" r="6.4" fill={LEAF} />
-        <circle cx="59" cy="18" r="6.4" fill={LEAF} />
-        <circle cx="54" cy="14.5" r="7.4" fill={LEAF} />
-        <circle cx="50.6" cy="11.4" r="2.8" fill={LEAF_LIGHT} />
-      </Layer>
+      <Canopy x={54} y={9} r={16} grow={span(t, CROWN_AT, CROWN_AT + 0.7)} sway={sway} />
       <Layer scale={nut} origin={[54, 24]}>
         <Acorn at={[47.2, 22.6]} />
         <Acorn at={[61.4, 22]} />
@@ -437,9 +418,9 @@ function Scene({ t }: SceneProps) {
         </Layer>
         {t < LANDED && <Acorn at={acorn} />}
         <Layer opacity={idea} scale={0.6 + 0.4 * idea} origin={[48.5, 8.5]}>
-          <Star cx={48.5} cy={8.5} r={3.6} color={SUN} spin={t * 60} />
+          <Star cx={48.5} cy={8.5} r={3.6} color={PALETTE.sun} spin={t * 60} />
         </Layer>
-        <Cloud t={t} />
+        <RainCloud t={t} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Layer scale={1 + bump} origin={[54.5, 54.5]}>

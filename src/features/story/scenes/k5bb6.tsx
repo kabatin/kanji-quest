@@ -17,14 +17,16 @@
  *   → 雨が やんで お日さまが でる。子ぶたも かけこんできて、みんなで にこにこ(えんとつから けむり)
  *   → ほね が ひかって、絵が うすくなり、字「家」が のこる
  *
+ * 背景・雨・ハート・お日さまは 共通部品。ぶた(動物の 部品は まだ ない)と 家(はしら と やね が ほね)は 場面で 描く。
+ *
  * ぶたは、ほんものの つくり を守る(字の形に合わせるために ゆがめない):
  *   よこむきの どうたい。あし は 4ほん で、からだの 下から まっすぐ。みみ は あたまの上から たれ、
  *   はな は 先が ひらたく、しっぽ は おしりから くるん と まく。
  *   雨は まっすぐ 下に おちて、やねに あたって とまる(やねの下は ぬれない)。
  */
-import type { ReactElement } from 'react'
-import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Backdrop, Hearts, Rain, Sun } from '../sceneFigures'
 
 const CHAR = '家'
 
@@ -42,13 +44,6 @@ const ROOF_LIGHT = '#ea7a6c'
 const ROOF_DARK = '#b8423a'
 const BRICK = '#b0674a'
 const STRAW = '#ebcb6c'
-const GRASS = '#c5e8a9'
-const LEAF = '#55b86e'
-const SUN = '#ffd24a'
-const RAIN = '#5aaee8'
-const SKY_DIM = '#5b6d8a'
-const CLOUD = '#a3b0c2'
-const CLOUD_SHADE = '#8494aa'
 const DROP = '#7cc4f2'
 const EYE = '#2b2b2b'
 
@@ -75,8 +70,6 @@ const ROOF_L = 16
 const ROOF_R = 92
 const ROOF_TOP = 13
 const ROOF_EAVE = 30
-/** x の所の、やね の 上の ふち の たかさ */
-const roofY = (x: number) => ROOF_TOP + Math.abs(x - 54) * ((ROOF_EAVE - ROOF_TOP) / 38)
 
 type Mood = 'sad' | 'happy'
 
@@ -149,30 +142,17 @@ function Spray({ t }: SceneProps) {
   )
 }
 
-/** 雲からの ぽつぽつ。やねの上で とまり、やねの下には おちない。 */
-function Rain({ t, amount }: SceneProps & { readonly amount: number }) {
-  if (amount <= 0) return null
-  const lines: ReactElement[] = []
-  for (let col = 0; col < 14; col += 1) {
-    const x = 4 + col * 8 + (col % 2) * 3
-    const y = ((t * 85 + col * 23) % 118) - 8
-    const underRoof = x > ROOF_L && x < ROOF_R
-    if (underRoof ? y + 5 > roofY(x) : y > 96) continue
-    lines.push(<path key={col} d={`M${x} ${y} v5`} stroke={RAIN} strokeWidth="1" strokeLinecap="round" />)
-  }
-  return <g opacity={amount}>{lines}</g>
-}
+/** 雨を くぎる はば と、その 場所で 雨が とまる たかさ(やねの 上。はしの そとは 地面) */
+const RAIN_BANDS: readonly (readonly [number, number, number])[] = [[-2, ROOF_L, 96], [ROOF_L, 30, 27], [30, 42, 21], [42, 66, 15], [66, 80, 21], [80, ROOF_R, 28], [ROOF_R, 111, 96]]
 
-function Hearts({ t }: SceneProps) {
-  const show = during(t, PIGLET_IN + 1.3, INK - 0.1, 0.25)
-  if (show <= 0) return null
+/** 雨: まっすぐ 下に おちる。やねの 上で はねて とまり、やねの下には おちない */
+function RoofRain({ t, amount }: { readonly t: number; readonly amount: number }) {
   return (
-    <g opacity={show} fill="#f07f9e">
-      {[0, 1].map((i) => {
-        const p = (((t - PIGLET_IN - 1.3) * 0.7 + i * 0.5) % 1)
-        return <path key={i} d="M0 1.6 C-3.2 -1.6 -2.2 -4.2 0 -2.6 C2.2 -4.2 3.2 -1.6 0 1.6 Z" transform={`translate(${44 + i * 26} ${48 - p * 10}) scale(${1 + i * 0.25})`} opacity={Math.sin(p * Math.PI)} />
-      })}
-    </g>
+    <>
+      {RAIN_BANDS.map(([left, right, ground]) => (
+        <Rain key={left} t={t} amount={amount} left={left} right={right} ground={ground} />
+      ))}
+    </>
   )
 }
 
@@ -215,46 +195,6 @@ function House({ t }: SceneProps) {
   )
 }
 
-function Sky({ t }: SceneProps) {
-  const rain = span(t, 0.2, 0.9) * (1 - span(t, RAIN_STOP - 0.3, RAIN_STOP + 0.9))
-  const sun = span(t, RAIN_STOP, RAIN_STOP + 0.7, backOut)
-  const drift = span(t, RAIN_STOP - 0.3, RAIN_STOP + 1.2, easeInOut)
-  return (
-    <>
-      <rect x="0" y="0" width="109" height="109" fill={SKY_DIM} opacity={rain * 0.32} />
-      {/* 雨雲: 雨が やむと うえの方へ はなれていく */}
-      <g opacity={Math.min(1, span(t, 0, 0.5)) * (1 - drift)}>
-        <Layer x={-drift * 20}>
-          <ellipse cx="22" cy="4" rx="15" ry="6.5" fill={CLOUD_SHADE} />
-          <ellipse cx="22" cy="2.6" rx="14" ry="6" fill={CLOUD} />
-        </Layer>
-        <Layer x={drift * 20}>
-          <ellipse cx="86" cy="5" rx="16" ry="6.5" fill={CLOUD_SHADE} />
-          <ellipse cx="86" cy="3.6" rx="15" ry="6" fill={CLOUD} />
-        </Layer>
-      </g>
-      <Layer opacity={sun} rotate={t * 14} origin={[98, 14]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="97.2" y="3.6" width="1.6" height="3.8" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 98 14)`} />
-        ))}
-      </Layer>
-      <circle cx="98" cy="14" r={Math.max(0, 5.6 * sun)} fill={SUN} />
-    </>
-  )
-}
-
-function Ground() {
-  return (
-    <>
-      <path d="M-4 99 Q18 78 44 92 Q72 72 113 94 V101 H-4 Z" fill="#e2f2d2" />
-      <ellipse cx="54.5" cy="98.4" rx="52" ry="5.4" fill={GRASS} />
-      {[6, 98, 104].map((x) => (
-        <path key={x} d={`M${x} 98 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
-    </>
-  )
-}
-
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 10)
 
@@ -276,13 +216,14 @@ function Scene({ t }: SceneProps) {
   const kidStep = Math.sin((t - PIGLET_IN) * Math.PI * 2 * 2.4) * kidRun
   const kidHop = t > PIGLET_IN + 1.2 && t < INK - 0.1 ? Math.abs(wave(t, 0.6)) * 1.6 : 0
 
+  const rain = span(t, 0.2, 0.9) * (1 - span(t, RAIN_STOP - 0.3, RAIN_STOP + 0.9))
   const bump = Math.sin(span(t, DONE - 0.9, DONE - 0.45) * Math.PI) * 0.06
 
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Sky t={t} />
-        <Ground />
+        <Backdrop t={t} sun={null} clouds={[]} ground={98} tufts={[6, 98, 104]} overcast={rain} />
+        <Sun t={t} x={98} y={14} r={5.6} from={RAIN_STOP} />
         <House t={t} />
         <Layer opacity={pigIn}>
           <ellipse cx={pigX + 1} cy="96.8" rx="26" ry="2.6" fill="#000000" opacity="0.1" />
@@ -296,8 +237,8 @@ function Scene({ t }: SceneProps) {
             <Pig step={kidStep} mood="happy" />
           </Layer>
         ) : null}
-        <Hearts t={t} />
-        <Rain t={t} amount={span(t, 0.3, 0.9) * (1 - span(t, RAIN_STOP - 0.3, RAIN_STOP + 0.7))} />
+        <Hearts t={t} x={44} y={48} show={during(t, PIGLET_IN + 1.3, INK - 0.1, 0.25)} />
+        <RoofRain t={t} amount={rain} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Layer scale={1 + bump} origin={[54.5, 54.5]}>

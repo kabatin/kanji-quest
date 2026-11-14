@@ -13,26 +13,19 @@
  *   → 5ほん め! 5ほん ぜんぶ ぱっと ひろげて、うれしくて ぴょんぴょん
  *   → カメラが 手に ズームして、ほね が ひかり、絵が うすくなって 字「手」になる
  *
- * こどもは ほんものの つくり を守る(字の形に合わせるために ゆがめない):
- *   うで は かた から出て ひじ で まがる。あげた手の ゆびは 5ほん(おやゆび は 左はし、ひとさしゆび から こゆび は ならんで 上へ)。
- *   くび は みじかく、あたま は どう の まんなか の上。
- *   手が 大きく 見えるのは、ズームしたから(こどもの 手の 大きさは そのまま)。
+ * こどもは Person(あるきは walk、むきは turnAround、手を あげるのは { to })。けしき は Backdrop。
+ * Person の あげた 手の 先に、5ほんの ゆび(おやゆび は 左はし、ひとさしゆび から こゆび は ならんで 上へ)を かさねて 描く。
+ * ケーキ・ろうそく・ふうせん は 部品に ないので ここで 描く。
+ * 手が 大きく 見えるのは、ズームしたから(こどもの 手の 大きさは そのまま)。
  */
-import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeInOut, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Backdrop, LOOKS, mixLimb, PALETTE, Person, personRig, turnAround, walk, type Limb } from '../sceneFigures'
 
 const CHAR = '手'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const SHIRT = '#ff9a5c'
-const SHIRT_DARK = '#e8834a'
-const PANTS = '#3e5c86'
-const SHOE = '#6b4a36'
-const SUN = '#ffd24a'
-const GRASS = '#c5e8a9'
-const LEAF = '#55b86e'
+const SKIN = PALETTE.skin
+const HAIR_TOP = '#ff9a5c'
 const TABLE = '#b57a4c'
 const TABLE_DARK = '#8c5b3c'
 const CAKE_BOTTOM = '#ff9db4'
@@ -43,9 +36,6 @@ const FLAME_CORE = '#ffe27a'
 const CANDLE_COLORS = ['#4f9be0', '#ffd24a', '#55b86e', '#ff7a4d', '#8f9cec'] as const
 const BALLOON = '#e8534a'
 const BALLOON_LIGHT = '#ff8f86'
-const CHEEK = '#ff9d9d'
-const EYE = '#2b2b2b'
-const MOUTH = '#b9483f'
 
 /** くぎり の時間(秒) */
 const WALK = 0.9
@@ -64,32 +54,23 @@ const INK = ZOOM_TO + 0.2
 const DONE = 10.5
 const DURATION = 11
 
-/** かた(てまえ = 右手、むこう = 左手)。あたまは x=30、どうは x=22〜38 */
-const SHOULDER_NEAR: readonly [number, number] = [37.5, 42]
-const SHOULDER_FAR: readonly [number, number] = [22.5, 42]
-/** かた→ひじ、ひじ→手くび の 長さ */
-const UPPER = 15
-const FORE = 11.3
-/** うで の かくど: ま下が 0、そとへ ひらくほど ふえ、まっすぐ上が 180 */
-type Angles = { readonly upper: number; readonly fore: number }
-const HANG: Angles = { upper: 10, fore: 12 }
-const RAISED: Angles = { upper: 33, fore: 172 }
-const FAR_CHEER: Angles = { upper: 35, fore: 150 }
-
-const rad = (deg: number) => (deg * Math.PI) / 180
+/** こども の 場所(こし の x)・足もと・背の高さ */
+const KID_X = 30
+const FLOOR = 96
+const KID_HEIGHT = 80
+/** 手を おろした とき / あげた とき / ばんざい の うで */
+const FAR_CHEER: Limb = { swing: 158, bend: 8 }
+/** あげた 手の 手首 の 目あて(あたまの よこ、かお より 上) */
+const RAISED_TO: readonly [number, number] = [KID_X + 17, 16]
+const KID_LOOK = { ...LOOKS.boy, top: HAIR_TOP }
 
 type Point = readonly [number, number]
-/** かた から ひじ、手くび の 場所。sign が -1 なら 左右 はんたい(むこうの うで) */
-function joints(shoulder: Point, sign: 1 | -1, angles: Angles): { readonly elbow: Point; readonly wrist: Point } {
-  const elbow: Point = [shoulder[0] + sign * Math.sin(rad(angles.upper)) * UPPER, shoulder[1] + Math.cos(rad(angles.upper)) * UPPER]
-  const wrist: Point = [elbow[0] + sign * Math.sin(rad(angles.fore)) * FORE, elbow[1] + Math.cos(rad(angles.fore)) * FORE]
-  return { elbow, wrist }
-}
+const rad = (deg: number) => (deg * Math.PI) / 180
 
-/** あげた手の まんなか(手のひらの まんなか)の 絵の中の場所 → ズームの じく */
-const RAISED_WRIST = joints(SHOULDER_NEAR, 1, RAISED).wrist
-const HAND_TILT = 180 - RAISED.fore
-const HAND_CENTER: Point = [RAISED_WRIST[0] + 3.5 * Math.sin(rad(HAND_TILT)), RAISED_WRIST[1] - 3.5 * Math.cos(rad(HAND_TILT))]
+/** あげた 手の まんなか(手のひら の まんなか)の 絵の中の場所 → ズームの じく */
+const RAISED_RIG = personRig({ x: KID_X, y: FLOOR, facing: 'front', build: 'child', height: KID_HEIGHT, pose: { leftArm: { to: RAISED_TO } } })
+const RAISED_END = RAISED_RIG.world.arms.left.end
+const HAND_CENTER: Point = [RAISED_END[0], RAISED_END[1] - 6]
 /** ズームの おわりに 手の まんなかが 来る 場所 と、ズームの 大きさ */
 const HAND_GOAL: Point = [54.5, 56]
 const ZOOM = 5
@@ -97,31 +78,6 @@ const ZOOM = 5
 /** ろうそく の よこの 場所 */
 const CANDLE_X = [75, 79.5, 84, 88.5, 93] as const
 const CANDLE_BASE_Y = 54
-
-function Ground({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
-  return (
-    <>
-      <Layer opacity={sun} rotate={t * 14} origin={[13, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="12.2" y="1.6" width="1.6" height="4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 13 13)`} />
-        ))}
-      </Layer>
-      <circle cx="13" cy="13" r={6.2 * sun} fill={SUN} />
-      <path d="M-4 99 Q18 78 44 91 Q72 72 113 94 V101 H-4 Z" fill="#e2f2d2" />
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.4} 0)`}>
-        <ellipse cx="60" cy="14" rx="7" ry="3.2" />
-        <ellipse cx="65" cy="12.2" rx="5" ry="3.2" />
-        <ellipse cx="96" cy="26" rx="6" ry="2.6" />
-        <ellipse cx="100.5" cy="24.4" rx="4.4" ry="2.8" />
-      </g>
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.6" fill={GRASS} />
-      {[6, 44, 56, 104].map((x) => (
-        <path key={x} d={`M${x} 97.5 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
-    </>
-  )
-}
 
 /** 5ほんの ろうそく。i ばんめ の ゆびを たてたとき、その ろうそくが ぴょん と はずむ。 */
 function Candle({ t, index }: { readonly t: number; readonly index: number }) {
@@ -173,69 +129,6 @@ function Party({ t }: SceneProps) {
   )
 }
 
-type Mood = 'smile' | 'wonder' | 'count' | 'joy'
-
-function Face({ mood, dx }: { readonly mood: Mood; readonly dx: number }) {
-  const eyes = mood === 'joy' ? (
-    <>
-      <path d="M24.2 26 Q26.3 22.6 28.4 26" fill="none" stroke={EYE} strokeWidth="1.3" strokeLinecap="round" />
-      <path d="M31.6 26 Q33.7 22.6 35.8 26" fill="none" stroke={EYE} strokeWidth="1.3" strokeLinecap="round" />
-    </>
-  ) : (
-    <>
-      <circle cx={26.3 + dx} cy="25.4" r={mood === 'wonder' ? 1.5 : 1.3} fill={EYE} />
-      <circle cx={33.7 + dx} cy="25.4" r={mood === 'wonder' ? 1.5 : 1.3} fill={EYE} />
-    </>
-  )
-  const brows = mood === 'wonder' ? (
-    <>
-      <path d="M23.8 21.4 Q26.2 19.4 28.4 21" fill="none" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-      <path d="M31.6 20.4 Q33.8 18.8 36.2 20" fill="none" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-    </>
-  ) : mood === 'count' ? (
-    <>
-      <path d="M24 21.8 L28.2 22.2" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-      <path d="M31.8 22.2 L36 21.8" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-    </>
-  ) : null
-  const mouth =
-    mood === 'joy' ? (
-      <>
-        <path d="M25.8 29 Q30 36.4 34.2 29 Z" fill={MOUTH} />
-        <ellipse cx="30" cy="32.8" rx="2" ry="1.1" fill="#ff8a8a" />
-      </>
-    ) : mood === 'wonder' ? (
-      <ellipse cx="30" cy="31.2" rx="1.2" ry="1.6" fill={MOUTH} />
-    ) : mood === 'count' ? (
-      <path d="M28.4 31 Q30 32.2 31.6 31" fill="none" stroke={MOUTH} strokeWidth="1.1" strokeLinecap="round" />
-    ) : (
-      <path d="M27.4 30.2 Q30 33 32.6 30.2" fill="none" stroke={MOUTH} strokeWidth="1.2" strokeLinecap="round" />
-    )
-  return (
-    <>
-      <circle cx="23.6" cy="29.6" r="2.1" fill={CHEEK} opacity="0.55" />
-      <circle cx="36.4" cy="29.6" r="2.1" fill={CHEEK} opacity="0.55" />
-      {eyes}
-      {brows}
-      {mouth}
-    </>
-  )
-}
-
-/** あたま: ほんものの 人と おなじく、どう の まんなか の 上に のる。 */
-function Head({ mood, dx, tilt }: { readonly mood: Mood; readonly dx: number; readonly tilt: number }) {
-  return (
-    <Layer rotate={tilt} origin={[30, 36]}>
-      <circle cx="19.6" cy="25.4" r="2.1" fill={SKIN_SHADE} />
-      <circle cx="40.4" cy="25.4" r="2.1" fill={SKIN_SHADE} />
-      <circle cx="30" cy="24.4" r="10.6" fill={SKIN} />
-      <path d="M19.2 23 C17.6 11.6 26.4 8.2 31 8.4 C38.4 8.8 43 14 40.8 23 C38.2 18.4 33.4 16.2 28.6 16.6 C24.6 17 21.4 19.6 19.2 23 Z" fill={HAIR} />
-      <path d="M29.6 9.2 Q30.4 5.6 32.4 7.2 Q33.6 4.6 34.8 7.6" fill="none" stroke={HAIR} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <Face mood={mood} dx={dx} />
-    </Layer>
-  )
-}
-
 /**
  * 手(てのひら を こちらへ むけた、左手)。手くび が 原点で、ゆびは 上を むく。
  * 左から おやゆび・ひとさしゆび・なかゆび・くすりゆび・こゆび。
@@ -272,81 +165,6 @@ function Hand({ ext, fan }: { readonly ext: readonly number[]; readonly fan: num
   )
 }
 
-/** かた から ひじ、手くび へ つながる うで。そでが かたがわ を おおい、ひじ から 先は はだ。 */
-function ArmLimb({ shoulder, sign, angles }: { readonly shoulder: Point; readonly sign: 1 | -1; readonly angles: Angles }) {
-  const { elbow, wrist } = joints(shoulder, sign, angles)
-  const sleeve: Point = [shoulder[0] + (elbow[0] - shoulder[0]) * 0.5, shoulder[1] + (elbow[1] - shoulder[1]) * 0.5]
-  return (
-    <>
-      <path d={`M${shoulder[0]} ${shoulder[1]} L${elbow[0]} ${elbow[1]} L${wrist[0]} ${wrist[1]}`} fill="none" stroke={SKIN} strokeWidth="3.8" strokeLinecap="round" strokeLinejoin="round" />
-      <path d={`M${shoulder[0]} ${shoulder[1]} L${sleeve[0]} ${sleeve[1]}`} fill="none" stroke={SHIRT_DARK} strokeWidth="5.8" strokeLinecap="round" />
-    </>
-  )
-}
-
-function Child({ t }: SceneProps) {
-  // あるいてくる: 左から ひろばの まんなかへ。あしを かわりばんこに あげる
-  const arriving = 1 - span(t, STOP - 0.3, STOP)
-  const stride = t < WALK ? 0 : Math.sin((t - WALK) * Math.PI * 2 * 1.8) * arriving
-  const walkX = mix(t, WALK, STOP, -50, 0, easeOut)
-  const bob = -Math.abs(stride) * 1.2
-  // うれしくて 2かい はねる(ズームの前に おわる)
-  const hopping = t >= JOY && t < JOY + HOP_LEN
-  const hop = hopping ? -Math.abs(Math.sin(((t - JOY) / (HOP_LEN / 2)) * Math.PI)) * 2.4 : 0
-
-  const mood: Mood = t < STOP ? 'smile' : t < COUNT_AT - 0.4 ? 'wonder' : t < JOY ? 'count' : 'joy'
-  const dx = t < STOP ? 0.3 : t < JOY ? 1.2 : 0
-  const tilt = t < STOP ? 0 : t < RAISE ? 6 : t < JOY ? 3 : 0
-
-  // 右手: おろす → あげる(ひじ から先が おくれて ついてくる)。5ほん ひらいたら ちょっと ふる
-  const up = span(t, RAISE, RAISE + 0.7, easeInOut)
-  const foreUp = span(t, RAISE + 0.1, RAISE + 0.8, easeInOut)
-  const shake = wave(t, 0.36) * 3.5 * during(t, JOY + 0.2, JOY + HOP_LEN - 0.1, 0.1)
-  const near: Angles = {
-    upper: HANG.upper + stride * 6 + (RAISED.upper - HANG.upper) * up,
-    fore: HANG.fore + stride * 6 + (RAISED.fore - HANG.fore) * foreUp + shake,
-  }
-  // 左手: ふだんは たらして、うれしい ときに ばんざい
-  const cheer = span(t, JOY + 0.05, JOY + 0.4, backOut)
-  const far: Angles = {
-    upper: HANG.upper - stride * 6 + (FAR_CHEER.upper - HANG.upper) * cheer,
-    fore: HANG.fore - stride * 6 + (FAR_CHEER.fore - HANG.fore) * cheer,
-  }
-
-  const ext = [0, 1, 2, 3, 4].map((i) => span(t, COUNT_AT + COUNT_GAP * i, COUNT_AT + COUNT_GAP * i + 0.25, backOut))
-  const fan = 0.7 + 0.55 * span(t, JOY, JOY + 0.3, backOut)
-  const nearWrist = joints(SHOULDER_NEAR, 1, near).wrist
-  const farWrist = joints(SHOULDER_FAR, -1, far).wrist
-
-  return (
-    <>
-      <ellipse cx="30" cy="96.8" rx="12" ry="2.2" fill="#000000" opacity="0.12" transform={`translate(${walkX} 0)`} />
-      <Layer x={walkX} y={bob + hop}>
-        <ArmLimb shoulder={SHOULDER_FAR} sign={-1} angles={far} />
-        <circle cx={farWrist[0]} cy={farWrist[1]} r="3" fill={SKIN} />
-        {/* あし: ひだり・みぎ を かわりばんこに あげる */}
-        <Layer y={-Math.max(0, stride) * 2.2}>
-          <rect x="23.4" y="60" width="6.2" height="33" rx="3.1" fill={PANTS} />
-          <ellipse cx="26" cy="94.2" rx="5.2" ry="2.6" fill={SHOE} />
-        </Layer>
-        <Layer y={-Math.max(0, -stride) * 2.2}>
-          <rect x="30.4" y="60" width="6.2" height="33" rx="3.1" fill={PANTS} />
-          <ellipse cx="34" cy="94.2" rx="5.2" ry="2.6" fill={SHOE} />
-        </Layer>
-        {/* くび: みじかく、どう と あたま の すきま だけ */}
-        <rect x="27.4" y="32.5" width="5.2" height="6" rx="2.2" fill={SKIN_SHADE} />
-        <rect x="22" y="36" width="16" height="29" rx="6.5" fill={SHIRT} />
-        <path d="M23.4 59.6 h13.2" stroke={SHIRT_DARK} strokeWidth="1.5" strokeLinecap="round" />
-        <ArmLimb shoulder={SHOULDER_NEAR} sign={1} angles={near} />
-        <Layer x={nearWrist[0]} y={nearWrist[1]} rotate={180 - near.fore}>
-          <Hand ext={ext} fan={fan} />
-        </Layer>
-        <Head mood={mood} dx={dx} tilt={tilt} />
-      </Layer>
-    </>
-  )
-}
-
 /** 5ほん ひらいた しゅんかん、手の まわりに ぱっ と ひろがる すじ。 */
 function Burst({ t }: SceneProps) {
   const show = during(t, JOY, JOY + 0.7, 0.1)
@@ -377,17 +195,64 @@ function Cheer({ t }: SceneProps) {
   )
 }
 
+/** こどもの 場所と かっこう。あるいてきて ろうそくを 見て、手を あげ、ゆびを たてて かぞえ、よろこぶ */
+function kidAt(t: number) {
+  const walking = walk(t, { from: KID_X - 50, to: KID_X, start: WALK, end: STOP, build: 'child', height: KID_HEIGHT })
+  const turn = turnAround(t, STOP, 'right', 'front')
+  // うれしくて 2かい はねる(ズームの前に おわる)
+  const hopping = t >= JOY && t < JOY + HOP_LEN
+  const lift = hopping ? Math.abs(Math.sin(((t - JOY) / (HOP_LEN / 2)) * Math.PI)) * 2.4 : 0
+  const face = t < STOP ? 'smile' : t < COUNT_AT - 0.4 ? 'surprised' : t < JOY ? 'normal' : 'joy'
+  // 手: おろす → あげる(ゆびを たてる あいだ)。5ほん ひらいたら ちょっと ふる
+  const up = span(t, RAISE, RAISE + 0.7, easeInOut)
+  const shake = wave(t, 0.36) * 2.5 * during(t, JOY + 0.2, JOY + HOP_LEN - 0.1, 0.1)
+  const hang: Limb = { swing: 8, bend: 10 }
+  const left = mixLimb(hang, { to: [RAISED_TO[0] + shake, RAISED_TO[1]] }, up)
+  // もう一方の 手は ふだんは たらして、うれしい ときに ばんざい
+  const cheer = span(t, JOY + 0.05, JOY + 0.4, backOut)
+  const right = mixLimb(hang, FAR_CHEER, cheer)
+  return {
+    ...walking,
+    ...(t < STOP ? {} : turn),
+    y: FLOOR,
+    lift,
+    look: KID_LOOK,
+    face,
+    gaze: t < STOP ? 0 : 0.7,
+    gazeY: t < STOP ? 0 : -0.3,
+    pose: t < STOP ? walking.pose : { leftArm: left, rightArm: right, head: t < RAISE ? 0 : 3 },
+  } as const
+}
+
+/** あげた 手の 先に 5ほんの ゆびを かさねる(手首 の むきに 合わせて かたむける) */
+function RaisedHand({ t, kid }: { readonly t: number; readonly kid: ReturnType<typeof kidAt> }) {
+  if (t < RAISE + 0.35) return null
+  const arm = personRig(kid).world.arms.left
+  const dx = arm.end[0] - arm.mid[0]
+  const dy = arm.end[1] - arm.mid[1]
+  const tilt = (Math.atan2(dx, -dy) * 180) / Math.PI
+  const ext = [0, 1, 2, 3, 4].map((i) => span(t, COUNT_AT + COUNT_GAP * i, COUNT_AT + COUNT_GAP * i + 0.25, backOut))
+  const fan = 0.7 + 0.55 * span(t, JOY, JOY + 0.3, backOut)
+  return (
+    <Layer x={arm.end[0]} y={arm.end[1]} rotate={tilt}>
+      <Hand ext={ext} fan={fan} />
+    </Layer>
+  )
+}
+
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 4)
   // カメラ: こどもの手に ズームして、手が 字の大きさに なる
   const zoom = span(t, ZOOM_FROM, ZOOM_TO, easeInOut)
+  const kid = kidAt(t)
   return (
     <>
       <Layer opacity={ink.picture}>
         <Layer x={(HAND_GOAL[0] - HAND_CENTER[0]) * zoom} y={(HAND_GOAL[1] - HAND_CENTER[1]) * zoom} scale={1 + (ZOOM - 1) * zoom} origin={HAND_CENTER}>
-          <Ground t={t} />
+          <Backdrop t={t} tufts={[6, 44, 56, 104]} />
           <Party t={t} />
-          <Child t={t} />
+          <Person {...kid} />
+          <RaisedHand t={t} kid={kid} />
           <Burst t={t} />
           <Cheer t={t} />
         </Layer>

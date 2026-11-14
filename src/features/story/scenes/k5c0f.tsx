@@ -14,12 +14,15 @@
  *   → アリが つぶに ちかづいて、鼻で くんくん。「ちいさい!」と うれしくなって ぴょんぴょん
  *   → つぶが 3つ ならんだ 場所に ほね が ひかって、絵が うすくなり、字「小」が のこる
  *
+ * 空(お日さま・雲)と「はっ」の しるしは 共通部品。アリ・手・すなつぶは 場面で 描く(動物の 部品は まだ ない)。
+ *
  * アリは ほんものの つくり を守る(字の形に合わせるために ゆがめない):
  *   体は あたま・むね・おなか の 3つに わかれ、足は むね から 6ほん(あるくときは かわりばんこ)。
  *   しょっかくは あたま から 2ほん。すなつぶは おもさで 下へ おちる(はじめは 指で はじかれて 外へ ふくらむ)。
  */
-import { backOut, during, easeInOut, easeIn, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { during, easeInOut, easeIn, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Clouds, Notice, Sun } from '../sceneFigures'
 
 const CHAR = '小'
 
@@ -37,7 +40,6 @@ const SKIN = '#f8cfa6'
 const SKIN_SHADE = '#eeb98a'
 const SLEEVE = '#4f9be0'
 const SLEEVE_DARK = '#3c82c4'
-const SUN = '#ffd24a'
 
 /** くぎり の時間(秒) */
 const OUT = 0.4
@@ -103,24 +105,6 @@ function Ground() {
       <ellipse cx="40" cy="95" rx="3" ry="1.7" fill={PEBBLE} />
       <ellipse cx="88" cy="99" rx="2.2" ry="1.3" fill={PEBBLE} />
       <path d="M20 100 q3 -1.4 6 0 M64 102 q3 -1.4 6 0 M96 103 q3 -1.4 6 0" fill="none" stroke={SAND_DARK} strokeWidth="0.8" strokeLinecap="round" opacity="0.5" />
-    </>
-  )
-}
-
-function Sky({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
-  return (
-    <>
-      <Layer opacity={sun} rotate={t * 12} origin={[95, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="94.2" y="1.6" width="1.6" height="3.8" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 95 13)`} />
-        ))}
-      </Layer>
-      <circle cx="95" cy="13" r={5.8 * sun} fill={SUN} />
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.4} 0)`}>
-        <ellipse cx="6" cy="27" rx="7" ry="3.2" />
-        <ellipse cx="11" cy="25" rx="5" ry="3.2" />
-      </g>
     </>
   )
 }
@@ -280,19 +264,6 @@ function Puff({ grain, t }: { readonly grain: Grain; readonly t: number }) {
   )
 }
 
-/** 手を 見つけた ときの「!」 */
-function Notice({ t }: SceneProps) {
-  const show = during(t, NOTICE, NOTICE + 0.9, 0.15)
-  if (show <= 0) return null
-  const pop = span(t, NOTICE, NOTICE + 0.3, backOut)
-  return (
-    <Layer scale={pop} origin={[61.5, 62]} opacity={show}>
-      <rect x="60.6" y="52" width="1.9" height="7" rx="0.95" fill="#e8534a" />
-      <circle cx="61.55" cy="62" r="1.15" fill="#e8534a" />
-    </Layer>
-  )
-}
-
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 3)
 
@@ -310,20 +281,25 @@ function Scene({ t }: SceneProps) {
   const mood: Mood = t < NOTICE ? 'bored' : t < SNIFF ? 'curious' : 'happy'
   const perk = mood === 'bored' ? 0 : 1
   const antY = (1 - rise) * 9 - hop
+  const antX = t < WALK ? HOLE_X : walkPos
+  // あたま の まんなか(アリの 体の 点 を 大きさ ぶん のばして 絵の 場所へ)
+  const antHeadX = antX - 5.6 * ANT_SCALE
+  const antHeadY = FLOOR + antY - 10.2 * ANT_SCALE
 
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Sky t={t} />
+        <Sun t={t} x={95} y={13} r={5.8} />
+        <Clouds t={t} at={[[8, 27, 0.9]]} speed={1.4} />
         <Ground />
-        <Layer x={t < WALK ? HOLE_X : walkPos} y={FLOOR + antY} scale={ANT_SCALE}>
+        <Layer x={antX} y={FLOOR + antY} scale={ANT_SCALE}>
           <Ant mood={mood} headTilt={headTilt} stride={stride} perk={perk} t={t} />
         </Layer>
         {/* でてくる間は、あなの中(地面の下)が かくれるように、地面を もう一度 手前に かさねる */}
         <path d={SURFACE} fill={SAND} />
         <path d={SHADE} fill={SAND_SHADE} />
         <Hole />
-        <Notice t={t} />
+        <Notice x={antHeadX} y={antHeadY} r={5} show={during(t, NOTICE, NOTICE + 0.9, 0.15)} dir={-1} />
         <Hand t={t} />
         {GRAINS.map((grain) => (
           <SandGrain key={grain.drop} grain={grain} t={t} />

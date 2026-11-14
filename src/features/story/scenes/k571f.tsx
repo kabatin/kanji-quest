@@ -13,6 +13,8 @@
  *   → てっぺん から もぐらが ぽこっ と かおを 出し、できた つちやま の上で りょううでを ひろげて 大よろこび
  *   → ほね が ひかって、絵が うすくなり、字「土」が のこる
  *
+ * 背景(空・おか・雲)・「!」・土けむり は 共通部品。もぐら(動物)は 部品が ないので 元の絵のまま。
+ *
  * もぐらは、ほんものの つくり を守る(字の形に合わせるために、体を ゆがめない):
  *   あたま は まるく、はな は ピンクで とがり、目は ごく小さい。
  *   うで は かた から出て、ひじ で まがり、手は ピンクで 大きい。くび は ほとんど なく、あたま は どう の すぐ上。
@@ -20,11 +22,10 @@
  */
 import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Clouds, Dust, Hills, Notice, Sun } from '../sceneFigures'
 
 const CHAR = '土'
 
-const SUN = '#ffd24a'
-const HILL = '#e2f2d2'
 const GRASS_TOP = '#9bd67f'
 const GRASS_BLADE = '#55b86e'
 const EARTH = '#c99a6b'
@@ -68,22 +69,11 @@ const SHOULDER_DX = 9
 const ARM_PART = 8.5
 
 function Sky({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
   return (
     <>
-      <Layer opacity={sun} rotate={t * 14} origin={[13, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="12.2" y="1.6" width="1.6" height="4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 13 13)`} />
-        ))}
-      </Layer>
-      <circle cx="13" cy="13" r={6.2 * sun} fill={SUN} />
-      <path d="M-4 90 Q18 70 44 84 Q72 64 113 88 V101 H-4 Z" fill={HILL} />
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.6} 0)`}>
-        <ellipse cx="86" cy="22" rx="7" ry="3.2" />
-        <ellipse cx="91" cy="20.2" rx="5" ry="3.2" />
-        <ellipse cx="-6" cy="40" rx="6" ry="2.8" />
-        <ellipse cx="-1.6" cy="38.6" rx="4.2" ry="2.8" />
-      </g>
+      <Sun t={t} />
+      <Hills y={-9} />
+      <Clouds t={t} at={[[86, 22, 1], [-6, 40, 0.85]]} />
     </>
   )
 }
@@ -206,11 +196,8 @@ function Peeker({ t }: SceneProps) {
           <MoleHead mood={mood} sniff={wave(t, 0.35)} />
         </g>
       </g>
-      {/* ひらめき の「!」 */}
-      <g opacity={bang} fill="#f2a31b" transform={`translate(${PEEK_X + 7} ${70 - 2 * bang})`}>
-        <rect x="-1" y="-5" width="2" height="5.6" rx="1" />
-        <circle cx="0" cy="2.4" r="1.1" />
-      </g>
+      {/* ひらめき の「!」: あたまの よこに すじ */}
+      <Notice x={PEEK_X} y={84} r={7.4} show={bang} dir={1} />
     </>
   )
 }
@@ -248,18 +235,10 @@ function Clods({ t, height }: SceneProps & { readonly height: number }) {
   )
 }
 
-/** ぽこっ と出た しゅんかんの 土けむり */
-function Dust({ t }: SceneProps) {
+/** ぽこっ と出た しゅんかんの 土けむり(てっぺんの 左右) */
+function PopDust({ t }: SceneProps) {
   const p = span(t, POP + 0.1, POP + 0.9, easeOut)
-  if (p <= 0 || p >= 1) return null
-  return (
-    <g opacity={1 - p} fill="#e4cdb0">
-      <circle cx={MOUND_X - 12 - p * 7} cy={MOUND_TOP - 1 - p * 5} r={2 + p * 3} />
-      <circle cx={MOUND_X + 12 + p * 7} cy={MOUND_TOP - 1 - p * 5} r={2 + p * 3} />
-      <circle cx={MOUND_X - 8 - p * 4} cy={MOUND_TOP - 3 - p * 9} r={1.4 + p * 2} />
-      <circle cx={MOUND_X + 8 + p * 4} cy={MOUND_TOP - 3 - p * 9} r={1.4 + p * 2} />
-    </g>
-  )
+  return <Dust x={MOUND_X} y={MOUND_TOP} p={p} reach={16} color="#e4cdb0" />
 }
 
 /** 土の やま。下が ひろく、上が まるい。ふもと(じめん)を じく に のびあがる */
@@ -300,7 +279,7 @@ function Scene({ t }: SceneProps) {
         <Ground />
         <Peeker t={t} />
         <Ridge t={t} />
-        <Dust t={t} />
+        <PopDust t={t} />
         {rise > 0 && (
           <Layer y={-hop}>
             <Mole lift={lift} spread={Math.max(0, spread)} mood="happy" tilt={tilt} sniff={wave(t, 0.4) * (1 - spread)} />
