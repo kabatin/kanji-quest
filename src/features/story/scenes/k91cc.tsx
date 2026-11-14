@@ -16,27 +16,16 @@
  *   → 4つの たんぼが 青々として、人は にっこり → 旗ざおに 旗を ひっぱり上げる
  *   → うれしくて ぴょんぴょん。家の えんとつから けむり(ここで くらす) → ほね が ひかって、絵が うすくなり、字「里」が のこる
  *
- * 人は、ほんものの人の つくり を守る(字の形に合わせるために、体を ゆがめない):
- *   うで は かた から出て ひじ で まがる。くわは 両手で もち、ふりかぶって 前へ うつ。
+ * 人は 共通部品 Person(おとな)。あるきは walk()。くわは 両手で もち、ふりかぶって 前へ うつ(手先は { to } で くわの えに あわせる)。
  *   旗は、ロープを かわりばんこに ひっぱって 上げる(本物の 旗ざおと おなじ やりかた)。
- *   くわは うった あと、土に さしたまま のこす(あるいていく とき、うしろに なる)。
+ *   てぬぐいの はちまきは あたまに かぶせ(headwear)、くわは うった あと、土に さしたまま のこす(あるいていく とき、うしろに なる)。
  */
-import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Clouds, House, LOOKS, mixLimb, PALETTE, Person, personRig, Sigh, Sun, Sweat, walk, type Expression, type Limb, type PersonPose } from '../sceneFigures'
 
 const CHAR = '里'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const SHIRT = '#e8923f'
-const SHIRT_DARK = '#cc7a2e'
-const SHIRT_FAR = '#b56a28'
-const PANTS = '#5b6f94'
-const PANTS_DARK = '#4c5f82'
-const SHOE = '#6b4a36'
-const TOWEL = '#ffffff'
-const SUN = '#ffd24a'
 const HILL_BACK = '#dcefc9'
 const GRASS = '#c5e8a9'
 const GRASS_EDGE = '#74b955'
@@ -54,6 +43,7 @@ const POLE = '#b8844f'
 const FLAG = '#e8534a'
 const WOOD = '#b07a48'
 const IRON = '#8d99a6'
+const TOWEL = '#ffffff'
 
 /** くぎり の時間(秒) */
 const ARRIVE_FROM = 0.4
@@ -80,14 +70,21 @@ type Pt = readonly [number, number]
 
 /** 地面の たかさ(人の 足もと) */
 const FLOOR = 69
-/** 人が くわを うつ ばしょ と、そのときの かた */
+/** 人の 背の高さ と 体格 */
+const HEIGHT = 36
+/** 人が くわを うつ ばしょ */
 const DIG_X = 10
-const DIG_SHOULDER: Pt = [DIG_X, FLOOR - 19]
 /** 旗ざお(5画目)の x と、ロープの x */
 const POLE_X = 54
 const ROPE_X = 50.6
 const FLAG_LOW = 59
 const FLAG_HIGH = 22
+/** 旗ざおの そばで 立ち止まる ところ */
+const HOIST_X = POLE_X - 10
+
+/** 人の かた の 画面の 場所(足もとが x, FLOOR のとき) */
+const shoulderAt = (x: number): Pt => personRig({ x, y: FLOOR, facing: 'right', build: 'adult', height: HEIGHT, pose: {} }).world.arms.right.root
+const DIG_SHOULDER = shoulderAt(DIG_X)
 
 /* ───────── たんぼ ───────── */
 
@@ -162,7 +159,7 @@ function Pole({ t }: SceneProps) {
       <path d={`M${ROPE_X} 66 V25 Q${ROPE_X} 20.8 ${POLE_X} 20.8 Q${POLE_X + 2.4} 20.8 ${POLE_X + 2.4} 25 V66`} fill="none" stroke="#7a5a3a" strokeWidth="0.55" strokeLinecap="round" />
       <circle cx={ROPE_X} cy={30 + 34 * hoist} r="0.9" fill="#7a5a3a" />
       <Bone char={CHAR} n={5} color={POLE} width={3.3} />
-      <circle cx="53.9" cy="19.2" r="2.3" fill={SUN} />
+      <circle cx="53.9" cy="19.2" r="2.3" fill={PALETTE.sun} />
       <path d={cloth} fill={FLAG} />
       <circle cx={POLE_X + 9.6} cy={flagY + 4.8 + 0.2 * flutter} r="2.3" fill="#fff4d6" />
     </>
@@ -171,17 +168,13 @@ function Pole({ t }: SceneProps) {
 
 /* ───────── 家 ───────── */
 
-function House({ t }: SceneProps) {
+function Home({ t }: SceneProps) {
   // 旗が 上がって、人が よろこぶころ、まどに あかりが つき、えんとつから けむりが のぼる
   const home = span(t, HOIST_TO - 0.1, HOIST_TO + 0.4)
   return (
     <>
       <rect x="99" y="50.5" width="3.6" height="8" rx="0.8" fill="#b9684c" />
-      <rect x="88.5" y="59" width="14" height="10" rx="1" fill="#f3e2c0" />
-      <path d="M85.2 60.4 L95.5 50 L105.8 60.4 Z" fill="#d9593f" stroke="#d9593f" strokeWidth="1.4" strokeLinejoin="round" />
-      <rect x="93.8" y="62.6" width="3.6" height="6.4" rx="1.2" fill={RIDGE} />
-      <rect x="89.8" y="62" width="2.8" height="2.8" rx="0.5" fill="#6b7b8f" />
-      <rect x="89.8" y="62" width="2.8" height="2.8" rx="0.5" fill="#ffe07a" opacity={home} />
+      <House x={95.5} y={69} width={14} wall="#f3e2c0" roof="#d9593f" light={home} />
       {home > 0 &&
         [0, 0.7, 1.4].map((offset) => {
           const p = ((t + offset) % 2.1) / 2.1
@@ -192,26 +185,6 @@ function House({ t }: SceneProps) {
 }
 
 /* ───────── 空と 地面 ───────── */
-
-function Sky({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
-  return (
-    <>
-      <Layer opacity={sun} rotate={t * 14} origin={[13, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="12.2" y="1.6" width="1.6" height="4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 13 13)`} />
-        ))}
-      </Layer>
-      <circle cx="13" cy="13" r={6.2 * sun} fill={SUN} />
-      <g fill="#ffffff" opacity="0.92" transform={`translate(${t * 1.5} 0)`}>
-        <ellipse cx="62" cy="7" rx="7" ry="3.2" />
-        <ellipse cx="67" cy="5.4" rx="5" ry="3.2" />
-        <ellipse cx="94" cy="14" rx="6" ry="2.6" />
-        <ellipse cx="98.5" cy="12.6" rx="4.2" ry="2.8" />
-      </g>
-    </>
-  )
-}
 
 /** 土の だんめん。上は 草の はえた 地面(6画目)、下は 岩の そう(7画目) */
 function Earth({ t }: SceneProps) {
@@ -233,126 +206,20 @@ function Earth({ t }: SceneProps) {
   )
 }
 
-/* ───────── 人 ───────── */
-
-type Mood = 'tired' | 'work' | 'happy'
-
-const ARM_PART = 6.2
-
-/** かた から 手に のばす 2つの ほね。ひじ は 下か うしろへ まがる。 */
-function reach(shoulder: Pt, target: Pt): { readonly elbow: Pt; readonly hand: Pt } {
-  const dx = target[0] - shoulder[0]
-  const dy = target[1] - shoulder[1]
-  const dist = Math.max(Math.hypot(dx, dy), 0.001)
-  const d = Math.min(dist, ARM_PART * 2 - 0.05)
-  const ux = dx / dist
-  const uy = dy / dist
-  const h = Math.sqrt(Math.max(ARM_PART * ARM_PART - (d / 2) ** 2, 0))
-  const candidates: Pt[] = [[-uy, ux], [uy, -ux]]
-  const [px, py] = candidates.reduce((best, c) => (c[1] - 0.4 * c[0] > best[1] - 0.4 * best[0] ? c : best))
-  return {
-    elbow: [shoulder[0] + (ux * d) / 2 + px * h, shoulder[1] + (uy * d) / 2 + py * h],
-    hand: [shoulder[0] + ux * d, shoulder[1] + uy * d],
-  }
-}
-
-function Arm({ shoulder, target, color }: { readonly shoulder: Pt; readonly target: Pt; readonly color: string }) {
-  const { elbow, hand } = reach(shoulder, target)
-  return (
-    <>
-      <path d={`M${shoulder[0]} ${shoulder[1]} L${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={color} strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hand[0]} cy={hand[1]} r="2" fill={SKIN} />
-    </>
-  )
-}
-
-function Face({ mood, hx, hy }: { readonly mood: Mood; readonly hx: number; readonly hy: number }) {
-  return (
-    <>
-      <circle cx={hx + 1.2} cy={hy + 2.4} r="1.3" fill="#ff9d9d" opacity="0.6" />
-      {mood === 'tired' && (
-        <>
-          <path d={`M${hx + 1.2} ${hy - 1.8} l3 0.8`} stroke={HAIR} strokeWidth="0.8" strokeLinecap="round" />
-          <circle cx={hx + 2.8} cy={hy - 0.2} r="0.8" fill="#2b2b2b" />
-          <ellipse cx={hx + 3.6} cy={hy + 3} rx="0.8" ry="1.1" fill="#b9483f" />
-        </>
-      )}
-      {mood === 'work' && (
-        <>
-          <path d={`M${hx + 1.2} ${hy - 2} l3 0.9`} stroke={HAIR} strokeWidth="0.9" strokeLinecap="round" />
-          <circle cx={hx + 2.9} cy={hy - 0.2} r="0.9" fill="#2b2b2b" />
-          <path d={`M${hx + 2.2} ${hy + 3.2} h2.2`} stroke="#b9483f" strokeWidth="0.9" strokeLinecap="round" />
-        </>
-      )}
-      {mood === 'happy' && (
-        <>
-          <path d={`M${hx + 1.6} ${hy - 0.1} Q${hx + 2.9} ${hy - 1.9} ${hx + 4.2} ${hy - 0.1}`} fill="none" stroke="#2b2b2b" strokeWidth="0.9" strokeLinecap="round" />
-          <path d={`M${hx + 2.2} ${hy + 2.3} Q${hx + 3.5} ${hy + 4.8} ${hx + 4.7} ${hy + 2.3} Z`} fill="#b9483f" />
-        </>
-      )}
-    </>
-  )
-}
-
-type PersonProps = {
-  /** 足もとの x と y */
-  readonly fx: number
-  readonly fy: number
-  readonly mood: Mood
-  /** あるくときの 足の ふり(-1〜1) */
-  readonly stride: number
-  readonly tilt: number
-  readonly near: Pt
-  readonly far: Pt
-  /** 手に もっている もの(くわ)。からだ と てまえの うで の間に 描く */
-  readonly holding?: React.ReactNode
-}
-
-function Person({ fx, fy, mood, stride, tilt, near, far, holding }: PersonProps) {
-  const shoulder: Pt = [fx, fy - 19]
-  const hx = fx + 0.5
-  const hy = fy - 27.4
-  return (
-    <>
-      <Arm shoulder={shoulder} target={far} color={SHIRT_FAR} />
-      <Layer rotate={stride * 20} origin={[fx + 0.8, fy - 9.5]}>
-        <rect x={fx - 1} y={fy - 10} width="3.6" height="9.6" rx="1.8" fill={PANTS_DARK} />
-        <ellipse cx={fx + 1.8} cy={fy - 0.9} rx="3" ry="1.6" fill={SHOE} />
-      </Layer>
-      <Layer rotate={-stride * 20} origin={[fx - 0.8, fy - 9.5]}>
-        <rect x={fx - 2.6} y={fy - 10} width="3.6" height="9.6" rx="1.8" fill={PANTS} />
-        <ellipse cx={fx - 0.6} cy={fy - 0.9} rx="3" ry="1.6" fill={SHOE} />
-      </Layer>
-      <rect x={fx - 1.6} y={fy - 24} width="3.2" height="4" rx="1.4" fill={SKIN_SHADE} />
-      <rect x={fx - 4.4} y={fy - 21} width="8.8" height="12.4" rx="4" fill={SHIRT} />
-      <path d={`M${fx - 4} ${fy - 12.6} h8`} stroke={SHIRT_DARK} strokeWidth="1.3" strokeLinecap="round" />
-      {holding}
-      <Arm shoulder={shoulder} target={near} color={SHIRT_DARK} />
-      <Layer rotate={tilt} origin={[fx, fy - 22.8]}>
-        <circle cx={hx} cy={hy} r="5.2" fill={SKIN} />
-        <path d={`M${hx - 5.3} ${hy + 1.2} C${hx - 6.2} ${hy - 6} ${hx + 1} ${hy - 8} ${hx + 4.8} ${hy - 3.8} C${hx + 1.6} ${hy - 4.2} ${hx - 1.4} ${hy - 3} ${hx - 2.6} ${hy + 1.8} Z`} fill={HAIR} />
-        {/* てぬぐいの はちまき */}
-        <path d={`M${hx - 5.1} ${hy - 2.2} Q${hx} ${hy - 4.6} ${hx + 5} ${hy - 2.4}`} fill="none" stroke={TOWEL} strokeWidth="1.7" strokeLinecap="round" />
-        <Face mood={mood} hx={hx} hy={hy} />
-      </Layer>
-    </>
-  )
-}
-
 /* ───────── くわ ───────── */
 
 type HoePose = { readonly grip: Pt; readonly angle: number }
-const HOE_LEN = 17
+const HOE_LEN = 18
 
 const lerpPt = (a: Pt, b: Pt, k: number): Pt => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k]
 const lerpPose = (a: HoePose, b: HoePose, k: number): HoePose => ({ grip: lerpPt(a.grip, b.grip, k), angle: a.angle + (b.angle - a.angle) * k })
 const dirOf = (angle: number): Pt => [Math.cos((angle * Math.PI) / 180), Math.sin((angle * Math.PI) / 180)]
 
-/** かた(shoulder)を もとに、かつぐ・ふりかぶる・うつ の 3つの かっこうを つなぐ */
+/** かた(shoulder)を もとに、かつぐ・ふりかぶる・うつ の 3つの かっこうを つなぐ。手が とどく ところに にぎる */
 function hoeHeld(t: number, shoulder: Pt): HoePose {
   const carry: HoePose = { grip: [shoulder[0] + 4, shoulder[1] + 2.5], angle: -152 }
   const up: HoePose = { grip: [shoulder[0] + 2.5, shoulder[1] - 5], angle: -125 }
-  const hit: HoePose = { grip: [shoulder[0] + 8, shoulder[1] + 6.5], angle: 46 }
+  const hit: HoePose = { grip: [shoulder[0] + 6.5, shoulder[1] + 8.6], angle: 62 }
   // 1: ふりかぶった / 0: うった。うつたびに ふりおろして、さいごの 1回は そのまま 土に さす
   const raised = STRIKES.reduce((a, at, k) => {
     if (t < at - SWING_DOWN) return a
@@ -384,8 +251,9 @@ function Hoe({ pose }: { readonly pose: HoePose }) {
 
 /* ───────── にぎやかし ───────── */
 
-/** うつたびの つちけむり・とびちる つちの かたまり・もりあがる つち */
-const DIG_TIP_X = 29.8
+/** うつたびの つちけむり・とびちる つちの かたまり・もりあがる つち。くわの 先は うつ しせい の とき の 刃 */
+const HIT_DX = dirOf(62)[0]
+const DIG_TIP_X = DIG_SHOULDER[0] + 6.5 + HIT_DX * HOE_LEN
 const CLUMPS: readonly (readonly [number, number])[] = [[5, -26], [11, -20], [-2, -18]]
 
 function Digging({ t }: SceneProps) {
@@ -396,7 +264,7 @@ function Digging({ t }: SceneProps) {
         const mound = span(t, at + 0.1, at + 0.3, backOut)
         return (
           <g key={at}>
-            <ellipse cx={22.5 + k * 3.6} cy="68.2" rx={Math.max(0, 3.2 * mound)} ry={Math.max(0, 1.9 * mound)} fill={SOIL_DARK} />
+            <ellipse cx={DIG_TIP_X - 7.3 + k * 3.6} cy="68.2" rx={Math.max(0, 3.2 * mound)} ry={Math.max(0, 1.9 * mound)} fill={SOIL_DARK} />
             {u > 0 && u < 0.6 && <ellipse cx={DIG_TIP_X} cy="68.6" rx={1.5 + u * 10} ry={0.8 + u * 3.6} fill="#ead9bf" opacity={(1 - u / 0.6) * 0.7} />}
             {u > 0 && u < 0.46 && CLUMPS.map(([vx, vy], i) => <circle key={i} cx={DIG_TIP_X + vx * u} cy={68 + vy * u + 55 * u * u} r={1.1 + i * 0.25} fill={SOIL_DARK} />)}
           </g>
@@ -406,88 +274,65 @@ function Digging({ t }: SceneProps) {
   )
 }
 
-function Sweat({ t, fx, fy }: { readonly t: number; readonly fx: number; readonly fy: number }) {
-  const show = during(t, ARRIVE_FROM + 0.2, SIGH + 0.3, 0.2)
-  if (show <= 0) return null
-  return (
-    <g opacity={show}>
-      {[0, 0.4].map((offset) => {
-        const p = ((t + offset) % 0.8) / 0.8
-        return <path key={offset} d="M0 -2.2 Q1.8 0.6 0 1.8 Q-1.8 0.6 0 -2.2 Z" fill={WATER} transform={`translate(${fx - 4 - p * 3} ${fy - 33 + p * 6}) rotate(-25)`} opacity={1 - p} />
-      })}
-    </g>
-  )
-}
+/** てぬぐいの はちまき(あたまの まんなか が 0,0、半径 1。横むき は 右むき の 形) */
+const TowelBand = (
+  <path d="M-0.98 -0.2 Q0 -0.82 0.98 -0.3" fill="none" stroke={TOWEL} strokeWidth="0.3" strokeLinecap="round" />
+)
 
-/** 「ふう」と ひといき。口もとから 右へ */
-function Sigh({ t, fx, fy }: { readonly t: number; readonly fx: number; readonly fy: number }) {
-  const show = during(t, SIGH, RAISE_FROM + 0.3, 0.2)
-  if (show <= 0) return null
-  const p = span(t, SIGH, RAISE_FROM + 0.3, easeOut)
-  return (
-    <g opacity={show}>
-      <ellipse cx={fx + 7 + p * 6} cy={fy - 25 - p * 3} rx={2.2 + p * 2.2} ry={1.5 + p * 1.4} fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.6" />
-      <ellipse cx={fx + 6.4 + p * 2.5} cy={fy - 24.4 - p} rx={1.1 + p * 0.8} ry={0.8 + p * 0.5} fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.5" />
-    </g>
-  )
-}
-
-/** 手の ばしょ: くわを もつ → あるく(うでを ふる) → ロープを ひく → ばんざい */
-function handsAt(t: number, shoulder: Pt, stride: number): { readonly near: Pt; readonly far: Pt } {
-  const swing = (deg: number): Pt => [shoulder[0] + Math.sin((deg * Math.PI) / 180) * 11.4, shoulder[1] + Math.cos((deg * Math.PI) / 180) * 11.4]
-  const free = { near: swing(6 + stride * 28), far: swing(2 - stride * 28) }
-  const hoe = hoeHeld(t, shoulder)
-  const [dx, dy] = dirOf(hoe.angle)
+/** 手の かっこう: くわを もつ → あるく(うでを ふる) → ロープを ひく → ばんざい。右むき の てまえ = 左うで */
+function armsAt(t: number, grip: Pt, along: Pt, walkPose: PersonPose): Pick<PersonPose, 'leftArm' | 'rightArm'> {
+  const free = { near: walkPose.leftArm ?? { swing: 4, bend: 8 }, far: walkPose.rightArm ?? { swing: 4, bend: 8 } }
   const hold = span(t, RAISE_FROM - 0.4, RAISE_FROM)
-  const holding = {
-    near: hoe.grip,
-    far: lerpPt(swing(2 - stride * 28), [hoe.grip[0] - dx * 3.2, hoe.grip[1] - dy * 3.2], hold),
-  }
+  const holding = { near: { to: grip } as Limb, far: mixLimb(free.far, { to: [grip[0] - along[0] * 3.2, grip[1] - along[1] * 3.2] }, hold) as Limb }
   const base = t < RELEASE ? holding : free
   const pull = (t - HOIST_FROM) / (HOIST_TO - HOIST_FROM)
-  const rope = { near: [ROPE_X - 0.4, 53 + 7 * tri(pull * 3)] as Pt, far: [ROPE_X - 0.4, 53 + 7 * tri(pull * 3 + 0.5)] as Pt }
   const toRope = span(t, HOIST_FROM - 0.3, HOIST_FROM, easeInOut)
-  const roped = { near: lerpPt(base.near, rope.near, toRope), far: lerpPt(base.far, rope.far, toRope) }
-  const cheer = { near: [shoulder[0] + 5, shoulder[1] - 10.5] as Pt, far: [shoulder[0] - 2, shoulder[1] - 11.5] as Pt }
+  const rope = { near: { to: [ROPE_X - 0.4, 53 + 7 * tri(pull * 3)] } as Limb, far: { to: [ROPE_X - 0.4, 53 + 7 * tri(pull * 3 + 0.5)] } as Limb }
   const toCheer = span(t, CHEER - 0.1, CHEER + 0.1)
-  return { near: lerpPt(roped.near, cheer.near, toCheer), far: lerpPt(roped.far, cheer.far, toCheer) }
+  const up: Limb = { swing: 160, bend: 10 }
+  const near = toRope > 0 ? mixLimb(base.near, rope.near, toRope) : base.near
+  const far = toRope > 0 ? mixLimb(base.far, rope.far, toRope) : base.far
+  return { leftArm: toCheer > 0 ? mixLimb(near, up, toCheer) : near, rightArm: toCheer > 0 ? mixLimb(far, up, toCheer) : far }
 }
 
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 7)
 
   // あるく: 左から くわを うつ ばしょ まで、そのあと 旗ざおの そば まで
-  const arrive = span(t, ARRIVE_FROM, ARRIVE_TO, easeOut)
-  const over = span(t, WALK_FROM, WALK_TO, easeInOut)
-  const fx = -14 + (DIG_X + 14) * arrive + (POLE_X - 11 - DIG_X) * over
-  const walking = (t >= ARRIVE_FROM && t < ARRIVE_TO) || (t >= WALK_FROM && t < WALK_TO)
-  const settle = 1 - span(t, ARRIVE_TO - 0.25, ARRIVE_TO) * (t < WALK_FROM ? 1 : 0) - span(t, WALK_TO - 0.25, WALK_TO) * (t >= WALK_FROM ? 1 : 0)
-  const stride = walking ? Math.sin(t * Math.PI * 2 * 1.9) * settle : 0
+  const w = t < WALK_FROM
+    ? walk(t, { from: -14, to: DIG_X, start: ARRIVE_FROM, end: ARRIVE_TO, build: 'adult', height: HEIGHT, step: HEIGHT * 0.34, armSwing: 14 })
+    : walk(t, { from: DIG_X, to: HOIST_X, start: WALK_FROM, end: WALK_TO, build: 'adult', height: HEIGHT, step: HEIGHT * 0.34, armSwing: 14 })
   const cheerHop = 3 * Math.abs(Math.sin(span(t, CHEER, CHEER + 0.6) * Math.PI * 2))
-  const fy = FLOOR - Math.abs(stride) * 0.9 - cheerHop
 
-  const mood: Mood = t < RAISE_FROM - 0.1 ? 'tired' : t < STRIKES[STRIKES.length - 1] + 0.2 ? 'work' : 'happy'
-  const tilt = t < RAISE_FROM - 0.1 ? 6 : t < RELEASE ? 2 : t < HOIST_FROM ? mix(t, RELEASE, RELEASE + 0.3, 2, -5) : -7
-  const shoulder: Pt = [fx, fy - 19]
-  const hands = handsAt(t, shoulder, stride)
+  const face: Expression = t < RAISE_FROM - 0.1 ? 'worried' : t < STRIKES[STRIKES.length - 1] + 0.2 ? 'strain' : 'joy'
+  const headTilt = t < RAISE_FROM - 0.1 ? 6 : t < RELEASE ? 2 : t < HOIST_FROM ? 0 : -7
+
+  // くわ: もっている あいだ は かた に あわせ、手を はなして からは 土に さしたまま
+  const shoulder = shoulderAt(w.x)
   const hoePose = hoeHeld(t, t < RELEASE ? shoulder : DIG_SHOULDER)
+  const arms = armsAt(t, hoePose.grip, dirOf(hoePose.angle), w.pose)
+  const pose: PersonPose = { ...w.pose, ...arms, head: headTilt }
+  const rig = personRig({ ...w, y: FLOOR, pose: {} })
+  const head = rig.world.head
+  const headR = rig.body.headR * rig.scale
   const land = span(t, 0, 0.6, backOut)
 
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Sky t={t} />
+        <Sun t={t} x={13} y={13} r={6.2} />
+        <Clouds t={t} at={[[64, 6, 1], [96, 13, 0.8]]} speed={1.5} />
         <Layer opacity={Math.min(1, land * 1.4)} scaleY={0.9 + 0.1 * land} origin={[54.5, 109]}>
           <path d="M-6 69 Q8 26 54 11 Q100 26 115 69 Z" fill={HILL_BACK} />
           <Field t={t} />
-          <House t={t} />
+          <Home t={t} />
           <Earth t={t} />
           <Pole t={t} />
         </Layer>
         <Digging t={t} />
-        <Sweat t={t} fx={fx} fy={fy} />
-        <Sigh t={t} fx={fx} fy={fy} />
-        <Person fx={fx} fy={fy} mood={mood} stride={stride} tilt={tilt} near={hands.near} far={hands.far} holding={t < RELEASE ? <Hoe pose={hoePose} /> : null} />
+        <Sweat t={t} x={head[0] - headR * 0.9} y={head[1] - headR * 0.4} show={during(t, ARRIVE_FROM + 0.2, SIGH + 0.3, 0.2)} />
+        <Sigh x={head[0] + headR * 0.9} y={head[1] + headR * 0.4} p={span(t, SIGH, RAISE_FROM + 0.3, easeOut)} show={during(t, SIGH, RAISE_FROM + 0.3, 0.2)} dir={1} />
+        <Person {...w} y={FLOOR} look={{ ...LOOKS.man, top: '#e8923f', bottom: '#5b6f94' }} face={face} lift={cheerHop} pose={pose} headwear={TowelBand} held={t < RELEASE ? <Hoe pose={hoePose} /> : null} />
         {t >= RELEASE && <Hoe pose={hoePose} />}
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />

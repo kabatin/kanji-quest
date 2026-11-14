@@ -1,5 +1,5 @@
 /*
- * 火(ひ): たきぎに 火が うつって、めらめら もえる ほのお。
+ * 火(ひ): たきぎに 火が うつって、めらめら もえる ほのお。(共通部品 sceneFigures で 書きなおした もの)
  *
  * ほね(画と絵の対応)
  *   1画目(丶)  … ほのおの 左へ のびる 小さな した(左の ほのおの ひとなめ)
@@ -9,40 +9,29 @@
  *   4画目(乀)  … 右に たおれかかる たきぎ(上の はし は ほのおの 中)
  *
  * ながれ
- *   夜、さむそうな 子が ふるえている(いきが 白い)。 たきぎが 2本 くまれている
+ *   夜、さむそうな 子が しゃがんで ふるえている(いきが 白い)。 たきぎが 2本 くまれている
  *   → 子が、ひだね の ついた えだ を たきぎ へ のばす
  *   → えだ の ひ が たきぎに うつって、ちいさな ほのお が ぽっと ともる
  *   → ほのお が ぐんぐん 大きくなり、子は びっくり。 つぎに、あったかくて にっこり(まわりも あかるくなる)
  *   → ほのおの かたちが ゆれながら 落ちつき、ほね が ひかって、絵が うすくなり、字「火」が のこる
  *
- * 子・たきぎ・ほのおは、ほんものの つくり を守る(字の形に合わせるために ゆがめない):
- *   うで は かた から出て ひじ で まがる。ほのお は 下が ふくらんで 上が とがり、ゆらゆら ゆれる。
- *   たきぎ は 地面に ななめに くまれて、火は その まんなか から もえあがる。
- *   ひ が うつる わけ は、子が えだ の ひだね を たきぎ に ふれさせるから。
+ * 子は Person(右むき・しゃがむ は posture('squat'))。えだ は tools の 'stick'、手は { to } で たきぎへ のばす。
+ * くび の まきもの(マフラー)は 部品に ないので、子の held として ここで 描く(くび の 場所は personRig から)。
+ * 夜 → 少し あかるい は Backdrop の time、まわりの 石は Rock。たきぎ・ほのお・ひのこ は 字の 画に そろえるので ここで 描く。
+ * ひ が うつる わけ は、子が えだ の ひだね を たきぎ に ふれさせるから。
  */
-import { backOut, during, easeInOut, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
-import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Backdrop, mixLimb, PALETTE, Person, personRig, posture, Rock, Sigh, type Limb, type PersonProps } from '../sceneFigures'
 
 const CHAR = '火'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
 const TUNIC = '#4fb3b0'
-const TUNIC_DARK = '#3b9a98'
-const TUNIC_FAR = '#2f807e'
 const SCARF = '#f2b632'
-const PANTS = '#3e5c86'
-const PANTS_DARK = '#34507a'
-const SHOE = '#6b4a36'
-const BARK = '#8c5b3c'
-const BARK_DARK = '#70452b'
+const SCARF_DARK = '#d99a1c'
+const BARK = PALETTE.bark
+const BARK_DARK = PALETTE.barkDark
 const WOOD_CUT = '#d9b087'
-const GRASS = '#c5e8a9'
-const HILL = '#e2f2d2'
-const STONE = '#a8adb6'
-const STONE_LIGHT = '#c9cdd4'
-const DUSK = '#4a5a8c'
 const FLAME_OUT = '#ff7a2e'
 const FLAME_MID = '#ffb02e'
 const FLAME_IN = '#ffe27a'
@@ -59,37 +48,29 @@ const INK = 6.0
 const DONE = 8.6
 const DURATION = 9.4
 
-/** 子の かた・こし(ひだり に いて、右(ほのお)を むいている) */
-const SHOULDER: readonly [number, number] = [10, 72]
-const HIP: readonly [number, number] = [9, 88]
-const ARM_PART = 7
-/** ひだね の えだ の 長さ(のばすと、さきっぽ が 左の たきぎ に とどく) */
-const STICK = 20
+/** 子の こし の x・足もと の y・背の高さ(しゃがむ ので 見える 高さ は これの はんぶん くらい) */
+const KID_X = 9
+const KID_Y = 95
+const KID_HEIGHT = 46
+/** ひだね の えだ の 長さ と、えだ の 先が たきぎ に ふれる 場所(3画目の 下半分の 上) */
+const STICK_LEN = 20
+const TOUCH_AT: readonly [number, number] = [31.6, 84.3]
+/** えだ を もつ 手 の ばしょ(のばした とき) */
+const HAND_REACH: readonly [number, number] = [21, 75]
 /** ほのおの ねもと(ここを じく に 大きくなる) */
 const FLAME_BASE: readonly [number, number] = [48, 67]
 
-const rad = (deg: number) => (deg * Math.PI) / 180
-
 /* ───────── ばしょ(空・地面・いし) ───────── */
 
-function Backdrop({ t }: SceneProps) {
-  // 夜の あおぐらさ は、ほのお が つくと うすれる
-  const dusk = 0.5 * (1 - span(t, TOUCH + 0.4, WARM + 0.6)) + 0.06
+function Place({ t }: SceneProps) {
+  // 夜の くらさ は、ほのお が つくと すこし うすれる
+  const time = 2 - 0.7 * span(t, TOUCH + 0.4, WARM + 0.6)
   const sky = span(t, 0, 0.5, easeOut)
   const glow = span(t, TOUCH + 0.3, GROW + 1.4, easeOut)
   return (
     <>
-      <path d="M-4 99 Q18 78 44 91 Q72 72 113 94 V101 H-4 Z" fill={HILL} opacity={sky} />
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.6" fill={GRASS} opacity={sky} />
-      <rect x="0" y="0" width="109" height="109" fill={DUSK} opacity={dusk * sky} />
-      {/* 月 と 星(あかるくなると 見えにくくなる) */}
-      <g opacity={sky * Math.min(1, dusk * 2.2)}>
-        <circle cx="95" cy="12" r="5.4" fill="#fff1b8" />
-        <circle cx="97.6" cy="10.6" r="4.6" fill={DUSK} />
-        <Star cx={14} cy={14} r={2.4 + wave(t, 1.6) * 0.5} color="#ffe9a8" />
-        <Star cx={34} cy={7} r={1.8 + wave(t, 1.3, 0.4) * 0.4} color="#ffe9a8" />
-        <Star cx={72} cy={9} r={2 + wave(t, 1.9, 0.9) * 0.5} color="#ffe9a8" />
-        <Star cx={101} cy={38} r={1.7 + wave(t, 1.5, 0.2) * 0.4} color="#ffe9a8" />
+      <g opacity={sky}>
+        <Backdrop t={t} sun={null} clouds={[]} time={time} moon={[95, 12]} moonPhase="crescent" />
       </g>
       {/* ほのおの あかり: まわりが ぽうっと あたたかくなる */}
       <circle cx="50" cy="56" r="40" fill="#ffcf7a" opacity={0.16 * glow} />
@@ -101,17 +82,14 @@ function Backdrop({ t }: SceneProps) {
 
 /** たきぎの まわりの いし(火が ひろがらないように) */
 function Stones({ t }: SceneProps) {
-  const pop = span(t, 0.2, 0.7, backOut)
-  const stones: readonly (readonly [number, number, number])[] = [[41, 97.4, 4], [53, 98.2, 3.4], [63, 97.8, 3.8], [75, 97.2, 3.6]]
+  const grow = span(t, 0.2, 0.7)
+  const stones: readonly (readonly [number, number, number])[] = [[41, 98, 4.2], [53, 98.6, 3.6], [63, 98.2, 4], [75, 97.8, 3.8]]
   return (
-    <Layer scale={pop} origin={[58, 98]}>
-      {stones.map(([cx, cy, r]) => (
-        <g key={cx}>
-          <ellipse cx={cx} cy={cy} rx={r} ry={r * 0.66} fill={STONE} />
-          <ellipse cx={cx - r * 0.25} cy={cy - r * 0.2} rx={r * 0.5} ry={r * 0.3} fill={STONE_LIGHT} />
-        </g>
+    <>
+      {stones.map(([x, y, size]) => (
+        <Rock key={x} x={x} y={y} size={size} grow={grow} />
       ))}
-    </Layer>
+    </>
   )
 }
 
@@ -169,7 +147,7 @@ function Flame({ t, calm }: FlameProps) {
   const right = Math.max(0, span(t, GROW + 0.5, GROW + 1.5, backOut))
   return (
     <>
-      <Layer scaleX={1} scaleY={left} scale={left} rotate={wave(t, 0.55, 0.3) * 3.5 * calm} origin={[40, 58]}>
+      <Layer scale={left} rotate={wave(t, 0.55, 0.3) * 3.5 * calm} origin={[40, 58]}>
         <path d={LEFT_TONGUE} fill={FLAME_OUT} />
         <Layer scale={0.58} origin={[40, 59]}>
           <path d={LEFT_TONGUE} fill={FLAME_IN} />
@@ -215,137 +193,61 @@ function Sparks({ t }: SceneProps) {
 
 /* ───────── 子 ───────── */
 
+const SQUAT = posture('squat', 'right')
+const KID_LOOK = { top: TUNIC, bottom: '#3e5c86' } as const
+
 type Mood = 'cold' | 'hope' | 'wow' | 'happy'
-/** うで の かっこう。swing = ま下から まえ(右)へ ふった角度 / bend = ひじ の まがり */
-type ArmPose = { readonly swing: number; readonly bend: number }
 
-function armPoints(pose: ArmPose) {
-  const elbow = [SHOULDER[0] + Math.sin(rad(pose.swing)) * ARM_PART, SHOULDER[1] + Math.cos(rad(pose.swing)) * ARM_PART] as const
-  const fore = pose.swing + pose.bend
-  const hand = [elbow[0] + Math.sin(rad(fore)) * ARM_PART, elbow[1] + Math.cos(rad(fore)) * ARM_PART] as const
-  return { elbow, hand }
+/** 子の ばしょ・かっこう(えだ は まだ もたせない。手の 場所 を 先に しらべる ため) */
+function kidAt(t: number, calm: number): PersonProps {
+  const lift = span(t, LIFT, TOUCH - 0.1, easeInOut)
+  const draw = span(t, TOUCH + 0.4, WARM - 0.3, easeInOut)
+  const warm = span(t, GROW + 0.4, WARM, easeInOut)
+  const cold = 1 - span(t, GROW, GROW + 1.2)
+  const mood: Mood = t < LIFT + 0.7 ? 'cold' : t < GROW ? 'hope' : t < WARM ? 'wow' : 'happy'
+  // びっくり して のけぞる → あったまって ゆらゆら
+  const startle = span(t, GROW - 0.1, GROW + 0.4, easeOut) * (1 - span(t, GROW + 0.9, GROW + 1.8))
+  // えだ を もつ のは てまえ の 手(右むき なら 左手)。のばして、ひだね を ふれさせ、少し ひく
+  const reach: Limb = { to: [HAND_REACH[0] - 4 * draw, HAND_REACH[1] + 1 * draw] }
+  const leftArm = mixLimb(SQUAT.leftArm ?? { swing: 8, bend: 80 }, reach, lift)
+  // あったまると 空いた 手 も ほのお へ むける
+  const rightArm = mixLimb(SQUAT.rightArm ?? { swing: 4, bend: 88 }, { to: [28, 78] }, warm)
+  return {
+    x: KID_X + wave(t, 0.1) * 0.45 * cold * span(t, 0.3, 0.7),
+    y: KID_Y,
+    build: 'child',
+    height: KID_HEIGHT,
+    facing: 'right',
+    look: KID_LOOK,
+    face: mood === 'cold' ? 'worried' : mood === 'hope' ? 'normal' : mood === 'wow' ? 'surprised' : 'smile',
+    lean: -8 * startle + wave(t, 0.9) * 1.8 * span(t, WARM, WARM + 0.5) * calm,
+    opacity: span(t, 0.1, 0.5),
+    pose: { ...SQUAT, leftArm, rightArm },
+  }
 }
 
-/** かた から出て、ひじ で まがる うで。かた・ひじ・手 の じゅんに つながる。 */
-function Arm({ pose, color }: { readonly pose: ArmPose; readonly color: string }) {
-  const { elbow, hand } = armPoints(pose)
+/** くび の まきもの(マフラー)。くび の 上に まるく 巻いて、うしろ(左)へ ひらひら なびく。held として 描く */
+function Scarf({ t, props }: { readonly t: number; readonly props: PersonProps }) {
+  const rig = personRig(props)
+  const [nx, ny] = rig.world.neck
+  const r = rig.body.headR * rig.scale
+  const flutter = wave(t, 0.8) * 1.1
   return (
-    <>
-      <path d={`M${SHOULDER[0]} ${SHOULDER[1]} L${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={color} strokeWidth="4.8" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hand[0]} cy={hand[1]} r="2.7" fill={SKIN} />
-    </>
-  )
-}
-
-/** ひだね の えだ。手に にぎって、さきっぽ が ぽっと あかい。angle は ま下から まえへ(180 = 上むき) */
-function Stick({ pose, angle, ember }: { readonly pose: ArmPose; readonly angle: number; readonly ember: number }) {
-  const { hand } = armPoints(pose)
-  const tip = [hand[0] + Math.sin(rad(angle)) * STICK, hand[1] + Math.cos(rad(angle)) * STICK] as const
-  const back = [hand[0] - Math.sin(rad(angle)) * 3, hand[1] - Math.cos(rad(angle)) * 3] as const
-  return (
-    <>
-      <path d={`M${back[0]} ${back[1]} L${tip[0]} ${tip[1]}`} stroke="#a9764a" strokeWidth="1.9" strokeLinecap="round" />
-      <circle cx={hand[0]} cy={hand[1]} r="2.7" fill={SKIN} />
-      <circle cx={tip[0]} cy={tip[1]} r={1.5 + 1.4 * ember} fill="#ffb24a" opacity={0.45 + 0.4 * ember} />
-      <circle cx={tip[0]} cy={tip[1]} r={1.1 + 0.4 * ember} fill={EMBER} />
-    </>
-  )
-}
-
-function Face({ mood }: { readonly mood: Mood }) {
-  const ink = '#2b2b2b'
-  const mouth = '#b9483f'
-  return (
-    <>
-      {mood === 'cold' && (
-        <>
-          {/* まゆ: さむくて こまった かお(なかよせ側が 上がる) */}
-          <path d="M1.4 -1.6 l3.2 -1.3" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-          <path d="M1.6 -0.2 l2.8 0.6" stroke={ink} strokeWidth="1.2" strokeLinecap="round" />
-          <path d="M1.4 3.6 q1 -1 2 0 q1 1 2 0" fill="none" stroke={mouth} strokeWidth="1.1" strokeLinecap="round" />
-          <circle cx="6.2" cy="1.8" r="1" fill="#ff8c8c" />
-        </>
-      )}
-      {mood === 'hope' && (
-        <>
-          <path d="M1.4 -2.4 l3.2 -0.6" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-          <circle cx="3.2" cy="-0.4" r="1.15" fill={ink} />
-          <ellipse cx="4.2" cy="3.6" rx="1" ry="1.1" fill={mouth} />
-        </>
-      )}
-      {mood === 'wow' && (
-        <>
-          <path d="M1.2 -3.2 l3.4 -1" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-          <circle cx="3.2" cy="-0.6" r="1.7" fill="#ffffff" stroke={ink} strokeWidth="0.5" />
-          <circle cx="3.7" cy="-0.5" r="1" fill={ink} />
-          <ellipse cx="4.4" cy="3.8" rx="1.4" ry="1.9" fill={mouth} />
-        </>
-      )}
-      {mood === 'happy' && (
-        <>
-          <path d="M1.4 -0.2 Q3 -2.4 4.6 -0.2" fill="none" stroke={ink} strokeWidth="1.2" strokeLinecap="round" />
-          <path d="M1.8 2.8 Q4 5.8 6.4 2.6" fill="none" stroke={mouth} strokeWidth="1.2" strokeLinecap="round" />
-          <circle cx="1.2" cy="2.6" r="1.9" fill="#ff9d9d" opacity="0.65" />
-        </>
-      )}
-    </>
-  )
-}
-
-type ChildProps = {
-  readonly mood: Mood
-  readonly nearArm: ArmPose
-  readonly farArm: ArmPose
-  readonly stickAngle: number
-  readonly ember: number
-  readonly lean: number
-  readonly headTilt: number
-}
-
-function Child({ mood, nearArm, farArm, stickAngle, ember, lean, headTilt }: ChildProps) {
-  return (
-    <>
-      {/* あし: こしを おろして ひざを たてる。ひざ から したは じめんへ */}
-      <path d="M8 87 L15 81.6 L15.6 92.5" fill="none" stroke={PANTS_DARK} strokeWidth="5.4" strokeLinecap="round" strokeLinejoin="round" />
-      <ellipse cx="17" cy="94" rx="4" ry="2.1" fill={SHOE} />
-      <path d="M10.5 88 L18.6 83.4 L19.4 93" fill="none" stroke={PANTS} strokeWidth="5.4" strokeLinecap="round" strokeLinejoin="round" />
-      <ellipse cx="20.6" cy="94.4" rx="4" ry="2.1" fill={SHOE} />
-      <Layer rotate={lean} origin={HIP}>
-        <Arm pose={farArm} color={TUNIC_FAR} />
-        {/* どう */}
-        <rect x="3.6" y="67.8" width="11.6" height="21" rx="5.4" fill={TUNIC} />
-        <path d="M5.4 80.6 h8" stroke={TUNIC_DARK} strokeWidth="1.4" strokeLinecap="round" />
-        {/* くび の まきもの(くび は みじかく、これで すきまが かくれる) */}
-        <rect x="4.6" y="65.8" width="10.2" height="3.6" rx="1.8" fill={SCARF} />
-        <path d="M5 67.6 l-3.6 4.4 l3.4 0.8 Z" fill={SCARF} />
-        <Arm pose={nearArm} color={TUNIC_DARK} />
-        <Stick pose={nearArm} angle={stickAngle} ember={ember} />
-        {/* あたま(右を むいている) */}
-        <Layer rotate={headTilt} origin={[10, 66]}>
-          <g transform="translate(10.4 59.4)">
-            <circle cx="0" cy="0" r="6.6" fill={SKIN} />
-            <path d="M-6.7 0.8 C-7.8 -6.8 0.6 -9.4 5.8 -5.6 C3.4 -5.2 1 -4 0.2 -2.4 C-1.8 -3.4 -4.6 -2.6 -6.7 0.8 Z" fill={HAIR} />
-            <path d="M-0.4 -6.8 Q0.6 -9.6 2 -7.2" fill="none" stroke={HAIR} strokeWidth="1.6" strokeLinecap="round" />
-            <ellipse cx="-3.4" cy="1.8" rx="1.5" ry="2.2" fill={SKIN_SHADE} />
-            <Face mood={mood} />
-          </g>
-        </Layer>
-      </Layer>
-    </>
-  )
-}
-
-/** さむくて はく、白い いき。 */
-function Breath({ t }: SceneProps) {
-  const show = during(t, 0.5, TOUCH + 0.3, 0.3)
-  if (show <= 0) return null
-  const p = ((t - 0.5) % 1) / 1
-  return (
-    <g opacity={show * (1 - p)}>
-      <ellipse cx={17 + p * 6} cy={63.6 - p * 4} rx={1.6 + p * 2.2} ry={1.1 + p * 1.4} fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.5" />
-      <ellipse cx={20 + p * 4} cy={62.4 - p * 2} rx={0.9 + p * 1.2} ry={0.7 + p * 0.8} fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.4" />
+    <g>
+      <ellipse cx={nx} cy={ny + 0.4} rx={r * 0.78} ry={r * 0.36} fill={SCARF} transform={`rotate(${rig.tilt.torso} ${nx} ${ny})`} />
+      <path d={`M${nx - r * 0.5} ${ny + 0.6} q${-r * 0.9} ${r * 0.1 + flutter} ${-r * 1.3} ${r * 0.9 + flutter} l${r * 0.7} ${r * 0.2} q${r * 0.2} ${-r * 0.5} ${r * 0.7} ${-r * 0.8} Z`} fill={SCARF_DARK} />
     </g>
   )
+}
+
+/** ひだね の えだ の 先 と ひだね。先 は、手 の 上(はじめ)→ たきぎ(ふれる)→ 手 の 少し 先(ひく) */
+function stickTip(t: number, hand: readonly [number, number]): readonly [number, number] {
+  const lift = span(t, LIFT, TOUCH - 0.1, easeInOut)
+  const draw = span(t, TOUCH + 0.4, WARM - 0.3, easeInOut)
+  const up: readonly [number, number] = [hand[0] + 2, hand[1] - STICK_LEN]
+  const pulled: readonly [number, number] = [hand[0] + STICK_LEN * 0.7, hand[1] - STICK_LEN * 0.7]
+  const touch = [mix(lift, 0, 1, up[0], TOUCH_AT[0]), mix(lift, 0, 1, up[1], TOUCH_AT[1])] as const
+  return [mix(draw, 0, 1, touch[0], pulled[0]), mix(draw, 0, 1, touch[1], pulled[1])]
 }
 
 function Scene({ t }: SceneProps) {
@@ -353,35 +255,27 @@ function Scene({ t }: SceneProps) {
   // 字になる ちょくぜん、ほのおの ゆれ を とめて 字の線に そろえる
   const calm = 1 - span(t, INK - 0.6, INK - 0.1)
 
-  const lift = span(t, LIFT, TOUCH - 0.1, easeInOut)
-  const draw = span(t, TOUCH + 0.4, WARM - 0.3, easeInOut)
-  const warm = span(t, GROW + 0.4, WARM, easeInOut)
-  const cold = 1 - span(t, GROW, GROW + 1.2)
-  const mood: Mood = t < LIFT + 0.7 ? 'cold' : t < GROW ? 'hope' : t < WARM ? 'wow' : 'happy'
-  // うで: はじめは ひざを かかえ、えだ を ほのお へ のばし、ひとやすみ で ひく。
-  // あったまると 空いた うで も ほのお へ むける
-  const nearArm: ArmPose = { swing: 20 + 65 * lift - 35 * draw, bend: 45 * (1 - lift) + 10 * draw }
-  const farArm: ArmPose = { swing: 15 + 55 * warm, bend: 55 * (1 - warm) + 5 * warm }
-  const stickAngle = 180 - 92 * lift - 38 * draw
+  const base = kidAt(t, calm)
+  const rig = personRig(base)
+  const hand = rig.world.arms.left.end
+  const tip = stickTip(t, hand)
   const ember = span(t, TOUCH - 0.2, TOUCH + 0.2) * (1 - span(t, GROW, WARM))
-  // びっくり して のけぞる → あったまって ゆらゆら
-  const startle = span(t, GROW - 0.1, GROW + 0.4, easeOut) * (1 - span(t, GROW + 0.9, GROW + 1.8))
-  const lean = -8 * startle + wave(t, 0.9) * 1.8 * span(t, WARM, WARM + 0.5) * calm
-  const headTilt = mood === 'cold' ? 4 : mood === 'happy' ? -3 : -6 * startle
-  const shiver = wave(t, 0.1) * 0.45 * cold * span(t, 0.3, 0.7)
+  const [headX, headY] = rig.world.head
+  const headR = rig.body.headR * rig.scale
+  const breath = during(t, 0.5, TOUCH + 0.3, 0.3)
 
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Backdrop t={t} />
+        <Place t={t} />
         <Stones t={t} />
         <Logs t={t} />
         <Flame t={t} calm={calm} />
         <Sparks t={t} />
-        <Layer x={shiver} opacity={span(t, 0.1, 0.5)}>
-          <Child mood={mood} nearArm={nearArm} farArm={farArm} stickAngle={stickAngle} ember={ember} lean={lean} headTilt={headTilt} />
-        </Layer>
-        <Breath t={t} />
+        <Person {...base} tools={{ left: { kind: 'stick', tip } }} held={<Scarf t={t} props={base} />} />
+        <circle cx={tip[0]} cy={tip[1]} r={1.5 + 1.4 * ember} fill="#ffb24a" opacity={(0.45 + 0.4 * ember) * span(t, LIFT, LIFT + 0.2)} />
+        <circle cx={tip[0]} cy={tip[1]} r={1.1 + 0.4 * ember} fill={EMBER} opacity={span(t, LIFT, LIFT + 0.2)} />
+        <Sigh x={headX + headR + 1} y={headY + headR * 0.4} p={((t - 0.5) % 1) / 1} show={breath} dir={1} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Ink char={CHAR} progress={ink.progress} tint={ink.tint} />

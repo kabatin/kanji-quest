@@ -1,5 +1,5 @@
 /*
- * 貝(かい): うみで ひろった かいがら。むかしは お金のかわりに なった。
+ * 貝(かい): うみで ひろった かいがら。むかしは お金のかわりに なった。(共通部品 sceneFigures で 書きなおした)
  *
  * ほね(画と絵の対応)
  *   1画目(丨)  … かいがらの 左のふち
@@ -14,33 +14,16 @@
  *   → 子どもは パンを うけとって 大よろこび。カメラが かいがらに ぐーっと よると、
  *     ほね が ひかって、絵が うすくなり、字「貝」が のこる
  *
- * 絵は、ほんものの つくり を守る(字の形に合わせるために、ゆがめない):
- *   子どもは かた から出て ひじ で まがる うで、こし から ひざ で まがる あし、みじかい くび。
- *   かいがらや 台は、字と同じ 大きさで えがいてから 1/3 に ちぢめて 場面に おき、
- *   さいごに カメラが 3ばい に よると、字の画と ぴったり かさなる。
+ * 子どもは Person(あるきは walk、かかえるのは holdPose)。かいがらや 台は、字と同じ 大きさで えがいてから
+ * 1/3 に ちぢめて 場面に おき、さいごに カメラが 3ばい に よると、字の画と ぴったり かさなる。
+ * カニと パンは 部品が ないので 場面の中で 描く。
  */
-import { backOut, clamp01, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type Ease, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type Ease, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Bird, Clouds, HANG_ARM, holdPose, LOOKS, mixLimb, mixPose, Notice, Person, personRig, Seashore, Sun, walk, type Limb, type PersonPose, type Point } from '../sceneFigures'
 
 const CHAR = '貝'
 
-type Pt = readonly [number, number]
-
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const TUNIC = '#ef7b5a'
-const TUNIC_NEAR = '#d9633f'
-const TUNIC_FAR = '#b5502f'
-const PANTS = '#3e5c86'
-const PANTS_DARK = '#34507a'
-const SHOE = '#6b4a36'
-const SUN = '#ffd24a'
-const SKY = '#d7f0fb'
-const SEA = '#7cc4f2'
-const SEA_FAR = '#a9dbf6'
-const SAND = '#f7e4b5'
-const SAND_DARK = '#efd9a2'
 const SHELL = '#fbe3d6'
 const SHELL_RIM = '#e59b86'
 const SHELL_RIDGE = '#eeaa94'
@@ -51,6 +34,8 @@ const CRAB_DARK = '#c74a38'
 const BREAD = '#e9b266'
 const BREAD_LIGHT = '#f6d08e'
 const BREAD_LINE = '#c98a46'
+const SKY = '#d7f0fb'
+const KID_LOOK = { ...LOOKS.boy, top: '#ef7b5a' } as const
 
 /** くぎり の時間(秒) */
 const WALK_START = 0.2
@@ -68,8 +53,6 @@ const CARRY_END = 5.7
 const SET_START = 5.75
 const SET_END = 6.1
 const LET_GO = 6.25
-const BACK_START = 6.3
-const BACK_END = 7.0
 const TOSS_START = 6.7
 const TOSS_END = 7.3
 const ZOOM_START = 7.9
@@ -80,30 +63,23 @@ const DURATION = 11.8
 
 /** 地面の たかさ と、場面の カメラの じく(かいがらの まんなか) */
 const GROUND = 64
-const FOCUS: Pt = [54.5, 47]
+const FOCUS: Point = [54.5, 47]
 /** 字と同じ大きさで えがいた もの(かいがら・台)を、場面に おくときの ちぢめかた */
 const MINI = 1 / 3
 const ZOOM = 3
+const KID = { build: 'child', height: 45, facing: 'right' } as const
 
 const PICK_X = 20
 const PLACE_X = 37.5
-const CHEER_X = 28
 const SAND_X = 36
-/** 子どもが かいがらを だくとき、こし から かいがらの まんなか までの よこの きょり */
-const HOLD_GAP = 17
-const BREAD_REST: Pt = [67.6, 45.9]
+/** 場面の中の かいがらの はば(字の 46 × 1/3) */
+const SHELL_W = 15
+const BREAD_REST: Point = [67.6, 45.9]
+
+/** かがんで ひろう かっこう(こし が さがり、上体が まえへ) */
+const BEND: PersonPose = { torso: 40, head: -12, leftLeg: { swing: 36, bend: 62 }, rightLeg: { swing: 36, bend: 62 } }
 
 type Key = readonly [number, number]
-
-/** 子どもの こし の よこの いち(時間, x) */
-const HIP_X_KEYS: readonly Key[] = [
-  [WALK_START, -8],
-  [WALK_END, PICK_X],
-  [LIFT_END, PICK_X],
-  [CARRY_END, PLACE_X],
-  [BACK_START, PLACE_X],
-  [BACK_END, CHEER_X],
-]
 
 /** くぎりごとの 値を、なめらかに つなぐ */
 function track(t: number, keys: readonly Key[], ease: Ease = easeInOut): number {
@@ -117,85 +93,22 @@ function track(t: number, keys: readonly Key[], ease: Ease = easeInOut): number 
   return a[1] + (b[1] - a[1]) * ease(span(t, a[0], b[0]))
 }
 
-const lerpPt = (a: Pt, b: Pt, k: number): Pt => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k]
-const rad = (deg: number) => (deg * Math.PI) / 180
+const lerpPt = (a: Point, b: Point, k: number): Point => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k]
 
-type Limb = { readonly root: Pt; readonly joint: Pt; readonly end: Pt }
-
-/** 2つの ほね(かた→ひじ→手 / こし→ひざ→足)を、手や足の いち に とどくように まげる。side で まがる向きを きめる。 */
-function reach(root: Pt, target: Pt, length: number, side: 1 | -1): Limb {
-  const dx = target[0] - root[0]
-  const dy = target[1] - root[1]
-  const dist = Math.max(Math.hypot(dx, dy), 0.001)
-  const far = Math.min(dist, length * 2 - 0.02)
-  const ux = dx / dist
-  const uy = dy / dist
-  const along = far / 2
-  const out = Math.sqrt(Math.max(length * length - along * along, 0))
-  return {
-    root,
-    joint: [root[0] + ux * along - uy * out * side, root[1] + uy * along + ux * out * side],
-    end: [root[0] + ux * far, root[1] + uy * far],
-  }
+/** うで に、ねらう ところ を じゅんに かさねる([ねらい, 度合い]) */
+function blend(base: Limb | undefined, aims: readonly (readonly [Limb, number])[]): Limb {
+  return aims.reduce<Limb>((limb, [aim, k]) => (k <= 0 ? limb : mixLimb(limb, aim, k)), base ?? HANG_ARM)
 }
 
-function LimbShape({ limb, color, width }: { readonly limb: Limb; readonly color: string; readonly width: number }) {
-  const { root, joint, end } = limb
-  return <path d={`M${root[0]} ${root[1]} L${joint[0]} ${joint[1]} L${end[0]} ${end[1]}`} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" />
-}
+/* ───────── 場所 ───────── */
 
-function Hand({ at }: { readonly at: Pt }) {
-  return <circle cx={at[0]} cy={at[1]} r="2.3" fill={SKIN} />
-}
-
-function Ground({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
-  const flap = wave(t, 0.5) * 0.6
+function Scenery({ t }: SceneProps) {
   return (
     <>
-      <rect x="0" y="0" width="109" height="42" fill={SKY} />
-      <Layer opacity={sun} rotate={t * 14} origin={[13, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="12.2" y="1.6" width="1.6" height="4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 13 13)`} />
-        ))}
-      </Layer>
-      <circle cx="13" cy="13" r={6.2 * sun} fill={SUN} />
-      {/* ゆっくり ながれる 雲 */}
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.4} 0)`}>
-        <ellipse cx="52" cy="14" rx="7" ry="3.2" />
-        <ellipse cx="57" cy="12.4" rx="5" ry="3.2" />
-        <ellipse cx="92" cy="25" rx="6" ry="2.6" />
-      </g>
-      {/* うみ と 水平線 */}
-      <rect x="0" y="36" width="109" height="23" fill={SEA} />
-      <rect x="0" y="36" width="109" height="4.4" fill={SEA_FAR} />
-      {[
-        [14, 45],
-        [46, 48],
-        [78, 44],
-        [30, 53],
-        [66, 54],
-        [96, 51],
-      ].map(([x, y]) => (
-        <path key={`${x}-${y}`} d="M0 0 q2 -1.4 4 0 q2 1.4 4 0" fill="none" stroke="#ffffff" strokeWidth="0.8" strokeLinecap="round" opacity="0.75" transform={`translate(${x + wave(t, 2.4, x * 0.1) * 2} ${y})`} />
-      ))}
-      {/* すなはま(うみとの さかいに あわ) */}
-      <path d="M0 58 Q14 56 28 58.4 T56 58 T84 58.4 T112 58 V112 H0 Z" fill={SAND} />
-      <path d="M0 58 Q14 56 28 58.4 T56 58 T84 58.4 T112 58" fill="none" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M0 84 Q30 80 60 85 T112 83 V112 H0 Z" fill={SAND_DARK} />
-      {[
-        [8, 70],
-        [46, 76],
-        [92, 68],
-        [74, 90],
-        [20, 94],
-      ].map(([x, y]) => (
-        <ellipse key={`${x}-${y}`} cx={x} cy={y} rx="1.6" ry="0.8" fill="#e6cb92" />
-      ))}
-      {/* かもめ */}
-      <g transform={`translate(${86 - t * 1.6} ${22 + wave(t, 3) * 1.2})`} fill="none" stroke="#ffffff" strokeWidth="1.1" strokeLinecap="round">
-        <path d={`M-3.4 0 Q-1.7 ${-2.2 - flap} 0 0 Q1.7 ${-2.2 - flap} 3.4 0`} />
-      </g>
+      <Seashore t={t} horizon={36} shore={58} sky={SKY} />
+      <Sun t={t} x={13} y={13} />
+      <Clouds t={t} at={[[52, 14, 1], [92, 25, 0.8]]} speed={1.4} />
+      <Bird x={86 - t * 1.6} y={22 + wave(t, 3) * 1.2} t={t} flying facing="left" size={0.8} color="#ffffff" dark="#c9d6e6" />
     </>
   )
 }
@@ -215,8 +128,8 @@ function ShellArt() {
   )
 }
 
-/** 場面の中の かいがら。cx, cy は まんなか。rock は 波の ゆれ。 */
-function Shell({ at, rock }: { readonly at: Pt; readonly rock: number }) {
+/** 場面の中の かいがら。at は まんなか。rock は 波の ゆれ。 */
+function Shell({ at, rock }: { readonly at: Point; readonly rock: number }) {
   return (
     <Layer rotate={rock} origin={[at[0], at[1] + 10]}>
       <Layer x={at[0] - FOCUS[0]} y={at[1] - FOCUS[1]} scale={MINI} origin={FOCUS}>
@@ -241,7 +154,7 @@ function Stool({ t }: SceneProps) {
   )
 }
 
-function Bread({ at, spin = 0 }: { readonly at: Pt; readonly spin?: number }) {
+function Bread({ at, spin = 0 }: { readonly at: Point; readonly spin?: number }) {
   return (
     <g transform={`translate(${at[0]} ${at[1]}) rotate(${spin})`}>
       <ellipse cx="0" cy="0" rx="3.6" ry="3" fill={BREAD} />
@@ -251,18 +164,15 @@ function Bread({ at, spin = 0 }: { readonly at: Pt; readonly spin?: number }) {
   )
 }
 
-type CrabProps = SceneProps & { readonly bread: boolean }
-
 /** 台の となりに いる カニ。パンを はさみに のせて いる。かいがらを みると よろこんで、パンを なげる。 */
-function Crab({ t, bread }: CrabProps) {
+function Crab({ t, bread }: SceneProps & { readonly bread: boolean }) {
   const glad = span(t, 6.1, 6.4)
-  const tossed = t >= TOSS_START
   const bob = Math.sin(t * 5) * 0.25 * (1 + glad)
   const eyeUp = glad * 1.4
   // パンを なげたあとは、りょうほうの はさみを ふって よろこぶ
-  const cheer = tossed ? Math.abs(wave(t, 0.5)) * 2.4 : 0
-  const leftClaw: Pt = [67.6, 51.6 - cheer + bob]
-  const rightClaw: Pt = [84.4, 52.6 - glad * 1.2 - cheer * 0.8 + bob]
+  const cheer = t >= TOSS_START ? Math.abs(wave(t, 0.5)) * 2.4 : 0
+  const leftClaw: Point = [67.6, 51.6 - cheer + bob]
+  const rightClaw: Point = [84.4, 52.6 - glad * 1.2 - cheer * 0.8 + bob]
   return (
     <g transform={`translate(0 ${bob})`}>
       {[
@@ -312,88 +222,8 @@ function Tongue({ front, opacity }: { readonly front: number; readonly opacity: 
   )
 }
 
-type FaceMood = 'sad' | 'surprised' | 'happy'
-
-/** 顔。体は 右むき。 */
-function Face({ mood }: { readonly mood: FaceMood }) {
-  return (
-    <>
-      <circle cx="1.2" cy="-21.8" r="6.6" fill={SKIN} />
-      <path d="M-5.4 -20.5 C-6.8 -29.8 5.2 -30.6 7.6 -25 C5 -26.2 2.4 -25.2 0.6 -22.8 C-1 -20.6 -3.4 -19.4 -5.4 -20.5 Z" fill={HAIR} />
-      <path d="M-1 -28.2 Q-0.4 -31 1.4 -29.4 Q2.6 -31.4 3.6 -28.8" fill="none" stroke={HAIR} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="4.2" cy="-18.6" r="1.5" fill="#ff9d9d" opacity="0.55" />
-      {mood === 'sad' ? (
-        <>
-          <circle cx="4.6" cy="-21.4" r="1.05" fill="#2b2b2b" />
-          <path d="M3.2 -22.8 L6.2 -24.2" stroke={HAIR} strokeWidth="1" strokeLinecap="round" />
-          <path d="M4.2 -17.2 Q5.8 -18.8 7.4 -17.2" fill="none" stroke="#b9483f" strokeWidth="1.1" strokeLinecap="round" />
-        </>
-      ) : null}
-      {mood === 'surprised' ? (
-        <>
-          <circle cx="4.8" cy="-22" r="1.8" fill="#ffffff" stroke="#2b2b2b" strokeWidth="0.6" />
-          <circle cx="5.1" cy="-22" r="0.95" fill="#2b2b2b" />
-          <ellipse cx="6" cy="-17.6" rx="1" ry="1.4" fill="#b9483f" />
-        </>
-      ) : null}
-      {mood === 'happy' ? (
-        <>
-          <path d="M3.4 -21.4 Q4.8 -23.6 6.2 -21.4" fill="none" stroke="#2b2b2b" strokeWidth="1.2" strokeLinecap="round" />
-          <path d="M4 -19 Q5.8 -15.8 7.6 -19 Z" fill="#b9483f" />
-        </>
-      ) : null}
-    </>
-  )
-}
-
-type PersonProps = {
-  readonly hip: Pt
-  readonly lean: number
-  readonly footNear: Pt
-  readonly footFar: Pt
-  readonly armFar: Limb
-  readonly mood: FaceMood
-  readonly headTilt: number
-}
-
-/** 子ども。かた から うで、こし から あし が出て、くび は みじかく どう の上。うで の 手前がわ は あとで べつに かく。 */
-function Person({ hip, lean, footNear, footFar, armFar, mood, headTilt }: PersonProps) {
-  const legFar = reach([hip[0] - 1.2, hip[1] + 0.5], footFar, 8.6, -1)
-  const legNear = reach([hip[0] + 1.2, hip[1] + 0.5], footNear, 8.6, -1)
-  return (
-    <>
-      <LimbShape limb={armFar} color={TUNIC_FAR} width={3.8} />
-      <Hand at={armFar.end} />
-      <LimbShape limb={legFar} color={PANTS_DARK} width={4.6} />
-      <ellipse cx={footFar[0] + 1.6} cy={footFar[1] + 0.9} rx="3.4" ry="1.8" fill={SHOE} />
-      <LimbShape limb={legNear} color={PANTS} width={4.6} />
-      <ellipse cx={footNear[0] + 1.6} cy={footNear[1] + 0.9} rx="3.4" ry="1.8" fill={SHOE} />
-      <g transform={`translate(${hip[0]} ${hip[1]}) rotate(${lean})`}>
-        {/* くび: どう と あたま の間を みじかく つなぐ */}
-        <rect x="-1.6" y="-18" width="3.2" height="4" rx="1.4" fill={SKIN_SHADE} />
-        <rect x="-5.4" y="-15" width="10.8" height="16" rx="5" fill={TUNIC} />
-        <path d="M-4 -5 h8" stroke={TUNIC_NEAR} strokeWidth="1.2" strokeLinecap="round" />
-        <g transform={`rotate(${headTilt} 0 -15)`}>
-          <Face mood={mood} />
-        </g>
-      </g>
-    </>
-  )
-}
-
-/** 「！」のしるし。びっくり した とき あたまの上に ぽん と出る。 */
-function Surprise({ at, pop }: { readonly at: Pt; readonly pop: number }) {
-  if (pop <= 0) return null
-  return (
-    <Layer x={at[0]} y={at[1]} scale={pop} origin={[0, 4]}>
-      <path d="M-1.1 -4.4 h2.2 l-0.4 6.2 h-1.4 Z" fill="#f5a623" />
-      <circle cx="0" cy="3.8" r="1.2" fill="#f5a623" />
-    </Layer>
-  )
-}
-
 /** おなかが すいて パンを おもう ふきだし。 */
-function Dream({ at, show, t }: { readonly at: Pt; readonly show: number; readonly t: number }) {
+function Dream({ at, show, t }: { readonly at: Point; readonly show: number; readonly t: number }) {
   if (show <= 0) return null
   return (
     <g opacity={show}>
@@ -406,7 +236,7 @@ function Dream({ at, show, t }: { readonly at: Pt; readonly show: number; readon
 }
 
 /** おなかの「ぐう」。からだの まえに、ふるえる 小さな 線。 */
-function Rumble({ at, show, t }: { readonly at: Pt; readonly show: number; readonly t: number }) {
+function Rumble({ at, show, t }: { readonly at: Point; readonly show: number; readonly t: number }) {
   if (show <= 0) return null
   const k = 0.5 + 0.5 * Math.abs(wave(t, 0.4))
   return (
@@ -417,87 +247,74 @@ function Rumble({ at, show, t }: { readonly at: Pt; readonly show: number; reado
   )
 }
 
-function Scene({ t }: SceneProps) {
-  const ink = inkTiming(t, INK, DONE, 7)
+/* ───────── 子ども ───────── */
 
-  // 子どもの うごき: あるく → たちどまる → かがんで ひろう → だいて あるく → 台に おく → さがる
-  const hx = track(t, HIP_X_KEYS)
-  // あるくときの あしの ふり は、すすんだ きょり に合わせる(すべって見えないように)
-  const hxAhead = track(t + 0.03, HIP_X_KEYS)
-  const hxBehind = track(t - 0.03, HIP_X_KEYS)
-  const velocity = (hxAhead - hxBehind) / 0.06
-  const walking = clamp01(Math.abs(velocity) / 4)
-  const dir = velocity >= 0 ? 1 : -1
-  const phase = hx * 0.628
+type Kid = {
+  readonly place: { readonly x: number; readonly y: number; readonly pose: PersonPose; readonly lift: number }
+  readonly shellAt: Point
+  readonly held: boolean
+}
+
+/** その しゅんかん の 子の いち・かっこう・かいがらの いち(ぜんぶ 時間から) */
+function kidAt(t: number, sand: Point): Kid {
+  const walkIn = walk(t, { from: -8, to: PICK_X, start: WALK_START, end: WALK_END, ...KID })
+  const carry = walk(t, { from: PICK_X, to: PLACE_X, start: LIFT_END, end: CARRY_END, armSwing: 8, ...KID })
+  const carrying = t >= LIFT_END
+  const x = carrying ? carry.x : walkIn.x
+  const gait = carrying ? carry.pose : walkIn.pose
   // かがむ度合い(0 = まっすぐ / 1 = ひろう ふかさ)
-  const crouch = track(t, [
-    [BEND_START, 0],
-    [LIFT_START - 0.1, 1],
-    [LIFT_START, 1],
-    [LIFT_END, 0],
-    [SET_START, 0],
-    [SET_END, 0.45],
-    [LET_GO, 0.45],
-    [LET_GO + 0.3, 0],
-  ])
-  // よろこびの ぴょん
+  const crouch = track(t, [[BEND_START, 0], [LIFT_START - 0.1, 1], [LIFT_START, 1], [LIFT_END, 0], [SET_START, 0], [SET_END, 0.45], [LET_GO, 0.45], [LET_GO + 0.3, 0]])
+  const body = crouch > 0 ? mixPose(gait, BEND, crouch) : gait
   const hop = t > TOSS_END ? Math.abs(Math.sin((t - TOSS_END) * Math.PI * 2.6)) * during(t, TOSS_END, ZOOM_END, 0.1) * 3 : 0
-  const bob = -Math.abs(Math.sin(phase)) * 0.9 * walking
-  const hip: Pt = [hx - 3 * crouch, 47 + 8 * crouch + bob - hop]
-  const lean = 40 * crouch
-  const shoulder: Pt = [hip[0] + Math.sin(rad(lean)) * 12.5, hip[1] - Math.cos(rad(lean)) * 12.5]
 
-  const stride = (sign: 1 | -1, stance: number): Pt => [
-    hx + stance * (1 - walking) + sign * Math.sin(phase) * 5 * walking,
-    GROUND - 1.8 - Math.max(0, sign * Math.cos(phase) * dir) * 2.6 * walking - hop,
-  ]
-  const footNear = stride(1, 2.5)
-  const footFar = stride(-1, -2.5)
+  // からだ だけ(うでは あとから きめる)で 関節の いち を もとめる
+  const stand = { x, y: GROUND, ...KID, pose: { ...body, leftArm: undefined, rightArm: undefined }, lift: hop }
+  const rig = personRig(stand)
+  const shoulder = rig.world.arms.left.root
+  const pelvis = rig.world.pelvis
+  const hold = holdPose(stand, 'waist', SHELL_W).at
 
-  // かいがらの いち: 波に のって くる → すなはま → だきあげる → 台の上
-  const shellX = mix(t, WAVE_IN, WAVE_LAND, -9, SAND_X, easeOut)
-  const sand: Pt = [shellX, GROUND - 10]
-  const held: Pt = [hx + HOLD_GAP, 41 + 6 * span(t, SET_START, SET_END)]
-  const shellAt: Pt = t >= LET_GO ? FOCUS : lerpPt(sand, held, span(t, LIFT_START, LIFT_END))
-  const rock = t < LIFT_START ? (1 - span(t, WAVE_IN, WAVE_LAND)) * wave(t, 0.45) * 12 : 0
-
-  // パン: カニの はさみ → ぽーん → 子どもの 手
+  // かいがら: 砂はま → だきあげる → 台の上
+  const lifted = lerpPt(sand, hold, span(t, LIFT_START, LIFT_END))
+  const shellAt: Point = t >= LET_GO ? FOCUS : t >= SET_START ? lerpPt(hold, FOCUS, span(t, SET_START, SET_END)) : lifted
+  const catchAt: Point = [PLACE_X + 9, 38 - hop]
   const toss = span(t, TOSS_START, TOSS_END)
-  const catchAt: Pt = [CHEER_X + 10, 41 - hop]
-  const breadAt: Pt =
-    t < TOSS_START ? BREAD_REST : t < TOSS_END ? [BREAD_REST[0] + (CHEER_X + 10 - BREAD_REST[0]) * toss, BREAD_REST[1] + (41 - BREAD_REST[1]) * toss - Math.sin(toss * Math.PI) * 15] : catchAt
+  const breadNow = lerpPt(BREAD_REST, catchAt, toss)
 
-  // 手の いち: ふだんは たれる。おなかを おさえる → びっくり → かいがらを だく → パンを うける
-  const swing = Math.sin(phase) * 4 * walking
-  const hangNear: Pt = [shoulder[0] - swing, shoulder[1] + 14.3]
-  const hangFar: Pt = [shoulder[0] + swing, shoulder[1] + 14.3]
+  // うで: おなかを おさえる → びっくり → かいがらを だく → パンを うける
   const belly = span(t, HUNGRY, HUNGRY + 0.3) * (1 - span(t, WAVE_LAND - 0.1, WAVE_LAND + 0.1))
   const spread = during(t, SURPRISE, SURPRISE + 0.7, 0.15)
   const grip = span(t, BEND_START + 0.1, LIFT_START - 0.1) * (1 - span(t, LET_GO, LET_GO + 0.25))
   const catching = span(t, 6.6, 7.1)
-  const handNear = [
-    (p: Pt) => lerpPt(p, [hip[0] + 4.5, hip[1] - 5.5], belly),
-    (p: Pt) => lerpPt(p, [shoulder[0] + 8.5, shoulder[1] + 1], spread),
-    (p: Pt) => lerpPt(p, [shellAt[0] - 6.3, shellAt[1] + 5.5], grip),
-    (p: Pt) => lerpPt(p, [catchAt[0] - 1.6, catchAt[1] + 3.2], catching),
-  ].reduce((p, step) => step(p), hangNear)
-  const handFar = [
-    (p: Pt) => lerpPt(p, [shoulder[0] + 7, shoulder[1] - 1], spread),
-    (p: Pt) => lerpPt(p, [shellAt[0] - 6.3, shellAt[1] + 2.5], grip),
-    (p: Pt) => lerpPt(p, [catchAt[0] + 1.6, catchAt[1] + 3.6], catching),
-  ].reduce((p, step) => step(p), hangFar)
-  const armNear = reach(shoulder, handNear, 8, 1)
-  const armFar = reach(shoulder, handFar, 8, 1)
-
-  const mood: FaceMood = t < SURPRISE ? 'sad' : t < SURPRISE + 0.7 ? 'surprised' : 'happy'
-  const headTilt = track(t, [
-    [0, 5],
-    [SURPRISE - 0.1, 5],
-    [SURPRISE + 0.1, -5],
-    [SURPRISE + 0.7, 0],
-    [TOSS_END - 0.3, 0],
-    [TOSS_END, -5],
+  const nearAim = (p: Point): Limb => ({ to: [p[0], p[1]] })
+  const leftArm = blend(gait.leftArm, [
+    [nearAim([pelvis[0] + 4.5, pelvis[1] - 5.5]), belly],
+    [nearAim([shoulder[0] + 8.5, shoulder[1] + 1]), spread],
+    [nearAim([shellAt[0] - 6.3, shellAt[1] + 5.5]), grip],
+    [nearAim([breadNow[0] - 1.6, breadNow[1] + 3.2]), catching],
   ])
+  const rightArm = blend(gait.rightArm, [
+    [nearAim([shoulder[0] + 7, shoulder[1] - 1]), spread],
+    [nearAim([shellAt[0] - 6.3, shellAt[1] + 2.5]), grip],
+    [nearAim([breadNow[0] + 1.6, breadNow[1] + 3.6]), catching],
+  ])
+  return { place: { x, y: GROUND, pose: { ...body, leftArm, rightArm }, lift: hop }, shellAt, held: t >= BEND_START && t < LET_GO }
+}
+
+function Scene({ t }: SceneProps) {
+  const ink = inkTiming(t, INK, DONE, 7)
+
+  // かいがらの いち: 波に のって くる → すなはま
+  const shellX = mix(t, WAVE_IN, WAVE_LAND, -9, SAND_X, easeOut)
+  const sand: Point = [shellX, GROUND - 10]
+  const kid = kidAt(t, sand)
+  const rock = t < LIFT_START ? (1 - span(t, WAVE_IN, WAVE_LAND)) * wave(t, 0.45) * 12 : 0
+  const shell = <Shell at={kid.shellAt} rock={rock} />
+
+  const head = personRig({ ...kid.place, ...KID }).world.head
+  const toss = span(t, TOSS_START, TOSS_END)
+  const breadAt: Point = t < TOSS_END ? [BREAD_REST[0] + (PLACE_X + 9 - BREAD_REST[0]) * toss, BREAD_REST[1] + (38 - BREAD_REST[1]) * toss - Math.sin(toss * Math.PI) * 15] : [PLACE_X + 9, 38 - kid.place.lift]
+  const face = t < SURPRISE ? 'sad' : t < SURPRISE + 0.7 ? 'surprised' : t < TOSS_END ? 'smile' : 'joy'
 
   // ぐるっと カメラが かいがらに よる
   const zoom = 1 + (ZOOM - 1) * span(t, ZOOM_START, ZOOM_END, easeInOut)
@@ -509,24 +326,18 @@ function Scene({ t }: SceneProps) {
     <>
       <Layer opacity={ink.picture}>
         <Layer scale={zoom} origin={FOCUS}>
-          <Ground t={t} />
+          <Scenery t={t} />
           <Stool t={t} />
           <Tongue front={front} opacity={wet} />
           {/* すなはま の かいがら の かげ */}
-          <ellipse cx={shellAt[0]} cy="64.6" rx="7" ry="1.4" fill="#000000" opacity={0.12 * span(t, WAVE_IN, WAVE_LAND) * (1 - span(t, LIFT_START, LIFT_END))} />
+          <ellipse cx={kid.shellAt[0]} cy="64.6" rx="7" ry="1.4" fill="#000000" opacity={0.12 * span(t, WAVE_IN, WAVE_LAND) * (1 - span(t, LIFT_START, LIFT_END))} />
           <Crab t={t} bread={t < TOSS_START} />
-          <Layer opacity={span(t, WALK_START, WALK_START + 0.2)}>
-            <Dream at={[hx + 9, 9]} show={during(t, HUNGRY, WAVE_LAND - 0.2, 0.25)} t={t} />
-            <Person hip={hip} lean={lean} footNear={footNear} footFar={footFar} armFar={armFar} mood={mood} headTilt={headTilt} />
-            <Rumble at={[hx + 6.5, 42]} show={during(t, HUNGRY + 0.2, WAVE_LAND - 0.2, 0.2)} t={t} />
-            <Surprise at={[hx + 8, 13]} pop={backOut(span(t, SURPRISE, SURPRISE + 0.2)) * (1 - span(t, SURPRISE + 0.55, SURPRISE + 0.7))} />
-          </Layer>
-          {t >= WAVE_IN ? <Shell at={shellAt} rock={rock} /> : null}
+          <Dream at={[head[0] + 9, head[1] - 12]} show={during(t, HUNGRY, WAVE_LAND - 0.2, 0.25)} t={t} />
+          {t >= WAVE_IN && !kid.held ? shell : null}
+          <Person {...KID} {...kid.place} look={KID_LOOK} face={face} held={kid.held ? shell : undefined} />
+          <Rumble at={[kid.place.x + 6.5, 42]} show={during(t, HUNGRY + 0.2, WAVE_LAND - 0.2, 0.2)} t={t} />
+          <Notice x={head[0]} y={head[1]} r={7} dir={1} show={during(t, SURPRISE, SURPRISE + 0.7, 0.1)} />
           {t >= TOSS_START ? <Bread at={breadAt} spin={t < TOSS_END ? toss * 540 : 0} /> : null}
-          <Layer opacity={span(t, WALK_START, WALK_START + 0.2)}>
-            <LimbShape limb={armNear} color={TUNIC_NEAR} width={3.8} />
-            <Hand at={armNear.end} />
-          </Layer>
         </Layer>
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />

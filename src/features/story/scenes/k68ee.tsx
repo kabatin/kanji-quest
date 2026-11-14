@@ -33,6 +33,7 @@
 import type { ReactNode } from 'react'
 import { backOut, clamp01, during, easeIn, easeInOut, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Bird, Clouds, Meadow, Sun } from '../sceneFigures'
 
 const CHAR = '森'
 
@@ -41,9 +42,7 @@ const BARK_DARK = '#70452b'
 const LEAF = '#55b86e'
 const LEAF_DARK = '#3f9c59'
 const LEAF_LIGHT = '#8bd69a'
-const GRASS = '#c5e8a9'
 const HILL = '#d5edbf'
-const SUN = '#ffd24a'
 const SOIL = '#a8774e'
 const SOIL_DARK = '#7d5435'
 const SPROUT_GREEN = '#7cc96b'
@@ -277,23 +276,12 @@ const RIGHT_TREE: TreeSpec = {
   ],
 }
 
+/** 空: お日さま と ゆっくり ながれる 雲(共通部品) */
 function Sky({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
   return (
     <>
-      <Layer opacity={sun} rotate={t * 14} origin={[13, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="12.2" y="1.6" width="1.6" height="4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 13 13)`} />
-        ))}
-      </Layer>
-      <circle cx="13" cy="13" r={6.2 * sun} fill={SUN} />
-      {/* ゆっくり ながれる 雲 */}
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.4} 0)`}>
-        <ellipse cx="2" cy="36" rx="6.4" ry="3" />
-        <ellipse cx="6.4" cy="34.4" rx="4.4" ry="3" />
-        <ellipse cx="94" cy="28" rx="6" ry="2.8" />
-        <ellipse cx="98.4" cy="26.4" rx="4.2" ry="2.8" />
-      </g>
+      <Sun t={t} x={13} y={13} />
+      <Clouds t={t} at={[[2, 36, 1], [96, 27, 0.9]]} />
     </>
   )
 }
@@ -337,16 +325,9 @@ function Hill({ t, behind, children }: SceneProps & { readonly behind?: ReactNod
   )
 }
 
-/** てまえの 地面 */
+/** てまえの 地面(のはら) */
 function Field() {
-  return (
-    <>
-      <ellipse cx="54.5" cy="98.8" rx="53" ry="5.2" fill={GRASS} />
-      {[5, 47, 80, 101].map((x) => (
-        <path key={x} d={`M${x} 98 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
-    </>
-  )
+  return <Meadow y={98.8} tufts={[5, 47, 80, 101]} />
 }
 
 /** 葉の かたまり(こい色 + うすい色)。じぶんの まんなか から ぽん と ふくらむ。 */
@@ -667,7 +648,7 @@ function squirrelAt(t: number): SquirrelPose | null {
 const BIRD_PERCH: Point = [82, 36.4]
 
 /** 3本 そろうと、小鳥が とんできて 上の木の えだ(4画目)に とまる。ちゅんちゅん と うたう。 */
-function Bird({ t }: SceneProps) {
+function Songbird({ t }: SceneProps) {
   const arrive = span(t, LUSH, LUSH + 0.9, easeOut)
   if (arrive <= 0) return null
   // 左から 森の上を とんで、ゆるい山なり で おりてくる(太陽の 下を通る。右むき なので、うた は ひらけた 空へ)
@@ -675,23 +656,12 @@ function Bird({ t }: SceneProps) {
   const y = lerp(30, BIRD_PERCH[1], arrive) - Math.sin(arrive * Math.PI) * 9
   const landed = arrive >= 1
   const hop = landed ? Math.abs(wave(t, 0.7)) * 0.8 : 0
-  const flap = landed ? 0 : wave(t, 0.16) * 28
   const note = during(t, LUSH + 1, INK + 0.2, 0.25)
   const rise = (t * 5) % 6
   const sway = wave(t, 1.2) * 1.2
   return (
     <>
-      <Layer x={x} y={y - hop} scaleX={-1}>
-        <path d="M2.6 0.4 l4.6 -1.6 l-3.4 3.2 Z" fill="#3c7fc0" />
-        <ellipse cx="0" cy="0" rx="4" ry="3.1" fill="#5aa9e6" />
-        <ellipse cx="-0.6" cy="1" rx="2.4" ry="1.7" fill="#d8ecfb" />
-        <circle cx="-3" cy="-2.3" r="2.3" fill="#5aa9e6" />
-        <path d="M-5 -2.4 l-2.4 0.7 l2.3 0.9 Z" fill="#f2b632" />
-        <circle cx="-3.6" cy="-2.8" r="0.55" fill={EYE} />
-        <Layer rotate={flap} origin={[0.4, -0.6]}>
-          <path d="M-1.2 -0.8 Q1.6 -3.8 4 -0.6 Q1.6 0.8 -1.2 -0.8 Z" fill="#3c7fc0" />
-        </Layer>
-      </Layer>
+      <Bird x={x} y={y - hop} t={t} flying={!landed} facing="right" />
       <g opacity={note} fill="#f07f9e">
         <path d={`M${91 + sway} ${33 - rise} v-4.4 l2.6 -0.8 v4.2`} fill="none" stroke="#f07f9e" strokeWidth="0.8" />
         <ellipse cx={90.2 + sway} cy={33 - rise} rx="1.1" ry="0.8" />
@@ -749,7 +719,7 @@ function Scene({ t }: SceneProps) {
         <FallingAcorn t={t} path={ACORN_L} />
         <FallingAcorn t={t} path={ACORN_R} />
         {squirrel && !peeking && <Squirrel pose={squirrel} />}
-        <Bird t={t} />
+        <Songbird t={t} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Layer scale={1 + bump} origin={[54.5, 54.5]}>

@@ -23,27 +23,15 @@
  *   → 足もとに ころがった まめを 見て「なんだ まめか」→ にっこり。うれしくて ぴょーんと とびあがり、
  *     手と足を ひろげて ばんざい → ほね が ひかって、絵が うすくなり、字「頭」が のこる
  *
- * 子は、ほんものの人の つくり を守る(あたまが 大きい 子ども の 体つき。ゆがめない):
- *   うで は かた から出て ひじ で まがる(手の ばしょ から 2つの ほね で 求める)。
- *   くび は あたまの かげ。あし は こし から。あたまが 大きいので 立つと からだは ちいさい。
+ * 子は Person(build="toddler": あたまが 大きい 3頭身。正面)。ぴょんぴょんは lift、しゃがみは posture('squat')、
+ * ばんざいは { 角度 }、ほっぺを おさえる手は { to }。たんこぶ・ほし・まめ・高坏は ここで 描く。
  */
-import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeIn, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { mixLimb, PALETTE, Person, personRig, posture, STRAIGHT_LEG, type Limb } from '../sceneFigures'
 
 const CHAR = '頭'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const HAIR_LIGHT = '#8a6650'
-const SHIRT = '#f2695d'
-const SHIRT_DARK = '#d94f45'
-const PANTS = '#3e5c86'
-const SHOE = '#6b4a36'
-const CHEEK = '#ff9d9d'
-const EYE = '#2b2b2b'
-const MOUTH = '#b9483f'
-const TONGUE = '#ff8a8a'
 const POT = '#d9644a'
 const POT_DARK = '#b84e39'
 const POT_LIGHT = '#ef8a6c'
@@ -56,7 +44,7 @@ const BEAN_LIGHT = '#fbe7ac'
 const HILL = '#a9dc8a'
 const HILL_RIDGE = '#82c76f'
 const GRASS = '#c5e8a9'
-const LEAF = '#55b86e'
+const LEAF = PALETTE.leaf
 const STONE = '#b7bfc7'
 const STONE_DARK = '#9aa3ad'
 const SUN = '#ffd24a'
@@ -85,23 +73,14 @@ const DURATION = 10.8
 
 /* ───────── ばしょ ───────── */
 
-/** 子の かたち(あたま・かた・こし の ばしょ) */
+/** 子の かたち: まんなかの x、地面(足の うらが つく ところ)、背の高さ(あたま が 大きい 幼児) */
 const CENTER_X = 75
-const NECK: readonly [number, number] = [75, 74]
-const SHOULDER_L: readonly [number, number] = [66.5, 77]
-const HIP_L: readonly [number, number] = [67, 79.5]
-const HIP_R: readonly [number, number] = [83, 79.5]
-/** うでの ほね(かた→ひじ、ひじ→手)と、あしの ながさ */
-const UPPER_ARM = 9.5
-const FORE_ARM = 8.5
-const LEG = 20
-/** 立っている ときの 体の 高さ(ばんざいの ときより 2 たかい) */
-const STAND_Y = -2
-/** 地面の 高さ(足の うらが つく ところ) */
 const FLOOR_Y = 97.5
-/** 立つ ときと、ばんざいで ひらく ときの あしの 角度 */
-const LEG_STAND = 5
-const LEG_SPREAD = 43
+const KID_HEIGHT = 80
+/** 子の 見た目(おかっぱ・赤い シャツ) */
+const KID_LOOK = { hairStyle: 'bob', top: '#f2695d', bottom: '#3e5c86' } as const
+/** ばんざいで ひらく あしの 角度 */
+const LEG_SPREAD = 32
 
 /** 豆の ふた の ばしょ(1画目) と、うつわの ふち */
 const LID_CENTER_X = 30.5
@@ -111,8 +90,6 @@ const RIM_Y = 33.5
 /** 1つの 点 を まっすぐ ならべた 2つの 点の あいだ の ねだん */
 const lerp = (a: number, b: number, k: number) => a + (b - a) * k
 type Point = readonly [number, number]
-const lerpPoint = (a: Point, b: Point, k: number): Point => [lerp(a[0], b[0], k), lerp(a[1], b[1], k)]
-const clampTo = (x: number, lo: number, hi: number) => Math.min(Math.max(x, lo), hi)
 
 /** from から to へ ほうぶつせん。h は 山なりに もちあがる 高さ */
 function arc(p: number, from: Point, to: Point, h: number): Point {
@@ -219,7 +196,7 @@ function PoppingBeans({ t }: SceneProps) {
 }
 
 /** 大きな まめ: まめ入れから 山なりに とんで、子の あたまに あたり、はねかえって 地面に ころがる */
-const HEAD_TOP: Point = [75, 15.5]
+const HEAD_TOP: Point = [76, 18]
 const BEAN_REST: Point = [106, 97]
 const BOUNCE_END = HIT + 0.95
 function BigBean({ t }: SceneProps) {
@@ -298,159 +275,21 @@ function Pot({ t }: SceneProps) {
 /* ───────── 子 ───────── */
 
 type Mood = 'calm' | 'curious' | 'surprised' | 'ouch' | 'happy'
+const FACES = { calm: 'normal', curious: 'normal', surprised: 'surprised', ouch: 'strain', happy: 'joy' } as const
 
-function Face({ mood, look, closed }: { readonly mood: Mood; readonly look: Point; readonly closed: boolean }) {
-  const [lx, ly] = look
-  const eyeY = 57
-  const dots = (r: number) => (
-    <>
-      {[68, 82].map((x) => (
-        <g key={x}>
-          <circle cx={x + lx * 1.4} cy={eyeY + ly * 1.2} r={r} fill={EYE} />
-          <circle cx={x + lx * 1.4 + 0.8} cy={eyeY + ly * 1.2 - 0.8} r={r * 0.32} fill="#ffffff" />
-        </g>
-      ))}
-    </>
-  )
-  const arcs = (
-    <>
-      <path d="M65.4 58.4 Q68 53.8 70.6 58.4" fill="none" stroke={EYE} strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M79.4 58.4 Q82 53.8 84.6 58.4" fill="none" stroke={EYE} strokeWidth="1.6" strokeLinecap="round" />
-    </>
-  )
+/** たんこぶ: まめが あたった ところ(あたま の みぎ上) */
+function Bump({ t, head, radius }: { readonly t: number; readonly head: Point; readonly radius: number }) {
+  const grow = span(t, HIT + 0.05, HIT + 0.3, backOut)
+  const gone = 1 - span(t, OUCH_END, SMILE - 0.1)
+  const k = Math.max(0, grow * gone)
+  if (k <= 0) return null
+  const x = head[0] + radius * 0.2
+  const y = head[1] - radius * 0.98
   return (
-    <>
-      <circle cx="64.2" cy="63.4" r="3" fill={CHEEK} opacity={mood === 'happy' ? 0.75 : 0.5} />
-      <circle cx="85.8" cy="63.4" r="3" fill={CHEEK} opacity={mood === 'happy' ? 0.75 : 0.5} />
-      {mood === 'ouch' && (
-        <>
-          <path d="M65.6 54.4 L70.6 57 L65.6 59.6" fill="none" stroke={EYE} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M84.4 54.4 L79.4 57 L84.4 59.6" fill="none" stroke={EYE} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          <ellipse cx="75" cy="67.6" rx="3.2" ry="2.8" fill={MOUTH} />
-          <ellipse cx="75" cy="69" rx="1.9" ry="1.1" fill={TONGUE} />
-        </>
-      )}
-      {mood === 'happy' && (
-        <>
-          {arcs}
-          <path d="M69.6 64.4 Q75 74 80.4 64.4 Z" fill={MOUTH} strokeLinejoin="round" stroke={MOUTH} strokeWidth="1" />
-          <path d="M72.6 68.6 Q75 66.8 77.4 68.6 Q75 71 72.6 68.6 Z" fill={TONGUE} />
-        </>
-      )}
-      {(mood === 'calm' || mood === 'curious' || mood === 'surprised') && (
-        <>
-          {closed ? arcs : dots(mood === 'surprised' ? 3 : mood === 'curious' ? 2.5 : 2.2)}
-          {/* まゆ: ふしぎ・びっくりの ときは 上がる */}
-          {mood !== 'calm' && (
-            <>
-              <path d={`M65.4 ${mood === 'surprised' ? 49.6 : 51.4} Q68 ${mood === 'surprised' ? 48 : 49.8} 70.6 ${mood === 'surprised' ? 49.6 : 51}`} fill="none" stroke={HAIR} strokeWidth="1.2" strokeLinecap="round" />
-              <path d={`M79.4 ${mood === 'surprised' ? 49.6 : 51} Q82 ${mood === 'surprised' ? 48 : 49.8} 84.6 ${mood === 'surprised' ? 49.6 : 51.4}`} fill="none" stroke={HAIR} strokeWidth="1.2" strokeLinecap="round" />
-            </>
-          )}
-          {mood === 'calm' && <path d="M72.4 66.4 Q75 68.6 77.6 66.4" fill="none" stroke={MOUTH} strokeWidth="1.3" strokeLinecap="round" />}
-          {mood === 'curious' && <ellipse cx="75" cy="67" rx="1.4" ry="1.8" fill={MOUTH} />}
-          {mood === 'surprised' && <ellipse cx="75" cy="67.4" rx="2" ry="2.7" fill={MOUTH} />}
-        </>
-      )}
-    </>
-  )
-}
-
-/** おかっぱの かみ。おでこの うえ から ぜんぶ おおって、すそ(まえがみ)が 12画目の 高さ */
-function Hair() {
-  return (
-    <>
-      <path
-        d="M54 45.5 L54 30 Q54 17 67 17 L83 17 Q96 17 96 30 L96 45.5 Q96 47.5 93.5 47.2 Q91 47 90 45.5 C87 49.5 83.5 44.5 80 47.5 C76.5 50 73 45 69.5 47.5 C66 49.5 63 47 60 45.5 Q58.5 47.2 56.5 47.2 Q54 47.5 54 45.5 Z"
-        fill={HAIR}
-      />
-      {/* かみの つや(11画目の うえ) と、ひとふさ(9画目) */}
-      <Bone char={CHAR} n={9} color={HAIR_LIGHT} width={2.4} />
-      <path d="M83 24.5 Q88 25 90.6 29" fill="none" stroke={HAIR_LIGHT} strokeWidth="2" strokeLinecap="round" />
-    </>
-  )
-}
-
-type Limb = { readonly hand: Point; readonly side: number }
-/** かた と 手の ばしょ から、ひじの ばしょを もとめる(うでの ほねは 2つ。のびきらない) */
-function elbowOf(shoulder: Point, limb: Limb): { readonly elbow: Point; readonly hand: Point } {
-  const dx = limb.hand[0] - shoulder[0]
-  const dy = limb.hand[1] - shoulder[1]
-  const dist = Math.hypot(dx, dy) || 0.001
-  const reach = Math.min(dist, UPPER_ARM + FORE_ARM - 0.05)
-  const ux = dx / dist
-  const uy = dy / dist
-  const along = (reach * reach + UPPER_ARM * UPPER_ARM - FORE_ARM * FORE_ARM) / (2 * reach)
-  const out = Math.sqrt(Math.max(0, UPPER_ARM * UPPER_ARM - along * along)) * limb.side
-  return {
-    elbow: [shoulder[0] + ux * along - uy * out, shoulder[1] + uy * along + ux * out],
-    hand: [shoulder[0] + ux * reach, shoulder[1] + uy * reach],
-  }
-}
-
-/** 左うで。右うでは、まんなかの線で うら返して 使う */
-function Arm({ limb }: { readonly limb: Limb }) {
-  const { elbow, hand } = elbowOf(SHOULDER_L, limb)
-  return (
-    <>
-      <path d={`M${SHOULDER_L[0]} ${SHOULDER_L[1]} L${elbow[0]} ${elbow[1]}`} fill="none" stroke={SHIRT_DARK} strokeWidth="5.6" strokeLinecap="round" />
-      <path d={`M${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={SKIN} strokeWidth="4.2" strokeLinecap="round" />
-      <circle cx={hand[0]} cy={hand[1]} r="3.1" fill={SKIN} />
-    </>
-  )
-}
-
-function Leg({ hip, angle, dir }: { readonly hip: Point; readonly angle: number; readonly dir: -1 | 1 }) {
-  const rad = (angle * Math.PI) / 180
-  const foot: Point = [hip[0] + dir * Math.sin(rad) * LEG, hip[1] + Math.cos(rad) * LEG]
-  return (
-    <>
-      <path d={`M${hip[0]} ${hip[1]} L${foot[0]} ${foot[1]}`} fill="none" stroke={PANTS} strokeWidth="6.6" strokeLinecap="round" />
-      <ellipse cx={foot[0] + dir * 1.6} cy={foot[1] + 0.8} rx="4.3" ry="2.3" fill={SHOE} />
-    </>
-  )
-}
-
-type KidPose = {
-  readonly mood: Mood
-  readonly look: Point
-  readonly closed: boolean
-  readonly legAngle: number
-  readonly tilt: number
-  readonly squash: number
-  readonly nearArm: Limb
-}
-
-function Kid({ pose, t }: { readonly pose: KidPose; readonly t: number }) {
-  const bumpGrow = span(t, HIT + 0.05, HIT + 0.3, backOut)
-  const bumpGone = 1 - span(t, OUCH_END, SMILE - 0.1)
-  const bump = Math.max(0, bumpGrow * bumpGone)
-  return (
-    <>
-      <Leg hip={HIP_L} angle={pose.legAngle} dir={-1} />
-      <Leg hip={HIP_R} angle={pose.legAngle} dir={1} />
-      {/* どう(あたまに かくれて ちいさい) */}
-      <rect x="66" y="70" width="18" height="15" rx="6" fill={SHIRT} />
-      <path d="M67.4 80.4 H82.6" stroke={SHIRT_DARK} strokeWidth="1.5" strokeLinecap="round" />
-      <rect x="66" y="82.2" width="18" height="4" rx="2" fill={PANTS} />
-      {/* あたま(おおきい): くび の ところを じくに かたむく */}
-      <Layer rotate={pose.tilt} scaleY={pose.squash} origin={NECK}>
-        <circle cx="59.6" cy="58.4" r="3.4" fill={SKIN_SHADE} />
-        <circle cx="90.4" cy="58.4" r="3.4" fill={SKIN_SHADE} />
-        <rect x="60" y="38" width="30" height="37" rx="14" fill={SKIN} />
-        <Face mood={pose.mood} look={pose.look} closed={pose.closed} />
-        <Hair />
-        {/* たんこぶ: まめが あたった ところ */}
-        <Layer scale={bump} origin={[80, 18]}>
-          <circle cx="80" cy="16.6" r="4.3" fill="#ffb8a8" />
-          <circle cx="78.6" cy="15.2" r="1.4" fill="#ffe1d8" />
-        </Layer>
-      </Layer>
-      <Arm limb={pose.nearArm} />
-      <Layer scaleX={-1} x={2 * CENTER_X} origin={[0, 0]}>
-        <Arm limb={pose.nearArm} />
-      </Layer>
-    </>
+    <Layer scale={k} origin={[x, y]}>
+      <circle cx={x} cy={y} r="4.3" fill="#ffb8a8" />
+      <circle cx={x - 1.4} cy={y - 1.4} r="1.4" fill="#ffe1d8" />
+    </Layer>
   )
 }
 
@@ -464,7 +303,7 @@ function Dizzy({ t }: SceneProps) {
     <g opacity={show}>
       {[0, 1, 2].map((i) => {
         const a = spin + (i * Math.PI * 2) / 3
-        return <Star key={i} cx={CENTER_X + Math.cos(a) * 17} cy={9 + Math.sin(a) * 3.2} r={2.5} color={SUN} spin={spin * 40 + i * 30} />
+        return <Star key={i} cx={CENTER_X + Math.cos(a) * 17} cy={6 + Math.sin(a) * 3.2} r={2.5} color={SUN} spin={spin * 40 + i * 30} />
       })}
       <g opacity={1 - burst} stroke="#ff8a4d" strokeWidth="1.3" strokeLinecap="round">
         {[-60, -30, 0, 30, 60].map((deg) => {
@@ -492,26 +331,23 @@ function Alert({ t }: SceneProps) {
 
 /* ───────── 場面 ───────── */
 
-function kidPose(t: number): { readonly pose: KidPose; readonly x: number; readonly y: number; readonly feetY: number } {
+const HOP_X = 42
+
+function Scene({ t }: SceneProps) {
+  const ink = inkTiming(t, INK, DONE, 16)
+  const kidShow = span(t, HOP_IN - 0.1, HOP_IN + 0.1)
+
   // 1.8秒まで: ぴょんぴょん はねながら きて、ならぶ
   const hop = span(t, HOP_IN, HOP_IN + 0.95)
   const hopHeight = Math.abs(Math.sin(hop * Math.PI * 3)) * 4.5 * (1 - hop * 0.6) * (hop < 1 ? 1 : 0)
-  const x = 42 * (1 - easeOut(hop))
+  const x = CENTER_X + HOP_X * (1 - easeOut(hop))
   // ばんざい: しゃがむ → とびあがる → ひらいて おりる
-  const crouch = Math.sin(span(t, CROUCH, RISE) * Math.PI) * 3.2
+  const crouch = Math.sin(span(t, CROUCH, RISE) * Math.PI) * 0.45
   const rise = span(t, RISE, FALL, easeOut)
   const fall = span(t, FALL, LAND, easeIn)
-  const jumpY = -13 * rise * (1 - fall)
-  // 立っている 高さ(STAND_Y)から、ばんざいの 高さ(0 = 字の位置)へ うつる
-  const baseY = mix(t, RISE - 0.3, LAND, STAND_Y, 0, easeInOut)
-  const finalY = baseY - hopHeight + crouch + jumpY
-  const spread = clampTo(span(t, RISE, RISE + 0.25, easeOut) + hopHeight / 4.5 * 0.12, 0, 1)
-  const legAngle = lerp(LEG_STAND, LEG_SPREAD, spread)
-  const rad = (legAngle * Math.PI) / 180
-  const feetY = HIP_L[1] + Math.cos(rad) * LEG + finalY
+  const lift = hopHeight + 13 * rise * (1 - fall)
 
   const mood: Mood = t < LOOK ? 'calm' : t < LAUNCH ? 'curious' : t < HIT ? 'surprised' : t < OUCH_END ? 'ouch' : t < SMILE ? 'curious' : 'happy'
-
   // 目の むき: まめ入れ → とんでくる まめ → じめんの まめ → まえ
   const flight = span(t, LAUNCH, HIT)
   const look: Point =
@@ -522,29 +358,31 @@ function kidPose(t: number): { readonly pose: KidPose; readonly x: number; reado
     : t < SMILE ? [1, 0.9]
     : [0, 0]
   // まばたき(おだやかな ときだけ)
-  const closed = (mood === 'calm' || mood === 'curious') && t % 3.1 < 0.12
+  const blink = (mood === 'calm' || mood === 'curious') && t % 3.1 < 0.12
+  const headTilt = -4 * span(t, LOOK, LOOK + 0.4) * (1 - span(t, HIT - 0.3, HIT)) + 3 * span(t, HIT, HIT + 0.1) * (1 - span(t, OUCH_END - 0.1, OUCH_END + 0.2)) + (t >= SMILE ? wave(t, 0.6) * 2 * (1 - span(t, RISE, RISE + 0.1)) : 0)
 
-  const dip = Math.sin(span(t, HIT, HIT + 0.32) * Math.PI)
-  const squash = 1 - 0.07 * dip
-  const tilt = -4 * span(t, LOOK, LOOK + 0.4) * (1 - span(t, HIT - 0.3, HIT)) + 3 * span(t, HIT, HIT + 0.1) * (1 - span(t, OUCH_END - 0.1, OUCH_END + 0.2)) + (t >= SMILE ? wave(t, 0.6) * 2 * (1 - span(t, RISE, RISE + 0.1)) : 0)
+  // あし: しゃがむ(squat) → ばんざいで ひらく
+  const squat = posture('squat', 'front')
+  const spread = span(t, RISE, RISE + 0.25, easeOut)
+  const spreadLeg: Limb = { swing: LEG_SPREAD * spread + 3, bend: 0 }
+  const crouchLeg = (side: 'leftLeg' | 'rightLeg'): Limb => mixLimb(STRAIGHT_LEG, squat[side] ?? STRAIGHT_LEG, crouch)
+  const legs = t < RISE ? { leftLeg: crouchLeg('leftLeg'), rightLeg: crouchLeg('rightLeg') } : { leftLeg: spreadLeg, rightLeg: spreadLeg }
 
+  const base = { x, y: FLOOR_Y, build: 'toddler', height: KID_HEIGHT, facing: 'front', look: KID_LOOK } as const
+  // あたまの ばしょ(ほっぺを おさえる 手の 目あて)
+  const rig = personRig({ ...base, pose: {} })
+  const head = rig.world.head
+  const radius = rig.body.headR * rig.scale
   // うで: ふだんは 下げる → あたった ときは ほっぺを おさえる → ばんざい
   const hold = span(t, HIT, HIT + 0.12, easeOut) * (1 - span(t, OUCH_END, OUCH_END + 0.3))
   const cheer = span(t, RISE - 0.25, RISE + 0.15, easeOut)
-  const idle: Limb = { hand: [61.5 + wave(t, 2.4) * 0.6, 92], side: 0.8 }
-  const cheek: Limb = { hand: [60.8, 66.5], side: -1 }
-  const up: Limb = { hand: [51.5, 68], side: -1 }
-  const base = { hand: lerpPoint(idle.hand, cheek.hand, hold), side: lerp(idle.side, cheek.side, hold) }
-  const nearArm: Limb = { hand: lerpPoint(base.hand, up.hand, cheer), side: lerp(base.side, up.side, cheer) }
+  const idle: Limb = { swing: 5 + wave(t, 2.4) * 1, bend: 6 }
+  const armTo = (side: -1 | 1): Limb => ({ to: [head[0] + side * radius * 0.95, head[1] + radius * 0.4] })
+  const banzai = posture('banzai', 'front')
+  const arm = (side: -1 | 1, key: 'leftArm' | 'rightArm'): Limb => mixLimb(mixLimb(idle, armTo(side), hold), banzai[key] ?? idle, cheer)
+  const pose = { ...legs, leftArm: arm(1, 'leftArm'), rightArm: arm(-1, 'rightArm'), head: headTilt }
 
-  return { pose: { mood, look, closed, legAngle, tilt, squash, nearArm }, x, y: finalY, feetY }
-}
-
-function Scene({ t }: SceneProps) {
-  const ink = inkTiming(t, INK, DONE, 16)
-  const kid = kidPose(t)
-  const kidShow = span(t, HOP_IN - 0.1, HOP_IN + 0.1)
-  const air = Math.max(0, FLOOR_Y - kid.feetY + 2)
+  const air = lift
   // できあがりで、字が ぽん と はずむ
   const bump = Math.sin(span(t, DONE - 0.9, DONE - 0.45) * Math.PI) * 0.06
 
@@ -557,10 +395,9 @@ function Scene({ t }: SceneProps) {
         <Steam t={t} />
         <PoppingBeans t={t} />
         <Layer opacity={kidShow}>
-          <ellipse cx={75 + kid.x} cy="98.4" rx={Math.max(6, 16 - air * 0.5)} ry="2.4" fill="#000000" opacity="0.12" />
-          <Layer x={kid.x} y={kid.y}>
-            <Kid pose={kid.pose} t={t} />
-          </Layer>
+          <ellipse cx={x} cy="98.4" rx={Math.max(6, 16 - air * 0.5)} ry="2.4" fill="#000000" opacity="0.12" />
+          <Person {...base} face={blink ? 'closed' : FACES[mood]} gaze={look[0]} gazeY={look[1]} lift={lift} pose={pose} />
+          <Bump t={t} head={[head[0], head[1] - lift]} radius={radius} />
           <Dizzy t={t} />
           <Alert t={t} />
         </Layer>

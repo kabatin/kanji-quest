@@ -14,18 +14,17 @@
  *   → 地面に ついて にっこり。はえも ちかくに ふわっと よってくる
  *   → ほね が ひかって、絵が うすくなり、字「細」が のこる
  *
+ * 人は 出ない。背景は Backdrop、あせは Sweat。くも・はえ(どうぶつ)は 元の絵のまま。
  * くも・糸・田んぼは、ほんものの つくり を守る(字の形に合わせるために ゆがめない):
  *   くもは あし が 8本(左右に 4本ずつ)で、まるい おなか から 糸を出して ぶらさがる。糸は まっすぐ ま下に のびる。
  *   田んぼは 四角で、あぜ が 十字に 区切っている。はえの はね は 2まい。
  */
 import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Backdrop, Sweat } from '../sceneFigures'
 
 const CHAR = '細'
 
-const SUN = '#ffd24a'
-const HILL = '#e2f2d2'
-const GRASS = '#c5e8a9'
 const LEAF = '#55b86e'
 const LEAF_DARK = '#3f9c59'
 const BARK = '#8c5b3c'
@@ -61,30 +60,6 @@ const HANG_Y = 20
 const SPIDER_SCALE = 1.5
 /** くもの からだの うえはし(おなか の てっぺん)。糸は ここから のびる */
 const SPIDER_TOP = -6.4 * SPIDER_SCALE
-
-function Ground({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
-  return (
-    <>
-      <Layer opacity={sun} rotate={t * 14} origin={[99, 10]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="98.2" y="1.2" width="1.6" height="3.6" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 99 10)`} />
-        ))}
-      </Layer>
-      <circle cx="99" cy="10" r={5.2 * sun} fill={SUN} />
-      <path d="M-4 99 Q18 78 44 91 Q72 72 113 93 V101 H-4 Z" fill={HILL} />
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.4} 0)`}>
-        <ellipse cx="60" cy="14" rx="7" ry="3" />
-        <ellipse cx="65" cy="12.4" rx="5" ry="3" />
-        <ellipse cx="-6" cy="30" rx="6" ry="2.6" />
-      </g>
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.6" fill={GRASS} />
-      {[6, 44, 98].map((x) => (
-        <path key={x} d={`M${x} 97.5 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
-    </>
-  )
-}
 
 /** 左の はしから のびる えだ。先に 小さな 葉。くもは この先から 糸を たらす。 */
 function Branch({ t }: SceneProps) {
@@ -251,14 +226,6 @@ function Fly({ t }: SceneProps) {
   )
 }
 
-/** はじめ、おなかが すいて ぐったり している しるし(あせ) */
-function Sweat({ t }: SceneProps) {
-  const show = during(t, SPIN, SPOT, 0.25)
-  if (show <= 0) return null
-  const p = ((t * 0.9) % 1)
-  return <path d="M0 -2.4 Q2 0.6 0 2 Q-2 0.6 0 -2.4 Z" fill="#7cc4f2" opacity={show * (1 - p)} transform={`translate(${42 + p * 3} ${14 + p * 6})`} />
-}
-
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 11)
 
@@ -280,7 +247,7 @@ function Scene({ t }: SceneProps) {
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Ground t={t} />
+        <Backdrop t={t} sun={[99, 10]} clouds={[[60, 14, 1], [-6, 30, 0.85]]} tufts={[6, 44, 98]} />
         <Branch t={t} />
         <Paddy t={t} />
         <Skein t={t} />
@@ -292,7 +259,7 @@ function Scene({ t }: SceneProps) {
             <Spider mood={mood} wiggle={wiggle} />
           </Layer>
         </Layer>
-        <Sweat t={t} />
+        <Sweat t={t} x={37} y={21} dir={1} show={during(t, SPIN, SPOT, 0.25)} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Ink char={CHAR} progress={ink.progress} tint={ink.tint} />

@@ -16,23 +16,24 @@
  *   → 2まいの とびらが ぱたんと ひらいて、あかるい 中が 見える。女の子は 大よろこび
  *   → ひらいた もんの 前に 立って ぴょん ぴょん → ほね が ひかって、絵が うすくなり、字「門」が のこる
  *
- * 女の子は まえむき。ほんものの人の つくり を守る:
+ * 女の子は 共通部品 Person(あるくときは 横むき、立ち止まると まえむき):
  *   うで は かた から出て ひじ で まがる。くび は みじかく、あたま は どう の まんなか の上。
  * とびらは、はしら(ちょうつがい)の ほうを じく に、むこうがわ へ ひらく
  *   (ひらくと 手前から見て はば が せまく なる)。
  */
-import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeInOut, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Clouds, Hearts, LOOKS, mixLimb, Person, personRig, Sigh, Sun, turnAround, walk, type Expression, type Limb, type PersonPose } from '../sceneFigures'
+
+type Pt = readonly [number, number]
+type Mood = 'sad' | 'hope' | 'happy'
+
+const rad = (deg: number) => (deg * Math.PI) / 180
 
 const CHAR = '門'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
 const DRESS = '#ee7fa0'
-const DRESS_DARK = '#d6618a'
-const SHOE = '#6b4a36'
-const RIBBON = '#e8534a'
+const HAIR = '#5a3b2a'
 const KEY = '#f2b632'
 const WOOD = '#b9814f'
 const WOOD_DARK = '#8c5b3c'
@@ -41,8 +42,6 @@ const PANE = '#cfe9f7'
 const LEAF = '#55b86e'
 const LEAF_DARK = '#3f9c59'
 const GRASS = '#c5e8a9'
-const SUN = '#ffd24a'
-const MOUTH = '#b9483f'
 
 /** くぎり の時間(秒) */
 const WALK = 0.9
@@ -62,12 +61,12 @@ const DURATION = 10.8
 
 /** 女の子の 足もと(地面より 少し てまえ) */
 const FEET_Y = 95
+/** 女の子の 背の高さ(主役が 小さく ならないように) */
+const GIRL_HEIGHT = 46
 const START_X = 31
 const GATE_X = 54.5
 /** かぎ穴の 場所(しまっているときの 左のとびら の右はし ちかく) */
 const LOCK: readonly [number, number] = [49.5, 70]
-/** 女の子の 大きさ(主役が 小さく ならないように) */
-const GIRL_SCALE = 1.2
 
 /** とびらの 絵は「ひらいた かたち」(字と重なる かたち)で描く。しめるときは 横に のばす。 */
 const LEFT_HINGE = 18
@@ -76,22 +75,10 @@ const LEFT_CLOSED_SCALE = 1.36
 const RIGHT_CLOSED_SCALE = 1.25
 
 function Ground({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
   return (
     <>
-      <Layer opacity={sun} rotate={t * 14} origin={[96, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="95.2" y="1.6" width="1.6" height="4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 96 13)`} />
-        ))}
-      </Layer>
-      <circle cx="96" cy="13" r={6.2 * sun} fill={SUN} />
       <path d="M-4 99 Q18 78 44 92 Q72 72 113 93 V101 H-4 Z" fill="#e2f2d2" />
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.4} 0)`}>
-        <ellipse cx="4" cy="8" rx="7" ry="3.2" />
-        <ellipse cx="9" cy="6.2" rx="5" ry="3.2" />
-        <ellipse cx="58" cy="6" rx="5.5" ry="2.6" />
-        <ellipse cx="62.4" cy="4.6" rx="4" ry="2.8" />
-      </g>
+      <Clouds t={t} at={[[4, 8, 1], [58, 6, 0.9]]} speed={1.4} />
       <ellipse cx="54.5" cy="99" rx="53" ry="6.4" fill={GRASS} />
       {[6, 12, 100, 104].map((x) => (
         <path key={x} d={`M${x} 97.5 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
@@ -179,127 +166,13 @@ function Gate({ t, open }: SceneProps & { readonly open: number }) {
   )
 }
 
-type Mood = 'sad' | 'hope' | 'happy'
-
-/** うで の かっこう。swing = ま下から そとへ ふった角度(180 で ま上) / bend = ひじ の まがり */
-type ArmPose = { readonly swing: number; readonly bend: number }
-
-const ARM_PART = 5
-const SHOULDER_X = 4.4
-const SHOULDER_Y = -21.5
-
-const rad = (deg: number) => (deg * Math.PI) / 180
-
-/** かた から出て、ひじ で まがる うで。side = 1 で 右(x が ふえる ほう)、-1 で 左。 */
-function Arm({ pose, side, withKey }: { readonly pose: ArmPose; readonly side: 1 | -1; readonly withKey: boolean }) {
-  const sx = side * SHOULDER_X
-  const ex = sx + side * Math.sin(rad(pose.swing)) * ARM_PART
-  const ey = SHOULDER_Y + Math.cos(rad(pose.swing)) * ARM_PART
-  const fore = pose.swing + pose.bend
-  const hx = ex + side * Math.sin(rad(fore)) * ARM_PART
-  const hy = ey + Math.cos(rad(fore)) * ARM_PART
-  // かぎは 手から うでの むき に のびる
-  const keyAngle = (Math.atan2(Math.cos(rad(fore)), side * Math.sin(rad(fore))) * 180) / Math.PI
-  return (
-    <>
-      <path d={`M${sx} ${SHOULDER_Y} L${ex} ${ey}`} stroke={DRESS_DARK} strokeWidth="3.4" strokeLinecap="round" fill="none" />
-      <path d={`M${ex} ${ey} L${hx} ${hy}`} stroke={SKIN} strokeWidth="2.8" strokeLinecap="round" fill="none" />
-      <circle cx={hx} cy={hy} r="1.9" fill={SKIN} />
-      {withKey ? (
-        <g transform={`translate(${hx} ${hy}) rotate(${keyAngle})`}>
-          <circle cx="0.6" cy="0" r="1.7" fill="none" stroke={KEY} strokeWidth="1" />
-          <rect x="2.2" y="-0.45" width="5.6" height="0.9" rx="0.4" fill={KEY} />
-          <rect x="6" y="0" width="0.9" height="1.6" fill={KEY} />
-          <rect x="4.4" y="0" width="0.9" height="1.2" fill={KEY} />
-        </g>
-      ) : null}
-    </>
-  )
-}
-
-type GirlProps = {
-  readonly step: number
-  readonly mood: Mood
-  readonly rightArm: ArmPose
-  readonly leftArm: ArmPose
-  readonly headTilt: number
-}
-
-/** 女の子(まえむき)。足もと が (0,0)、あたま は 上(y が マイナス)。 */
-function Girl({ step, mood, rightArm, leftArm, headTilt }: GirlProps) {
-  return (
-    <>
-      {/* あし: あるくとき かわりばんこに ふる */}
-      <Layer rotate={step * 14} origin={[-2.4, -10]}>
-        <rect x="-3.9" y="-10" width="3.2" height="9" rx="1.6" fill={SKIN} />
-        <ellipse cx="-2.4" cy="-0.9" rx="3" ry="1.6" fill={SHOE} />
-      </Layer>
-      <Layer rotate={-step * 14} origin={[2.4, -10]}>
-        <rect x="0.7" y="-10" width="3.2" height="9" rx="1.6" fill={SKIN} />
-        <ellipse cx="2.4" cy="-0.9" rx="3" ry="1.6" fill={SHOE} />
-      </Layer>
-      {/* くび と ふく */}
-      <rect x="-1.6" y="-26" width="3.2" height="4" rx="1.4" fill={SKIN_SHADE} />
-      <path d="M-4.4 -23 L4.4 -23 Q5 -17 7.6 -9.5 L-7.6 -9.5 Q-5 -17 -4.4 -23 Z" fill={DRESS} />
-      <path d="M-7.3 -10.8 L7.3 -10.8" stroke={DRESS_DARK} strokeWidth="1.2" strokeLinecap="round" />
-      <Arm pose={leftArm} side={-1} withKey={false} />
-      <Arm pose={rightArm} side={1} withKey />
-      {/* あたま */}
-      <Layer rotate={headTilt} origin={[0, -24]}>
-        <circle cx="-8" cy="-27" r="2.5" fill={HAIR} />
-        <circle cx="8" cy="-27" r="2.5" fill={HAIR} />
-        <circle cx="0" cy="-30.5" r="7.7" fill={HAIR} />
-        <circle cx="0" cy="-29.6" r="6.8" fill={SKIN} />
-        <path d="M-7 -30.4 Q-6.6 -37.6 0 -37.6 Q6.6 -37.6 7 -30.4 Q3.4 -33.4 -0.8 -34.2 Q-4.6 -33.4 -7 -30.4 Z" fill={HAIR} />
-        <circle cx="-7.2" cy="-31.2" r="1.1" fill={RIBBON} />
-        <circle cx="-4.4" cy="-26.8" r="1.3" fill="#ff9d9d" opacity="0.55" />
-        <circle cx="4.4" cy="-26.8" r="1.3" fill="#ff9d9d" opacity="0.55" />
-        {mood === 'sad' ? (
-          <>
-            <path d="M-4.4 -31.2 l2.6 -1 M4.4 -31.2 l-2.6 -1" stroke={HAIR} strokeWidth="0.8" strokeLinecap="round" />
-            <circle cx="-2.6" cy="-29.6" r="1" fill="#2b2b2b" />
-            <circle cx="2.6" cy="-29.6" r="1" fill="#2b2b2b" />
-            <path d="M-1.6 -25.8 Q0 -27.2 1.6 -25.8" fill="none" stroke={MOUTH} strokeWidth="0.9" strokeLinecap="round" />
-          </>
-        ) : mood === 'hope' ? (
-          <>
-            <circle cx="-2.6" cy="-29.8" r="1.3" fill="#2b2b2b" />
-            <circle cx="2.6" cy="-29.8" r="1.3" fill="#2b2b2b" />
-            <circle cx="-2.2" cy="-30.2" r="0.45" fill="#ffffff" />
-            <circle cx="3" cy="-30.2" r="0.45" fill="#ffffff" />
-            <ellipse cx="0" cy="-26.2" rx="1" ry="1.2" fill={MOUTH} />
-          </>
-        ) : (
-          <>
-            <path d="M-4 -29.4 Q-2.6 -31.6 -1.2 -29.4 M1.2 -29.4 Q2.6 -31.6 4 -29.4" fill="none" stroke="#2b2b2b" strokeWidth="1" strokeLinecap="round" />
-            <path d="M-2.4 -27 Q0 -23.6 2.4 -27 Z" fill={MOUTH} />
-          </>
-        )}
-      </Layer>
-    </>
-  )
-}
-
-/** しょんぼりの「ふう」 */
-function Sigh({ t }: SceneProps) {
-  const show = during(t, STOP + 0.1, NOTICE + 0.2, 0.2)
-  if (show <= 0) return null
-  const p = span(t, STOP + 0.1, NOTICE + 0.2, easeOut)
-  return (
-    <g opacity={show}>
-      <ellipse cx={-10 - p * 5} cy={-25 - p * 4} rx={2.4 + p * 2} ry={1.6 + p * 1.3} fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.6" />
-      <ellipse cx={-7.4 - p * 3} cy={-24 - p * 1.5} rx={1.2 + p * 0.8} ry={0.9 + p * 0.5} fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.5" />
-    </g>
-  )
-}
-
-/** 「!」(かぎ に 気づいた) */
-function Notice({ t }: SceneProps) {
+/** 「!」(かぎ に 気づいた)。x, y は あたまの よこ */
+function Notice({ t, x, y }: SceneProps & { readonly x: number; readonly y: number }) {
   const show = during(t, NOTICE, LIFT + 0.3, 0.2)
   if (show <= 0) return null
   const pop = Math.max(0, span(t, NOTICE, NOTICE + 0.3, backOut))
   return (
-    <Layer x={9} y={-41} scale={pop} opacity={show}>
+    <Layer x={x} y={y} scale={pop} opacity={show}>
       <rect x="-1" y="-5.4" width="2" height="4.2" rx="1" fill="#f2a31b" />
       <circle cx="0" cy="0" r="1.1" fill="#f2a31b" />
     </Layer>
@@ -320,59 +193,72 @@ function Click({ t }: SceneProps) {
   )
 }
 
-/** うれしい ハート(あたまの 上へ のぼる) */
-function Hearts({ t }: SceneProps) {
-  const show = during(t, OPEN_FROM + 0.8, INK, 0.3)
-  if (show <= 0) return null
+
+/** かぎ(手に もつ)。手から うでの むきへ のびる */
+function Key({ hand, from }: { readonly hand: Pt; readonly from: Pt }) {
+  const angle = (Math.atan2(hand[1] - from[1], hand[0] - from[0]) * 180) / Math.PI
   return (
-    <g opacity={show} fill="#f07f9e">
-      {[0, 0.7].map((offset, i) => {
-        const p = ((t + offset) % 1.4) / 1.4
-        return <path key={offset} d="M0 1.4 C-2.8 -0.6 -1.6 -3 0 -1.6 C1.6 -3 2.8 -0.6 0 1.4 Z" transform={`translate(${(i ? 9 : -9) + Math.sin(p * 6) * 1.2} ${-40 - p * 9}) scale(${0.9 + p * 0.5})`} opacity={Math.sin(p * Math.PI)} />
-      })}
+    <g transform={`translate(${hand[0]} ${hand[1]}) rotate(${angle}) scale(1.2)`}>
+      <circle cx="0.6" cy="0" r="1.7" fill="none" stroke={KEY} strokeWidth="1" />
+      <rect x="2.2" y="-0.45" width="5.6" height="0.9" rx="0.4" fill={KEY} />
+      <rect x="6" y="0" width="0.9" height="1.6" fill={KEY} />
+      <rect x="4.4" y="0" width="0.9" height="1.2" fill={KEY} />
     </g>
   )
 }
+
+/** 女の子: ふたつ むすび・ピンクの ワンピース */
+const GIRL_LOOK = { ...LOOKS.little, top: DRESS } as const
 
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 8)
   const open = span(t, OPEN_FROM, OPEN_TO, easeInOut)
 
-  // あるく: 左から とびらの 前へ。あとで もんの まんなかの 前へ
-  const walkA = (1 - span(t, STOP - 0.25, STOP)) * (t < WALK ? 0 : 1)
-  const walkB = during(t, STEP, STEP_END, 0.1)
-  const step = Math.sin((t - WALK) * Math.PI * 2 * 1.9) * walkA + Math.sin((t - STEP) * Math.PI * 2 * 1.9) * walkB
-  const x = mix(t, WALK, STOP, -12, START_X, easeOut) + mix(t, STEP, STEP_END, 0, GATE_X - START_X, easeInOut)
+  // あるく: 左から とびらの 前へ(横むき)→ ふりむいて 正面。あとで もんの まんなかの 前へ(また 横むき)→ 正面
+  const plan = { build: 'child', height: GIRL_HEIGHT } as const
+  const w1 = walk(t, { from: -12, to: START_X, start: WALK, end: STOP - 0.3, ...plan })
+  const w2 = walk(t, { from: START_X, to: GATE_X, start: STEP, end: STEP_END, ...plan })
+  const w = t < STEP - 0.3 ? w1 : w2
+  const turned = t < STEP - 0.3 ? turnAround(t, STOP - 0.3, 'right', 'front') : t < STEP_END ? turnAround(t, STEP - 0.3, 'front', 'right') : turnAround(t, STEP_END, 'right', 'front')
   // よろこびの ぴょん
-  const cheer = during(t, OPEN_FROM + 0.1, STEP, 0.2) + during(t, STEP_END, INK + 0.2, 0.2)
+  const cheer = during(t, OPEN_FROM + 0.1, STEP - 0.3, 0.2) + during(t, STEP_END, INK + 0.2, 0.2)
   const hop = Math.abs(wave(t, 0.62)) * 2.6 * cheer
 
   const mood: Mood = t < NOTICE ? 'sad' : t < CLICK + 0.1 ? 'hope' : 'happy'
-  const slump = mood === 'sad' && t > STOP ? 1 : 0
-  const headTilt = mood === 'sad' ? slump * (-5 + wave(t, 1.4) * 2) : mood === 'hope' ? 3 : wave(t, 0.62) * 5 * cheer
+  const face: Expression = mood === 'sad' ? 'sad' : mood === 'hope' ? 'surprised' : 'joy'
 
-  // かぎを もつ うで(右): かぎ穴まで のばす。あけたあと うれしくて 上へ
+  // 正面の とき の うで: かぎを もつ うで(左うで = 画面の 右)は かぎ穴まで のばす。あけたあと うれしくて 上へ
   const lift = span(t, LIFT, LIFT + 0.8, easeInOut)
   const up = span(t, OPEN_FROM + 0.1, OPEN_FROM + 0.5, easeOut)
-  const rightArm: ArmPose = { swing: 8 + step * 22 + 74 * lift + 70 * up + wave(t, 0.62) * 8 * cheer, bend: 10 + 4 * lift - 20 * up }
-  const leftArm: ArmPose = { swing: 8 - step * 22 + 150 * up + wave(t, 0.62, 0.3) * 8 * cheer, bend: 10 - 18 * up }
+  const hang: Limb = { swing: 8, bend: 10 }
+  const reach: Limb = mixLimb(hang, { to: LOCK }, lift)
+  const frontPose: PersonPose = {
+    leftArm: mixLimb(reach, { swing: 158, bend: 12 }, up),
+    rightArm: mixLimb(hang, { swing: 158 + wave(t, 0.62, 0.3) * 8 * cheer, bend: 12 }, up),
+  }
+  const pose = turned.facing === 'front' ? frontPose : w.pose
+  const girl = { ...w, ...turned, y: FEET_Y, pose }
+  const rig = personRig({ ...girl, lift: hop })
+  const head = rig.world.head
+  const headR = rig.body.headR * rig.scale
+  const keyArm = rig.world.arms.left
 
   return (
     <>
       <Layer opacity={ink.picture}>
+        <Sun t={t} x={96} y={13} r={6.2} />
         <Ground t={t} />
         <Gate t={t} open={open} />
         <Click t={t} />
         {/* ひらいた もんから こぼれる 光 */}
         <ellipse cx={GATE_X} cy="94" rx={13 * open} ry="2.6" fill="#fff0a8" opacity={0.75 * open} />
         <Layer opacity={span(t, WALK - 0.1, WALK + 0.2)}>
-          <ellipse cx={x} cy={FEET_Y + 0.4} rx="8.8" ry="2" fill="#000000" opacity="0.12" />
-          <Layer x={x} y={FEET_Y - hop} scale={GIRL_SCALE}>
-            <Girl step={step} mood={mood} rightArm={rightArm} leftArm={leftArm} headTilt={headTilt} />
-            <Sigh t={t} />
-            <Notice t={t} />
-            <Hearts t={t} />
-          </Layer>
+          <Person {...girl} lift={hop} look={GIRL_LOOK} face={face} gazeY={mood === 'sad' && t > STOP ? 1 : 0} gaze={mood === 'hope' ? 0.8 : 0} />
+          <Key hand={keyArm.end} from={keyArm.mid} />
+          <Sigh x={head[0] - headR} y={head[1] + headR * 0.4} p={span(t, STOP + 0.1, NOTICE + 0.2, easeOut)} show={during(t, STOP + 0.1, NOTICE + 0.2, 0.2)} />
+          <Notice t={t} x={head[0] + headR * 1.4} y={head[1] - headR * 1.1} />
+          <Hearts t={t} x={head[0] - headR * 2.2} y={head[1] - headR} show={during(t, OPEN_FROM + 0.8, INK, 0.3)} />
+          <Hearts t={t + 0.7} x={head[0] + headR * 1.2} y={head[1] - headR * 1.3} show={during(t, OPEN_FROM + 0.8, INK, 0.3)} />
         </Layer>
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />

@@ -22,12 +22,10 @@
  */
 import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Clouds, Flower, Mountain, Rain, Sun, Sweat, type MountainShape } from '../sceneFigures'
 
 const CHAR = '谷'
 
-const SUN = '#ffd24a'
-const ROCK = '#9fb0c4'
-const ROCK_SHADE = '#8296ae'
 const SNOW = '#ffffff'
 const DRY_GROUND = '#e9d99f'
 const WET_GROUND = '#c5e8a9'
@@ -39,11 +37,11 @@ const WATER_LIGHT = '#d4f0fe'
 const POND_WATER = '#7cc4f2'
 const DIRT = '#cfae72'
 const CRACK = '#a98a50'
+const ROCK = '#9fb0c4'
+const ROCK_SHADE = '#8296ae'
 const STONE = '#9b968c'
 const STONE_LIGHT = '#cfcabf'
 const CLOUD_BODY = '#a3b0c2'
-const CLOUD_SHADE = '#8494aa'
-const CLOUD_LIGHT = '#c3cddb'
 const BEAR = '#b98458'
 const BEAR_DARK = '#9c6c44'
 const BELLY = '#f0d3a8'
@@ -52,7 +50,6 @@ const EYE = '#2b2b2b'
 const MOUTH = '#b9483f'
 const TONGUE = '#ff8a8a'
 const CHEEK = '#ff9d9d'
-const SWEAT = '#7cc4f2'
 
 /** くぎり の時間(秒) */
 const WALK = 0.8
@@ -90,115 +87,40 @@ function mixHex(a: string, b: string, k: number): string {
   return `rgb(${f(ar, br)} ${f(ag, bg)} ${f(ab, bb)})`
 }
 
-/* ───────── おひさま・雲 ───────── */
+/* ───────── おひさま・雲・雨・山 ───────── */
 
 /** かんかん照りの おひさま。雲が くると かくれ、雨が あがると また 出る */
-function Sun({ t }: SceneProps) {
-  const rise = span(t, 0, 0.6, easeOut)
+function Shine({ t }: SceneProps) {
   const hidden = during(t, CLOUD + 0.2, RAIN_END + 0.6, 0.5)
-  const show = rise * (1 - hidden)
-  if (show <= 0) return null
   return (
-    <Layer opacity={show}>
-      <Layer rotate={t * 14} origin={[10, 10]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="9.2" y="-1.6" width="1.6" height="3.8" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 10 10)`} />
-        ))}
-      </Layer>
-      <circle cx="10" cy="10" r="5.2" fill={SUN} />
+    <Layer opacity={1 - hidden}>
+      <Sun t={t} x={10} y={10} r={5.2} />
     </Layer>
   )
 }
 
-/** 雨雲: そこ は たいら。左から ながれてきて、雨が あがると 右へ いく */
-function Cloud({ t }: SceneProps) {
+/** 雨雲: 左から ながれてきて、雨が あがると 右へ いく */
+function RainCloud({ t }: SceneProps) {
   const arrive = span(t, CLOUD, CLOUD + 0.8, easeOut)
   const leave = span(t, RAIN_END + 0.1, RAIN_END + 1.0)
   if (arrive <= 0 || leave >= 1) return null
   const x = -70 * (1 - arrive) + 80 * leave
-  const puffs: readonly (readonly [number, number, number])[] = [
-    [34, 8, 5.5],
-    [46, 5.6, 6.6],
-    [60, 5.6, 7],
-    [73, 8, 5.5],
-  ]
   return (
     <Layer x={x}>
-      <g fill={CLOUD_SHADE}>
-        <rect x="24" y="6" width="60" height="8.2" rx="4" />
-        {puffs.map(([cx, cy, r]) => (
-          <circle key={cx} cx={cx} cy={cy} r={r} />
-        ))}
-      </g>
-      <g fill={CLOUD_LIGHT} transform="translate(-0.8 0)">
-        {puffs.map(([cx, cy, r]) => (
-          <circle key={cx} cx={cx} cy={cy - 1.3} r={r} />
-        ))}
-      </g>
-      <g fill={CLOUD_BODY} transform="translate(0 -2.2)">
-        <rect x="24" y="6" width="60" height="8.2" rx="4" />
-        {puffs.map(([cx, cy, r]) => (
-          <circle key={cx} cx={cx} cy={cy} r={r} />
-        ))}
-      </g>
+      <Clouds t={0} at={[[36, 5, 2.4], [62, 4, 2.8]]} color={CLOUD_BODY} opacity={1} />
     </Layer>
   )
 }
 
-/** 雨つぶ: 雲から おちて、山や じめん や いけ に ぶつかる。[x, おちる高さ] */
-const DROPS: readonly (readonly [number, number])[] = [
-  [30, 28],
-  [41, 21],
-  [47, 25.5],
-  [58, 25.5],
-  [64, 19.5],
-  [76, 21.5],
-  [82, 27],
-  [24, 58],
-  [88, 60],
-  [40, 78],
-  [50, 85],
-  [60, 74],
-  [67, 87],
-]
+/** 2つの山(せりあがる)。1・2画目は、それぞれの そとがわの すそ。あいだに われめが できる */
+const LEFT_PEAK: MountainShape = { top: [36.8, 16.5], foot: FOOT_Y, half: 17.3 }
+const RIGHT_PEAK: MountainShape = { top: [67.8, 15.9], foot: FOOT_Y, half: 20.7 }
 
-function Rain({ t }: SceneProps) {
-  const amount = during(t, RAIN, RAIN_END, 0.3)
-  if (amount <= 0) return null
-  return (
-    <g opacity={amount}>
-      {DROPS.map(([x, land], i) => {
-        const cycle = 0.55 + (i % 4) * 0.06
-        const p = (((t - RAIN + i * 0.17) % cycle) + cycle) % cycle / cycle
-        if (p < 0.8) {
-          const y = 14 + ((land - 14) * p) / 0.8
-          return <path key={i} d={`M${x} ${y - 3} V${y}`} stroke={WATER} strokeWidth="0.9" strokeLinecap="round" />
-        }
-        const s = (p - 0.8) / 0.2
-        return <ellipse key={i} cx={x} cy={land} rx={0.6 + s * 2.2} ry={0.3 + s * 0.8} fill="none" stroke={WATER_LIGHT} strokeWidth="0.6" opacity={1 - s} />
-      })}
-    </g>
-  )
-}
-
-/* ───────── 山・じめん ───────── */
-
-/** 2つの山。せりあがる。1・2画目は、それぞれの そとがわの すそ */
 function Mountains({ t }: SceneProps) {
-  const left = span(t, 0.1, 0.85, backOut)
-  const right = span(t, 0.25, 1.0, backOut)
   return (
     <>
-      <Layer scaleY={left} origin={[53, FOOT_Y]}>
-        <path d="M36.8 16.5 Q35 24.5 19.5 38.5 L53 38.5 L53 29.5 Z" fill={ROCK} />
-        <path d="M36.8 16.5 L53 29.5 L53 38.5 L38 38.5 Z" fill={ROCK_SHADE} />
-        <path d="M36.8 16.5 L34.8 21 L36.4 20.2 L37.6 22.4 L39.2 20.4 L40.8 21.2 Z" fill={SNOW} />
-      </Layer>
-      <Layer scaleY={right} origin={[53, FOOT_Y]}>
-        <path d="M67.8 15.9 Q76 19.5 88.5 34.5 L88.5 38.5 L53 38.5 L53 29.5 Z" fill={ROCK_SHADE} />
-        <path d="M67.8 15.9 L53 29.5 L53 38.5 L64 38.5 Z" fill={ROCK} />
-        <path d="M67.8 15.9 L70.8 19.2 L69.5 19.5 L68.2 21.8 L66.4 19.8 L64.6 20.6 Z" fill={SNOW} />
-      </Layer>
+      <Mountain shape={LEFT_PEAK} rise={span(t, 0.1, 0.85, backOut)} snow={24} lit={ROCK} shade={ROCK_SHADE} />
+      <Mountain shape={RIGHT_PEAK} rise={span(t, 0.25, 1.0, backOut)} snow={24} lit={ROCK} shade={ROCK_SHADE} />
     </>
   )
 }
@@ -300,28 +222,19 @@ function Lapping({ t, dx }: SceneProps & { readonly dx: number }) {
 }
 
 /** みずが くると、ほとりに 花が ぽん ぽん と さく */
+const FLOWER_SPOTS: readonly (readonly [number, number, string])[] = [
+  [24, 54, '#f07f9e'],
+  [78, 47, '#ffc233'],
+  [62, 61, '#f07f9e'],
+  [91, 76, '#ffc233'],
+]
+
 function Flowers({ t }: SceneProps) {
-  const spots: readonly (readonly [number, number, string])[] = [
-    [24, 50, '#f07f9e'],
-    [78, 43, '#ffc233'],
-    [62, 57, '#f07f9e'],
-    [91, 72, '#ffc233'],
-  ]
   return (
     <>
-      {spots.map(([x, y, color], i) => {
-        const grow = span(t, POND_FULL - 0.2 + i * 0.18, POND_FULL + 0.4 + i * 0.18, backOut)
-        if (grow <= 0) return null
-        return (
-          <Layer key={x} scale={grow} origin={[x, y + 4]}>
-            <path d={`M${x} ${y} V${y + 4.4}`} stroke={GRASS} strokeWidth="1" strokeLinecap="round" />
-            {[0, 72, 144, 216, 288].map((a) => (
-              <circle key={a} cx={x + Math.cos((a * Math.PI) / 180) * 1.7} cy={y + Math.sin((a * Math.PI) / 180) * 1.7} r="1.25" fill={color} />
-            ))}
-            <circle cx={x} cy={y} r="1" fill="#fff6c4" />
-          </Layer>
-        )
-      })}
+      {FLOWER_SPOTS.map(([x, y, color], i) => (
+        <Flower key={x} x={x} y={y} color={color} size={0.5} grow={span(t, POND_FULL - 0.2 + i * 0.18, POND_FULL + 0.4 + i * 0.18)} />
+      ))}
     </>
   )
 }
@@ -427,17 +340,8 @@ function Bear({ mood, stride, raise, headTilt, breath }: BearProps) {
 }
 
 /** あせ: のどが かわいて あるいている あいだ、あたまから ぽたり */
-function Sweat({ t }: SceneProps) {
-  const show = during(t, WALK + 0.2, CLOUD + 0.4, 0.3)
-  if (show <= 0) return null
-  return (
-    <g opacity={show}>
-      {[0, 0.45].map((offset) => {
-        const p = (((t + offset) % 0.9) / 0.9 + 1) % 1
-        return <path key={offset} d="M0 -2.2 Q1.9 0.6 0 1.9 Q-1.9 0.6 0 -2.2 Z" fill={SWEAT} transform={`translate(${6 - p * 3} ${72 + p * 8}) rotate(25)`} opacity={1 - p} />
-      })}
-    </g>
-  )
+function ThirstSweat({ t, x }: SceneProps & { readonly x: number }) {
+  return <Sweat t={t} x={x + 7} y={73} show={during(t, WALK + 0.2, CLOUD + 0.4, 0.3)} />
 }
 
 function Scene({ t }: SceneProps) {
@@ -471,7 +375,7 @@ function Scene({ t }: SceneProps) {
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Sun t={t} />
+        <Shine t={t} />
         <Mountains t={t} />
         <Ground t={t} />
         <Spring t={t} />
@@ -484,13 +388,11 @@ function Scene({ t }: SceneProps) {
           <Layer x={x} y={-Math.abs(gait) * 0.8 - hopRun - hopCheer} rotate={lean} origin={[16, GROUND_Y]}>
             <Bear mood={mood} stride={gait} raise={raise} headTilt={headTilt} breath={breath} />
           </Layer>
-          <Layer x={x}>
-            <Sweat t={t} />
-          </Layer>
+          <ThirstSweat t={t} x={x} />
           <Lapping t={t} dx={x} />
         </Layer>
-        <Cloud t={t} />
-        <Rain t={t} />
+        <RainCloud t={t} />
+        <Rain t={t} amount={during(t, RAIN, RAIN_END, 0.3)} top={14} ground={88} left={20} right={90} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Layer scale={1 + bump} origin={[54.5, 54.5]}>

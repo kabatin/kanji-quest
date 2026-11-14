@@ -12,12 +12,13 @@
  *   → 切り分けた お肉に、きれいな すじが 2本 見えて、コックさん わーい と よろこぶ
  *   → ほね が ひかって、絵が うすくなり、字「肉」が のこる
  *
- * 人は、ほんものの人の つくり を守る(字の形に合わせるために、体を ゆがめない):
- *   うで は かた から出て ひじ で まがる(かた → ひじ → 手 の じゅんに つなげる)。
- *   ほうちょうは 手に にぎって、うで と いっしょに うごく。字の形に なるのは、お肉の ほうだけ。
+ * 人は Person(おとな)。あるきは walk、うでは かた から ひじ で まがる 角度で うごかす。
+ * ほうちょうは 手に にぎって うで と いっしょに うごく(held)。コックぼうは headwear。字の形に なるのは、お肉の ほうだけ。
+ * へやは Room。
  */
-import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { HANG_ARM, LOOKS, mixLimb, Person, personRig, Room, walk, type Expression, type Limb } from '../sceneFigures'
 
 const CHAR = '肉'
 
@@ -27,17 +28,13 @@ const MEAT_LIGHT = '#f08a82'
 const FAT = '#ffdccb'
 const STEEL = '#8a95a3'
 const TWINE = '#a8895c'
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
 const COAT = '#f6f8fb'
 const COAT_DARK = '#d3dde9'
-const BUTTON = '#8aa0b8'
 const PANTS = '#4a5a78'
-const SHOE = '#6b4a36'
-const FLOOR = '#f1e3c9'
-const FLOOR_LINE = '#e2cfa8'
 const KNIFE_BLADE = '#dfe7ef'
 const WOOD = '#8c5b3c'
+const WALL = '#e9f1f8'
+const FLOOR = '#f1e3c9'
 
 /** くぎり の時間(秒) */
 const ENTER = 0.3
@@ -59,20 +56,16 @@ const SLAB = { x: 20.5, y: 28, w: 70, h: 63, r: 7 } as const
 const HOOK: readonly [number, number] = [53.3, 12.8]
 /** 3画目の うち、ひも に あたる 上の ぶぶん(のこりが お肉の中の すじ) */
 const TWINE_PART = 0.32
-/** コックさんの かた(ほうちょうを もつ 右うで と、左うで)。体は 右(お肉の ほう)を むく */
-const SHOULDER_R: readonly [number, number] = [16.5, 58]
-const SHOULDER_L: readonly [number, number] = [7.5, 58]
-/** うで の ぶぶん(かた〜ひじ、ひじ〜手)の 長さ */
-const ARM_PART = 12
-const rad = (deg: number) => (deg * Math.PI) / 180
+/** コックさん: 右(お肉の ほう)を むく。立つ場所(こし の x)と 地面、体格 */
+const COOK = { x: 14, y: 96, build: 'adult', height: 62 } as const
+const COOK_LOOK = { ...LOOKS.man, top: COAT, bottom: PANTS } as const
+const FLOOR_Y = 88
 
-function Floor({ t }: SceneProps) {
+/** お肉の おく ぼう(天井)と、ゆかの 目じるし */
+function Rail({ t }: SceneProps) {
   const show = span(t, 0, 0.5, easeOut)
   return (
     <g opacity={show}>
-      <ellipse cx="54.5" cy="98" rx="52" ry="5.6" fill={FLOOR} />
-      <path d="M12 97 h14 M40 99.4 h18 M72 97.4 h16" stroke={FLOOR_LINE} strokeWidth="1.1" strokeLinecap="round" />
-      {/* 天井の ぼう(お肉を ひっかける) */}
       <rect x="32" y="3" width="42" height="3.6" rx="1.8" fill={STEEL} />
       <rect x="34.5" y="0" width="2.4" height="3.4" fill={STEEL} />
       <rect x="69.1" y="0" width="2.4" height="3.4" fill={STEEL} />
@@ -83,124 +76,51 @@ function Floor({ t }: SceneProps) {
 /** うで の かっこう。upper / fore = ま下から まえ(右)へ ふった角度(ひじ から さき) */
 type ArmPose = { readonly upper: number; readonly fore: number }
 
-/** かた → ひじ → 手 の じゅんに つなぐ。手の 位置も 返す。 */
-function limbPoints(shoulder: readonly [number, number], pose: ArmPose) {
-  const elbow = [shoulder[0] + Math.sin(rad(pose.upper)) * ARM_PART, shoulder[1] + Math.cos(rad(pose.upper)) * ARM_PART] as const
-  const hand = [elbow[0] + Math.sin(rad(pose.fore)) * ARM_PART, elbow[1] + Math.cos(rad(pose.fore)) * ARM_PART] as const
-  return { elbow, hand }
-}
+const armLimb = (pose: ArmPose): Limb => ({ swing: pose.upper, bend: Math.max(0, pose.fore - pose.upper) })
 
-function Knife() {
+/** ほうちょう。手の まんなか が 0,0。はもの は 前うで の むきに のびる(下むきで 描いて、むきを かえる) */
+function Knife({ hand, elbow }: { readonly hand: readonly [number, number]; readonly elbow: readonly [number, number] }) {
+  const angle = (Math.atan2(-(hand[0] - elbow[0]), hand[1] - elbow[1]) * 180) / Math.PI
   return (
-    <>
-      {/* えを にぎる ぶぶん、つば、はもの(まっすぐ 下を むく) */}
+    <Layer x={hand[0]} y={hand[1]} rotate={angle}>
+      {/* えを にぎる ぶぶん、つば、はもの */}
       <rect x="-1.6" y="-4" width="3.2" height="7" rx="1.4" fill={WOOD} />
       <rect x="-2.6" y="3" width="5.2" height="1.3" rx="0.6" fill={STEEL} />
       <path d="M-1.6 4.3 H5.4 V14.6 Q5.4 16.2 3.8 16.2 H-1.6 Z" fill={KNIFE_BLADE} />
       <rect x="0.2" y="6" width="1.2" height="7.4" rx="0.6" fill="#ffffff" opacity="0.85" />
-    </>
+    </Layer>
   )
 }
 
-function Arm({ shoulder, pose, knife }: { readonly shoulder: readonly [number, number]; readonly pose: ArmPose; readonly knife: boolean }) {
-  const { elbow, hand } = limbPoints(shoulder, pose)
+/** コックぼう(headwear)。あたまの まんなか が 0,0、半径 1 の 座標。ふくらんだ 3つの まるい ぶぶん と おび */
+function ChefHat() {
   return (
     <>
-      <path d={`M${shoulder[0]} ${shoulder[1]} L${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={COAT_DARK} strokeWidth="5.4" strokeLinecap="round" strokeLinejoin="round" />
-      {knife ? (
-        <Layer x={hand[0]} y={hand[1]} rotate={-pose.fore}>
-          <Knife />
-        </Layer>
-      ) : null}
-      <circle cx={hand[0]} cy={hand[1]} r="2.9" fill={SKIN} />
+      <circle cx="-0.59" cy="-1.59" r="0.52" fill={COAT} />
+      <circle cx="0.59" cy="-1.59" r="0.52" fill={COAT} />
+      <circle cx="0" cy="-1.9" r="0.61" fill={COAT} />
+      <rect x="-0.88" y="-1.35" width="1.76" height="0.7" rx="0.28" fill={COAT} />
+      <path d="M-0.76 -0.78 H0.76" stroke={COAT_DARK} strokeWidth="0.15" strokeLinecap="round" />
     </>
   )
 }
 
-type Mood = 'hungry' | 'happy'
-
-function Face({ mood, drool }: { readonly mood: Mood; readonly drool: number }) {
-  return (
-    <>
-      <circle cx="13.4" cy="49.6" r="1.9" fill="#ff9d9d" opacity="0.55" />
-      {mood === 'hungry' ? (
-        <>
-          {/* まゆ が さがって、かなしそうな 目 */}
-          <path d="M12.6 44.2 l3 -1.2 M17 43 l3 1.2" stroke="#5a3b2a" strokeWidth="1.1" strokeLinecap="round" />
-          <circle cx="14.6" cy="46.4" r="1.15" fill="#2b2b2b" />
-          <circle cx="18.6" cy="46.4" r="1.15" fill="#2b2b2b" />
-          <path d="M15.2 51 Q16.8 49.6 18.4 51" fill="none" stroke="#b9483f" strokeWidth="1.1" strokeLinecap="round" />
-          {/* よだれ */}
-          <path d="M18.4 51.4 Q19.6 53.6 18.4 54.6 Q17.2 53.6 18.4 51.4 Z" fill="#7cc4f2" transform={`translate(0 ${drool * 2.4})`} opacity={1 - drool * 0.5} />
-        </>
-      ) : (
-        <>
-          <path d="M13.2 46.6 Q14.8 44.6 16.4 46.6 M17.4 46.6 Q19 44.6 20.6 46.6" fill="none" stroke="#2b2b2b" strokeWidth="1.2" strokeLinecap="round" />
-          <path d="M14.6 49.4 Q17.4 54.6 20.2 49.4 Z" fill="#b9483f" />
-          <ellipse cx="17.4" cy="51.7" rx="1.7" ry="1" fill="#ff8a8a" />
-        </>
-      )}
-    </>
-  )
-}
-
-type CookProps = {
-  readonly step: number
-  readonly mood: Mood
-  readonly armR: ArmPose
-  readonly armL: ArmPose
-  readonly drool: number
-  readonly belly: number
-}
-
-/** コックさん(主役)。うで は かた から出て ひじ で まがる。あたまには コックぼう。 */
-function Cook({ step, mood, armR, armL, drool, belly }: CookProps) {
-  return (
-    <>
-      {/* ひだりうで(うしろ側) */}
-      <Arm shoulder={SHOULDER_L} pose={armL} knife={false} />
-      <Layer rotate={step * 16} origin={[14.5, 80]}>
-        <rect x="12.4" y="78" width="4.8" height="16" rx="2.2" fill={PANTS} />
-        <ellipse cx="15.6" cy="94.2" rx="4.6" ry="2.4" fill={SHOE} />
-      </Layer>
-      <Layer rotate={-step * 16} origin={[9.5, 80]}>
-        <rect x="6.8" y="78" width="4.8" height="16" rx="2.2" fill={PANTS} />
-        <ellipse cx="10.4" cy="94.2" rx="4.6" ry="2.4" fill={SHOE} />
-      </Layer>
-      {/* くび: どう の 上に みじかく */}
-      <rect x="9.6" y="51" width="5" height="7" rx="2.2" fill={SKIN_SHADE} />
-      <Layer scaleX={1 + belly * 0.05} scaleY={1 + belly * 0.03} origin={[12, 70]}>
-        <rect x="5.5" y="55.5" width="13" height="26" rx="5.4" fill={COAT} />
-        <rect x="5.5" y="76" width="13" height="5.5" rx="2.6" fill={COAT_DARK} />
-        <circle cx="12" cy="62" r="0.9" fill={BUTTON} />
-        <circle cx="12" cy="67" r="0.9" fill={BUTTON} />
-        <circle cx="12" cy="72" r="0.9" fill={BUTTON} />
-      </Layer>
-      {/* みぎうで(ほうちょうを にぎる) */}
-      <Arm shoulder={SHOULDER_R} pose={armR} knife />
-      {/* あたま と コックぼう */}
-      <circle cx="12" cy="45" r="8.5" fill={SKIN} />
-      <Face mood={mood} drool={drool} />
-      <circle cx="7" cy="31.5" r="4.4" fill={COAT} />
-      <circle cx="17" cy="31.5" r="4.4" fill={COAT} />
-      <circle cx="12" cy="28.8" r="5.2" fill={COAT} />
-      <rect x="4.5" y="33.5" width="15" height="6" rx="2.4" fill={COAT} />
-      <path d="M5.4 38.4 H18.6" stroke={COAT_DARK} strokeWidth="1.3" strokeLinecap="round" />
-    </>
-  )
-}
-
-/** おなかが「ぐう」と なる しるし(コックさんの 体の まわり に ふるえる せん) */
-function Rumble({ t }: SceneProps) {
+/** おなかが「ぐう」と なる しるし(コックさんの おなかの まえ に ふるえる せん) */
+function Rumble({ t, at }: { readonly t: number; readonly at: readonly [number, number] }) {
   const show = during(t, STAND - 0.3, RAISE + 0.3, 0.2)
   if (show <= 0) return null
   const w = wave(t, 0.3)
   return (
-    <g opacity={show} fill="none" stroke="#e8a33d" strokeWidth="1" strokeLinecap="round" transform={`translate(${w * 0.5} 0)`}>
-      <path d="M21.6 66 q2.4 2.6 0 5.2" />
-      <path d="M24.2 64.4 q3.4 4.2 0 8.4" />
+    <g opacity={show} fill="none" stroke="#e8a33d" strokeWidth="1" strokeLinecap="round" transform={`translate(${at[0] + w * 0.5} ${at[1]})`}>
+      <path d="M0 0 q2.4 2.6 0 5.2" />
+      <path d="M2.6 -1.6 q3.4 4.2 0 8.4" />
     </g>
   )
+}
+
+/** よだれ(おなかが すいている あいだ だけ。口の よこ から たれる) */
+function Drool({ at, drool }: { readonly at: readonly [number, number]; readonly drool: number }) {
+  return <path d="M0 0 Q1.2 2.2 0 3.2 Q-1.2 2.2 0 0 Z" fill="#7cc4f2" transform={`translate(${at[0]} ${at[1] + drool * 2.4})`} opacity={1 - drool * 0.5} />
 }
 
 /** お肉の ふち(切り分けた かたち)。したに こい色の おびを のこして、かげ に する。 */
@@ -298,38 +218,41 @@ function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 6)
 
   // あるく: 左から お肉の そばまで
-  const walking = span(t, ENTER, ENTER + 0.1) * (1 - span(t, STAND - 0.15, STAND))
-  const stride = Math.sin((t - ENTER) * Math.PI * 2 * 2.2) * walking
-  const walkX = mix(t, ENTER, STAND, -30, 0, easeOut)
+  const w = walk(t, { from: -20, to: COOK.x, start: ENTER, end: STAND, build: COOK.build, height: COOK.height })
   // よろこびの ジャンプ(字になる まえに おさまる)
   const settle = 1 - span(t, INK - 0.5, INK - 0.1)
-  const hop = t > CHEER + 0.3 ? -Math.abs(wave(t - CHEER - 0.3, 0.9)) * 2.6 * settle : 0
-  const bob = -Math.abs(stride) * 1.2 + hop
+  const hop = t > CHEER + 0.3 ? Math.min(Math.abs(wave(t - CHEER - 0.3, 0.9)) * 2.6 * settle, 4) : 0
 
-  // みぎうで: ふりあげる → ざくっ と おろす → ほうちょうを さげる
+  // ほうちょうの うで(むこう がわ から 見て てまえ): ふりあげる → ざくっ と おろす → さげる
   const swing = span(t, RAISE, UP, easeInOut) * (1 - span(t, CHOP, HIT, easeIn))
   const chopped = span(t, CHOP, HIT, easeIn) * (1 - span(t, LOWER, LOWER + 0.6, easeInOut))
-  const armR: ArmPose = { upper: -5 + 140 * swing + 5 * chopped + stride * 8, fore: -15 + 190 * swing + 15 * chopped }
-  // ひだりうで: あるくときは ふり、よろこぶときは ばんざい
+  const knifeArm: ArmPose = { upper: 4 + 131 * swing + 5 * chopped, fore: 12 + 178 * swing + 15 * chopped }
+  const near: Limb = t < RAISE ? (w.pose.leftArm ?? HANG_ARM) : armLimb(knifeArm)
+  // もう 1本の うで: あるくときは ふり、よろこぶときは ばんざい
   const cheer = span(t, CHEER, CHEER + 0.5, backOut)
-  const armL: ArmPose = { upper: 355 - stride * 8 + (195 - 355) * cheer, fore: 345 + (185 - 345) * cheer }
+  const far: Limb = cheer > 0 ? mixLimb(w.pose.rightArm ?? HANG_ARM, { swing: 170, bend: 8 }, cheer) : (w.pose.rightArm ?? HANG_ARM)
 
-  const mood: Mood = t < HIT + 0.1 ? 'hungry' : 'happy'
+  const mood: 'hungry' | 'happy' = t < HIT + 0.1 ? 'hungry' : 'happy'
+  const face: Expression = mood === 'hungry' ? 'worried' : 'joy'
   const drool = (t * 1.2) % 1
-  const belly = t >= STAND - 0.3 && t < RAISE + 0.3 ? wave(t, 0.3) : 0
+
+  const cook = { ...w, y: COOK.y, lift: hop, pose: { ...w.pose, leftArm: near, rightArm: far } } as const
+  const rig = personRig(cook)
+  const knife = <Knife hand={rig.world.arms.left.end} elbow={rig.world.arms.left.mid} />
+  const mouth: readonly [number, number] = [rig.world.head[0] + rig.body.headR * rig.scale * 0.62, rig.world.head[1] + rig.body.headR * rig.scale * 0.62]
+  const belly: readonly [number, number] = [rig.world.pelvis[0] + 7, rig.world.pelvis[1] - 10]
 
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Floor t={t} />
+        <Room floor={FLOOR_Y} window={null} wall={WALL} floorColor={FLOOR} />
+        <Rail t={t} />
         <Meat t={t} />
         <Shine t={t} />
         <Layer opacity={span(t, ENTER - 0.1, ENTER + 0.15)}>
-          <ellipse cx={14 + walkX} cy="95.6" rx="9" ry="2.1" fill="#000000" opacity={0.12 + hop * 0.02} />
-          <Layer x={walkX + 2} y={Math.max(Math.min(bob, 0), -4)}>
-            <Cook step={stride} mood={mood} armR={armR} armL={armL} drool={drool} belly={belly} />
-            <Rumble t={t} />
-          </Layer>
+          <Person {...cook} look={COOK_LOOK} face={face} headwear={<ChefHat />} held={knife} />
+          {mood === 'hungry' && t >= STAND && <Drool at={mouth} drool={drool} />}
+          <Rumble t={t} at={belly} />
         </Layer>
         <Slash t={t} />
       </Layer>

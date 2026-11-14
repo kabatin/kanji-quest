@@ -1,12 +1,12 @@
 /*
- * 歌(うた): 口を 大きく あけて 歌う。「カ」の おと。
+ * 歌(うた): 口を 大きく あけて 歌う。「カ」の おと。(共通部品 sceneFigures で 書きなおした もの)
  *
  * ほね(画と絵の対応)
  *   1・6画目(一)   … 木の ポールの 2本の よこぼう(うえ と まんなか)
  *   2〜4画目・7〜9画目(口) … よこぼう から さがった 2まいの「おと の ふだ」(左がわ)
  *   5・10画目(丨)  … ポール(たて)。下の 先は ひっかけた かたち の あし
  *   11画目(ノ)     … こどもの 立てた かみ から、むねに あてた 手 の あたり(かた〜まえ)
- *   12画目(一+フ)  … こどもの 右がわに ひろげた うで(かた → ひじ → 手)
+ *   12画目(一+フ)  … こどもの まえへ ひらいた うで(かた → ひじ → 手)。だいたい 同じ 場所・向き
  *   13画目(ノ)     … こどもの どう と、まえに ひらいた あし
  *   14画目(\)      … うしろに ひらいた あし
  *
@@ -14,46 +14,31 @@
  *   ポールが たつ → もじもじした こどもが でてくる(歌いたいのに ちょっと はずかしい)
  *   → すーっと いきを すって、足を ひらく → 口を 大きく あけて「あー!」と 歌う
  *   → 口から でた おんぷが ポールへ とんでいき、ぽん と「おと の ふだ」に なる(2まい)
- *   → こどもは にこにこ。うでを ひろげて 歌いきる → ほね が ひかって、絵が うすくなり、字「歌」が のこる
+ *   → こどもは にこにこ。うでを ひらいて 歌いきる → ほね が ひかって、絵が うすくなり、字「歌」が のこる
  *
- * 人は、ほんものの つくり を守る(字の形に合わせるために、体を ゆがめない):
- *   うで は かた から出て ひじ で まがる。あし は こし から。くび は みじかく どう の まんなか の上。
- *   足を ひらくと、こし が すこし 下がる(あしの 長さは かわらない)。
- *   字の画とは、だいたい 同じ場所・同じ むき に なる だけ(ぴったりには あわせない)。
+ * 子は Person(左むき)。足を ひらくのは 足の swing、むねに あてる 手は { to }。
+ * 人の うで は うしろへ そんなに ひらかないので、ひらく うで は まえ(ポールの ほう)へ のばす。
+ * 画との 重なりは 弱く なっても、体の つくり を まもる。
  */
-import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeIn, easeInOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Backdrop, HANG_ARM, LOOKS, mixLimb, PALETTE, Person, personRig, type PersonProps } from '../sceneFigures'
 
 const CHAR = '歌'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const TOP = '#ef8a4b'
-const TOP_DARK = '#d96f35'
-const TOP_FAR = '#c9622d'
-const PANTS = '#3e5c86'
-const PANTS_DARK = '#34507a'
-const SHOE = '#6b4a36'
-const BARK = '#8c5b3c'
-const BARK_DARK = '#70452b'
-const LEAF = '#55b86e'
-const SUN = '#ffd24a'
-const GRASS = '#c5e8a9'
+const BARK = PALETTE.bark
+const BARK_DARK = PALETTE.barkDark
 const BOARD = '#d9a35f'
 const BOARD_DARK = '#c08840'
 const PAPER = '#fffaf0'
 const PINK = '#f07f9e'
 const BLUE = '#5f7fd6'
-const MOUTH = '#b9483f'
-const CHEEK = '#ff9d9d'
-const EYE = '#2b2b2b'
 
 /** くぎり の時間(秒) */
 const KID_IN = 0.5
 const BREATH = 1.4
 const SING = 2.3
-/** 1つめ・2つめの おんぷ が とびだして、ふだ に とどく時間 */
+/** 1つめ・2つめ・3つめ の おんぷ が とびだして、ふだ に とどく時間 */
 const NOTE1: readonly [number, number] = [2.5, 3.7]
 const NOTE2: readonly [number, number] = [3.4, 4.7]
 const NOTE3: readonly [number, number] = [4.1, 5.5]
@@ -61,47 +46,17 @@ const INK = 6.2
 const DONE = 9.6
 const DURATION = 10.4
 
-/** 足の つき方。足の長さは いつも同じ。ひらくと こし が下がる */
-const LEG_LEN = 32.7
+/** 子の 場所(こし の x と 足もと)・背の高さ */
+const KID_X = 72
 const FOOT_Y = 91.5
-/** 足を ひらいたときの かくど(ま下から) */
-const SPREAD_DEG = 23.4
-const REST_DEG = 2
-const HIP_FINAL_Y = FOOT_Y - LEG_LEN * Math.cos((SPREAD_DEG * Math.PI) / 180)
-const FRONT_HIP_X = 65
-const BACK_HIP_X = 70
+const KID_HEIGHT = 70
+/** 足を ひらいた ときの かくど(ま下から)。ひらくと こし は 部品が 下げる */
+const SPREAD_DEG = 22
 
 /** おんぷの ふだ(左がわ)。ふだの 中心と、ぶらさげる よこぼうの 高さ */
 type BoardSpec = { readonly x: number; readonly y: number; readonly w: number; readonly h: number; readonly ropeX: number; readonly barY: number }
 const BOARD_1: BoardSpec = { x: 17, y: 32, w: 16, h: 12, ropeX: 25, barY: 21.5 }
 const BOARD_2: BoardSpec = { x: 14.5, y: 64, w: 17.5, h: 12.5, ropeX: 23.2, barY: 54.5 }
-/** 口から おんぷが でる ところ(あたまの 左がわ) */
-const MOUTH_POS: readonly [number, number] = [59, 28.5]
-
-const rad = (deg: number) => (deg * Math.PI) / 180
-
-function Ground({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
-  return (
-    <>
-      <Layer opacity={sun} rotate={t * 14} origin={[9, 9]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="8.3" y="0.8" width="1.5" height="3.2" rx="0.75" fill={SUN} transform={`rotate(${i * 45} 9 9)`} />
-        ))}
-      </Layer>
-      <circle cx="9" cy="9" r={Math.max(0, 4.6 * sun)} fill={SUN} />
-      <path d="M-4 99 Q18 78 44 92 Q72 72 113 94 V101 H-4 Z" fill="#e2f2d2" />
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.4} 0)`}>
-        <ellipse cx="92" cy="9" rx="7" ry="3" />
-        <ellipse cx="97" cy="7.4" rx="4.6" ry="3" />
-      </g>
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.4" fill={GRASS} />
-      {[6, 30, 78, 102].map((x) => (
-        <path key={x} d={`M${x} 97.5 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
-    </>
-  )
-}
 
 /** おと の ふだ を ぶらさげる ポール。ほんものの 木の ポールと よこぼう */
 function Pole({ t }: SceneProps) {
@@ -154,8 +109,10 @@ function SongBoard({ spec, pop, swing, color }: { readonly spec: BoardSpec; read
   )
 }
 
+type Pt = readonly [number, number]
+
 /** くちから ふだ へ とぶ おんぷ。ゆるい 山なり で とんで、とどくと きえる */
-function FlyingNote({ t, window, from, to, lift, color }: { readonly t: number; readonly window: readonly [number, number]; readonly from: readonly [number, number]; readonly to: readonly [number, number]; readonly lift: number; readonly color: string }) {
+function FlyingNote({ t, window, from, to, lift, color }: { readonly t: number; readonly window: readonly [number, number]; readonly from: Pt; readonly to: Pt; readonly lift: number; readonly color: string }) {
   const p = span(t, window[0], window[1])
   if (p <= 0 || p >= 1) return null
   const x = from[0] + (to[0] - from[0]) * easeInOut(p)
@@ -168,7 +125,7 @@ function FlyingNote({ t, window, from, to, lift, color }: { readonly t: number; 
   )
 }
 
-/** 2つめの おんぷ が とどいた ときの きらり */
+/** おんぷ が とどいた ときの きらり */
 function Twinkle({ t, at, cx, cy }: { readonly t: number; readonly at: number; readonly cx: number; readonly cy: number }) {
   const p = span(t, at, at + 0.5)
   if (p <= 0 || p >= 1) return null
@@ -180,135 +137,64 @@ function Twinkle({ t, at, cx, cy }: { readonly t: number; readonly at: number; r
 }
 
 /** 口から ひろがる おと の なみ */
-function SoundRings({ t }: SceneProps) {
+function SoundRings({ t, mouth }: { readonly t: number; readonly mouth: Pt }) {
   const show = during(t, SING, SING + 1.0, 0.1)
   if (show <= 0) return null
   return (
     <g fill="none" stroke="#f3a6bb" strokeWidth="1.1" strokeLinecap="round" opacity={show}>
       {[0, 0.25, 0.5].map((offset) => {
         const p = span(t, SING + offset, SING + offset + 0.6)
-        return <path key={offset} d="M0 -3.2 Q-2.6 0 0 3.2" transform={`translate(${MOUTH_POS[0] - 3 - p * 6} ${MOUTH_POS[1] - 1})`} opacity={Math.sin(p * Math.PI)} />
+        return <path key={offset} d="M0 -3.2 Q-2.6 0 0 3.2" transform={`translate(${mouth[0] - 3 - p * 6} ${mouth[1] - 1})`} opacity={Math.sin(p * Math.PI)} />
       })}
     </g>
   )
 }
 
-type Mood = 'shy' | 'breath' | 'sing'
+/** 1画目 の 書きはじめ に あたる、あたまの てっぺんの 立った かみ(あたまの まんなか が 0,0、半径 1。右むき の 形) */
+const TUFT = <path d="M0.3 -0.86 Q0.38 -1.2 0.58 -1.02 Q0.72 -1.3 0.84 -0.98" fill="none" stroke={PALETTE.hair} strokeWidth="0.2" strokeLinecap="round" strokeLinejoin="round" />
 
-/** うで: かた → ひじ → 手 。かくど は ま下から、+ が 右(x が ふえる ほう) */
-function Arm({ shoulder, upperLen, foreLen, upper, fore, color }: { readonly shoulder: readonly [number, number]; readonly upperLen: number; readonly foreLen: number; readonly upper: number; readonly fore: number; readonly color: string }) {
-  const elbowX = shoulder[0] + Math.sin(rad(upper)) * upperLen
-  const elbowY = shoulder[1] + Math.cos(rad(upper)) * upperLen
-  const handX = elbowX + Math.sin(rad(fore)) * foreLen
-  const handY = elbowY + Math.cos(rad(fore)) * foreLen
-  return (
-    <>
-      <path d={`M${shoulder[0]} ${shoulder[1]} L${elbowX} ${elbowY} L${handX} ${handY}`} fill="none" stroke={color} strokeWidth="5.4" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={handX} cy={handY} r="3.2" fill={SKIN} />
-    </>
-  )
-}
-
-function Face({ mood, open }: { readonly mood: Mood; readonly open: number }) {
-  const mouthRx = Math.max(0, 1.3 + 1.4 * open)
-  const mouthRy = Math.max(0, 0.6 + 2.6 * open)
-  return (
-    <>
-      <circle cx="68" cy="24" r="9.5" fill={SKIN} />
-      <circle cx="76.2" cy="25.6" r="2.2" fill={SKIN_SHADE} />
-      <path d="M58.6 22 C58 13 66 10.5 72 12.5 C77.5 14.5 78.4 20 77.6 24 C75.5 19.5 71 17.6 66 18 C62.5 18.3 60 19.8 58.6 22 Z" fill={HAIR} />
-      {/* 立った かみ(11画目の はじまり の あたり) */}
-      <path d="M64.6 15 Q65.2 11.8 67 13.2 Q68.4 10.6 69.4 13.6" fill="none" stroke={HAIR} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="61.8" cy="28" r={mood === 'breath' ? 2.9 : 2.1} fill={CHEEK} opacity="0.6" />
-      {mood === 'shy' && (
-        <>
-          <path d="M60.6 21.4 L64.2 19.8 M69 19.8 L72.6 21.4" stroke={HAIR} strokeWidth="1.1" strokeLinecap="round" />
-          <circle cx="62.8" cy="24" r="1.25" fill={EYE} />
-          <circle cx="70.4" cy="24" r="1.25" fill={EYE} />
-          <path d="M62.4 30.4 q1.6 -0.9 3.2 0" fill="none" stroke={MOUTH} strokeWidth="1.1" strokeLinecap="round" />
-        </>
-      )}
-      {mood === 'breath' && (
-        <>
-          <path d="M61.2 23.4 h3.4 M69 23.4 h3.4" stroke={EYE} strokeWidth="1.2" strokeLinecap="round" />
-          <ellipse cx="63.4" cy="29.4" rx="1.3" ry="1.5" fill={MOUTH} />
-        </>
-      )}
-      {mood === 'sing' && (
-        <>
-          <path d="M61.2 23.4 Q62.9 21 64.6 23.4 M68.8 23.4 Q70.5 21 72.2 23.4" fill="none" stroke={EYE} strokeWidth="1.25" strokeLinecap="round" />
-          <ellipse cx="63.8" cy="28.8" rx={mouthRx} ry={mouthRy} fill={MOUTH} />
-          <ellipse cx="63.8" cy={28.8 + mouthRy * 0.45} rx={mouthRx * 0.6} ry={mouthRy * 0.42} fill="#ff8a8a" />
-        </>
-      )}
-    </>
-  )
-}
-
-type KidProps = {
-  /** 足の ひらき 0(そろえる)〜 1(ひらく) */
-  readonly stance: number
-  readonly mood: Mood
-  readonly open: number
-  readonly breath: number
-  readonly headTilt: number
-  /** てまえの うで(むねに あてる 度合い)・うしろの うで(ひろげる 度合い) */
-  readonly chest: number
-  readonly reach: number
-  readonly sway: number
-}
-
-function Kid({ stance, mood, open, breath, headTilt, chest, reach, sway }: KidProps) {
-  const spread = REST_DEG + (SPREAD_DEG - REST_DEG) * stance
-  const hipY = FOOT_Y - LEG_LEN * Math.cos(rad(spread))
-  const drop = hipY - HIP_FINAL_Y
-  const legDx = Math.sin(rad(spread)) * LEG_LEN
-  // ほんもの の 人 のように、てまえの うで は むねへ、うしろの うで は よこへ ひろげる
-  const front = { upper: mix(chest, 0, 1, -4, -30.5, (x) => x), fore: mix(chest, 0, 1, 2, 123.7, (x) => x) }
-  const back = { upper: mix(reach, 0, 1, 6, 116.6, (x) => x) + sway * 3, fore: mix(reach, 0, 1, 4, 36.9, (x) => x) - sway * 4 }
-  return (
-    <>
-      {/* うしろの うで: どう の うしろ */}
-      <Layer y={drop}>
-        <Arm shoulder={[72, 41]} upperLen={12} foreLen={10} upper={back.upper} fore={back.fore} color={TOP_FAR} />
-      </Layer>
-      {/* あし: こし から まっすぐ のびる(ひらくと こし が さがる) */}
-      <path d={`M${BACK_HIP_X} ${hipY} L${BACK_HIP_X + legDx} ${FOOT_Y}`} stroke={PANTS_DARK} strokeWidth="6.2" strokeLinecap="round" />
-      <ellipse cx={BACK_HIP_X + legDx - 1.2} cy={FOOT_Y + 1.1} rx="5" ry="2.6" fill={SHOE} />
-      <path d={`M${FRONT_HIP_X} ${hipY} L${FRONT_HIP_X - legDx} ${FOOT_Y}`} stroke={PANTS} strokeWidth="6.2" strokeLinecap="round" />
-      <ellipse cx={FRONT_HIP_X - legDx - 1.6} cy={FOOT_Y + 1.1} rx="5" ry="2.6" fill={SHOE} />
-      <Layer y={drop}>
-        {/* くび: どう の まんなか の上 に、みじかく */}
-        <rect x="65.5" y="31" width="5" height="7" rx="2.2" fill={SKIN_SHADE} />
-        <Layer scale={1 + breath * 0.07} origin={[68, 60]}>
-          <rect x="61.5" y="36.5" width="13" height="25" rx="6.2" fill={TOP} />
-          <path d="M63.4 56 h9.2" stroke={TOP_DARK} strokeWidth="1.5" strokeLinecap="round" />
-        </Layer>
-        <Layer rotate={headTilt} origin={[68, 34]}>
-          <Face mood={mood} open={open} />
-        </Layer>
-        {/* てまえの うで: どう の まえ */}
-        <Arm shoulder={[64.5, 41]} upperLen={10} foreLen={9} upper={front.upper} fore={front.fore} color={TOP_DARK} />
-      </Layer>
-    </>
-  )
+/** 子の 場所と かっこう(左むき)。足を ひらき、むねに 手を あて、まえへ うでを ひらいて 歌う */
+function kidAt(t: number): PersonProps {
+  const stance = span(t, BREATH, BREATH + 0.9, easeInOut)
+  const chest = span(t, BREATH - 0.1, BREATH + 0.7, easeInOut)
+  const reach = span(t, SING + 0.4, SING + 1.1, backOut)
+  const singing = t >= SING
+  const settle = 1 - span(t, 5.0, 5.4)
+  const sway = singing ? wave(t, 1.1) * settle : 0
+  const spread = 2 + (SPREAD_DEG - 2) * stance
+  // てまえの うで(右)は むねへ。むねの 高さ は 背の 5.6わり、まえ は こし から 少し
+  const chestHand: Pt = [KID_X - 5, FOOT_Y - KID_HEIGHT * 0.56]
+  const openArm = { swing: 36 + sway * 4, bend: 12 }
+  const face = singing ? (t < DONE - 3.2 ? 'joy' : 'smile') : t >= BREATH + 0.2 ? 'closed' : 'worried'
+  return {
+    x: KID_X + sway * 0.5,
+    y: FOOT_Y,
+    build: 'child',
+    height: KID_HEIGHT,
+    facing: 'left',
+    look: LOOKS.boy,
+    face,
+    opacity: span(t, KID_IN, KID_IN + 0.3),
+    headwear: TUFT,
+    pose: {
+      leftLeg: { swing: -spread, bend: 0 },
+      rightLeg: { swing: spread, bend: 0 },
+      rightArm: mixLimb(HANG_ARM, { to: chestHand }, chest),
+      leftArm: mixLimb(HANG_ARM, openArm, reach),
+      head: mix(t, BREATH, SING, 8, -10) + (singing ? wave(t, 1.4) * 2 * settle : 0),
+    },
+  }
 }
 
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 14)
-
-  const kidIn = span(t, KID_IN, KID_IN + 0.5, backOut)
-  const stance = span(t, BREATH, BREATH + 0.9, easeInOut)
-  const chest = span(t, BREATH - 0.1, BREATH + 0.7, easeInOut)
-  const reach = span(t, SING + 0.4, SING + 1.1, backOut)
-  const inhale = span(t, BREATH, SING - 0.05, easeInOut) * (1 - span(t, SING - 0.05, SING + 0.25))
-  const singing = t >= SING
-  const mood: Mood = singing ? 'sing' : t >= BREATH + 0.2 ? 'breath' : 'shy'
-  const settle = 1 - span(t, 5.0, 5.4)
-  const open = singing ? span(t, SING, SING + 0.25, backOut) * (0.78 + 0.22 * Math.abs(wave(t, 0.7)) * settle + 0.22 * (1 - settle)) : 0
-  const headTilt = mix(t, BREATH, SING, -5, 9) + (singing ? wave(t, 1.4) * 2 * settle : 0)
-  const sway = singing ? wave(t, 1.1) * settle : 0
+  const kid = kidAt(t)
+  const rig = personRig(kid)
+  const headR = rig.body.headR * rig.scale
+  // 口: あたまの 左がわ(まえ)、中心 より 少し 下
+  const mouth: Pt = [rig.world.head[0] - headR * 0.95, rig.world.head[1] + headR * 0.3]
   const bump = Math.sin(span(t, DONE - 0.9, DONE - 0.45) * Math.PI) * 0.06
+  const kidIn = span(t, KID_IN, KID_IN + 0.5, backOut)
 
   const pop1 = span(t, NOTE1[1], NOTE1[1] + 0.5, backOut)
   const pop2 = span(t, NOTE2[1], NOTE2[1] + 0.5, backOut)
@@ -318,18 +204,17 @@ function Scene({ t }: SceneProps) {
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Ground t={t} />
+        <Backdrop t={t} sun={[9, 9]} clouds={[[94, 9, 0.9]]} tufts={[6, 30, 78, 102]} />
         <Pole t={t} />
         <SongBoard spec={BOARD_1} pop={pop1} swing={swing1} color={PINK} />
         <SongBoard spec={BOARD_2} pop={pop2} swing={swing2} color={BLUE} />
-        <Layer opacity={kidIn} scale={kidIn} origin={[68, 94]} x={sway * 0.5}>
-          <ellipse cx="68" cy="97.2" rx={11 + 6 * stance} ry="2.4" fill="#000000" opacity="0.12" />
-          <Kid stance={stance} mood={mood} open={open} breath={inhale + (singing ? 0.4 * Math.abs(wave(t, 0.7)) * settle : 0)} headTilt={headTilt} chest={chest} reach={reach} sway={sway} />
+        <Layer scale={0.85 + 0.15 * kidIn} origin={[KID_X, FOOT_Y]}>
+          <Person {...kid} />
         </Layer>
-        <SoundRings t={t} />
-        <FlyingNote t={t} window={NOTE1} from={MOUTH_POS} to={[25, 38]} lift={22} color={PINK} />
-        <FlyingNote t={t} window={NOTE2} from={MOUTH_POS} to={[23, 70]} lift={30} color={BLUE} />
-        <FlyingNote t={t} window={NOTE3} from={MOUTH_POS} to={[34, 7]} lift={6} color="#f3a74a" />
+        <SoundRings t={t} mouth={mouth} />
+        <FlyingNote t={t} window={NOTE1} from={mouth} to={[25, 38]} lift={22} color={PINK} />
+        <FlyingNote t={t} window={NOTE2} from={mouth} to={[23, 70]} lift={30} color={BLUE} />
+        <FlyingNote t={t} window={NOTE3} from={mouth} to={[34, 7]} lift={6} color="#f3a74a" />
         <Twinkle t={t} at={NOTE1[1]} cx={BOARD_1.x + BOARD_1.w - 1} cy={BOARD_1.y - 1} />
         <Twinkle t={t} at={NOTE2[1]} cx={BOARD_2.x + BOARD_2.w - 1} cy={BOARD_2.y - 1} />
       </Layer>

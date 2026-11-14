@@ -17,24 +17,21 @@
  *      うたに 合わせて ばんざい(音)
  *   → ほね が ひかって、絵が うすくなり、字「野」が のこる
  *
- * 子どもは、ほんものの人の つくり を守る(字の形に合わせるために、体を ゆがめない):
- *   うで は かた から出て ひじ で まがる。くび は みじかく、どう の まんなか の上。
+ * 子どもは 共通部品 Person(あるきは walk()。字の形に合わせるために、体を ゆがめない):
+ *   うで は かた から出て ひじ で まがる。ばんざい は うでを ま上に近く あげる。
  *   かかしは、ぼう と よこぼう に ふく を かけて 立てた ほんものの かかし。
  */
-import { backOut, during, easeOut, inkTiming, linear, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Bird, LOOKS, mixLimb, Person, personRig, Sun, walk, type Expression, type Limb, type PersonPose } from '../sceneFigures'
 
 const CHAR = '野'
 
 const SKIN = '#f8cfa6'
-const HAIR = '#5a3b2a'
-const TUNIC = '#f2a64a'
-const TUNIC_DARK = '#dd8f33'
-const TUNIC_FAR = '#c27a2a'
-const PANTS = '#4d6aa0'
-const PANTS_DARK = '#3e5886'
-const SHOE = '#6b4a36'
 const MOUTH = '#b9483f'
+/** 子ども: おれんじ いろの 服・青い ズボン */
+const KID_LOOK = { ...LOOKS.boy, top: '#f2a64a', bottom: '#4d6aa0' } as const
+const KID_HEIGHT = 38
 const BANK = '#a8754f'
 const WOOD = '#8c5b3c'
 const SOIL = '#c79a6e'
@@ -46,7 +43,6 @@ const GRASS = '#c5e8a9'
 const MEADOW = '#a8dd86'
 const HILL = '#d6efbd'
 const LEAF = '#55b86e'
-const SUN = '#ffd24a'
 const STRAW = '#e8c35a'
 const STRAW_DARK = '#d1a63a'
 const SHIRT = '#d8564f'
@@ -86,16 +82,9 @@ function Sprout({ x, y, size = 1, color = RICE }: { readonly x: number; readonly
 
 /** そら・お日さま・とおくの おか。野原が ひろがると おかも 出てくる。 */
 function Backdrop({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
   const hill = span(t, LOOK - 0.1, WALK_OUT - 0.2, easeOut)
   return (
     <>
-      <Layer opacity={sun} rotate={t * 14} origin={[8, 9]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="7.2" y="1.8" width="1.6" height="2.6" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 8 9)`} />
-        ))}
-      </Layer>
-      <circle cx="8" cy="9" r={4.2 * sun} fill={SUN} />
       <Layer scaleY={hill} origin={[80, 96]}>
         <path d="M46 96 Q64 74 84 84 Q98 74 114 88 V97 H46 Z" fill={HILL} />
       </Layer>
@@ -245,29 +234,6 @@ function Scarecrow({ t }: SceneProps) {
   )
 }
 
-/** かかしの ぼうしに とまって うたう 小鳥(音)。 */
-function Bird({ t }: SceneProps) {
-  const arrive = span(t, WALK_OUT - 0.2, SING + 0.6, easeOut)
-  if (arrive <= 0) return null
-  const x = 124 + (PERCH[0] - 124) * arrive
-  const y = -6 + (PERCH[1] + 6) * arrive - Math.sin(arrive * Math.PI) * 6
-  const landed = arrive >= 1
-  const sing = landed ? Math.max(0, wave(t, 0.5)) * 0.8 : 0
-  const flap = landed ? 0 : wave(t, 0.16) * 28
-  return (
-    <Layer x={x} y={y - sing}>
-      <path d="M2.6 0.4 l4.6 -1.6 l-3.4 3.2 Z" fill="#e2733f" />
-      <ellipse cx="0" cy="0" rx="3.8" ry="3" fill="#ff9a5c" />
-      <circle cx="-3" cy="-2.3" r="2.3" fill="#ff9a5c" />
-      <path d="M-5 -2.4 l-2.4 0.7 l2.3 0.9 Z" fill="#f2b632" />
-      <circle cx="-3.6" cy="-2.8" r="0.55" fill="#2b2b2b" />
-      <path d="M-1 3 v1.2 M1 3 v1.2" stroke="#e2733f" strokeWidth="0.6" strokeLinecap="round" />
-      <Layer rotate={flap} origin={[0.4, -0.6]}>
-        <path d="M-1.2 -0.8 Q1.6 -3.8 4 -0.6 Q1.6 0.8 -1.2 -0.8 Z" fill="#e2733f" />
-      </Layer>
-    </Layer>
-  )
-}
 
 /** 小鳥の うたう おんぷ。右上へ ふわっと のぼる。 */
 function Notes({ t }: SceneProps) {
@@ -290,82 +256,6 @@ function Notes({ t }: SceneProps) {
   )
 }
 
-type Mood = 'plain' | 'smile' | 'surprised' | 'cheer'
-
-/** うで の かっこう。swing = ま下から まえへ ふった角度 / bend = ひじ の まがり(まえへ) */
-type ArmPose = { readonly swing: number; readonly bend: number }
-
-/** 子どもの かた(うで の つけね) */
-const SHOULDER: readonly [number, number] = [0, -23]
-const ARM_PART = 7
-
-/** かた から出て、ひじ で まがる うで。かた・ひじ・手 の じゅんに つながる。 */
-function Arm({ pose, color }: { readonly pose: ArmPose; readonly color: string }) {
-  const rad = (deg: number) => (deg * Math.PI) / 180
-  // 体は 右むき。まえ = 右(x が ふえる ほう)
-  const elbow = [SHOULDER[0] + Math.sin(rad(pose.swing)) * ARM_PART, SHOULDER[1] + Math.cos(rad(pose.swing)) * ARM_PART] as const
-  const fore = pose.swing + pose.bend
-  const hand = [elbow[0] + Math.sin(rad(fore)) * ARM_PART, elbow[1] + Math.cos(rad(fore)) * ARM_PART] as const
-  return (
-    <>
-      <path d={`M${SHOULDER[0]} ${SHOULDER[1]} L${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={color} strokeWidth="4.4" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hand[0]} cy={hand[1]} r="2.6" fill={SKIN} />
-    </>
-  )
-}
-
-type KidProps = {
-  readonly step: number
-  readonly mood: Mood
-  readonly nearArm: ArmPose
-  readonly farArm: ArmPose
-  readonly headTilt: number
-}
-
-/** 主役の 子ども。足もとが (0, 0)、右むき。せいたけ 38 ほど。 */
-function Kid({ step, mood, nearArm, farArm, headTilt }: KidProps) {
-  return (
-    <>
-      <Arm pose={farArm} color={TUNIC_FAR} />
-      {/* あし: こし から、かわりばんこに ふる */}
-      <Layer rotate={step * 20} origin={[0.6, -12]}>
-        <rect x="-1.4" y="-13" width="4.2" height="12" rx="2.1" fill={PANTS_DARK} />
-        <ellipse cx="1.4" cy="-0.8" rx="3.4" ry="1.8" fill={SHOE} />
-      </Layer>
-      <Layer rotate={-step * 20} origin={[-0.6, -12]}>
-        <rect x="-2.8" y="-13" width="4.2" height="12" rx="2.1" fill={PANTS} />
-        <ellipse cx="-0.4" cy="-0.8" rx="3.4" ry="1.8" fill={SHOE} />
-      </Layer>
-      <rect x="-1.7" y="-28" width="3.4" height="5" rx="1.6" fill="#eeb98a" />
-      <rect x="-5.2" y="-26" width="10.4" height="15.4" rx="5" fill={TUNIC} />
-      <path d="M-3.6 -15.4 h7.4" stroke={TUNIC_DARK} strokeWidth="1.2" strokeLinecap="round" />
-      <Arm pose={nearArm} color={TUNIC_DARK} />
-      <Layer rotate={headTilt} origin={[0, -27]}>
-        <circle cx="0.6" cy="-33" r="6.8" fill={SKIN} />
-        <path d="M-6.2 -32 C-7.4 -40.8 3 -42 7.2 -36.4 C4 -37.8 -0.6 -36.8 -2.2 -32.6 C-3.2 -31.6 -5 -31.4 -6.2 -32 Z" fill={HAIR} />
-        <circle cx="2.4" cy="-30" r="1.6" fill="#ff9d9d" opacity="0.55" />
-        {mood === 'cheer' ? (
-          <>
-            <path d="M2.6 -33.4 Q4 -35.2 5.4 -33.4" fill="none" stroke="#2b2b2b" strokeWidth="1.05" strokeLinecap="round" />
-            <path d="M2.8 -30 Q4.6 -26.6 6.6 -30 Z" fill={MOUTH} />
-          </>
-        ) : mood === 'surprised' ? (
-          <>
-            <circle cx="4" cy="-33" r="1.5" fill="#2b2b2b" />
-            <circle cx="4.4" cy="-33.5" r="0.45" fill="#ffffff" />
-            <ellipse cx="5.2" cy="-28.8" rx="1.1" ry="1.5" fill={MOUTH} />
-          </>
-        ) : (
-          <>
-            <circle cx="4" cy="-33" r="1.05" fill="#2b2b2b" />
-            {mood === 'smile' ? <path d="M3 -29.8 Q4.6 -28 6.4 -29.8" fill="none" stroke={MOUTH} strokeWidth="1.05" strokeLinecap="round" /> : <path d="M3.4 -29.4 h2.6" stroke={MOUTH} strokeWidth="1" strokeLinecap="round" />}
-          </>
-        )}
-      </Layer>
-    </>
-  )
-}
-
 /** 「あっ!」の しるし。あたまの 上に ぴょんと 出る。 */
 function Surprise({ t, x, y }: SceneProps & { readonly x: number; readonly y: number }) {
   const show = during(t, SURPRISE, SING + 0.1, 0.12)
@@ -379,32 +269,42 @@ function Surprise({ t, x, y }: SceneProps & { readonly x: number; readonly y: nu
   )
 }
 
+
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 11)
 
-  // あるく: さとに 入り、たんぼを ながめて、野原へ むかう
-  const kidX = t < STOP_AT ? mix(t, WALK_IN, STOP_AT, -14, 16, linear) : mix(t, LOOK, WALK_OUT, 16, 50, linear)
-  const walkIn = span(t, WALK_IN, WALK_IN + 0.1) * (1 - span(t, STOP_AT - 0.15, STOP_AT))
-  const walkOut = span(t, LOOK, LOOK + 0.1) * (1 - span(t, WALK_OUT - 0.15, WALK_OUT))
-  const moving = Math.max(walkIn, walkOut)
-  const stride = Math.sin(kidX * 0.3) * moving
+  // あるく: さとに 入り、たんぼを ながめて、野原へ むかう(2回に わけて walk)
+  const plan = { build: 'child', height: KID_HEIGHT, step: KID_HEIGHT * 0.34 } as const
+  const w = t < LOOK ? walk(t, { from: -14, to: 16, start: WALK_IN, end: STOP_AT, ...plan }) : walk(t, { from: 16, to: 50, start: LOOK, end: WALK_OUT, ...plan })
   const hop = t >= CHEER ? Math.abs(Math.sin(span(t, CHEER, CHEER + 1.1) * Math.PI * 2)) * 4 * (1 - span(t, CHEER + 0.9, CHEER + 1.1)) : 0
-  const bob = -Math.abs(stride) * 1.1 - hop
 
-  const mood: Mood = t < STOP_AT ? 'plain' : t < SURPRISE ? 'smile' : t < CHEER ? 'surprised' : 'cheer'
+  const face: Expression = t < STOP_AT ? 'normal' : t < SURPRISE ? 'smile' : t < CHEER ? 'surprised' : 'joy'
   // たんぼを 見あげて うなずく(立ち止まっている間)
   const lookUp = during(t, STOP_AT, LOOK, 0.2) * (-7 + wave(t, 0.6) * 2)
   const cheer = span(t, CHEER, CHEER + 0.3, easeOut)
-  // うで: あるくときは 足と ぎゃくに ふる。ばんざい では 上へ あげる
-  const swing = stride * 26
-  const nearArm: ArmPose = { swing: (4 + swing) * (1 - cheer) + 136 * cheer, bend: 10 + 12 * cheer }
-  const farArm: ArmPose = { swing: (4 - swing) * (1 - cheer) + 128 * cheer, bend: 10 + 12 * cheer }
+  // うで: あるくときは 足と ぎゃくに ふる(walk)。ばんざい では 上へ あげる
+  const hang: Limb = { swing: 4, bend: 10 }
+  const pose: PersonPose = {
+    ...w.pose,
+    leftArm: mixLimb(w.pose.leftArm ?? hang, { swing: 162, bend: 8 }, cheer),
+    rightArm: mixLimb(w.pose.rightArm ?? hang, { swing: 152, bend: 8 }, cheer),
+    head: lookUp + (face === 'joy' ? -4 : 0),
+  }
+  const kid = { ...w, y: GROUND_Y }
+  const head = personRig({ ...kid, pose: {} }).world.head
   const bump = Math.sin(span(t, DONE - 0.9, DONE - 0.45) * Math.PI) * 0.06
   const kidOpacity = span(t, WALK_IN - 0.1, WALK_IN + 0.05)
+
+  // 小鳥: かかしの ぼうしに おりて、うたう(おんぷ)
+  const arrive = span(t, WALK_OUT - 0.2, SING + 0.6, easeOut)
+  const landed = arrive >= 1
+  const birdX = 124 + (PERCH[0] - 124) * arrive
+  const birdY = -6 + (PERCH[1] + 6) * arrive - Math.sin(arrive * Math.PI) * 6 - (landed ? Math.max(0, wave(t, 0.5)) * 0.8 : 0)
 
   return (
     <>
       <Layer opacity={ink.picture}>
+        <Sun t={t} x={8} y={9} r={4.2} />
         <Backdrop t={t} />
         <Ground t={t} />
         <Patch t={t} />
@@ -412,13 +312,10 @@ function Scene({ t }: SceneProps) {
         <Scarecrow t={t} />
         <Meadow t={t} />
         <Layer opacity={kidOpacity}>
-          <ellipse cx={kidX} cy="97.4" rx="7" ry="1.8" fill="#000000" opacity="0.12" />
-          <Layer x={kidX} y={GROUND_Y + bob}>
-            <Kid step={stride} mood={mood} nearArm={nearArm} farArm={farArm} headTilt={lookUp + (mood === 'cheer' ? -4 : 0)} />
-          </Layer>
-          <Surprise t={t} x={kidX + 1} y={GROUND_Y - 40} />
+          <Person {...kid} look={KID_LOOK} face={face} lift={hop} pose={pose} />
+          <Surprise t={t} x={head[0] + 1} y={head[1] - 8} />
         </Layer>
-        <Bird t={t} />
+        {arrive > 0 && <Bird x={birdX} y={birdY} t={t} flying={!landed} facing="left" size={1.05} />}
         <Notes t={t} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />

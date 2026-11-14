@@ -15,6 +15,8 @@
  *   → ぐっと かがんで ぴょーん と 戸だなの 上へ → のびて バナナを とる → にこにこ たべる
  *   → ほね が ひかって、絵が うすくなり、字「百」が のこる
  *
+ * 動物の 部品は まだ ないので、さる・戸だな・バナナは 元の絵のまま。背景だけ 共通部品の Backdrop に した。
+ *
  * ほんものの つくり を守る(字の形に合わせるために ゆがめない):
  *   さるは 目が あたまの まえに あり、うで は かた から出て ひじ で まがる。しっぽが ある。
  *   戸だなは 上と 下に たな の ある 四角い 入れもの。ぼうは 二本の はしら に のっている。
@@ -22,6 +24,7 @@
  */
 import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Backdrop } from '../sceneFigures'
 
 const CHAR = '百'
 
@@ -33,9 +36,6 @@ const EYE = '#2b2b2b'
 const MOUTH = '#b9483f'
 const BARK = '#8c5b3c'
 const BARK_DARK = '#70452b'
-const GRASS = '#c5e8a9'
-const LEAF = '#55b86e'
-const HILL = '#e2f2d2'
 const BANANA = '#ffd84a'
 const BANANA_DARK = '#f2bf2c'
 const BANANA_TIP = '#6b4a2a'
@@ -93,24 +93,6 @@ function Stand({ t }: SceneProps) {
       <Bone char={CHAR} n={1} color={BARK} width={4.4} />
       <path d="M12.5 96 h4 M91.5 96 h4" stroke={BARK_DARK} strokeWidth="2" strokeLinecap="round" />
     </Layer>
-  )
-}
-
-function Ground({ t }: SceneProps) {
-  return (
-    <>
-      <path d="M-4 99 Q18 78 44 92 Q72 72 113 94 V101 H-4 Z" fill={HILL} />
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.6} 0)`}>
-        <ellipse cx="2" cy="7" rx="7" ry="3" />
-        <ellipse cx="7" cy="5.6" rx="5" ry="3" />
-        <ellipse cx="80" cy="6" rx="6" ry="2.6" />
-        <ellipse cx="84.5" cy="4.6" rx="4.4" ry="2.8" />
-      </g>
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.6" fill={GRASS} />
-      {[6, 24, 100].map((x) => (
-        <path key={x} d={`M${x} 97.5 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
-    </>
   )
 }
 
@@ -448,7 +430,7 @@ function Scene({ t }: SceneProps) {
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Ground t={t} />
+        <Backdrop t={t} sun={null} clouds={[[2, 7, 0.9], [80, 6, 0.8]]} tufts={[6, 24, 100]} />
         <Cabinet dx={cabinetDx} />
         <Stand t={t} />
         <Dust t={t} />

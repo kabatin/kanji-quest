@@ -14,27 +14,19 @@
  *   → 男の子が 見上げて「おっ!」。けむだしが まっくろ
  *   → ほね が ひかって、絵が うすくなり、字「黒」が のこる
  *
- * 男の子は、ほんものの人の つくり を守る(字の形に合わせるために、体を ゆがめない):
- *   うで は かた から出て ひじ で まがる。くび は みじかく、どう の上に あたま。
+ * 男の子は Person(横むき・足は うごかない)。うでは 角度、たいまつは tools の ぼう に ひを たす。
+ *   マフラー(黄色い 帯 と 後ろへ たれる はし)・すすの よごれ・白い いき は 頭の 位置 から ここで 描く。
  *   ほのおは 下が ふとく、上へ むかって とがる。けむりは ほのおの 上へ のぼる。
  */
 import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { mixLimb, Notice, PALETTE, Person, personRig, type Limb } from '../sceneFigures'
 
 const CHAR = '黒'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const COAT = '#e5604d'
-const COAT_DARK = '#c94a3a'
-const COAT_FAR = '#a83d30'
 const SCARF = '#ffd24a'
-const PANTS = '#3e5c86'
-const PANTS_DARK = '#34507a'
-const SHOE = '#6b4a36'
 const GRASS = '#c5e8a9'
-const LEAF = '#55b86e'
+const LEAF = PALETTE.leaf
 const FLUE = '#e9dcc8'
 const FLUE_EDGE = '#6b5a55'
 const MORTAR = '#bda98f'
@@ -48,8 +40,6 @@ const FIRE = '#ff8a3c'
 const FIRE_IN = '#ffd24a'
 const SMOKE = '#8a8790'
 const SNOW = '#cfe6f7'
-const EYE = '#2b2b2b'
-const MOUTH = '#b9483f'
 
 /** くぎり の時間(秒) */
 const LIGHT = 1.3
@@ -247,145 +237,50 @@ function Sparks({ t }: SceneProps) {
 /* ───────── 男の子 ───────── */
 
 type Mood = 'cold' | 'happy' | 'surprise' | 'laugh'
-/** うで の かっこう。swing = ま下から まえ(右)へ ふった角度 / bend = ひじ の まがり */
-type ArmPose = { readonly swing: number; readonly bend: number }
+const FACES = { cold: 'worried', happy: 'smile', surprise: 'surprised', laugh: 'joy' } as const
 
-/** かた(うでの つけね)と、うで の ふし の長さ */
-const SHOULDER: Pt = [8.2, 76.2]
-const ARM_PART = 5.2
-const HEAD: Pt = [7.3, 66.6]
+/** 男の子の 足もと(x, y)・背の高さ・見た目(赤い コート) */
+const BOY_X = 7
+const BOY_Y = 96.8
+const BOY_HEIGHT = 44
+const BOY_LOOK = { top: '#e5604d', bottom: '#3e5c86', sleeves: 'long' } as const
 
-const rad = (deg: number) => (deg * Math.PI) / 180
-const armPoints = (pose: ArmPose) => {
-  const elbow: Pt = [SHOULDER[0] + Math.sin(rad(pose.swing)) * ARM_PART, SHOULDER[1] + Math.cos(rad(pose.swing)) * ARM_PART]
-  const fore = pose.swing + pose.bend
-  const hand: Pt = [elbow[0] + Math.sin(rad(fore)) * ARM_PART, elbow[1] + Math.cos(rad(fore)) * ARM_PART]
-  return { elbow, hand, fore }
-}
-const lerpPose = (a: ArmPose, b: ArmPose, k: number): ArmPose => ({ swing: lerp(a.swing, b.swing, k), bend: lerp(a.bend, b.bend, k) })
+/** うで の かっこう(横むき。swing = ま下から まえ(右)へ ふった角度 / bend = ひじ の まがり) */
+const HUG: Limb = { swing: 15, bend: 120 }
+const LIGHTING: Limb = { swing: 35, bend: 40 }
+const WARMING: Limb = { swing: 60, bend: 20 }
+const WARMING_FAR: Limb = { swing: 50, bend: 30 }
+const POINTING: Limb = { swing: 130, bend: 0 }
 
-const HUG: ArmPose = { swing: 15, bend: 120 }
-const LIGHTING: ArmPose = { swing: 35, bend: 40 }
-const WARMING: ArmPose = { swing: 60, bend: 20 }
-const WARMING_FAR: ArmPose = { swing: 50, bend: 30 }
-const POINTING: ArmPose = { swing: 130, bend: 0 }
-
-/** かた から出て、ひじ で まがる うで。かた・ひじ・手 の じゅんに つながる */
-function Arm({ pose, color }: { readonly pose: ArmPose; readonly color: string }) {
-  const { elbow, hand } = armPoints(pose)
+/** くびに まいた マフラー: 黄色い 帯 と、うしろへ たれる はし。neck は くびの つけね(画面) */
+function Scarf({ neck }: { readonly neck: Pt }) {
+  const [x, y] = neck
   return (
     <>
-      <path d={`M${SHOULDER[0]} ${SHOULDER[1]} L${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={color} strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hand[0]} cy={hand[1]} r="1.9" fill={SKIN} />
-    </>
-  )
-}
-
-function Face({ mood, soot }: { readonly mood: Mood; readonly soot: number }) {
-  return (
-    <>
-      <circle cx="8.4" cy="69.2" r="1.3" fill={mood === 'cold' ? '#9fc7ee' : '#ff9d9d'} opacity="0.7" />
-      {mood === 'cold' && (
-        <>
-          <path d="M8.4 65.2 l2.6 0.9" stroke={HAIR} strokeWidth="0.9" strokeLinecap="round" />
-          <path d="M8.7 66.9 l1.9 0.4" stroke={EYE} strokeWidth="1.1" strokeLinecap="round" />
-          <path d="M9.4 70 l0.8 -0.6 l0.8 0.6 l0.8 -0.6" fill="none" stroke={MOUTH} strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" />
-        </>
-      )}
-      {mood === 'happy' && (
-        <>
-          <path d="M8.4 67 Q9.7 65.2 11 67" fill="none" stroke={EYE} strokeWidth="1.1" strokeLinecap="round" />
-          <path d="M9.4 69.4 Q10.8 71.2 12.2 69.2" fill="none" stroke={MOUTH} strokeWidth="1.1" strokeLinecap="round" />
-        </>
-      )}
-      {mood === 'surprise' && (
-        <>
-          <circle cx="10" cy="66.4" r="1.7" fill="#ffffff" />
-          <circle cx="10.5" cy="66.4" r="0.9" fill={EYE} />
-          <ellipse cx="11" cy="70.2" rx="1.1" ry="1.5" fill={MOUTH} />
-        </>
-      )}
-      {mood === 'laugh' && (
-        <>
-          <path d="M8.4 67 Q9.7 65.2 11 67" fill="none" stroke={EYE} strokeWidth="1.1" strokeLinecap="round" />
-          <path d="M9 69 Q10.8 69.5 12.6 69 Q12 72.4 10.8 72.4 Q9.4 72.4 9 69 Z" fill={MOUTH} />
-        </>
-      )}
-      {/* すすの よごれ: ほっぺ と はな */}
-      <g fill={SOOT} opacity={0.55 * soot}>
-        <ellipse cx="9" cy="69.8" rx="1.6" ry="1" />
-        <ellipse cx="12.4" cy="67.7" rx="0.9" ry="0.7" />
-      </g>
-    </>
-  )
-}
-
-type BoyProps = {
-  readonly mood: Mood
-  readonly nearArm: ArmPose
-  readonly farArm: ArmPose
-  readonly headTilt: number
-  readonly soot: number
-}
-
-function Boy({ mood, nearArm, farArm, headTilt, soot }: BoyProps) {
-  return (
-    <>
-      <Arm pose={farArm} color={COAT_FAR} />
-      {/* あし: 右(ほのお)の ほうを むいて 立つ */}
-      <rect x="6.6" y="85" width="3.6" height="10.8" rx="1.8" fill={PANTS_DARK} />
-      <ellipse cx="9" cy="96.2" rx="3.4" ry="1.7" fill={SHOE} />
-      <rect x="3.6" y="85" width="3.6" height="10.8" rx="1.8" fill={PANTS} />
-      <ellipse cx="6" cy="96.2" rx="3.4" ry="1.7" fill={SHOE} />
-      {/* どう と、くびに まいた マフラー */}
-      <rect x="2.6" y="73.6" width="9" height="13.4" rx="4" fill={COAT} />
-      <rect x="2.9" y="71.8" width="8.6" height="3.4" rx="1.7" fill={SCARF} />
-      <path d="M3.6 74.4 l-1.4 5 l2.6 0.6 Z" fill={SCARF} />
-      <Arm pose={nearArm} color={COAT_DARK} />
-      {/* あたま */}
-      <Layer rotate={headTilt} origin={[7.3, 72]}>
-        <circle cx={HEAD[0]} cy={HEAD[1]} r="5.4" fill={SKIN} />
-        <circle cx="12.5" cy="67.6" r="0.9" fill={SKIN_SHADE} />
-        <path d="M1.9 66.6 C1.6 60.8 8 59.4 11.6 62.4 C12.4 63.4 12.6 64.4 12.4 65 C10 63.8 6 63.6 4.4 65.4 C3.6 66.2 3.2 67.8 2.6 69.6 Z" fill={HAIR} />
-        <Face mood={mood} soot={soot} />
-      </Layer>
+      <path d={`M${x - 3.6} ${y - 0.4} l-1.8 5.6 l3 0.8 Z`} fill={SCARF} />
+      <rect x={x - 4.4} y={y - 1.6} width="9.2" height="3.8" rx="1.9" fill={SCARF} />
     </>
   )
 }
 
 /** さむくて はく しろい いき */
-function Breath({ t }: SceneProps) {
+function Breath({ t, at }: { readonly t: number; readonly at: Pt }) {
   const show = during(t, 0.5, 2.0, 0.3)
   if (show <= 0) return null
   const p = (t * 0.9) % 1
   return (
     <g opacity={show * (1 - p)}>
-      <ellipse cx={15 + p * 4} cy={70.2 - p * 3} rx={1.6 + p * 1.6} ry={1.1 + p} fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.5" />
+      <ellipse cx={at[0] + p * 4} cy={at[1] - p * 3} rx={1.6 + p * 1.6} ry={1.1 + p} fill="#ffffff" stroke="#c9d6e6" strokeWidth="0.5" />
     </g>
   )
 }
 
-/** 見上げた ときの「!」 */
-function Notice({ t }: SceneProps) {
-  const show = during(t, NOTICE + 0.1, INK - 0.1, 0.2)
-  if (show <= 0) return null
-  const pop = backOut(span(t, NOTICE + 0.1, NOTICE + 0.45))
-  return (
-    <Layer opacity={show} scale={Math.max(0, pop)} origin={[5.5, 55]}>
-      <rect x="4.4" y="46" width="2.2" height="6.6" rx="1.1" fill="#f2a623" />
-      <circle cx="5.5" cy="55.2" r="1.3" fill="#f2a623" />
-    </Layer>
-  )
-}
-
-/** たいまつ(ひの ついた ぼう)。手に もって、まきに ちかづける */
-function Torch({ t, hand }: { readonly t: number; readonly hand: Pt }) {
+/** たいまつの ひ(ぼうは Person の tools)。tip は ぼうの 先 */
+function TorchFlame({ t, tip }: { readonly t: number; readonly tip: Pt }) {
   const show = during(t, LIGHT + 0.1, WARM - 0.1, 0.2)
   if (show <= 0) return null
-  const tip: Pt = [hand[0] + 3.6, hand[1] + 11.4]
   return (
     <g opacity={show}>
-      <path d={`M${hand[0] - 0.6} ${hand[1] - 0.8} L${tip[0]} ${tip[1]}`} stroke="#a9764f" strokeWidth="1.5" strokeLinecap="round" />
       <path d={flamePath([tip[0], tip[1] + 0.6], [tip[0] + 0.6, tip[1] - 4.8 + wave(t, 0.3) * 0.5], 3.4)} fill={FIRE} />
       <path d={flamePath([tip[0], tip[1] + 0.4], [tip[0] + 0.3, tip[1] - 2.6], 1.6)} fill={FIRE_IN} />
     </g>
@@ -399,16 +294,26 @@ function Scene({ t }: SceneProps) {
   const mood: Mood = t < FLAME_AT[0] ? 'cold' : t < NOTICE ? 'happy' : t < INK - 0.3 ? 'surprise' : 'laugh'
   const shiver = t < LIGHT ? Math.sin(t * 46) * 0.32 : 0
 
-  // うで: だきしめる → たいまつを まきへ → ひに あたる → けむだしを ゆびさす
+  // うで: だきしめる → たいまつを まきへ → ひに あたる → けむだしを ゆびさす(右むき: てまえ = ひだりうで)
   const lighting = span(t, LIGHT, LIGHT + 0.5, easeInOut)
   const warming = span(t, WARM, WARM + 0.5, easeInOut)
   const pointing = span(t, NOTICE, NOTICE + 0.4, easeInOut)
-  const nearBase = lerpPose(lerpPose(HUG, LIGHTING, lighting), WARMING, warming)
-  const nearArm = lerpPose(nearBase, POINTING, pointing)
-  const farArm = lerpPose(lerpPose(HUG, WARMING_FAR, warming), POINTING, pointing * 0.6)
+  const nearBase = mixLimb(mixLimb(HUG, LIGHTING, lighting), WARMING, warming)
+  const nearArm = mixLimb(nearBase, POINTING, pointing)
+  const farArm = mixLimb(mixLimb(HUG, WARMING_FAR, warming), POINTING, pointing * 0.6)
   // あたま: ひを 見ているときは すこし 下むき、見上げるときは 上むき
   const headTilt = mix(t, LIGHT, LIGHT + 0.5, 0, 6) + mix(t, WARM, WARM + 0.5, 0, -6) + mix(t, NOTICE, NOTICE + 0.4, 0, -22)
   const soot = span(t, SOOTING + 0.8, 5.8)
+
+  const boy = { x: BOY_X + shiver, y: BOY_Y, build: 'child', height: BOY_HEIGHT, facing: 'right', look: BOY_LOOK } as const
+  const pose = { leftArm: nearArm, rightArm: farArm, head: headTilt }
+  // たいまつ: てまえの 手に もつ ぼう。先は 手の ななめ前の 下
+  const hand = personRig({ ...boy, pose }).world.arms.left.end
+  const torchTip: Pt = [hand[0] + 4.2, hand[1] + 11.4]
+  const torching = during(t, LIGHT + 0.1, WARM - 0.1, 0.2) > 0
+  const rig = personRig({ ...boy, pose })
+  const head = rig.world.head
+  const radius = rig.body.headR * rig.scale
 
   return (
     <>
@@ -423,12 +328,16 @@ function Scene({ t }: SceneProps) {
         <Slab t={t} />
         <Smoke t={t} />
         <Sparks t={t} />
-        <Layer x={shiver} scale={1.15} origin={[7, 96.5]}>
-          <Boy mood={mood} nearArm={nearArm} farArm={farArm} headTilt={headTilt} soot={soot} />
-          <Torch t={t} hand={armPoints(nearArm).hand} />
-        </Layer>
-        <Breath t={t} />
-        <Notice t={t} />
+        <Person {...boy} face={FACES[mood]} pose={pose} tools={torching ? { left: { kind: 'stick', tip: torchTip } } : undefined} />
+        <Scarf neck={rig.world.neck} />
+        <TorchFlame t={t} tip={torchTip} />
+        {/* すすの よごれ: ほっぺ と はな */}
+        <g fill={SOOT} opacity={0.55 * soot}>
+          <ellipse cx={head[0] + radius * 0.35} cy={head[1] + radius * 0.5} rx="1.6" ry="1" />
+          <ellipse cx={head[0] + radius * 0.9} cy={head[1] + radius * 0.15} rx="0.9" ry="0.7" />
+        </g>
+        <Breath t={t} at={[head[0] + radius * 1.3, head[1] + radius * 0.5]} />
+        <Notice x={head[0]} y={head[1] - radius * 0.5} r={radius} show={during(t, NOTICE + 0.1, INK - 0.1, 0.2)} dir={1} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Ink char={CHAR} progress={ink.progress} tint={ink.tint} />

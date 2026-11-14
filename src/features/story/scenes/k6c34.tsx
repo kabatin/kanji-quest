@@ -14,16 +14,17 @@
  *   → 水が がけを おちて 地面を ながれ、しぶきが とぶ。うさぎは 大よろこび
  *   → ほね が ひかって、絵が うすくなり、字「水」が のこる
  *
+ * うさぎは 部品が まだ ないので 元の 絵のまま。お日さま・のはら は 共通部品(Sun・Meadow)。
  * うさぎ・いわ・水は、ほんものの つくり を守る(字の形に合わせるために ゆがめない):
  *   うさぎは 耳が 長く、うで は かた から出て ひじ で まがる。いわは まるく ころがる。
  *   水は 上から 下へ ながれ、しぶきは ぶつかった ところから 外へ とぶ。
  */
 import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles, Star } from '../sceneParts'
+import { Meadow, Sun } from '../sceneFigures'
 
 const CHAR = '水'
 
-const SUN = '#ffd24a'
 const FUR = '#efe2d2'
 const FUR_SHADE = '#d9c3ab'
 const BELLY = '#fffaf2'
@@ -43,7 +44,6 @@ const EARTH = '#d9b98c'
 const EARTH_DARK = '#c3a074'
 const CAP = '#8bd69a'
 const MEADOW = '#e2f2d2'
-const GRASS = '#c5e8a9'
 const LEAF = '#55b86e'
 const WATER = '#7cc4f2'
 const WATER_LIGHT = '#e8f6ff'
@@ -74,30 +74,13 @@ const SPRING: readonly [number, number] = [53.6, 18]
 /** ながれが 地面に あたる ところ(しぶきの もと) */
 const IMPACT: readonly [number, number] = [54.6, 43]
 
-function Sun({ t }: SceneProps) {
-  const pop = span(t, 0, 0.6, easeOut)
-  return (
-    <>
-      <Layer opacity={pop} rotate={t * 14} origin={[96, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="95.2" y="1.6" width="1.6" height="4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 96 13)`} />
-        ))}
-      </Layer>
-      <circle cx="96" cy="13" r={6.2 * pop} fill={SUN} />
-    </>
-  )
-}
-
 /** がけ(上は 草、下は 土)と、いわの でっぱり、下の 草はら */
 function Land({ t }: SceneProps) {
   const rise = span(t, 0, 0.5, easeOut)
   return (
     <Layer opacity={rise}>
       <path d="M0 43 Q54 48 109 43 V101 H0 Z" fill={MEADOW} />
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.6" fill={GRASS} />
-      {[8, 30, 78, 100].map((x) => (
-        <path key={x} d={`M${x} 97.5 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
+      <Meadow y={98} tufts={[8, 30, 78, 100]} />
       {/* いわの でっぱり(水の もと) */}
       <path d="M41 32 Q40 12 47 7 Q55 3 63 7 Q70 12 68 32 Z" fill={ROCK} />
       <path d="M62 8 Q69 12 68 32 L60 32 Q63 18 62 8 Z" fill={ROCK_DARK} />
@@ -396,7 +379,7 @@ function Scene({ t }: SceneProps) {
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Sun t={t} />
+        <Sun t={t} x={96} y={13} />
         <Land t={t} />
         <Seep t={t} />
         <Layer opacity={span(t, 0.1, 0.5)}>

@@ -18,12 +18,13 @@
  *   → 子どもが じょうろを おいて、バンザイ! ちょうちょも きた
  *   → ほね が ひかって、絵が うすくなり、字「青」が のこる
  *
- * 人・草・いどは、ほんものの つくり を守る(字の形に合わせるために ゆがめない):
- *   うで は かた から出て ひじ で まがる。くび は みじかい。草の 葉は くき から 左右に のび、
- *   みずが ないと しおれて 下を むく。いど は 石を つんだ はこ で、ふち に 土が たまって 草が はえる。
+ * 人は Person(あるきは walk、うでは 角度で じょうろを もちあげる)。ちょうちょ・あせ は 部品。
+ *   草の 葉は くき から 左右に のび、みずが ないと しおれて 下を むく。
+ *   いど は 石を つんだ はこ で、ふち に 土が たまって 草が はえる。じょうろ・おけ は ここで 描く。
  */
-import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeInOut, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Butterfly, HANG_ARM, mixColor, mixLimb, Person, personRig, Sweat, walk, type Limb } from '../sceneFigures'
 
 const CHAR = '青'
 
@@ -46,18 +47,8 @@ const WATER = '#7cc4f2'
 const WATER_LIGHT = '#d8effc'
 const WOOD = '#b27a4c'
 const WOOD_DARK = '#8f5e37'
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const SHIRT = '#ef8a62'
-const SHIRT_DARK = '#d6714a'
-const SHORTS = '#4a6fa5'
-const SHOE = '#6b4a36'
 const CAN = '#e8645a'
 const CAN_DARK = '#c94d45'
-const EYE = '#2b2b2b'
-const MOUTH = '#b9483f'
-const CHEEK = '#ff9d9d'
 
 /** くぎり の時間(秒) */
 const WALK = 0.7
@@ -85,21 +76,7 @@ const GROUND_Y = 96.5
 const RIM_Y = 52
 const STEM_X = 54.5
 
-/** 子どもの からだ(まんなかの x と、かたの たかさ) */
-const CX = 26
-const SHOULDER_Y = 71
-const ARM_PART = 9
-
 type Point = readonly [number, number]
-
-const mixColor = (from: string, to: string, k: number): string => {
-  const channel = (hex: string, i: number) => parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16)
-  const part = (i: number) =>
-    Math.round(channel(from, i) + (channel(to, i) - channel(from, i)) * Math.min(Math.max(k, 0), 1))
-      .toString(16)
-      .padStart(2, '0')
-  return `#${part(0)}${part(1)}${part(2)}`
-}
 
 /* ───────── けしき ───────── */
 
@@ -247,110 +224,12 @@ function Plant({ perk, grow, sway, wet }: PlantProps) {
 /* ───────── 子ども ───────── */
 
 type Mood = 'worried' | 'surprised' | 'happy'
+const FACES = { worried: 'worried', surprised: 'surprised', happy: 'joy' } as const
 
-type ArmAngles = { readonly swing: number; readonly bend: number }
-
-const rad = (deg: number) => (deg * Math.PI) / 180
-
-/** うで の さき。swing = ま下から そとへ あげた角度 / bend = ひじ から さきを さらに あげた角度。 */
-function armPoints(shoulder: Point, pose: ArmAngles, side: 1 | -1): { readonly elbow: Point; readonly hand: Point } {
-  const elbow: Point = [shoulder[0] + side * Math.sin(rad(pose.swing)) * ARM_PART, shoulder[1] + Math.cos(rad(pose.swing)) * ARM_PART]
-  const fore = pose.swing + pose.bend
-  const hand: Point = [elbow[0] + side * Math.sin(rad(fore)) * ARM_PART, elbow[1] + Math.cos(rad(fore)) * ARM_PART]
-  return { elbow, hand }
-}
-
-/** かた から出て、ひじ で まがる うで。そで(シャツ)から 先は はだ。 */
-function Arm({ shoulder, pose, side }: { readonly shoulder: Point; readonly pose: ArmAngles; readonly side: 1 | -1 }) {
-  const { elbow, hand } = armPoints(shoulder, pose, side)
-  return (
-    <>
-      <path d={`M${shoulder[0]} ${shoulder[1]} L${elbow[0]} ${elbow[1]}`} fill="none" stroke={SHIRT_DARK} strokeWidth="4.6" strokeLinecap="round" />
-      <path d={`M${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={SKIN} strokeWidth="3.6" strokeLinecap="round" />
-    </>
-  )
-}
-
-function Face({ mood }: { readonly mood: Mood }) {
-  return (
-    <g>
-      <circle cx="-5.4" cy="3.8" r="1.8" fill={CHEEK} opacity="0.55" />
-      <circle cx="5.4" cy="3.8" r="1.8" fill={CHEEK} opacity="0.55" />
-      {mood === 'worried' && (
-        <>
-          <path d="M-5.4 -1.2 L-2.2 -2.8 M5.4 -1.2 L2.2 -2.8" stroke={HAIR} strokeWidth="1.1" strokeLinecap="round" />
-          <circle cx="-2.9" cy="1.2" r="1.15" fill={EYE} />
-          <circle cx="3.5" cy="1.2" r="1.15" fill={EYE} />
-          <path d="M-1.7 5.9 Q0.2 4.3 2.1 5.9" fill="none" stroke={MOUTH} strokeWidth="1.1" strokeLinecap="round" />
-        </>
-      )}
-      {mood === 'surprised' && (
-        <>
-          <path d="M-5.2 -2.6 Q-3.4 -4.2 -1.6 -2.8 M1.8 -2.8 Q3.6 -4.2 5.4 -2.6" fill="none" stroke={HAIR} strokeWidth="1.1" strokeLinecap="round" />
-          <circle cx="-2.9" cy="1" r="1.6" fill={EYE} />
-          <circle cx="3.5" cy="1" r="1.6" fill={EYE} />
-          <circle cx="-2.4" cy="0.4" r="0.5" fill="#ffffff" />
-          <circle cx="4" cy="0.4" r="0.5" fill="#ffffff" />
-          <ellipse cx="0.3" cy="5.6" rx="1.3" ry="1.8" fill={MOUTH} />
-        </>
-      )}
-      {mood === 'happy' && (
-        <>
-          <path d="M-4.9 1.8 Q-3.3 -0.6 -1.7 1.8 M1.9 1.8 Q3.5 -0.6 5.1 1.8" fill="none" stroke={EYE} strokeWidth="1.2" strokeLinecap="round" />
-          <path d="M-2.8 4.4 Q0.2 9 3.2 4.4 Z" fill={MOUTH} />
-        </>
-      )}
-    </g>
-  )
-}
-
-type ChildProps = {
-  readonly step: number
-  readonly mood: Mood
-  readonly nearArm: ArmAngles
-  readonly farArm: ArmAngles
-  readonly sweat: number
-  readonly t: number
-}
-
-const NEAR_SHOULDER: Point = [CX + 4.5, SHOULDER_Y]
-const FAR_SHOULDER: Point = [CX - 4.5, SHOULDER_Y]
-const HEAD: Point = [CX, 58.2]
-
-function Child({ step, mood, nearArm, farArm, sweat, t }: ChildProps) {
-  return (
-    <>
-      <Arm shoulder={FAR_SHOULDER} pose={farArm} side={-1} />
-      {/* あし: こし から ふる。くつ は 少し まえ(右)へ */}
-      {[-3.3, 3.3].map((dx, i) => (
-        <Layer key={dx} rotate={step * (i === 0 ? 20 : -20)} origin={[CX + dx, 83]}>
-          <rect x={CX + dx - 2.3} y="81" width="4.6" height="14" rx="2.3" fill={SKIN} />
-          <ellipse cx={CX + dx + 1} cy="95.2" rx="4.4" ry="2.3" fill={SHOE} />
-        </Layer>
-      ))}
-      {/* くび(みじかい) */}
-      <rect x={CX - 1.9} y="65.4" width="3.8" height="4" rx="1.4" fill={SKIN_SHADE} />
-      <rect x={CX - 5.6} y="67.6" width="11.2" height="16" rx="4.6" fill={SHIRT} />
-      <rect x={CX - 5.9} y="79" width="11.8" height="6.4" rx="2.6" fill={SHORTS} />
-      <Arm shoulder={NEAR_SHOULDER} pose={nearArm} side={1} />
-      {/* あたま */}
-      <circle cx={HEAD[0]} cy={HEAD[1]} r="8.4" fill={SKIN} />
-      <path d={`M${CX - 8.6} 56.4 C${CX - 9} 47 ${CX + 9} 47 ${CX + 8.6} 56.4 C${CX + 6} 52.4 ${CX - 5} 52 ${CX - 8.6} 56.4 Z`} fill={HAIR} />
-      <path d={`M${CX + 1} 50.2 Q${CX + 1.8} 47 ${CX + 3.6} 49 Q${CX + 4.6} 46.6 ${CX + 5.4} 49.4`} fill="none" stroke={HAIR} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-      <g transform={`translate(${HEAD[0]} ${HEAD[1]})`}>
-        <Face mood={mood} />
-      </g>
-      {sweat > 0 && (
-        <g opacity={sweat}>
-          {[0, 0.5].map((offset) => {
-            const p = ((t + offset) % 1) / 1
-            return <path key={offset} d="M0 -2.4 Q2 0.6 0 2 Q-2 0.6 0 -2.4 Z" fill={WATER} transform={`translate(${CX + 10.5 + p * 1.5} ${50 + p * 9})`} opacity={1 - p} />
-          })}
-        </g>
-      )}
-    </>
-  )
-}
+/** 子どもの 見た目(だいだい の シャツ・青い 半ズボン) */
+const KID_LOOK = { top: '#ef8a62', bottom: '#4a6fa5', bottomKind: 'shorts', sleeves: 'short' } as const
+const KID_HEIGHT = 47
+const KID_X = 22
 
 /* ───────── じょうろ・みず ───────── */
 
@@ -385,69 +264,46 @@ function WaterStream({ from, flow, t }: { readonly from: Point; readonly flow: n
   )
 }
 
-/* ───────── にぎやかし ───────── */
-
-function Butterfly({ t }: SceneProps) {
-  const p = span(t, CHEER, CHEER + 1.5, easeOut)
-  if (p <= 0) return null
-  const x = 112 - 26 * p + wave(t, 0.9) * 2
-  const y = 30 + wave(t, 1.1) * 3 - p * 3
-  const flap = 0.35 + 0.65 * Math.abs(wave(t, 0.5))
-  return (
-    <g transform={`translate(${x} ${y})`}>
-      <g transform={`scale(${flap} 1)`}>
-        <ellipse cx="-2.4" cy="-1.4" rx="2.6" ry="2" fill="#f07f9e" />
-        <ellipse cx="2.4" cy="-1.4" rx="2.6" ry="2" fill="#f07f9e" />
-        <ellipse cx="-1.8" cy="1.2" rx="1.8" ry="1.5" fill="#ffb3c6" />
-        <ellipse cx="1.8" cy="1.2" rx="1.8" ry="1.5" fill="#ffb3c6" />
-      </g>
-      <ellipse cx="0" cy="0" rx="0.6" ry="2.2" fill="#5a3b2a" />
-    </g>
-  )
-}
-
 /* ───────── 場面 ───────── */
 
-const lerp = (a: number, b: number, k: number) => a + (b - a) * k
+const rad = (deg: number) => (deg * Math.PI) / 180
 
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 8)
 
-  // あるく: 左から いどの そばまで
-  const walking = 1 - span(t, ARRIVE - 0.3, ARRIVE)
-  const stride = t < WALK ? 0 : Math.sin((t - WALK) * Math.PI * 2 * 1.8) * walking
-  const walkX = mix(t, WALK, ARRIVE, -52, 0, (x) => x * (2 - x) * 0.5 + x * 0.5)
-  const bob = -Math.abs(stride) * 1.2
+  // あるく: 左から いどの そばまで(walk)
+  const w = walk(t, { from: KID_X - 52, to: KID_X, start: WALK, end: ARRIVE, build: 'child', height: KID_HEIGHT, armSwing: 12 })
   const hp = span(t, CHEER, CHEER + 1.0)
   const hop = hp > 0 && hp < 1 ? Math.abs(Math.sin(hp * Math.PI * 2)) * 3.2 : 0
 
   const mood: Mood = t < 3.4 ? 'worried' : t < 4.4 ? 'surprised' : 'happy'
 
-  // 右うで: じょうろ を さげて あるく → もちあげて みず を かける → おろす → バンザイ
+  // じょうろの うで(ひだりうで = てまえ): さげて あるく → もちあげて みず を かける → おろす → バンザイ
   const up = span(t, RAISE, POUR_FROM, easeInOut)
   const down = span(t, POUR_TO, LOWER_END, easeInOut)
   const cheer = span(t, LOWER_END, LOWER_END + 0.55, backOut)
-  const carry: ArmAngles = { swing: 14 + stride * 5, bend: 60 }
-  const pourPose: ArmAngles = { swing: 140, bend: 27 }
-  const cheerPose: ArmAngles = { swing: 135, bend: 15 }
+  const carry: Limb = { swing: 14, bend: 60 }
+  const pourPose: Limb = { to: [40, 59] }
+  const cheerPose: Limb = { swing: 135, bend: 15 }
   const hold = up * (1 - down)
-  const nearArm: ArmAngles = {
-    swing: carry.swing + (pourPose.swing - carry.swing) * hold + (cheerPose.swing - carry.swing) * cheer,
-    bend: carry.bend + (pourPose.bend - carry.bend) * hold + (cheerPose.bend - carry.bend) * cheer,
-  }
+  const canArm = mixLimb(mixLimb(carry, pourPose, hold), cheerPose, cheer)
   const farCheer = span(t, LOWER_END + 0.1, LOWER_END + 0.65, backOut)
-  const farArm: ArmAngles = { swing: lerp(8 + stride * 4, 135, farCheer), bend: lerp(6, 15, farCheer) }
+  const pose = { ...w.pose, leftArm: canArm, rightArm: mixLimb(w.pose.rightArm ?? HANG_ARM, { swing: 135, bend: 15 }, farCheer) }
+  const kid = { ...w, y: GROUND_Y, look: KID_LOOK, face: FACES[mood], lift: hop, pose } as const
 
   // じょうろ: 手に もたれて うごく。かたむけると、さきから みず が でる
+  const rig = personRig(kid)
   const tilt = 9 * span(t, POUR_FROM - 0.1, POUR_FROM + 0.35) * (1 - span(t, POUR_TO - 0.3, POUR_TO))
-  const canHand = armPoints(NEAR_SHOULDER, nearArm, 1).hand
-  const restHand = armPoints(NEAR_SHOULDER, { swing: 14, bend: 60 }, 1).hand
+  const canHand = rig.world.arms.left.end
+  const restRig = personRig({ ...kid, x: KID_X, lift: 0, pose: { leftArm: carry } })
+  const restHand = restRig.world.arms.left.end
   const holding = t < LOWER_END
   const spoutTip: Point = [
-    canHand[0] + walkX + SPOUT[0] * Math.cos(rad(tilt)) - SPOUT[1] * Math.sin(rad(tilt)),
+    canHand[0] + SPOUT[0] * Math.cos(rad(tilt)) - SPOUT[1] * Math.sin(rad(tilt)),
     canHand[1] + SPOUT[0] * Math.sin(rad(tilt)) + SPOUT[1] * Math.cos(rad(tilt)),
   ]
   const flow = tilt > 4 ? during(t, POUR_FROM + 0.1, POUR_TO - 0.1, 0.15) : 0
+  const head = rig.world.head
 
   // 草: みず が しみて ぴんと 立ち、ぐんぐん のびる
   const perk = span(t, PERK, PERK + 0.7, easeOut)
@@ -456,6 +312,7 @@ function Scene({ t }: SceneProps) {
   const sway = wave(t, 3) * 1.1 * grow * (1 - span(t, INK - 0.5, INK - 0.1))
 
   const sweat = during(t, WALK + 0.2, 3.2, 0.3)
+  const bp = span(t, CHEER, CHEER + 1.5, easeOut)
 
   return (
     <>
@@ -468,24 +325,22 @@ function Scene({ t }: SceneProps) {
         </Layer>
         {/* 子どもの かげ と 子ども */}
         <Layer opacity={span(t, WALK - 0.1, WALK + 0.15)}>
-          <ellipse cx={CX + walkX} cy={GROUND_Y + 0.6} rx={9 - hop} ry="2.2" fill="#000000" opacity="0.12" />
-          <Layer x={walkX} y={bob - hop}>
-            <Child step={stride} mood={mood} nearArm={nearArm} farArm={farArm} sweat={sweat} t={t} />
-            {holding && (
-              <g transform={`translate(${canHand[0]} ${canHand[1]}) rotate(${tilt})`}>
-                <WateringCan />
-              </g>
-            )}
-            {holding && <circle cx={canHand[0]} cy={canHand[1]} r="2.5" fill={SKIN} />}
-          </Layer>
+          <ellipse cx={w.x} cy={GROUND_Y + 0.6} rx={9 - hop} ry="2.2" fill="#000000" opacity="0.12" />
+          <Person {...kid} />
+          {holding && (
+            <g transform={`translate(${canHand[0]} ${canHand[1]}) rotate(${tilt})`}>
+              <WateringCan />
+            </g>
+          )}
+          <Sweat t={t} x={head[0] - 9} y={head[1] - 6} show={sweat} />
         </Layer>
         {!holding && (
-          <g transform={`translate(${restHand[0]} ${restHand[1] + (GROUND_Y - 0.8 - (restHand[1] + 11.5))})`}>
+          <g transform={`translate(${restHand[0]} ${GROUND_Y - 12.3})`}>
             <WateringCan />
           </g>
         )}
         <WaterStream from={[spoutTip[0], spoutTip[1]]} flow={flow} t={t} />
-        <Butterfly t={t} />
+        {bp > 0 && <Butterfly x={112 - 26 * bp + wave(t, 0.9) * 2} y={30 + wave(t, 1.1) * 3 - bp * 3} t={t} />}
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Ink char={CHAR} progress={ink.progress} tint={ink.tint} />

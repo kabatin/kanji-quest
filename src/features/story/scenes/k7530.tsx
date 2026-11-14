@@ -1,5 +1,5 @@
 /*
- * 田(た): 四角い たんぼを あぜみちで 4つに くぎった。
+ * 田(た): 四角い たんぼを あぜみちで 4つに くぎった。(共通部品 sceneFigures で 書きなおした もの)
  *
  * ほね(画と絵の対応)  ※ たんぼを まうえから 見た 地図の ような 絵
  *   1画目(丨)  … たんぼの 左の あぜ(土手)
@@ -17,38 +17,23 @@
  *   → のうふが 大よろこび。4つの たんぼに 苗が ぽん ぽん と 出る
  *   → ほね が ひかって、絵が うすくなり、字「田」が のこる
  *
- * 人は、ほんものの人の つくり を守る(字の形に合わせるために、体を ゆがめない):
- *   うで は かた から出て ひじ で まがる(ひじの 位置は、2つの ほね の長さ から 計算する)。
- *   くび は みじかく、どう の まんなか の上。あし は こし から。
- *   むきを変えるときは、体を よこへ せまくして ひっくり返す(人が くるっと まわる ように)。
+ * のうふは Person(むきは turnAround、あるきは walk、まえへ すすむ ほり は walkDepth)。ぼうしは look.hat。
+ * くわは えを tools の 'stick'、鉄の はを 場面で 描く(両手は えの 上に { to })。
  */
-import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, clamp01, during, easeInOut, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Bird, Dust, LOOKS, mixLimb, nearSide, Person, personRig, Sweat, Tuft, turnAround, walk, walkDepth, type BodySide, type Facing, type Limb, type PersonProps } from '../sceneFigures'
 
 const CHAR = '田'
 
-const GRASS = '#c5e8a9'
-const GRASS_DARK = '#a9d88a'
 const WATER = '#9ccfe8'
 const WATER_LIGHT = '#c9e8f6'
 const SOIL = '#8c5b3c'
 const SOIL_LIGHT = '#b07a52'
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAT = '#e8c36a'
-const HAT_DARK = '#c99f45'
-const TUNIC = '#e0705a'
-const TUNIC_DARK = '#c85a46'
-const TUNIC_FAR = '#a84a3c'
-const PANTS = '#3e5c86'
-const PANTS_DARK = '#34507a'
-const BOOT = '#6b4a36'
-const HANDLE = '#a06a3c'
+const GRASS = '#c5e8a9'
 const IRON = '#8e98a4'
 const LEAF = '#55b86e'
 const LEAF_DARK = '#3f9c59'
-const MOUTH = '#b9483f'
-const EYE = '#2b2b2b'
 
 /** くぎり の時間(秒) */
 const FIELD_DONE = 0.9
@@ -65,6 +50,7 @@ const DONE = 10.8
 const DURATION = 11.2
 
 /** 人の 大きさ(うえから見た地図の 中なので、たんぼの 4分の1 くらいの 小ささ) */
+const BODY = { build: 'child', height: 34 } as const
 const S = 0.72
 /** くわの はが 地面に とどく 場所(足もとから)。まえむき = 下へ / よこむき = まえへ */
 const FRONT_REACH = 4
@@ -79,173 +65,118 @@ const H_LINE_LEN = 62.5
 /** 4画目の 書きはじめの たかさ と、右への のぼり(2点の高さの差) */
 const H_LINE_Y0 = 55.5
 const H_LINE_RISE = 3.5
-const NO_LIFT = 1.3
+/** くわを かついで あるく ときの もちあげ(digLift の 値) */
+const CARRY = 1.3
 
 type Pt = readonly [number, number]
 
-const lerpPt = (a: Pt, b: Pt, k: number): Pt => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k]
+const V_END_Y = V_HEAD_END - FRONT_REACH * S
+const H_FEET_X0 = H_LINE_X0 - SIDE_REACH * S
+const H_FEET_Y0 = H_LINE_Y0 - 0.7
+const H_END_X = H_FEET_X0 + H_LINE_LEN
+const H_END_Y = H_FEET_Y0 - H_LINE_RISE
 
-/** 肩と手の 2点が きまったとき、ひじが どこに なるか(2本の ほねの長さ が おなじ)。pref の ほうへ まがる */
-function elbowOf(shoulder: Pt, hand: Pt, bone: number, pref: Pt): Pt {
-  const dx = hand[0] - shoulder[0]
-  const dy = hand[1] - shoulder[1]
-  const d = Math.max(Math.hypot(dx, dy), 0.001)
-  const h = Math.sqrt(Math.max(0, bone * bone - (d / 2) * (d / 2)))
-  const mid: Pt = [shoulder[0] + dx / 2, shoulder[1] + dy / 2]
-  const a: Pt = [mid[0] + (-dy / d) * h, mid[1] + (dx / d) * h]
-  const b: Pt = [mid[0] - (-dy / d) * h, mid[1] - (dx / d) * h]
-  return a[0] * pref[0] + a[1] * pref[1] >= b[0] * pref[0] + b[1] * pref[1] ? a : b
-}
+const FARMER_LOOK = { ...LOOKS.boy, top: '#e0705a', bottom: '#3e5c86', hat: 'straw', hatColor: '#e8c36a' } as const
 
-/** かた → ひじ → 手 と つながる うで */
-function Arm({ shoulder, hand, pref, color }: { readonly shoulder: Pt; readonly hand: Pt; readonly pref: Pt; readonly color: string }) {
-  const elbow = elbowOf(shoulder, hand, 8, pref)
-  return (
-    <>
-      <path d={`M${shoulder[0]} ${shoulder[1]} L${elbow[0]} ${elbow[1]} L${hand[0]} ${hand[1]}`} fill="none" stroke={color} strokeWidth="4.2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hand[0]} cy={hand[1]} r="2.2" fill={SKIN} />
-    </>
-  )
-}
+/** くわを ふりおろす くりかえし。0 = 地面を うつ / 1 = いちばん 上 */
+const digLift = (t: number) => 0.5 - 0.5 * Math.cos((t / 0.5) * Math.PI * 2)
 
-/** くわ。えを の先に 鉄の はが ついて いる。 */
-function Hoe({ top, blade }: { readonly top: Pt; readonly blade: Pt }) {
-  const angle = (Math.atan2(blade[1] - top[1], blade[0] - top[0]) * 180) / Math.PI
-  return (
-    <>
-      <path d={`M${top[0]} ${top[1]} L${blade[0]} ${blade[1]}`} stroke={HANDLE} strokeWidth="1.8" strokeLinecap="round" />
-      <rect x="-1.1" y="-3.4" width="2.4" height="6.8" rx="1" fill={IRON} transform={`translate(${blade[0]} ${blade[1]}) rotate(${angle})`} />
-    </>
-  )
-}
+/* ───────── のうふ ───────── */
 
-type Mood = 'worried' | 'idea' | 'focus' | 'happy'
+type Hoe = { readonly pose: PersonProps['pose']; readonly tools: PersonProps['tools']; readonly blade: Pt; readonly angle: number }
 
-function Brim({ x }: { readonly x: number }) {
-  return (
-    <>
-      <path d={`M${x - 6.2} -39.2 Q${x} -50 ${x + 6.2} -39.2 Z`} fill={HAT} />
-      <ellipse cx={x} cy="-39.4" rx="9.8" ry="2.1" fill={HAT_DARK} />
-      <path d={`M${x - 6.2} -41.6 Q${x} -43.2 ${x + 6.2} -41.6`} fill="none" stroke={HAT_DARK} strokeWidth="0.9" strokeLinecap="round" />
-    </>
-  )
-}
-
-/** まえむきの顔(あたまの 中心は 0, -34.8) */
-function FrontFace({ mood }: { readonly mood: Mood }) {
-  const brow = mood === 'worried' ? 1 : mood === 'idea' ? -1.2 : 0
-  return (
-    <>
-      <circle cx="-3.9" cy="-32.2" r="1.5" fill="#ff9d9d" opacity="0.55" />
-      <circle cx="3.9" cy="-32.2" r="1.5" fill="#ff9d9d" opacity="0.55" />
-      {mood === 'happy' ? (
-        <>
-          <path d="M-3.9 -34 Q-2.4 -36 -0.9 -34 M0.9 -34 Q2.4 -36 3.9 -34" fill="none" stroke={EYE} strokeWidth="1" strokeLinecap="round" />
-          <path d="M-2.4 -31.7 Q0 -28.6 2.4 -31.7 Z" fill={MOUTH} />
-        </>
-      ) : (
-        <>
-          <circle cx="-2.4" cy="-34.2" r={mood === 'idea' ? 1.25 : 0.95} fill={EYE} />
-          <circle cx="2.4" cy="-34.2" r={mood === 'idea' ? 1.25 : 0.95} fill={EYE} />
-          <path d={`M-4 ${-36.4 - brow * 0.4} L-1.5 ${-36.4 - brow}`} stroke={EYE} strokeWidth="0.8" strokeLinecap="round" />
-          <path d={`M4 ${-36.4 - brow * 0.4} L1.5 ${-36.4 - brow}`} stroke={EYE} strokeWidth="0.8" strokeLinecap="round" />
-          {mood === 'worried' && <path d="M-1.7 -30.6 Q0 -32 1.7 -30.6" fill="none" stroke={MOUTH} strokeWidth="0.9" strokeLinecap="round" />}
-          {mood === 'focus' && <path d="M-1.6 -31 Q0 -30 1.6 -31" fill="none" stroke={MOUTH} strokeWidth="0.9" strokeLinecap="round" />}
-          {mood === 'idea' && <ellipse cx="0" cy="-30.8" rx="1" ry="1.3" fill={MOUTH} />}
-        </>
-      )}
-    </>
-  )
-}
-
-/** よこむき(みぎむき)の顔。目と口が すこし まえに よる */
-function SideFace({ mood }: { readonly mood: Mood }) {
-  const brow = mood === 'worried' ? 1 : mood === 'idea' ? -1.2 : 0
-  return (
-    <>
-      <circle cx="1.8" cy="-32.2" r="1.5" fill="#ff9d9d" opacity="0.55" />
-      {mood === 'happy' ? (
-        <>
-          <path d="M2 -34 Q3.5 -36 5 -34" fill="none" stroke={EYE} strokeWidth="1" strokeLinecap="round" />
-          <path d="M3.6 -31.7 Q5.4 -28.8 6.6 -31.7 Z" fill={MOUTH} />
-        </>
-      ) : (
-        <>
-          <circle cx="3.9" cy="-34.2" r={mood === 'idea' ? 1.25 : 0.95} fill={EYE} />
-          <path d={`M2.4 ${-36.2 - brow * 0.4} L5.4 ${-36.4 - brow}`} stroke={EYE} strokeWidth="0.8" strokeLinecap="round" />
-          {mood === 'worried' && <path d="M4 -30.6 Q5.4 -32 6.6 -30.6" fill="none" stroke={MOUTH} strokeWidth="0.9" strokeLinecap="round" />}
-          {mood === 'focus' && <path d="M4 -31 Q5.4 -30 6.6 -31" fill="none" stroke={MOUTH} strokeWidth="0.9" strokeLinecap="round" />}
-          {mood === 'idea' && <ellipse cx="5.6" cy="-30.8" rx="0.9" ry="1.2" fill={MOUTH} />}
-        </>
-      )}
-    </>
-  )
-}
-
-type FarmerProps = {
-  readonly view: 'front' | 'side'
-  readonly mood: Mood
-  /** くわを もちあげた高さ。0 = 地面に とどく / 1.3 = かついで あるく / 2 = 万歳のとき */
-  readonly lift: number
-  /** あるくとき、あしを ふる(-1〜1) */
-  readonly step: number
-  /** 大よろこび(0〜1): 左手を 上げ、くわを 右がわに かかげる */
-  readonly cheer: number
-}
-
-/** 足もと が 原点(0, 0)。上が マイナス。 */
-function Farmer({ view, mood, lift, step, cheer }: FarmerProps) {
-  const SH = -27
-  if (view === 'front') {
-    const hoeX = 9 * cheer
-    const top: Pt = [hoeX, -22 - lift * 6]
-    const blade: Pt = [hoeX, FRONT_REACH - lift * 8]
-    const rightHand = lerpPt(top, blade, 0.3)
-    const leftOn = lerpPt(top, blade, 0.12)
-    const leftHand = lerpPt([leftOn[0] - 1.8, leftOn[1]], [-8.5, -36], cheer)
-    return (
-      <>
-        <rect x="-4.6" y="-16" width="3.6" height="15" rx="1.8" fill={PANTS_DARK} />
-        <rect x="1" y="-16" width="3.6" height="15" rx="1.8" fill={PANTS} />
-        <ellipse cx="-2.8" cy="-0.6" rx="3" ry="1.6" fill={BOOT} />
-        <ellipse cx="2.8" cy="-0.6" rx="3" ry="1.6" fill={BOOT} />
-        <rect x="-6.2" y="-29.4" width="12.4" height="15.6" rx="4.4" fill={TUNIC} />
-        <path d="M-5 -17.6 h10" stroke={TUNIC_DARK} strokeWidth="1.3" strokeLinecap="round" />
-        <rect x="-1.8" y="-31.4" width="3.6" height="4.4" rx="1.6" fill={SKIN_SHADE} />
-        <circle cx="0" cy="-34.8" r="6.2" fill={SKIN} />
-        <FrontFace mood={mood} />
-        <Brim x={0} />
-        <Hoe top={top} blade={blade} />
-        <Arm shoulder={[-5.6, SH]} hand={leftHand} pref={[-1, 0.4]} color={TUNIC_DARK} />
-        <Arm shoulder={[5.6, SH]} hand={rightHand} pref={[1, 0.4]} color={TUNIC_DARK} />
-      </>
-    )
+/** 手と くわ。両手は えの 上、はは 地面(lift が 大きいほど もちあがる)。cheer で 右手 ばんざい、左手 で くわを かかげる */
+function holdHoe(base: PersonProps, lift: number, cheer: number): Hoe {
+  const facing: Facing = base.facing ?? 'right'
+  const rig = personRig({ ...base, pose: {} })
+  const l = Math.min(lift, CARRY)
+  if (facing === 'front') {
+    const [lx, ly] = rig.world.arms.left.root
+    const low: Pt = [base.x - 0.8, ly + 8 - 4 * l]
+    const high: Pt = [base.x - 1.6, ly + 4.5 - 4 * l]
+    const down: Pt = [base.x - 0.6, base.y + FRONT_REACH * S - 9 * l]
+    const upHand: Pt = [lx + 3, ly + 3]
+    const upTip: Pt = [lx + 5.5, ly - 11]
+    const tip: Pt = [down[0] + (upTip[0] - down[0]) * cheer, down[1] + (upTip[1] - down[1]) * cheer]
+    const grip: Limb = { to: low, depth: 6 }
+    const leftArm = mixLimb(grip, { to: upHand, depth: 4 }, cheer)
+    const rightArm = mixLimb({ to: high, depth: 6 }, { swing: 155, bend: 15 }, cheer)
+    return { pose: { leftArm, rightArm }, tools: { left: { kind: 'stick', tip, length: 28 } }, blade: tip, angle: cheer > 0.5 ? -90 : 90 }
   }
-  const top: Pt = [1.5, -22 - lift * 6]
-  const blade: Pt = [SIDE_REACH - lift * 2.5, 3 - lift * 12]
-  const farHand = lerpPt(top, blade, 0.14)
-  const nearHand = lerpPt(top, blade, 0.4)
-  return (
-    <>
-      <Arm shoulder={[0, SH]} hand={farHand} pref={[-1, 0.6]} color={TUNIC_FAR} />
-      <g transform={`rotate(${-step * 20} 0 -15)`}>
-        <rect x="-1.9" y="-16" width="3.6" height="15" rx="1.8" fill={PANTS_DARK} />
-        <ellipse cx="-0.2" cy="-0.6" rx="3.2" ry="1.6" fill={BOOT} />
-      </g>
-      <g transform={`rotate(${step * 20} 0 -15)`}>
-        <rect x="-1.9" y="-16" width="3.6" height="15" rx="1.8" fill={PANTS} />
-        <ellipse cx="0.6" cy="-0.6" rx="3.4" ry="1.6" fill={BOOT} />
-      </g>
-      <rect x="-4.4" y="-29.4" width="8.8" height="15.6" rx="4" fill={TUNIC} />
-      <path d="M-3.4 -17.6 h6.8" stroke={TUNIC_DARK} strokeWidth="1.3" strokeLinecap="round" />
-      <rect x="-1.4" y="-31.4" width="3.6" height="4.4" rx="1.6" fill={SKIN_SHADE} />
-      <circle cx="0.6" cy="-34.8" r="6.2" fill={SKIN} />
-      <SideFace mood={mood} />
-      <Brim x={0.8} />
-      <Hoe top={top} blade={blade} />
-      <Arm shoulder={[0, SH]} hand={nearHand} pref={[-1, 0.6]} color={TUNIC_DARK} />
-    </>
-  )
+  const d = facing === 'left' ? -1 : 1
+  const near = (nearSide(facing) ?? 'left') as BodySide
+  const [px, py] = rig.world.arms[near].root
+  const hand: Pt = [px + d * (4.2 - 1.2 * Math.min(l, 1)), py + 6.5 - 4 * l]
+  const blade: Pt = [base.x + d * (SIDE_REACH - 2.5 * l) * S, base.y + (3 - 12 * l) * S]
+  const len = Math.hypot(hand[0] - blade[0], hand[1] - blade[1]) || 1
+  const upper: Pt = [hand[0] + ((hand[0] - blade[0]) / len) * 1.8, hand[1] + ((hand[1] - blade[1]) / len) * 1.8]
+  const pose = near === 'left' ? { leftArm: { to: hand }, rightArm: { to: upper } } : { rightArm: { to: hand }, leftArm: { to: upper } }
+  const angle = (Math.atan2(blade[1] - hand[1], blade[0] - hand[0]) * 180) / Math.PI
+  return { pose, tools: { [near]: { kind: 'stick', tip: blade, length: 22 } } as PersonProps['tools'], blade, angle }
+}
+
+type FarmerState = {
+  readonly base: PersonProps
+  /** くわの もちあがり(0 = うつ / 1 = いちばん 上 / CARRY = かつぐ) */
+  readonly lift: number
+  readonly cheer: number
+  readonly face: PersonProps['face']
+}
+
+/** きまった 時間に きまった ところ。あるき は walk、まえへ ほりすすむ ところ は walkDepth、むき かえ は turnAround */
+function farmerState(t: number): FarmerState {
+  const still = (x: number, y: number, facing: Facing, squash = 1): PersonProps => ({ x, y, ...BODY, facing, squash })
+  const digWeight = (from: number, to: number) => span(t, from, from + 0.25) * (1 - span(t, to - 0.3, to))
+  const dig = (from: number, to: number) => CARRY * (1 - digWeight(from, to)) + digLift(t) * digWeight(from, to)
+  // 1. あぜを あるいてくる(左むき・こまった かお)
+  if (t < WALK_IN_END) {
+    const w = walk(t, { from: WALK_START_X, to: V_LINE_X, start: FIELD_DONE, end: WALK_IN_END, ...BODY })
+    return { base: { ...w, y: TOP_BANK_Y }, lift: CARRY, cheer: 0, face: 'worried' }
+  }
+  // 2. くるっと まえを むく。ひらめく
+  if (t < IDEA_END) {
+    const turn = turnAround(t, WALK_IN_END, 'left', 'front', 0.5)
+    return { base: { ...still(V_LINE_X, TOP_BANK_Y, turn.facing, turn.squash) }, lift: CARRY, cheer: 0, face: turn.facing === 'left' ? 'worried' : 'surprised' }
+  }
+  // 3. たてに ほる(下へ すすむ)
+  if (t < DIG_V_END) {
+    const w = walkDepth(t, { from: [V_LINE_X, TOP_BANK_Y], to: [V_LINE_X, V_END_Y], start: IDEA_END, end: DIG_V_END - 0.15, ...BODY })
+    return { base: { ...w, stance: undefined }, lift: dig(IDEA_END, DIG_V_END), cheer: 0, face: 'normal' }
+  }
+  // 4. 左むきに かわる
+  if (t < TURN_A_END) {
+    const turn = turnAround(t, DIG_V_END, 'front', 'left', TURN_A_END - DIG_V_END)
+    return { base: still(V_LINE_X, V_END_Y, turn.facing, turn.squash), lift: CARRY, cheer: 0, face: 'normal' }
+  }
+  // 5. 左はしへ あるく(あがりながら)
+  if (t < WALK_END) {
+    const w = walk(t, { from: V_LINE_X, to: H_FEET_X0, start: TURN_A_END, end: WALK_END, ...BODY })
+    return { base: { ...w, y: V_END_Y + (H_FEET_Y0 - V_END_Y) * span(t, TURN_A_END, WALK_END, easeInOut) }, lift: CARRY, cheer: 0, face: 'normal' }
+  }
+  // 6. 右むきに くるっと かわる
+  if (t < TURN_B_END) {
+    const turn = turnAround(t, WALK_END, 'left', 'right', TURN_B_END - WALK_END)
+    return { base: still(H_FEET_X0, H_FEET_Y0, turn.facing, turn.squash), lift: CARRY, cheer: 0, face: 'normal' }
+  }
+  // 7. よこに ほる(右へ すすむ)
+  if (t < DIG_H_END) {
+    const w = walk(t, { from: H_FEET_X0, to: H_END_X, start: TURN_B_END, end: DIG_H_END - 0.15, ...BODY })
+    return { base: { ...w, y: H_FEET_Y0 - H_LINE_RISE * span(t, TURN_B_END, DIG_H_END - 0.15) }, lift: dig(TURN_B_END, DIG_H_END), cheer: 0, face: 'normal' }
+  }
+  // 8. こちらを むく
+  if (t < TURN_C_END) {
+    const turn = turnAround(t, DIG_H_END, 'right', 'front', TURN_C_END - DIG_H_END)
+    return { base: still(H_END_X, H_END_Y, turn.facing, turn.squash), lift: CARRY, cheer: 0, face: turn.facing === 'right' ? 'normal' : 'smile' }
+  }
+  // 9. 大よろこび(くわを かかげて ぴょんぴょん)
+  const cheer = span(t, TURN_C_END, TURN_C_END + 0.3, easeOut)
+  const hop = Math.abs(Math.sin((t - TURN_C_END) * Math.PI * 2 * 1.3)) * 3
+  return { base: { ...still(H_END_X, H_END_Y, 'front'), lift: hop }, lift: CARRY, cheer, face: 'joy' }
+}
+
+/** くわの 鉄の は(えの さきに ついて、えと 同じ むき) */
+function Blade({ at, angle }: { readonly at: Pt; readonly angle: number }) {
+  return <rect x="-0.6" y="-2.4" width="1.7" height="4.8" rx="0.7" fill={IRON} transform={`translate(${at[0]} ${at[1]}) rotate(${angle})`} />
 }
 
 /* ───────── たんぼ ───────── */
@@ -255,7 +186,9 @@ function Ground({ t }: SceneProps) {
     <>
       <rect x="-2" y="-2" width="113" height="113" fill={GRASS} />
       {[[6, 14], [100, 20], [8, 94], [100, 98], [96, 62], [8, 60]].map(([x, y]) => (
-        <path key={`${x}-${y}`} d={`M${x} ${y} l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={GRASS_DARK} transform={`translate(${wave(t, 3.6, x) * 0.3} 0)`} />
+        <g key={`${x}-${y}`} opacity={0.9} transform={`translate(${wave(t, 3.6, x) * 0.3} 0)`}>
+          <Tuft x={x} y={y} color={LEAF_DARK} size={0.9} />
+        </g>
       ))}
     </>
   )
@@ -273,11 +206,11 @@ function Paddy({ t }: SceneProps) {
 }
 
 /** あぜ(土の みち)。土のいろ の 上に、ひとすじ 明るい色 */
-function Bank({ n, width, from = 0, to }: { readonly n: number; readonly width: number; readonly from?: number; readonly to: number }) {
+function Bank({ n, width, to }: { readonly n: number; readonly width: number; readonly to: number }) {
   return (
     <>
-      <Bone char={CHAR} n={n} color={SOIL} width={width} from={from} to={to} />
-      <Bone char={CHAR} n={n} color={SOIL_LIGHT} width={width * 0.34} from={from} to={to} opacity={0.8} />
+      <Bone char={CHAR} n={n} color={SOIL} width={width} to={to} />
+      <Bone char={CHAR} n={n} color={SOIL_LIGHT} width={width * 0.34} to={to} opacity={0.8} />
     </>
   )
 }
@@ -297,134 +230,14 @@ function Seedling({ x, y, grow }: { readonly x: number; readonly y: number; read
 /** 4つの たんぼに ふたつずつ 苗(あぜみちの 上には おかない) */
 const SEEDLINGS: readonly Pt[] = [[32, 38], [44, 47], [62, 37], [75, 47], [32, 64], [44, 74], [62, 66], [75, 74]]
 
-function Seedlings({ t }: SceneProps) {
-  return (
-    <>
-      {SEEDLINGS.map(([x, y], i) => (
-        <Seedling key={i} x={x} y={y} grow={span(t, 7.0 + i * 0.1, 7.55 + i * 0.1, backOut)} />
-      ))}
-    </>
-  )
-}
-
-/* ───────── のうふの うごき ───────── */
-
-type FarmerState = {
-  readonly x: number
-  readonly y: number
-  readonly view: 'front' | 'side'
-  /** よこの ひろがり(マイナス = 左むき)。0 の しゅんかん が 体の よこ向き */
-  readonly sx: number
-  readonly mood: Mood
-  readonly lift: number
-  readonly step: number
-  readonly cheer: number
-  readonly hop: number
-}
-
-/** くわを ふりおろす くりかえし。0 = 地面を うつ / 1 = いちばん 上 */
-const digLift = (t: number) => 0.5 - 0.5 * Math.cos((t / 0.5) * Math.PI * 2)
-
-const V_STEP_Y = V_HEAD_END - FRONT_REACH * S - TOP_BANK_Y
-const H_FEET_X0 = H_LINE_X0 - SIDE_REACH * S
-const H_FEET_Y0 = H_LINE_Y0 - 0.7
-
-/** 前むき ↔ 左むき の 回る じゅんび。p = 0〜1 で、前むき(1)→よこ(0)→左むき(-1) */
-const turnFrontToLeft = (p: number) => (p < 0.5 ? { view: 'front' as const, sx: 1 - 2 * p } : { view: 'side' as const, sx: -(2 * p - 1) })
-
-function farmerState(t: number): FarmerState {
-  const bob = (phase: number) => -Math.abs(Math.sin(phase * Math.PI * 2 * 1.6)) * 0.9
-  const stride = (from: number) => Math.sin((t - from) * Math.PI * 2 * 1.6)
-
-  // 1. あぜを あるいてくる(左むき・こまった かお)
-  if (t < WALK_IN_END) {
-    const phase = Math.max(0, t - FIELD_DONE)
-    return { x: mix(t, FIELD_DONE, WALK_IN_END, WALK_START_X, V_LINE_X, (x) => x), y: TOP_BANK_Y + bob(phase), view: 'side', sx: -1, mood: 'worried', lift: NO_LIFT, step: stride(FIELD_DONE), cheer: 0, hop: 0 }
-  }
-  // 2. くるっと まえを むく。ひらめく
-  if (t < IDEA_END) {
-    const p = span(t - 0 + 0, WALK_IN_END, WALK_IN_END + 0.5)
-    const turned = p < 0.5 ? { view: 'side' as const, sx: -(1 - 2 * p) } : { view: 'front' as const, sx: 2 * p - 1 }
-    return { x: V_LINE_X, y: TOP_BANK_Y, ...turned, mood: p < 0.5 ? 'worried' : 'idea', lift: NO_LIFT, step: 0, cheer: 0, hop: 0 }
-  }
-  // 3. たてに ほる(下へ すすむ)
-  if (t < DIG_V_END) {
-    const p = span(t, IDEA_END, DIG_V_END - 0.15)
-    const w = span(t, IDEA_END, IDEA_END + 0.25) * (1 - span(t, DIG_V_END - 0.3, DIG_V_END))
-    return { x: V_LINE_X, y: TOP_BANK_Y + p * V_STEP_Y, view: 'front', sx: 1, mood: 'focus', lift: NO_LIFT * (1 - w) + digLift(t) * w, step: 0, cheer: 0, hop: 0 }
-  }
-  const vEndY = TOP_BANK_Y + V_STEP_Y
-  // 4. 左むきに かわる
-  if (t < TURN_A_END) {
-    const turned = turnFrontToLeft(span(t, DIG_V_END, TURN_A_END))
-    return { x: V_LINE_X, y: vEndY, ...turned, mood: 'focus', lift: NO_LIFT, step: 0, cheer: 0, hop: 0 }
-  }
-  // 5. 左はしへ あるく
-  if (t < WALK_END) {
-    const k = span(t, TURN_A_END, WALK_END, easeInOut)
-    return { x: mix(t, TURN_A_END, WALK_END, V_LINE_X, H_FEET_X0), y: vEndY + (H_FEET_Y0 - vEndY) * k + bob(t - TURN_A_END), view: 'side', sx: -1, mood: 'focus', lift: NO_LIFT, step: stride(TURN_A_END), cheer: 0, hop: 0 }
-  }
-  // 6. 右むきに くるっと かわる
-  if (t < TURN_B_END) {
-    const p = span(t, WALK_END, TURN_B_END)
-    return { x: H_FEET_X0, y: H_FEET_Y0, view: 'side', sx: -1 + 2 * p, mood: 'focus', lift: NO_LIFT, step: 0, cheer: 0, hop: 0 }
-  }
-  // 7. よこに ほる(右へ すすむ)
-  if (t < DIG_H_END) {
-    const q = span(t, TURN_B_END, DIG_H_END - 0.15)
-    const w = span(t, TURN_B_END, TURN_B_END + 0.25) * (1 - span(t, DIG_H_END - 0.3, DIG_H_END))
-    return { x: H_FEET_X0 + q * H_LINE_LEN, y: H_FEET_Y0 - q * H_LINE_RISE, view: 'side', sx: 1, mood: 'focus', lift: NO_LIFT * (1 - w) + digLift(t) * w, step: 0, cheer: 0, hop: 0 }
-  }
-  const endX = H_FEET_X0 + H_LINE_LEN
-  const endY = H_FEET_Y0 - H_LINE_RISE
-  // 8. こちらを むく
-  if (t < TURN_C_END) {
-    const p = span(t, DIG_H_END, TURN_C_END)
-    const turned = p < 0.5 ? { view: 'side' as const, sx: 1 - 2 * p } : { view: 'front' as const, sx: 2 * p - 1 }
-    return { x: endX, y: endY, ...turned, mood: p < 0.5 ? 'focus' : 'happy', lift: NO_LIFT, step: 0, cheer: 0, hop: 0 }
-  }
-  // 9. 大よろこび(くわを かかげて ぴょんぴょん)
-  const cheer = span(t, TURN_C_END, TURN_C_END + 0.3, easeOut)
-  const hop = Math.abs(Math.sin((t - TURN_C_END) * Math.PI * 2 * 1.3)) * 3
-  return { x: endX, y: endY, view: 'front', sx: 1, mood: 'happy', lift: NO_LIFT + (2 - NO_LIFT) * cheer, step: 0, cheer, hop }
-}
-
-/* ───────── かざり ───────── */
-
 /** 足もとの みずの わ。みずの 上(あぜ みち いがい)を すすむとき だけ */
 function Ripples({ t, x, y, show }: { readonly t: number; readonly x: number; readonly y: number; readonly show: number }) {
   if (show <= 0) return null
   return (
     <g fill="none" stroke="#ffffff" strokeWidth="0.8" opacity={show}>
       {[0, 0.5].map((offset) => {
-        const p = ((t + offset) % 1) / 1
+        const p = (t + offset) % 1
         return <ellipse key={offset} cx={x} cy={y} rx={2.5 + p * 8} ry={1 + p * 3} opacity={(1 - p) * 0.8} />
-      })}
-    </g>
-  )
-}
-
-/** くわが 土を うつ ときの 土けむり */
-function Dust({ x, y, lift, show }: { readonly x: number; readonly y: number; readonly lift: number; readonly show: number }) {
-  const k = Math.max(0, 1 - lift * 2.4)
-  if (show <= 0 || k <= 0) return null
-  return (
-    <g fill={SOIL} opacity={show * k}>
-      {[-1, 0, 1].map((i) => (
-        <circle key={i} cx={x + i * 2.4 * (1.6 - k)} cy={y - 1 - (1 - k) * 4 - Math.abs(i) * 0.8} r={0.9 + (1 - k) * 0.4} />
-      ))}
-    </g>
-  )
-}
-
-/** あせの しずく(こまって あるく間) */
-function Sweat({ t, x, y, show }: { readonly t: number; readonly x: number; readonly y: number; readonly show: number }) {
-  if (show <= 0) return null
-  return (
-    <g opacity={show}>
-      {[0, 0.45].map((offset) => {
-        const p = ((t + offset) % 0.9) / 0.9
-        return <path key={offset} d="M0 -1.8 Q1.5 0.4 0 1.5 Q-1.5 0.4 0 -1.8 Z" fill="#7cc4f2" transform={`translate(${x + 5 + p * 3} ${y - 24 + p * 7}) rotate(-20)`} opacity={1 - p} />
       })}
     </g>
   )
@@ -448,45 +261,26 @@ function IdeaBubble({ t }: SceneProps) {
   )
 }
 
-/** はじめに ひゅんと とんでいく 小鳥(よこむき) */
-function Bird({ t }: SceneProps) {
-  const p = span(t, 0.05, 1.15)
-  if (p <= 0 || p >= 1) return null
-  const x = -8 + p * 126
-  const y = 9 + Math.sin(p * 9) * 1.6
-  const flap = wave(t, 0.18) * 26
-  return (
-    <Layer x={x} y={y}>
-      <path d="M-3.6 0.4 l-3.2 -1.4 l1.2 2.4 Z" fill="#c4743f" />
-      <ellipse cx="0" cy="0" rx="3.6" ry="2.4" fill="#e8955a" />
-      <circle cx="3" cy="-1.2" r="1.9" fill="#e8955a" />
-      <path d="M4.8 -1.2 l2 0.5 l-2 0.7 Z" fill="#f2b632" />
-      <circle cx="3.5" cy="-1.5" r="0.45" fill={EYE} />
-      <Layer rotate={flap} origin={[-0.4, -0.8]}>
-        <path d="M-1.8 -0.8 Q0 -4.6 3 -1 Q0.6 0.4 -1.8 -0.8 Z" fill="#c4743f" />
-      </Layer>
-    </Layer>
-  )
-}
-
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 5)
   const f = farmerState(t)
+  const hoe = holdHoe(f.base, f.lift, f.cheer)
+  const farmer: PersonProps = { ...f.base, pose: { ...f.base.pose, ...hoe.pose }, tools: hoe.tools, face: f.face, look: FARMER_LOOK, opacity: span(t, FIELD_DONE - 0.1, FIELD_DONE + 0.1) }
+  const head = personRig(farmer).world.head
+
   // あぜの ひろがり: まず まわり、つぎに まんなか(のうふが ほった ぶんだけ)
   const topRight = span(t, 0.1, 0.75, easeOut)
   const left = span(t, 0.1, 0.55, easeOut)
   const bottom = span(t, 0.35, 0.85, easeOut)
-  const vHead = TOP_BANK_Y + FRONT_REACH * S + (f.y - TOP_BANK_Y) * 1
+  const vHead = f.base.y + FRONT_REACH * S
   const vDug = t < IDEA_END ? 0.1 : t < DIG_V_END ? Math.max(0.1, (vHead - 29) / (V_HEAD_END - 29)) : 1
-  const hHead = f.x + SIDE_REACH * S
+  const hHead = f.base.x + SIDE_REACH * S
   const hDug = t < TURN_B_END ? 0 : t < DIG_H_END ? Math.max(0.01, (hHead - H_LINE_X0) / H_LINE_LEN) : 1
-  const inWater = f.y > TOP_BANK_Y + 2 && (t < DIG_H_END || t > TURN_C_END)
-  const rippleShow = inWater && t < TURN_C_END + 0.2 ? span(t, TURN_A_END - 0.3, TURN_A_END - 0.1) + (t < TURN_A_END ? (t >= IDEA_END ? 1 : 0) : 0) : 0
+  const inWater = f.base.y > TOP_BANK_Y + 2 && (t < DIG_H_END || t > TURN_C_END)
+  const rippleShow = inWater ? clamp01(span(t, TURN_A_END - 0.3, TURN_A_END - 0.1) + (t < TURN_A_END && t >= IDEA_END ? 1 : 0)) : 0
   const diggingNow = (t >= IDEA_END + 0.2 && t < DIG_V_END - 0.2) || (t >= TURN_B_END + 0.2 && t < DIG_H_END - 0.2)
-  const bladeX = f.view === 'front' ? f.x : f.x + SIDE_REACH * S
-  const bladeY = f.view === 'front' ? f.y + FRONT_REACH * S : f.y + 0.7
-  const dustLift = diggingNow ? digLift(t) : 1
-  const appear = span(t, FIELD_DONE - 0.1, FIELD_DONE + 0.1)
+  const dustP = diggingNow ? Math.min(0.999, digLift(t) * 2.4) : 1
+  const birdP = span(t, 0.05, 1.15)
   const bump = Math.sin(span(t, DONE - 0.9, DONE - 0.45) * Math.PI) * 0.06
 
   return (
@@ -494,21 +288,20 @@ function Scene({ t }: SceneProps) {
       <Layer opacity={ink.picture}>
         <Ground t={t} />
         <Paddy t={t} />
-        <Seedlings t={t} />
+        {SEEDLINGS.map(([x, y], i) => (
+          <Seedling key={i} x={x} y={y} grow={span(t, 7.0 + i * 0.1, 7.55 + i * 0.1, backOut)} />
+        ))}
         <Bank n={1} width={5} to={left} />
         <Bank n={2} width={5.4} to={topRight} />
         <Bank n={5} width={5} to={bottom} />
         <Bank n={3} width={4.4} to={vDug} />
         <Bank n={4} width={4.4} to={hDug} />
-        <Bird t={t} />
-        <Ripples t={t} x={f.x} y={f.y - 0.4} show={rippleShow > 0 ? Math.min(1, rippleShow) * appear : 0} />
-        <Dust x={bladeX} y={bladeY} lift={dustLift} show={diggingNow ? 1 : 0} />
-        <Layer opacity={appear}>
-          <Layer x={f.x} y={f.y - f.hop} scaleX={S * f.sx} scaleY={S}>
-            <Farmer view={f.view} mood={f.mood} lift={f.lift} step={f.step} cheer={f.cheer} />
-          </Layer>
-          <Sweat t={t} x={f.x} y={f.y} show={during(t, FIELD_DONE + 0.2, WALK_IN_END + 0.3, 0.2)} />
-        </Layer>
+        {birdP > 0 && birdP < 1 && <Bird x={-8 + birdP * 126} y={9 + Math.sin(birdP * 9) * 1.6} t={t} flying facing="right" />}
+        <Ripples t={t} x={f.base.x} y={f.base.y - 0.4} show={rippleShow * span(t, FIELD_DONE - 0.1, FIELD_DONE + 0.1)} />
+        <Dust x={hoe.blade[0]} y={f.base.y + FRONT_REACH * S} p={dustP} reach={4} color={SOIL} />
+        <Person {...farmer} />
+        <Blade at={hoe.blade} angle={hoe.angle} />
+        <Sweat t={t} x={head[0] + 3} y={head[1] - 2} show={during(t, FIELD_DONE + 0.2, WALK_IN_END + 0.3, 0.2)} dir={1} />
         <IdeaBubble t={t} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
@@ -525,7 +318,7 @@ const scene: SceneModule = {
   duration: DURATION,
   beats: [
     { at: 0, label: '四角い たんぼが できる', sound: 'pop' },
-    { at: FIELD_DONE, label: 'のうふが あるいてくる。ひろくて こまった' },
+    { at: FIELD_DONE, label: 'のうふが あるいてきて、こまった' },
     { at: WALK_IN_END, label: 'そうだ！ 4つに わけよう', sound: 'pop' },
     { at: IDEA_END, label: 'くわで、たてに あぜみちを ほる' },
     { at: TURN_B_END, label: 'よこにも あぜみちを ほる' },
