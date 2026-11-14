@@ -42,6 +42,14 @@ export const LOOKS = {
   man: { hair: PALETTE.hairDark, top: '#59b88a', bottom: '#4b5f86' },
   /** おんな の人 */
   woman: { hair: PALETTE.hairDark, hairStyle: 'bob', top: '#8a6cc7', bottom: '#3b4a73', bottomKind: 'skirt' },
-  /** おとしより */
+  /** おとしより(おじいさん) */
   elder: { hair: PALETTE.hairGray, hairStyle: 'bald', top: '#c9a66b', bottom: '#6b5a4a' },
+  /** おばあさん(白い かみ を おだんご に) */
+  grandma: { hair: PALETTE.hairGray, hairStyle: 'bun', top: '#b98bb5', bottom: '#6b5a7a', bottomKind: 'skirt' },
+  /** 中学生くらい の 男の子(白い シャツ・こん の ズボン)。build="teen" と いっしょに */
+  student: { hair: PALETTE.hairDark, top: '#f4f1ea', bottom: '#3b4a73', sleeves: 'short' },
+  /** 中学生くらい の 女の子(白い シャツ・こん の スカート) */
+  studentGirl: { hair: PALETTE.hairDark, hairStyle: 'ponytail', top: '#f4f1ea', bottom: '#3b4a73', bottomKind: 'skirt', sleeves: 'short', accent: '#3b4a73' },
+  /** 小さい 子(幼児)。build="toddler" と いっしょに */
+  baby: { hairStyle: 'short', top: '#ffd24a', bottom: '#4f9be0', bottomKind: 'shorts', sleeves: 'short' },
 } as const satisfies Record<string, Look>

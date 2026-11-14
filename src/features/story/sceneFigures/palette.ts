@@ -56,6 +56,55 @@ export const PALETTE = {
   notice: '#f2b632',
   sigh: '#c9d6e6',
   snore: '#5f7fd6',
+  /* 夕方・夜(「夜」「夕」「月」の 場面 と 同じ 色) */
+  skyEvening: '#ffc79a',
+  horizonEvening: '#ffb067',
+  skyNight: '#27336f',
+  horizonNight: '#3d4f80',
+  sunEvening: '#ff9f4a',
+  moon: '#ffe58a',
+  moonShade: '#f2cd68',
+  moonGlow: '#fff3b0',
+  star: '#fff6c8',
+  hillEvening: '#e8cfa4',
+  hillNight: '#2f4a63',
+  grassEvening: '#b5cf8c',
+  grassNight: '#3c6a5c',
+  leafEvening: '#4a9a5c',
+  leafNight: '#2a6552',
+  cloudEvening: '#ffd7c8',
+  cloudNight: '#8e9bc9',
+  /* くもり・雨(「雨」「室」の 場面 と 同じ 色) */
+  skyGray: '#c3cddb',
+  cloudGray: '#9fadc2',
+  /* へや(「書」「室」の 場面 と 同じ 色) */
+  wallRoom: '#fbefd5',
+  wallRoomNight: '#f0d8a8',
+  floorWood: '#d9a76a',
+  floorWoodDark: '#c18f55',
+  furniture: '#b9824f',
+  furnitureDark: '#8c5b3c',
+  furnitureLight: '#d9a76a',
+  blackboard: '#2f5d50',
+  chalk: '#f4f1ea',
+  glass: '#cfe6f5',
+  /* 火 */
+  flame: '#ff7a2e',
+  flameMid: '#ffb02e',
+  flameCore: '#ffe27a',
+  ember: '#ff6a3a',
+  /* 岩・道・田畑 */
+  rock: '#a8adb6',
+  rockLight: '#c9cdd4',
+  rockDark: '#8b919b',
+  path: '#e8d9b5',
+  pathEdge: '#d8c49a',
+  paddyWater: '#a9d9f7',
+  rice: '#7cc843',
+  /* 雨・雪 */
+  rain: '#5aaee8',
+  snow: '#ffffff',
+  snowShade: '#dcebf8',
 } as const
 
 /** 服の色の くみあわせ(うわぎ・ズボン)。人ごとに 色を かえて、だれが だれか わかるように する */
@@ -84,6 +133,14 @@ export function mixColor(a: string, b: string, k: number): string {
   const to = rgbOf(b)
   const p = clamp01(k)
   return `#${from.map((c, i) => hex2(c + (to[i] - c) * p)).join('')}`
+}
+
+/**
+ * 時間で かわる 色。time は 0 = 昼、1 = 夕方、2 = 夜(とちゅう も よい: 1.5 は 夕方 と 夜 の あいだ)。
+ * Backdrop・Room の time と 同じ。じぶんで 描く 物の 色も、これで 昼 → 夕方 → 夜 に そろえる。
+ */
+export function byTime(time: number, day: string, evening: string, night: string): string {
+  return mixColor(mixColor(day, evening, clamp01(time)), night, clamp01(time - 1))
 }
 
 /** かげ の色。k が 大きいほど こい(むこうがわ の うで・あし は 0.3 くらい) */

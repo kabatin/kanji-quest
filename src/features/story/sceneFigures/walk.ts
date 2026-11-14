@@ -136,8 +136,11 @@ type Point2 = readonly [number, number]
 /**
  * ふりむく。at から duration 秒で、from の向き から to の向き へ(とちゅうで 体が 細くなって 入れかわる)。
  * <Person {...turnAround(t, 3, 'right', 'left')} … /> のように わたす。
+ * via を わたすと、いったん その向きを 通る(正面 → 横 → うしろ のように、体が 回って 見える)。
+ * そのときは from → via と via → to に、それぞれ duration 秒 かける。
  */
-export function turnAround(t: number, at: number, from: Facing, to: Facing, duration = 0.3): { readonly facing: Facing; readonly squash: number } {
+export function turnAround(t: number, at: number, from: Facing, to: Facing, duration = 0.3, via?: Facing): { readonly facing: Facing; readonly squash: number } {
+  if (via !== undefined) return t < at + duration ? turnAround(t, at, from, via, duration) : turnAround(t, at + duration, via, to, duration)
   const k = span(t, at, at + duration, easeInOut)
   return { facing: k < 0.5 ? from : to, squash: Math.max(0.12, Math.abs(Math.cos(k * Math.PI))) }
 }

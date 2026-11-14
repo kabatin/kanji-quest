@@ -1,17 +1,19 @@
 import type { ReactNode } from 'react'
 import { backOut, clamp01, easeOut, span } from '../sceneKit'
 import { Layer } from '../sceneParts'
-import { PALETTE, shade } from './palette'
+import { byTime, mixColor, PALETTE, shade } from './palette'
+import { Moon, Sky, Stars } from './sky'
 
 /**
  * 背景の 定番: お日さま・雲・おか・のはら・草・木・家・花。「休」の 背景と 同じ 絵がら。
  * どれも t か 進みぐあい(grow など 0〜1)を もらって描く だけ(じぶんで 時間を もたない)。
+ * Backdrop は time で 昼 → 夕方 → 夜 に かわる(空・月・星 は sky.tsx)。
  */
 
 const r2 = (n: number) => Math.round(n * 100) / 100
 
 /** お日さま。ひかり が ゆっくり まわる。from 秒から 0.6 秒で あらわれる */
-export function Sun({ t, x = 13, y = 13, r = 6.2, from = 0, color = PALETTE.sun }: { readonly t: number; readonly x?: number; readonly y?: number; readonly r?: number; readonly from?: number; readonly color?: string }) {
+export function Sun({ t, x = 13, y = 13, r = 6.2, from = 0, color = PALETTE.sun, rays = 1 }: { readonly t: number; readonly x?: number; readonly y?: number; readonly r?: number; readonly from?: number; readonly color?: string; readonly rays?: number }) {
   const show = span(t, from, from + 0.6, easeOut)
   if (show <= 0) return null
   // ひかり は 円の 少し外から(「休」と 同じ わりあい)
@@ -20,7 +22,7 @@ export function Sun({ t, x = 13, y = 13, r = 6.2, from = 0, color = PALETTE.sun 
   const width = r * 0.26
   return (
     <>
-      <Layer opacity={show} rotate={t * 14} origin={[x, y]}>
+      <Layer opacity={show * rays} rotate={t * 14} origin={[x, y]}>
         {Array.from({ length: 8 }, (_, i) => (
           <rect key={i} x={r2(x - width / 2)} y={r2(y - inner - long)} width={r2(width)} height={r2(long)} rx={r2(width / 2)} fill={color} transform={`rotate(${i * 45} ${x} ${y})`} />
         ))}
@@ -31,9 +33,9 @@ export function Sun({ t, x = 13, y = 13, r = 6.2, from = 0, color = PALETTE.sun 
 }
 
 /** 雲 ひとつ(大きい だ円 と 小さい だ円)。size 1 で はば 18 くらい */
-export function Cloud({ x, y, size = 1, opacity = 0.9 }: { readonly x: number; readonly y: number; readonly size?: number; readonly opacity?: number }) {
+export function Cloud({ x, y, size = 1, opacity = 0.9, color = PALETTE.cloud }: { readonly x: number; readonly y: number; readonly size?: number; readonly opacity?: number; readonly color?: string }) {
   return (
-    <g fill={PALETTE.cloud} opacity={opacity}>
+    <g fill={color} opacity={opacity}>
       <ellipse cx={x} cy={y} rx={r2(7 * size)} ry={r2(3.4 * size)} />
       <ellipse cx={r2(x + 5 * size)} cy={r2(y - 2 * size)} rx={r2(5 * size)} ry={r2(3.4 * size)} />
     </g>
@@ -43,11 +45,11 @@ export function Cloud({ x, y, size = 1, opacity = 0.9 }: { readonly x: number; r
 export type CloudSpot = readonly [x: number, y: number, size: number]
 
 /** ゆっくり ながれる 雲(speed は 1秒に すすむ きょり) */
-export function Clouds({ t, at, speed = 1.6 }: { readonly t: number; readonly at: readonly CloudSpot[]; readonly speed?: number }) {
+export function Clouds({ t, at, speed = 1.6, color, opacity }: { readonly t: number; readonly at: readonly CloudSpot[]; readonly speed?: number; readonly color?: string; readonly opacity?: number }) {
   return (
     <g transform={`translate(${r2(t * speed)} 0)`}>
       {at.map(([x, y, size]) => (
-        <Cloud key={`${x}:${y}`} x={x} y={y} size={size} />
+        <Cloud key={`${x}:${y}`} x={x} y={y} size={size} color={color} opacity={opacity} />
       ))}
     </g>
   )
@@ -65,12 +67,12 @@ export function Tuft({ x, y, color = PALETTE.leaf, size = 1 }: { readonly x: num
 }
 
 /** のはら: 地面の だ円 と 草。地面の 上の はし は だいたい y - 5 */
-export function Meadow({ y = 98, tufts = [8, 46, 82, 100], color = PALETTE.grass }: { readonly y?: number; readonly tufts?: readonly number[]; readonly color?: string }) {
+export function Meadow({ y = 98, tufts = [8, 46, 82, 100], color = PALETTE.grass, tuftColor = PALETTE.leaf }: { readonly y?: number; readonly tufts?: readonly number[]; readonly color?: string; readonly tuftColor?: string }) {
   return (
     <>
       <ellipse cx="54.5" cy={y} rx="51" ry="5.6" fill={color} />
       {tufts.map((x) => (
-        <Tuft key={x} x={x} y={y - 0.5} />
+        <Tuft key={x} x={x} y={y - 0.5} color={tuftColor} />
       ))}
     </>
   )
@@ -79,6 +81,9 @@ export function Meadow({ y = 98, tufts = [8, 46, 82, 100], color = PALETTE.grass
 /**
  * いつもの 背景 ひとそろい(お日さま・とおくの おか・雲・のはら)。「休」の 背景と 同じ。
  * sun={null} で お日さま なし、clouds={[]} で 雲 なし。
+ * time で 時間を かえる: 0 = 昼(いつもの)、1 = 夕方、2 = 夜。とちゅう の 値で だんだん くれていく
+ * (mix(t, 2, 4, 0, 2) のように わたす)。夕方 は お日さま を ひくく(sun={[90, 72]} など)おくと しずむ ように 見える。
+ * 夜は 月(moon。null で なし)と 星 が 出る。雨・雪 の 日 は overcast(くもり)を 1 に。
  */
 export function Backdrop({
   t,
@@ -89,6 +94,10 @@ export function Backdrop({
   ],
   tufts,
   ground = 98,
+  time = 0,
+  moon = [88, 16],
+  moonPhase = 'full',
+  overcast = 0,
 }: {
   readonly t: number
   readonly sun?: readonly [number, number] | null
@@ -96,13 +105,44 @@ export function Backdrop({
   readonly tufts?: readonly number[]
   /** のはら の だ円 の まんなか の y */
   readonly ground?: number
+  /** 0 = 昼、1 = 夕方、2 = 夜 */
+  readonly time?: number
+  readonly moon?: readonly [number, number] | null
+  readonly moonPhase?: 'full' | 'crescent'
+  /** くもり(0〜1)。空 が はい色 に なり、お日さま が かくれ、雲 が くらくなる(雨・雪 の 日) */
+  readonly overcast?: number
 }) {
+  if (time <= 0 && overcast <= 0) {
+    return (
+      <>
+        {sun && <Sun t={t} x={sun[0]} y={sun[1]} />}
+        <Hills y={ground - 98} />
+        <Clouds t={t} at={clouds} />
+        <Meadow y={ground} tufts={tufts} />
+      </>
+    )
+  }
+  const night = Math.min(1, Math.max(0, time - 1))
+  const dusk = Math.min(1, time)
+  const gray = Math.min(1, Math.max(0, overcast))
+  const cloud = mixColor(byTime(time, PALETTE.cloud, PALETTE.cloudEvening, PALETTE.cloudNight), PALETTE.cloudGray, gray)
   return (
     <>
-      {sun && <Sun t={t} x={sun[0]} y={sun[1]} />}
-      <Hills y={ground - 98} />
-      <Clouds t={t} at={clouds} />
-      <Meadow y={ground} tufts={tufts} />
+      <Sky time={time} />
+      {gray > 0 && <rect x="-2" y="-2" width="113" height="113" fill={mixColor(PALETTE.skyGray, PALETTE.skyNight, night)} opacity={r2(gray * 0.85)} />}
+      <Stars t={t} show={night * (1 - gray)} />
+      {moon && <Moon x={moon[0]} y={moon[1]} phase={moonPhase} show={night} />}
+      {sun && night < 1 && gray < 1 && (
+        <g opacity={(1 - night) * (1 - gray)}>
+          <circle cx={sun[0]} cy={sun[1]} r={r2(6.2 + 5 * dusk)} fill={PALETTE.sunEvening} opacity={r2(0.3 * dusk)} />
+          <Sun t={t} x={sun[0]} y={sun[1]} color={byTime(time, PALETTE.sun, PALETTE.sunEvening, PALETTE.sunEvening)} rays={1 - dusk} />
+        </g>
+      )}
+      <Hills y={ground - 98} color={byTime(time, PALETTE.hill, PALETTE.hillEvening, PALETTE.hillNight)} />
+      {/* のはら より てまえ の 地面(昼 は 場面の 下地 の 色。くれると いっしょに くらく) */}
+      <rect x="-2" y={ground} width="113" height={r2(111 - ground)} fill={byTime(time, '#fffdf7', '#f6e3c6', '#2b3d55')} />
+      <Clouds t={t} at={clouds} color={cloud} opacity={0.9 - 0.4 * night * (1 - gray)} />
+      <Meadow y={ground} tufts={tufts} color={byTime(time, PALETTE.grass, PALETTE.grassEvening, PALETTE.grassNight)} tuftColor={byTime(time, PALETTE.leaf, PALETTE.leafEvening, PALETTE.leafNight)} />
     </>
   )
 }
