@@ -1,5 +1,12 @@
+import type { ReactNode } from 'react'
 import type { HairStyle } from './head'
 import { shade } from './palette'
+
+/** むすびめ(at)を じく に かみ の たば を まわす。0 度 の ときは 何も つつまない(いままで と 同じ 絵) */
+export function Sway({ angle, at, children }: { readonly angle: number; readonly at: readonly [number, number]; readonly children: ReactNode }) {
+  if (angle === 0) return children
+  return <g transform={`rotate(${Math.round(angle * 1000) / 1000} ${at[0]} ${at[1]})`}>{children}</g>
+}
 
 /**
  * うしろ から 見た あたま(後頭部)。あたまの まんなか が 0,0、半径 1。
@@ -32,13 +39,17 @@ function Crown({ hair, x = 0.12, y = -0.58 }: { readonly hair: string; readonly 
   return <path d={`M${x - 0.12} ${y + 0.02} q0.1 -0.16 0.22 -0.04 q0.06 0.14 -0.12 0.16`} stroke={shade(hair, 0.22)} strokeWidth="0.08" {...LINE} />
 }
 
-/** かみ の うしろ(あたまの 円 より おく): おだんご・ふたつむすび の たば は 円の よこに はみ出す */
-export function BackHairBehind({ style, hair }: { readonly style: HairStyle; readonly hair: string }) {
+/** かみ の うしろ(あたまの 円 より おく): おだんご・ふたつむすび の たば は 円の よこに はみ出す。sway は たば の ゆれ(度) */
+export function BackHairBehind({ style, hair, sway = 0 }: { readonly style: HairStyle; readonly hair: string; readonly sway?: number }) {
   if (style === 'pigtails') {
     return (
       <>
-        <circle cx="-1.18" cy="0.48" r="0.43" fill={hair} />
-        <circle cx="1.18" cy="0.48" r="0.43" fill={hair} />
+        <Sway angle={-sway} at={[-1.01, 0.04]}>
+          <circle cx="-1.18" cy="0.48" r="0.43" fill={hair} />
+        </Sway>
+        <Sway angle={sway} at={[1.01, 0.04]}>
+          <circle cx="1.18" cy="0.48" r="0.43" fill={hair} />
+        </Sway>
       </>
     )
   }
@@ -46,7 +57,7 @@ export function BackHairBehind({ style, hair }: { readonly style: HairStyle; rea
 }
 
 /** かみ(あたまの 円 の 上に かさねる) */
-export function BackHair({ style, hair, accent, skin }: { readonly style: HairStyle; readonly hair: string; readonly accent: string; readonly skin: string }) {
+export function BackHair({ style, hair, accent, skin, sway = 0 }: { readonly style: HairStyle; readonly hair: string; readonly accent: string; readonly skin: string; readonly sway?: number }) {
   const dark = shade(hair, 0.18)
   if (style === 'bald') return <path d={BACK_BALD} fill={hair} />
   if (style === 'short') {
@@ -72,7 +83,10 @@ export function BackHair({ style, hair, accent, skin }: { readonly style: HairSt
         <path d={BACK_LONG} fill={hair} />
         {/* むすびめ へ あつまる かみ の すじ */}
         <path d="M-0.5 0.44 Q0.1 -0.1 0.62 -0.66 M0.34 0.5 Q0.5 -0.1 0.7 -0.62" stroke={dark} strokeWidth="0.06" {...LINE} />
-        <path d={BACK_TAIL} fill={hair} />
+        {/* うしろ から 見ると 左右 が はんたい なので、ゆれ も はんたい むき */}
+        <Sway angle={-sway} at={[0.74, -0.76]}>
+          <path d={BACK_TAIL} fill={hair} />
+        </Sway>
         <circle cx="0.72" cy="-0.74" r="0.2" fill={accent} />
       </>
     )

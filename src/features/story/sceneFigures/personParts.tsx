@@ -1,6 +1,8 @@
 import type { LimbJoints, Point, Proportions, View } from './body'
 import type { BottomKind, Look } from './looks'
 import { mixColor, shade } from './palette'
+import { Tool } from './tools'
+import { TOOL_SIZE, type ToolKind } from './toolSize'
 
 /**
  * 人の 体の 部分(うで・あし・どう・スカート)。Person.tsx が 体の中の 座標(local)で ならべて描く。
@@ -16,8 +18,19 @@ const clamp = (x: number, lo: number, hi: number) => Math.min(Math.max(x, lo), h
 
 export type Paint = { readonly cloth: string; readonly skin: string; readonly shoe: string }
 
-/** うで: かた → ひじ → 手 */
-export function Arm({ j, body, paint, sleeves, part }: { readonly j: LimbJoints; readonly body: Proportions; readonly paint: Paint; readonly sleeves: 'long' | 'short'; readonly part: string }) {
+/** 手に もった 道具(体の中 の 座標) */
+export type HeldTool = { readonly kind: ToolKind; readonly end: Point; readonly tip: Point; readonly ink?: string }
+
+/** にぎった 手 の おや指: こぶし から 道具 の 先 の ほう へ 少し 出て、道具 を おさえる */
+function Thumb({ hand, toward, r, skin }: { readonly hand: Point; readonly toward: Point; readonly r: number; readonly skin: string }) {
+  const dx = toward[0] - hand[0]
+  const dy = toward[1] - hand[1]
+  const d = Math.hypot(dx, dy) || 1
+  return <ellipse cx={r2(hand[0] + (dx / d) * r * 0.62)} cy={r2(hand[1] + (dy / d) * r * 0.62)} rx={r2(r * 0.46)} ry={r2(r * 0.38)} fill={shade(skin, 0.06)} transform={`rotate(${r2((Math.atan2(dy, dx) * 180) / Math.PI)} ${r2(hand[0] + (dx / d) * r * 0.62)} ${r2(hand[1] + (dy / d) * r * 0.62)})`} />
+}
+
+/** うで: かた → ひじ → 手。tool が あれば、道具 → 手 → おや指 の じゅん(こぶし の 中 を 道具 が 通る) */
+export function Arm({ j, body, paint, sleeves, part, tool }: { readonly j: LimbJoints; readonly body: Proportions; readonly paint: Paint; readonly sleeves: 'long' | 'short'; readonly part: string; readonly tool?: HeldTool }) {
   return (
     <g data-part={part}>
       {sleeves === 'short' ? (
@@ -28,7 +41,9 @@ export function Arm({ j, body, paint, sleeves, part }: { readonly j: LimbJoints;
       ) : (
         <path d={limbPath(j)} stroke={paint.cloth} strokeWidth={body.armW} {...LINE} />
       )}
+      {tool && <Tool kind={tool.kind} end={tool.end} tip={tool.tip} width={TOOL_SIZE[tool.kind].width} ink={tool.ink} />}
       <circle cx={r2(j.end[0])} cy={r2(j.end[1])} r={body.handR} fill={paint.skin} />
+      {tool && <Thumb hand={j.end} toward={tool.tip} r={body.handR} skin={paint.skin} />}
     </g>
   )
 }

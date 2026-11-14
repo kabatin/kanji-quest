@@ -55,6 +55,23 @@ export function Dust({ x, y, p, reach = 14, color = PALETTE.dust }: { readonly x
   )
 }
 
+/**
+ * 「?」の しるし(どっち? だれ? なんだろう?)。x, y は しるし の まんなか(あたま の ななめ上 に おく)、size は 高さ。
+ * t を わたすと ふわふわ うく。show は こさ で、出はじめ に ぽん と 大きく なる。文字 では なく 線 で 描く
+ */
+export function Question({ x, y, show, t = 0, size = 8, color = PALETTE.question }: { readonly x: number; readonly y: number; readonly show: number; readonly t?: number; readonly size?: number; readonly color?: string }) {
+  if (show <= 0) return null
+  const pop = 0.7 + 0.3 * Math.min(1, show)
+  const k = (size / 8) * pop
+  const bob = Math.sin((t / 0.9) * Math.PI * 2) * 0.8
+  return (
+    <g opacity={r2(Math.min(1, show))} transform={`translate(${r2(x)} ${r2(y + bob)}) scale(${r2(k)})`} data-part="question">
+      <path d="M-2.2 -2 Q-2.2 -4.6 0 -4.6 Q2.2 -4.6 2.2 -2.6 Q2.2 -1.2 0 -0.2 V1" fill="none" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="0" cy="3.2" r="0.95" fill={color} />
+    </g>
+  )
+}
+
 /** 「はっ」と 気づいた しるし: あたまの まわりに みじかい すじ 3本。x, y は あたまの まんなか、r は あたまの 半径 */
 export function Notice({ x, y, r, show, dir = -1, color = PALETTE.notice }: { readonly x: number; readonly y: number; readonly r: number; readonly show: number; readonly dir?: number; readonly color?: string }) {
   if (show <= 0) return null

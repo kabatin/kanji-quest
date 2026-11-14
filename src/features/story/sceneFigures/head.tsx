@@ -1,4 +1,8 @@
-import { BackHair, BackHairBehind } from './headBack'
+import { isMoreExpression, type MoreExpression } from './expressions'
+import { FrontFaceMore, SideFaceMore } from './faces'
+import { BackHair, BackHairBehind, Sway } from './headBack'
+import { Glasses, Hat } from './headGear'
+import type { HatKind } from './looks'
 import { PALETTE, shade } from './palette'
 
 /**
@@ -9,8 +13,11 @@ import { PALETTE, shade } from './palette'
 
 /** かみがた。bun(おだんご)は おばあさん など に */
 export type HairStyle = 'short' | 'bob' | 'ponytail' | 'pigtails' | 'bald' | 'bun'
-/** 顔: ふつう・にっこり・大よろこび(口を あける)・びっくり・こまった・目をとじる */
-export type Expression = 'normal' | 'smile' | 'joy' | 'surprised' | 'sad' | 'closed'
+/**
+ * 顔: ふつう・にっこり・大よろこび(口を あける)・びっくり・かなしい・目をとじる と、
+ * あとから 足した こまった(worried)・おこった(angry)・なく(cry)・ねむい(sleepy)・ぐっと 力を 入れる(strain)(faces.tsx)
+ */
+export type Expression = 'normal' | 'smile' | 'joy' | 'surprised' | 'sad' | 'closed' | MoreExpression
 
 type HeadProps = {
   readonly view: 'side' | 'front' | 'back'
@@ -21,9 +28,17 @@ type HeadProps = {
   readonly accent: string
   /** 正面の 目線(-1 = 画面の左 〜 1 = 右) */
   readonly gaze: number
+  /** 目線 の 上下(-1 = 上 〜 1 = 下)。0 で まっすぐ */
+  readonly gazeY?: number
+  /** ポニーテール・ふたつむすび の ゆれ(度。むすびめ を じく に まわる) */
+  readonly hairSway?: number
+  readonly hat?: HatKind | 'none'
+  readonly hatColor?: string
+  readonly glasses?: boolean
 }
 
 const LINE = { fill: 'none', strokeLinecap: 'round', strokeLinejoin: 'round' } as const
+const r3 = (n: number) => Math.round(n * 1000) / 1000
 
 /* ───── 横むき(右むき)───── */
 
@@ -38,16 +53,24 @@ const SIDE_BUN: readonly [number, number, number] = [-0.86, -0.72, 0.4]
 /** はげた あたま: うしろ の 耳の 高さ に だけ かみ が のこる */
 const SIDE_BALD = 'M-0.2 0 C-0.6 -0.32 -1.06 -0.2 -1.05 0.28 C-1.03 0.6 -0.84 0.74 -0.6 0.68 C-0.66 0.42 -0.52 0.16 -0.2 0 Z'
 
-function SideHairBack({ style, hair, accent }: { readonly style: HairStyle; readonly hair: string; readonly accent: string }) {
+function SideHairBack({ style, hair, accent, sway = 0 }: { readonly style: HairStyle; readonly hair: string; readonly accent: string; readonly sway?: number }) {
   if (style === 'ponytail') {
     return (
       <>
-        <path d={SIDE_TAIL} fill={hair} />
+        <Sway angle={sway} at={[-0.66, -0.9]}>
+          <path d={SIDE_TAIL} fill={hair} />
+        </Sway>
         <circle cx="-0.62" cy="-0.9" r="0.17" fill={accent} />
       </>
     )
   }
-  if (style === 'pigtails') return <circle cx="-0.98" cy="0.42" r="0.42" fill={hair} />
+  if (style === 'pigtails') {
+    return (
+      <Sway angle={sway} at={[-0.82, 0.14]}>
+        <circle cx="-0.98" cy="0.42" r="0.42" fill={hair} />
+      </Sway>
+    )
+  }
   if (style === 'bun') return <circle cx={SIDE_BUN[0]} cy={SIDE_BUN[1]} r={SIDE_BUN[2]} fill={shade(hair, 0.1)} />
   return null
 }
@@ -63,7 +86,7 @@ function SideHair({ style, hair, accent }: { readonly style: HairStyle; readonly
   )
 }
 
-function SideFace({ face, hair }: { readonly face: Expression; readonly hair: string }) {
+function SideFace({ face, hair, lookY }: { readonly face: Expression; readonly hair: string; readonly lookY: number }) {
   const eye = PALETTE.eye
   const mouth = PALETTE.mouth
   const arcEye = face === 'smile' || face === 'joy'
@@ -72,7 +95,7 @@ function SideFace({ face, hair }: { readonly face: Expression; readonly hair: st
       <circle cx="0.4" cy="0.46" r="0.23" fill={PALETTE.cheek} opacity="0.55" />
       {arcEye && <path d="M0.36 0.12 Q0.52 -0.08 0.68 0.12" stroke={eye} strokeWidth="0.13" {...LINE} />}
       {face === 'closed' && <path d="M0.7 0.03 Q0.52 0.22 0.35 0.03" stroke={eye} strokeWidth="0.13" {...LINE} />}
-      {(face === 'normal' || face === 'sad') && <circle cx="0.52" cy="0.1" r="0.125" fill={eye} />}
+      {(face === 'normal' || face === 'sad') && <DotEye x={0.52} y={0.1} r={0.125} lookY={lookY} />}
       {face === 'surprised' && (
         <>
           <circle cx="0.52" cy="0.08" r="0.18" fill={eye} />
@@ -102,12 +125,14 @@ const FRONT_PIG_BANGS = 'M-1.012 -0.193 Q-0.988 -1.289 0 -1.289 Q0.988 -1.289 1.
 /** おだんご の 人の まえがみ: まんなか で わけて うしろへ なでつける(ひたい が 見える) */
 const FRONT_SWEPT = 'M-1.04 0.24 C-1.16 -0.84 -0.53 -1.26 0 -1.24 C0.53 -1.26 1.16 -0.84 1.04 0.24 C0.96 -0.2 0.8 -0.46 0.5 -0.56 Q0.2 -0.62 0 -0.5 Q-0.2 -0.62 -0.5 -0.56 C-0.8 -0.46 -0.96 -0.2 -1.04 0.24 Z'
 
-function FrontHairBack({ style, hair, accent }: { readonly style: HairStyle; readonly hair: string; readonly accent: string }) {
+function FrontHairBack({ style, hair, accent, sway = 0 }: { readonly style: HairStyle; readonly hair: string; readonly accent: string; readonly sway?: number }) {
   if (style === 'bob') return <path d={FRONT_BOB} fill={hair} />
   if (style === 'ponytail') {
     return (
       <>
-        <path d={FRONT_TAIL} fill={hair} />
+        <Sway angle={sway} at={[-0.74, -0.76]}>
+          <path d={FRONT_TAIL} fill={hair} />
+        </Sway>
         <circle cx="-0.72" cy="-0.74" r="0.2" fill={accent} />
       </>
     )
@@ -115,8 +140,13 @@ function FrontHairBack({ style, hair, accent }: { readonly style: HairStyle; rea
   if (style === 'pigtails') {
     return (
       <>
-        <circle cx="-1.18" cy="0.48" r="0.43" fill={hair} />
-        <circle cx="1.18" cy="0.48" r="0.43" fill={hair} />
+        {/* 左右の たば は かがみ うつし に ゆれる */}
+        <Sway angle={sway} at={[-1.01, 0]}>
+          <circle cx="-1.18" cy="0.48" r="0.43" fill={hair} />
+        </Sway>
+        <Sway angle={-sway} at={[1.01, 0]}>
+          <circle cx="1.18" cy="0.48" r="0.43" fill={hair} />
+        </Sway>
         <ellipse cx="0" cy="-0.145" rx="1.2" ry="1.157" fill={hair} />
       </>
     )
@@ -147,7 +177,16 @@ function FrontHair({ style, hair, accent }: { readonly style: HairStyle; readonl
   return <path d={style === 'bun' ? FRONT_SWEPT : FRONT_BANGS} fill={hair} />
 }
 
-function FrontFace({ face, hair, gaze }: { readonly face: Expression; readonly hair: string; readonly gaze: number }) {
+/**
+ * 点の 目。目線 が 上下 に むく(lookY ≠ 0)ときは、目を ずらし、下を 見る ほど まぶた が さがって 平たく なる。
+ * lookY が 0 なら いままで と 同じ circle を 描く。
+ */
+function DotEye({ x, y, r, lookY }: { readonly x: number; readonly y: number; readonly r: number; readonly lookY: number }) {
+  if (lookY === 0) return <circle cx={x} cy={y.toString()} r={r} fill={PALETTE.eye} />
+  return <ellipse cx={r3(x)} cy={r3(y + lookY)} rx={r} ry={r3(r * (1 - Math.max(0, lookY) * 2.5))} fill={PALETTE.eye} />
+}
+
+function FrontFace({ face, hair, gaze, lookY }: { readonly face: Expression; readonly hair: string; readonly gaze: number; readonly lookY: number }) {
   const eye = PALETTE.eye
   const mouth = PALETTE.mouth
   const look = Math.max(-1, Math.min(1, gaze)) * 0.12
@@ -158,11 +197,11 @@ function FrontFace({ face, hair, gaze }: { readonly face: Expression; readonly h
           <circle cx={s * 0.6} cy="0.42" r="0.22" fill={PALETTE.cheek} opacity="0.55" />
           {(face === 'smile' || face === 'joy') && <path d={`M${s * 0.5} 0.14 Q${s * 0.36} -0.06 ${s * 0.22} 0.14`} stroke={eye} strokeWidth="0.12" {...LINE} />}
           {face === 'closed' && <path d={`M${s * 0.5} 0.08 Q${s * 0.36} 0.24 ${s * 0.22} 0.08`} stroke={eye} strokeWidth="0.12" {...LINE} />}
-          {(face === 'normal' || face === 'sad') && <circle cx={s * 0.36 + look} cy="0.1" r="0.14" fill={eye} />}
+          {(face === 'normal' || face === 'sad') && <DotEye x={s * 0.36 + look} y={0.1} r={0.14} lookY={lookY} />}
           {face === 'surprised' && (
             <>
-              <circle cx={s * 0.36 + look} cy="0.08" r="0.18" fill={eye} />
-              <circle cx={s * 0.36 + look - 0.05} cy="0.03" r="0.06" fill="#ffffff" />
+              <circle cx={s * 0.36 + look} cy={lookY === 0 ? '0.08' : r3(0.08 + lookY)} r="0.18" fill={eye} />
+              <circle cx={s * 0.36 + look - 0.05} cy={lookY === 0 ? '0.03' : r3(0.03 + lookY)} r="0.06" fill="#ffffff" />
             </>
           )}
           {face === 'sad' && <path d={`M${s * 0.52} -0.1 L${s * 0.24} -0.2`} stroke={hair} strokeWidth="0.1" {...LINE} />}
@@ -178,33 +217,51 @@ function FrontFace({ face, hair, gaze }: { readonly face: Expression; readonly h
   )
 }
 
-/** あたま ひとつ。かみ の うしろ → かお → かみ の まえ → 目・口 の じゅんに かさねる(うしろむき は 顔 なし) */
-export function Head({ view, face, hairStyle, hair, skin, accent, gaze }: HeadProps) {
+/** めがね → ぼうし の じゅん(ぼうし の つば が めがね の 上に かかる)。どちらも なければ 何も 描かない */
+function Gear({ view, hat = 'none', hatColor, glasses = false, hair }: Pick<HeadProps, 'view' | 'hat' | 'hatColor' | 'glasses' | 'hair'>) {
+  return (
+    <>
+      {glasses && <Glasses view={view} />}
+      {hat !== 'none' && <Hat kind={hat} view={view} color={hatColor} hair={hair} />}
+    </>
+  )
+}
+
+/**
+ * あたま ひとつ。かみ の うしろ → かお → かみ の まえ → 目・口 →(めがね・ぼうし)の じゅんに かさねる(うしろむき は 顔 なし)。
+ * gazeY(目線 の 上下)は、点の 目 の 顔(ふつう・かなしい・びっくり・こまった・おこった)で 目を 上下に ずらす。
+ */
+export function Head({ view, face, hairStyle, hair, skin, accent, gaze, gazeY = 0, hairSway = 0, hat, hatColor, glasses }: HeadProps) {
+  const lookY = Math.max(-1, Math.min(1, gazeY)) * 0.12
+  const gear = <Gear view={view} hat={hat} hatColor={hatColor} glasses={glasses} hair={hair} />
   if (view === 'back') {
     return (
       <>
-        <BackHairBehind style={hairStyle} hair={hair} />
+        <BackHairBehind style={hairStyle} hair={hair} sway={hairSway} />
         <circle r="1" fill={skin} />
-        <BackHair style={hairStyle} hair={hair} accent={accent} skin={skin} />
+        <BackHair style={hairStyle} hair={hair} accent={accent} skin={skin} sway={hairSway} />
+        {gear}
       </>
     )
   }
   if (view === 'side') {
     return (
       <>
-        <SideHairBack style={hairStyle} hair={hair} accent={accent} />
+        <SideHairBack style={hairStyle} hair={hair} accent={accent} sway={hairSway} />
         <circle r="1" fill={skin} />
         <SideHair style={hairStyle} hair={hair} accent={accent} />
-        <SideFace face={face} hair={hair} />
+        {isMoreExpression(face) ? <SideFaceMore face={face} hair={hair} lookY={lookY * 0.8} /> : <SideFace face={face} hair={hair} lookY={lookY * 0.8} />}
+        {gear}
       </>
     )
   }
   return (
     <>
-      <FrontHairBack style={hairStyle} hair={hair} accent={accent} />
+      <FrontHairBack style={hairStyle} hair={hair} accent={accent} sway={hairSway} />
       <circle r="1" fill={skin} />
       <FrontHair style={hairStyle} hair={hair} accent={accent} />
-      <FrontFace face={face} hair={hair} gaze={gaze} />
+      {isMoreExpression(face) ? <FrontFaceMore face={face} hair={hair} lookX={Math.max(-1, Math.min(1, gaze)) * 0.12} lookY={lookY} /> : <FrontFace face={face} hair={hair} gaze={gaze} lookY={lookY} />}
+      {gear}
     </>
   )
 }

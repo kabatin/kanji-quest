@@ -3,6 +3,17 @@ import { PALETTE } from './palette'
 
 export type BottomKind = 'pants' | 'shorts' | 'skirt' | 'dress'
 
+/** ぼうし(絵 は headGear.tsx) */
+export type HatKind = 'cap' | 'school' | 'straw' | 'knit'
+
+/** ぼうし ごとの 色(hatColor を 省いたとき) */
+export const HAT_COLORS: Readonly<Record<HatKind, string>> = {
+  cap: '#3c6fd6',
+  school: '#ffd24a',
+  straw: '#ecd08a',
+  knit: '#e8647a',
+}
+
 /** 人の 見た目(はだ・かみ・服 の 色 と 形) */
 export type Look = {
   readonly skin?: string
@@ -15,6 +26,12 @@ export type Look = {
   readonly shoes?: string
   /** かみかざり の 色 */
   readonly accent?: string
+  /** ぼうし: 'cap'(野球ぼう)・'school'(通学ぼう)・'straw'(むぎわら)・'knit'(ニット)。'none' で なし */
+  readonly hat?: HatKind | 'none'
+  /** ぼうし の 色(省くと ぼうし ごとの 色) */
+  readonly hatColor?: string
+  /** めがね を かける */
+  readonly glasses?: boolean
 }
 
 /** 何も 指定しない ときの 見た目(「休」の人 と 同じ) */
@@ -28,6 +45,10 @@ export const DEFAULT_LOOK: Required<Look> = {
   sleeves: 'long',
   shoes: PALETTE.shoe,
   accent: '#ff5a6e',
+  hat: 'none',
+  // '' は「ぼうし ごとの 色」
+  hatColor: '',
+  glasses: false,
 }
 
 /** よく使う 見た目。{ ...LOOKS.girl, top: CLOTHES.green.top } のように 色だけ かえてもよい */

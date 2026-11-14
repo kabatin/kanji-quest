@@ -1,4 +1,4 @@
-import { BUILDS, bodyScale, DEFAULT_HEIGHT, DEPTH_TILT, personRig, SEAT, type Build, type Facing, type LimbAngles, type Placement, type PersonPose, type Point } from './body'
+import { BUILDS, bodyScale, DEFAULT_HEIGHT, DEPTH_TILT, personRig, SEAT, type Build, type Facing, type LimbAngles, type Placement, type PersonPose, type Point, type Rig } from './body'
 
 /**
  * よく使う かっこう(すわる・しゃがむ・ひざまずく・ねころぶ・物を もつ)。
@@ -88,7 +88,34 @@ export function lieDown({ x, y, build = 'child', height, headTo = 'left' }: { re
   } as const satisfies Placement & { readonly shadow: boolean }
 }
 
-export type HoldPlace = 'chest' | 'waist' | 'overhead'
+/** chest = むね の まえ・waist = こし の まえ・overhead = あたま の 上・offer = 両手 を まえへ のばして さし出す */
+export type HoldPlace = 'chest' | 'waist' | 'overhead' | 'offer'
+
+/**
+ * さし出す: 両手 を まえへ のばして、物を 相手 の ほうへ。
+ * 正面・うしろむき は 手 を まえうしろ の おくゆき(depth)つき で 物の 左右 に とどかせる(ひじ は 少し まげて 外へ)。
+ * うしろむき では 物も うで も 体の むこう(見えない)。
+ */
+function offerPose(rig: Rig, width: number, ahead: number): { readonly at: Point; readonly pose: PersonPose } {
+  const { body, scale, world, view } = rig
+  const arm = (body.upperArm + body.foreArm) * scale
+  const shoulder: Point = [(world.arms.left.root[0] + world.arms.right.root[0]) / 2, (world.arms.left.root[1] + world.arms.right.root[1]) / 2]
+  if (view === 'side') {
+    const at: Point = [shoulder[0] + ahead * (arm * 0.78 + width * 0.3), shoulder[1] + arm * 0.24]
+    const grip: Point = [at[0] - ahead * width * 0.2, at[1] + width * 0.1]
+    const near = rig.near ?? 'left'
+    const far: Point = [grip[0] + ahead * width * 0.12, grip[1] - 0.6 * scale]
+    return { at, pose: near === 'left' ? { leftArm: { to: grip }, rightArm: { to: far } } : { rightArm: { to: grip }, leftArm: { to: far } } }
+  }
+  // まえ へ うで の 7わり半、むね の 高さ。正面 は 見る人 の ほう(画面の 下)、うしろむき は おく(画面の 上)に 見える
+  const depth = arm * 0.75
+  const at: Point = [world.pelvis[0], shoulder[1] + arm * 0.3 + depth * DEPTH_TILT * (view === 'front' ? 1 : -1)]
+  const half = width / 2
+  // 正面 は 右手 が 画面の 左、うしろむき は 右手 が 画面の 右
+  const right = view === 'front' ? -1 : 1
+  const hand = (side: number): Point => [at[0] + side * half, at[1] + width * 0.12]
+  return { at, pose: { rightArm: { to: hand(right), depth }, leftArm: { to: hand(-right), depth } } }
+}
 
 /**
  * 両手で 物を もつ。物の まんなか(画面の 座標)と、その 物を もつ うで の ポーズ を 返す。
@@ -97,6 +124,7 @@ export type HoldPlace = 'chest' | 'waist' | 'overhead'
  *   <Person {...place} pose={{ ...place.pose, ...hold.pose }} held={<Basket x={hold.at[0]} y={hold.at[1]} />} />
  * width は 物の はば(画面の 単位。正面・うしろむき で 手を 物の 左右 に そえる)。
  * うしろむき では 物は 体の むこう に あって 見えない(うで も 体の おく へ のびる)。
+ * place = 'offer' は 両手 を まえ へ のばして さし出す(offerPose)。
  */
 export function holdPose(placement: Placement, place: HoldPlace = 'chest', width = 10): { readonly at: Point; readonly pose: PersonPose } {
   const rig = personRig({ ...placement, pose: { ...placement.pose, leftArm: undefined, rightArm: undefined } })
@@ -104,6 +132,7 @@ export function holdPose(placement: Placement, place: HoldPlace = 'chest', width
   const arm = (body.upperArm + body.foreArm) * scale
   const shoulder: Point = [(world.arms.left.root[0] + world.arms.right.root[0]) / 2, (world.arms.left.root[1] + world.arms.right.root[1]) / 2]
   const ahead = placement.facing === 'left' ? -1 : 1
+  if (place === 'offer') return offerPose(rig, width, ahead)
   if (view === 'back') {
     // せなか の むこう: うで は まえ へ のばして ひじ を まげる(体に かくれる)
     const up = place === 'overhead'

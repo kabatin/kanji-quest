@@ -56,6 +56,7 @@ export const PALETTE = {
   notice: '#f2b632',
   sigh: '#c9d6e6',
   snore: '#5f7fd6',
+  question: '#5f7fd6',
   /* 夕方・夜(「夜」「夕」「月」の 場面 と 同じ 色) */
   skyEvening: '#ffc79a',
   horizonEvening: '#ffb067',
@@ -105,6 +106,29 @@ export const PALETTE = {
   rain: '#5aaee8',
   snow: '#ffffff',
   snowShade: '#dcebf8',
+  /* 海・砂はま(「歩」の 場面 と 同じ 色) */
+  sea: '#7cc4f2',
+  seaDark: '#56aae6',
+  foam: '#ffffff',
+  sand: '#f6e3b0',
+  sandDark: '#ecd397',
+  footprint: '#d9b878',
+  /* 山(てまえ は こい みどり、とおく は 青み の ある みどり) */
+  mountain: '#55b86e',
+  mountainShade: '#3f9c59',
+  mountainFar: '#86c79a',
+  mountainFarShade: '#62a67f',
+  /* 和室・やね(「学」の 場面 と 同じ 色) */
+  tatami: '#e4e7a9',
+  tatamiLine: '#cbd187',
+  roofTile: '#5f6f92',
+  roofTileDark: '#4c5a7a',
+  roofTileLight: '#7f8fb2',
+  pillar: '#c99766',
+  pillarDark: '#a5764b',
+  /* ゴール */
+  tape: '#ff5d73',
+  poleStripe: '#e8534a',
 } as const
 
 /** 服の色の くみあわせ(うわぎ・ズボン)。人ごとに 色を かえて、だれが だれか わかるように する */

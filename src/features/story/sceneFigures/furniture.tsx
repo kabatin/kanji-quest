@@ -124,6 +124,35 @@ export function Desk({ x, y, width = 26, height = 16, top = 0, color = PALETTE.f
   )
 }
 
+/**
+ * ひくい つくえ(ざたく)。正座 や あぐら の 人 の まえ に おく。x は まんなか、y は ゆか、height は いた の てまえ の へり の 高さ。
+ * top は 上の 面 が 見える おくゆき(正面 から 少し 上を 見るので 3〜5)。上の 面 は y - height - top 〜 y - height。
+ * paper で 上の 面 に 紙 を しく(字 や 絵 は 場面 が この 面 の 上 に 描く)。
+ * 正面 の 人 の まえ に おく ときは <Person held={…}> に わたすと、体 と うで の あいだ に なる(手 が つくえ の 上 に のる)。
+ */
+export function LowTable({ x, y, width = 30, height = 5, top = 5, color = PALETTE.furnitureLight, paper = false }: { readonly x: number; readonly y: number; readonly width?: number; readonly height?: number; readonly top?: number; readonly color?: string; readonly paper?: boolean }) {
+  const surface = y - height
+  const board = Math.min(2.4, height * 0.5)
+  const leg = Math.max(1.6, width * 0.07)
+  const dark = shade(color, 0.25)
+  const half = width / 2
+  // おく の へり は 少し みじかく 見える
+  const back = half - Math.min(1.6, top * 0.35)
+  return (
+    <g data-part="low-table">
+      {/* おく の あし(てまえ の あし の 内がわ に 少し 見える)→ てまえ の あし */}
+      <rect x={r2(x - half + leg * 1.6)} y={r2(surface)} width={r2(leg * 0.8)} height={r2(Math.max(0, height - top * 0.6))} fill={shade(color, 0.4)} />
+      <rect x={r2(x + half - leg * 2.4)} y={r2(surface)} width={r2(leg * 0.8)} height={r2(Math.max(0, height - top * 0.6))} fill={shade(color, 0.4)} />
+      <rect x={r2(x - half + 0.6)} y={r2(surface)} width={r2(leg)} height={r2(height)} rx="0.4" fill={dark} />
+      <rect x={r2(x + half - 0.6 - leg)} y={r2(surface)} width={r2(leg)} height={r2(height)} rx="0.4" fill={dark} />
+      {top > 0 && <path d={`M${r2(x - back)} ${r2(surface - top)} H${r2(x + back)} L${r2(x + half)} ${r2(surface)} H${r2(x - half)} Z`} fill={mixColor(color, '#ffffff', 0.12)} />}
+      {paper && top > 0 && <path d={`M${r2(x - back * 0.78)} ${r2(surface - top * 0.86)} H${r2(x + back * 0.78)} L${r2(x + half * 0.8)} ${r2(surface - top * 0.14)} H${r2(x - half * 0.8)} Z`} fill="#fffdf6" />}
+      <rect x={r2(x - half)} y={r2(surface)} width={width} height={r2(board)} rx="0.7" fill={color} />
+      <path d={`M${r2(x - half + 0.6)} ${r2(surface + board)} H${r2(x + half - 0.6)}`} stroke={dark} strokeWidth="0.6" />
+    </g>
+  )
+}
+
 /** こくばん。x, y は 左上、lines は チョーク で 書いた すじ の 数(0〜) */
 export function Blackboard({ x, y, width = 40, height = 22, lines = 0 }: { readonly x: number; readonly y: number; readonly width?: number; readonly height?: number; readonly lines?: number }) {
   const frame = 1.6

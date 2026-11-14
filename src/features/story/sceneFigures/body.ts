@@ -8,11 +8,11 @@
  * うで・あし の 角度の きまり は limbs.ts。
  */
 import { BUILDS, bodyScale, type Build, type Proportions } from './builds'
-import { clamp, DEPTH_TILT, forward, HANG_ARM, isMix, isTarget, mixAngles, mixLimb, reach, STRAIGHT_LEG, type Kind, type Limb, type LimbAngles, type LimbJoints, type Plane, type Point } from './limbs'
+import { clamp, DEPTH_TILT, forward, HANG_ARM, isMix, isTarget, mixAngles, mixLimb, reach, reachDeep, STRAIGHT_LEG, type Kind, type Limb, type LimbAngles, type LimbJoints, type Plane, type Point } from './limbs'
 
 export { BUILDS, DEFAULT_HEIGHT, bodyScale } from './builds'
 export type { Build, Proportions } from './builds'
-export { DEPTH_TILT, HANG_ARM, STRAIGHT_LEG, isMix, isTarget, mixLimb, reach } from './limbs'
+export { DEPTH_TILT, HANG_ARM, STRAIGHT_LEG, isMix, isTarget, mixLimb, reach, reachDeep } from './limbs'
 export type { Limb, LimbAngles, LimbJoints, LimbMix, LimbTarget, Point } from './limbs'
 
 export type Facing = 'left' | 'right' | 'front' | 'back'
@@ -78,6 +78,8 @@ export type Rig = {
   /** 体の中 → 画面 の SVG transform */
   readonly transform: string
   readonly toWorld: (p: Point) => Point
+  /** 画面 → 体の中(toWorld の ぎゃく。手に もたせる 道具 の 先 を 体の中 に もどす ときに使う) */
+  readonly toLocal: (p: Point) => Point
 }
 
 /** すわったとき、こし から おしり の 下 まで */
@@ -176,7 +178,13 @@ export function personRig(placement: Placement): Rig {
 
   const angleOf = (limb: Limb, root: Point, kind: Kind, outward: number, toLocal: ((p: Point) => Point) | null): LimbAngles => {
     if (isMix(limb)) return mixAngles(angleOf(limb.mix[0], root, kind, outward, toLocal), angleOf(limb.mix[1], root, kind, outward, toLocal), limb.k)
-    if (isTarget(limb)) return toLocal ? reach(root, toLocal(limb.to), kind === 'arm' ? armLengths : legLengths, kind, plane, outward) : kind === 'arm' ? HANG_ARM : STRAIGHT_LEG
+    if (isTarget(limb)) {
+      if (!toLocal) return kind === 'arm' ? HANG_ARM : STRAIGHT_LEG
+      const lengths = kind === 'arm' ? armLengths : legLengths
+      // 正面・うしろむき で まえうしろ の 場所 も わたされたら、3次元 で とどかせる
+      if (plane === 'front' && limb.depth !== undefined) return reachDeep(root, toLocal(limb.to), limb.depth / scale, lengths, kind, outward, tilt)
+      return reach(root, toLocal(limb.to), lengths, kind, plane, outward)
+    }
     return limb
   }
   const legLimb = (side: BodySide): Limb => (side === 'left' ? pose.leftLeg : pose.rightLeg) ?? (plane === 'side' ? { swing: side === nearSide(facing) ? 1.5 : -1.5, bend: 0 } : STRAIGHT_LEG)
@@ -184,13 +192,14 @@ export function personRig(placement: Placement): Rig {
 
   // こし から 地面 まで: くつ底・ひざ・おしり の うち いちばん下(stance が あれば その 足の くつ底)。
   // to で 指定した あし は 物に とどく ほう なので 入れない(2本とも to なら、まっすぐ 立った 高さ)
-  const extentOf = (s: Side): number => {
+  const extentOf = (s: Side, soleOnly = false): number => {
     const j = forward(hipOf(s), angleOf(legLimb(s.side), hipOf(s), 'leg', s.outward, null), legLengths, 'leg', plane, s.outward, tilt)
-    return Math.max(j.end[1] + body.footH, j.mid[1] + body.legW / 2)
+    return soleOnly ? j.end[1] + body.footH : Math.max(j.end[1] + body.footH, j.mid[1] + body.legW / 2)
   }
+  // stance の 足 は くつ底 が 地面 に つく(まえ へ 出た ひざ が 画面 で 低く 見えても、ひざ では 立たない)
   const standing = sides.find((s) => s.side === placement.stance && !hasTarget(legLimb(s.side)))
   const groundLegs = sides.filter((s) => !hasTarget(legLimb(s.side)))
-  const lowest = standing ? extentOf(standing) : groundLegs.length === 0 ? body.thigh + body.shin + body.footH : Math.max(SEAT, ...groundLegs.map(extentOf))
+  const lowest = standing ? extentOf(standing, true) : groundLegs.length === 0 ? body.thigh + body.shin + body.footH : Math.max(SEAT, ...groundLegs.map((s) => extentOf(s)))
 
   // 体の中 → 画面: こしの下の 地面の点 を (x, y - lift) に置き、大きさ・向き・かたむき を つける
   const sx = mirror * squash * scale
@@ -237,5 +246,6 @@ export function personRig(placement: Placement): Rig {
     world,
     transform: `translate(${r3(placement.x)} ${r3(placement.y - lift)}) scale(${r3(sx)} ${r3(scale)}) rotate(${r3(lean)}) translate(0 ${r3(-lowest)})`,
     toWorld,
+    toLocal,
   }
 }

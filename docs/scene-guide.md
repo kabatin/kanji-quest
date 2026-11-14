@@ -117,11 +117,11 @@ export default scene
 絵がら が そろい、体の まちがい を 部品の中で ふせげて、1字の コードも 半分ほどに なります。
 
 ```tsx
-import { Backdrop, Bird, Chair, LOOKS, mixLimb, PALETTE, Person, personRig, posture, run, Sweat, Tree, turnAround, walk, walkDepth } from '../sceneFigures'
+import { Backdrop, Bird, Chair, LOOKS, mixLimb, PALETTE, Person, personRig, posture, run, runDepth, Sweat, Tree, turnAround, walk, walkDepth } from '../sceneFigures'
 // (trials/<なまえ>/ からは '../../sceneFigures')
 ```
 
-見本 の 一覧(`node scripts/scene-sheet.mjs --variant parts --big 人 後 走 夜`。ページ は `?scene=後&variant=parts` など):
+見本 の 一覧(`node scripts/scene-sheet.mjs --variant parts --big 人 後 走 夜 顔 手`。ページ は `?scene=後&variant=parts` など):
 
 | 字 | ファイル | 中身 |
 |---|---|---|
@@ -129,13 +129,15 @@ import { Backdrop, Bird, Chair, LOOKS, mixLimb, PALETTE, Person, personRig, post
 | 後 | `trials/parts/k5f8c.tsx` | うしろすがた(かみがた 6つ・うで)、ふりむき(正面→横→うしろ)、おくへ あるく・てまえへ くる、体格 5つ |
 | 走 | `trials/parts/k8d70.tsx` | はしる、いすに すわる(横・正面・うしろ)、足を のばす・正座・しゃがむ、物を もつ・はこぶ、ねころぶ |
 | 夜 | `trials/parts/k591c.tsx` | 昼→夕方→夜、へや(昼・夜)、雨・雪・風・くもり、池・川・道・田畑・岩、かご・バケツ・はこ、たき火 |
+| 顔 | `trials/parts/k9854.tsx` | 足した 顔 5つ(正面・横)、目線 の 上下、ぼうし 4つ と めがね(3つの 向き)、ランドセル・リュック(体格 4つ が ふりむく・あるく)、かみ の ゆれ、「?」 |
+| 手 | `trials/parts/k624b.tsx` | 正面 で ひくい つくえ に ふで で 書く・手 を とる(広間・たたみ)、さし出す、道具(えんぴつ・ぼう)、てまえ・おく へ はしる と ゴール の テープ、海 と 砂はま・足あと・山 |
 
 部品で 書きなおした 例: `trials/figures/k4f11.tsx`(休)・`trials/figures/k6751.tsx`(村)。
 
 ### きまり(かならず 守る)
 
 1. **人は かならず `<Person>` で描く。** 自分で あたま・どう・うで を 描かない。うしろすがた も `facing="back"` で描く。足りない ものは 場面で 描きたさず、部品に 足す(下の「部品が 足りないとき」)。
-2. **あるく ときは かならず `walk()`(横)か `walkDepth()`(おく・てまえ)、はしる ときは `run()` を使う。** `Math.sin(t * …)` で 足を ふらない(足が すべり、うしろ あるき に なる)。
+2. **あるく ときは かならず `walk()`(横)か `walkDepth()`(おく・てまえ)、はしる ときは `run()`(横)か `runDepth()`(おく・てまえ)を使う。** `Math.sin(t * …)` で 足を ふらない(足が すべり、うしろ あるき に なる)。
 3. **向きを かえる ときは `turnAround()`。** `<Layer scaleX={-1}>` で 人を うらがえさない(てまえ と むこう の 手足 が 入れかわり、手の 位置の 計算も くるう)。
 4. **1人の 人は、JSX の 1か所 だけで 描く。** 時間で 描く場所を かえると、とちゅうで 物の うしろへ すりぬけます。前後は「足もと の y」で きまる(`ByDepth`)。
 5. 字の 画に 手を 重ねたい ときは、手先を 点で 指定する(`{ to: [x, y] }`)。うで の 長さ は かえない。とどかなければ、のばした うで が その むき を さします(「だいたい 同じ 場所・同じ 向き」で よい)。
@@ -150,10 +152,14 @@ import { Backdrop, Bird, Chair, LOOKS, mixLimb, PALETTE, Person, personRig, post
   build="child" height={44}      // 体格(下の 表)。height は 立った ときの 背の高さ(省くと 体格ごとの 高さ)
   facing="right"                 // 'left' | 'right' | 'front' | 'back'(うしろすがた)
   look={LOOKS.girl}              // 見た目。{ ...LOOKS.boy, top: CLOTHES.red.top } で 色がえ
-  face="smile"                   // 'normal' | 'smile' | 'joy' | 'surprised' | 'sad' | 'closed'(うしろむき では 見えない)
+  face="smile"                   // 下の 表(うしろむき では 見えない)
+  gaze={0.5} gazeY={1}           // 目線: gaze は 左右(-1 〜 1。正面 だけ)、gazeY は 上下(-1 = 上 〜 1 = 下。下 を 見ると まぶた が さがる)
   pose={{ rightArm: { to: [60, 50] }, leftArm: { swing: 40, bend: 30 }, torso: 10, head: -8 }}
   lean={0} lift={0}              // 体ぜんたい の かたむき(足もと が じく)・ジャンプ の 高さ
   held={<Basket x={…} y={…} />}  // 手に もつ 物(下の「物を もつ」)
+  pack="randoseru"               // せおう かばん: 'randoseru' | 'rucksack'(色 を かえる なら { kind: 'rucksack', color: '#4f9be0' })
+  tools={{ right: { kind: 'brush', tip: [x, y] } }}  // 手 に にぎる 道具(下の「道具」)
+  hairSway={wave(t, 0.36) * 14}  // ポニーテール・ふたつむすび の ゆれ(度)。はしる・ふりむく ときに
 />
 ```
 
@@ -167,10 +173,26 @@ import { Backdrop, Bird, Chair, LOOKS, mixLimb, PALETTE, Person, personRig, post
 
 かみがた(`look.hairStyle`)は `short` `bob` `ponytail` `pigtails` `bald` `bun`(おだんご)。どれも 横・正面・うしろ が そろっている。
 
+顔(`face`。正面 と 横。うしろむき では 見えない):
+
+| face | 顔 |
+|---|---|
+| `normal` `smile` `joy` | ふつう・にっこり・大よろこび(口 を あける) |
+| `surprised` `sad` `closed` | びっくり・かなしい・目 を とじる(ねむる) |
+| `worried` | こまった(まゆ が ハの字、口 は への字) |
+| `angry` | おこった(まゆ が 内がわ で 下がる、いかり の しるし) |
+| `cry` | なく(目 を ぎゅっと とじて なみだ、口 を あける) |
+| `sleepy` | ねむい(まぶた が 半分、小さな あくび) |
+| `strain` | ぐっと 力 を 入れる(目 は > <、歯 を くいしばる) |
+
+ぼうし・めがね(`look` で えらぶ。横・正面・うしろ の 3つの 形 が ある。ぼうし は かみ の 上、めがね は 目 の まえ):
+`{ ...LOOKS.boy, hat: 'cap' }`(野球ぼう)・`'school'`(黄色い 通学ぼう)・`'straw'`(むぎわら)・`'knit'`(ニット)、色 は `hatColor`。めがね は `glasses: true`。
+
 - **ポーズ** は 手足 ごと(`leftArm` `rightArm` `leftLeg` `rightLeg`)に、どれか 1つ で 指定する:
   - 角度 `{ swing, bend }` … `swing` = つけね(かた・こし)が「ま下 から 何度」。横むき は + が まえ、正面・うしろむき は + が 外。`bend` = ひじ・ひざ の まがり。
   - 正面・うしろむき の まえうしろ `{ swing, bend, fore, foreBend }` … `fore` = つけね を まえ(+)・うしろ(-)へ、`foreBend` = ひじ は まえ、ひざ は うしろ へ まがる。まえうしろ に むいた ほね は 短く 見え、見る人に 近い ほど 画面の 下(少し 上から 見ている)。**横むき では fore は つかわれない**(まえうしろ は swing で 書く)。
   - 点 `{ to: [x, y] }` … 手先(足先)を 画面の その点へ。ひじ・ひざ の 場所は 部品が 計算する(正面・うしろむき では 左右 の 面 の 中 だけ で とどかせる)。
+  - まえ の 点 `{ to: [x, y], depth }` … 正面・うしろむき で、手 を 体 の まえ へ のばす(つくえ で 書く・相手 の 手 を とる・物 を さし出す)。`depth` は 体 から まえ へ の きょり(画面の 単位。うしろ は マイナス)。手 は 画面 の (x, y) に のり、うで は まえ へ むいた ぶん 短く 見え、ひじ は 外・下 へ 出る。体 の まえ を よこぎって 反対 がわ へ も とどく。相手 の 手 に とどかせる ときは、相手 の `personRig(…).world.arms.right.end` と、相手 の 手 の おくゆき(`world.arms.right.depth * scale`)を わたす。
   - まぜる `mixLimb(a, b, k)` … a から b へ(k = 0〜1)。関節の 角度で まぜるので、うで は 弧を えがく。ポーズ ぜんたい なら `mixPose(a, b, k)`。
   - `torso`(上体の かたむき。横むき は + が おじぎ)、`head`(横むき は + が うつむく、- が 見上げる)。
   - 何も 書かない 手足 は、たらした うで・まっすぐ の 足。
@@ -191,7 +213,17 @@ import { Backdrop, Bird, Chair, LOOKS, mixLimb, PALETTE, Person, personRig, post
 - 部品が 守ること: くび は みじかく どう の 上の まんなか、うで は かた から、ひじ は まえ に しか まがらない、ひざ は うしろ に しか まがらない、関節は うごく はんい の外へ まがらない。
 - 手に 物を もたせる・顔の よこに しるし を出す: `personRig(同じ props)` で 関節の 画面の 場所が わかる。
   `const rig = personRig(props)` → `rig.world.arms.right.end`(右手)、`rig.world.head`(あたまの まんなか)、`rig.body.headR * rig.scale`(あたまの 半径)。
-- ぼうし・はねた かみ など あたまに つける もの: `headwear={…}`(あたまの まんなか が 0,0、半径 1。横むき は 右むき の 形で描く)。
+- ぼうし・はねた かみ など あたまに つける もの: `headwear={…}`(あたまの まんなか が 0,0、半径 1。横むき は 右むき の 形で描く)。ふつう の ぼうし・めがね は `look.hat`・`look.glasses` で よい。
+
+### せおう かばん(`pack`)・道具(`tools`)
+
+- `pack="randoseru"`(ランドセル)・`"rucksack"`(リュック)。大きさ は 体格 に 合い、体 と いっしょ に かたむき・ふりむき の ちぢみ が つく(`turnAround` の とちゅう でも ずれない)。
+  前後 は 部品 が きめる: 横むき は せなか がわ(むこう の うで は かばん の おく、てまえ の うで は まえ、かたひも は かた を こえて むね の まえ へ)。
+  正面 は かたひも だけ。うしろむき は せなか に かさなり、たらした うで は かばん の おく(かばん が うで の 内がわ に かかる)、見る人 の ほう へ 大きく ふった うで だけ かばん の まえ。
+- `tools={{ right: { kind, tip } }}` … 手 に 細い 道具 を にぎる(`kind` は `'brush'` ふで・`'pencil'` えんぴつ・`'stick'` ぼう)。`tip` は 先 の 画面 の 点(おしり は 手 の うしろ に 出る)。
+  `tip` の かわり に `angle`(画面 の 角度。0 = 右、90 = 下)と `length`。ふで の 毛 の 色 は `ink`。道具 は うで と いっしょ に 描かれ(うで が 体 の おく なら 道具 も かくれる)、こぶし の 中 を 通って おや指 で おさえる。
+  書く ときは うで を `{ to: 先 の 少し 上, depth }` に、道具 の `tip` を 紙 の 上 の 点 に する(`trials/parts/k624b.tsx` の「かく」)。手 に もたない 道具 は `<Tool kind end tip width? ink? />`。
+- **2人 と 物 を かさねる**: `held` には 人 も わたせる。先生 が 子ども の 手 を とる ときは、つくえ を 子ども の `held` に、子ども を 先生 の `held` に わたすと、先生 の 体 → 子ども の 体 → つくえ → 子ども の うで → 先生 の うで の じゅん に なる。
 
 ### かっこう(`posture`)・物を もつ(`holdPose`)・ねころぶ(`lieDown`)
 
@@ -205,7 +237,7 @@ const kid = { x: 40, y: 96, facing: 'front', pose: posture('sitChair', 'front') 
 
 - `posture(名前, 向き)`: `'stand'` `'sitChair'`(いす)`'sitFloor'`(地べた に 足を のばす)`'seiza'`(正座)`'kneel'`(ひざまずく)`'squat'`(しゃがむ)`'bow'`(おじぎ)`'banzai'` `'wave'`。
   うで だけ かえる なら `{ ...posture('squat', 'right'), rightArm: { to: [50, 90] } }`。すわる 高さ は 部品が 合わせる(いす の ざめん は `seatHeight(体格, 背)`、つくえ は `deskHeight(体格, 背)`)。
-- `holdPose(置き場所, 'chest' | 'waist' | 'overhead', 物の はば)` → `{ at, pose }`。物は `at` を まんなか に 描いて `held` に わたす:
+- `holdPose(置き場所, 'chest' | 'waist' | 'overhead' | 'offer', 物の はば)` → `{ at, pose }`。`'offer'` は 両手 を まえ へ のばして さし出す(正面・うしろむき は `depth` つき の うで)。物は `at` を まんなか に 描いて `held` に わたす:
   ```tsx
   const hold = holdPose(place, 'chest', 12)
   <Person {...place} pose={{ ...place.pose, ...hold.pose }} held={<Basket x={hold.at[0]} y={hold.at[1]} width={12} />} />
@@ -225,12 +257,17 @@ const away = walkDepth(t, { from: [54, 106], to: [54, 86], start: 1, end: 3, hei
 
 const r = run(t, { from: 6, to: 100, start: 0.5, end: 2.8, height: 42 })
 <Person {...r} y={96} face="joy" />                                  // はしる(lift で うく)
+
+const come = runDepth(t, { from: [54, 74], to: [54, 102], start: 1, end: 2.4, height: 24, toHeight: 52 })
+<Person {...come} face="strain" />                                   // てまえ へ はしってくる(正面)。y・背の高さ・lift も 入っている
 ```
 
 - 「どこから どこへ 何秒で」だけ わたす。足あと を 先に きめるので、地面の 足は すべらず、うく 足は かならず 進む むき へ 出る。うで は 同じ がわ の 足と はんたい に ふる。
 - `walk`: 1歩目 と さいごの 1歩 は 半歩(立った ところから あるきだし、足を そろえて 止まる)。歩幅 は `step`(省くと 背 × 0.3)。いそぐ なら `step: height * 0.42`、とぼとぼ なら `armSwing: 10`。
 - `walkDepth`: 足もと の 点 `[x, y]` を わたす。y が 小さく なる(画面の 上へ)なら うしろすがた で おくへ、大きく なるなら 正面 で てまえへ。`toHeight` で とおく の 大きさ。**横に 大きく ずれる 道 には 使わない**(ななめ は `walk` と `turnAround` を つなぐ)。道は `<Path near={[x, y, はば]} far={[x, y, はば]} />` で おくへ ほそく。
-- `run`: 横むき だけ。はじめ は だんだん はやく、おわり は おそく なって 足を そろえて 止まる。2本とも うく しゅんかん が ある(`lift`)。歩幅 は `stride`(省くと 背 × 0.62)。
+- `run`: 横むき。はじめ は だんだん はやく、おわり は おそく なって 足を そろえて 止まる。2本とも うく しゅんかん が ある(`lift`)。歩幅 は `stride`(省くと 背 × 0.62)。
+- `runDepth`: `run` の おくゆき 版(`walkDepth` と 同じ わたし方)。地面 の 足 は 足あと の 点 に とまり、とぶ しゅんかん は こし の 下 の 地面 から うく。正面 で まえ へ 出した ひざ は どう の てまえ、まえ へ ふった 手 は むね の まえ。**横に 大きく ずれる 道 には 使わない**。
+- 足あと を のこす: `walkPrints(walk の plan)`・`runPrints(run の plan)` → `[{ x, at, side, facing }]`(くつ の まんなか の x と、足 が つく 時刻)。`<Footprint x={p.x} y={地面} facing={p.facing} grow={span(t, p.at, p.at + 0.25)} />` と おけば 絵 の 足 と かさなる。
 - `start` より前 は `from` に、`end` より後 は `to` に 立っている。止まった あとの ポーズ は 場面で つづけて 書く。
 - ふりむく: `<Person {...w} {...turnAround(t, 2.7, 'right', 'left')} … />`(0.3 秒で 体が 細くなって 入れかわる)。
   正面 から うしろ へ は、横を 通す: `turnAround(t, 2.7, 'front', 'back', 0.3, 'right')`(0.3 秒 ずつ、正面 → 右むき → うしろ)。
@@ -243,6 +280,9 @@ const r = run(t, { from: 6, to: 100, start: 0.5, end: 2.8, height: 42 })
 | `<Sky time>` `<Moon x y r? phase? show?>` `<Stars t show? at?>` | 空・月・星 を 1つずつ |
 | `<Room floor? time? window? curtain?>` `<Window x y width height time? curtain?>` | へや(かべ・ゆか・はばき・まど)。`floor` は かべ と ゆか の さかい。夜 は かべ が あかり の 色、まど の 外 が 夜。Backdrop の かわりに いちばん 下 |
 | `<Chair {...人と同じprops} layer?>` `<Desk x y width height top?>` `<Blackboard x y width height lines?>` | いす・つくえ・こくばん |
+| `<LowTable x y width? height? top? paper?>` | ひくい つくえ(ざたく)。正座 の 人 の まえ。上 の 面 は `y - height - top` 〜 `y - height`、`paper` で 紙 を しく。正面 の 人 が 手 を のせる なら その 人 の `held` に |
+| `<Hall x width top floor front roof?>` | まえ が あいた 広間(お寺・和室 の 教室): おく の かべ・なげし・たたみ・えん・はしら 2本・かわら の やね。`top` は のき、`floor` は かべ と たたみ の さかい、`front` は たたみ の てまえ |
+| `<Tatami x y width depth cols?>` `<TiledRoof x y width height? color?>` `<Pillar x top bottom width?>` | たたみ・かわら の やね(x は まんなか、y は のき)・はしら を 1つずつ |
 | `byTime(time, 昼, 夕方, 夜)` | 自分で 描く 物の 色を 時間で かえる |
 
 夜の 場面で 人 は 昼の 色 の まま です(顔と 気持ち が 見える ように)。くらさ を 出す なら、人を 火 や まど の あかり の そば に おく。
@@ -254,9 +294,13 @@ const r = run(t, { from: 6, to: 100, start: 0.5, end: 2.8, height: 42 })
 | `<Rain t amount? ground? top? left? right?>` `<Snowfall …>` | 雨(地面で はねる)・雪。`amount` 0〜1 で 量(0 で なし) |
 | `<Wind t x y show? dir? reach?>` | 風の すじ(うず を まいて ながれる) |
 | `<Pond t x y rx? ry? ripple? fill?>` `<River t y width? flow?>` | 池(`fill` で 水が たまる)・川(画面を よこぎる。`flow` で むき) |
+| `<Seashore t horizon? shore? tide? sky? time?>` | 海 と 砂はま(Backdrop の かわり に いちばん 下)。`horizon` は 水平線、`shore` は なみうちぎわ。なみ が うちよせて ひく |
+| `<Mountain shape={{ top, foot, half, straight?, ridge? }} rise? far? snow? lit? shade?>` `mountainPoint(shape, -1 \| 1, d)` | 山(日なた と ひかげ、`snow` の 高さ より 上 に 雪、`far` で とおく の 色、`rise` で せりあがる)。のはら・海 は 山 の あと に 描いて ふもと を かくす。山はだ の 点 は `mountainPoint` |
 | `<Flame t x y size? glow?>` `<Campfire t x y size? lit?>` | ほのお(ろうそく・かまど)・たき火(`lit` で 火が つく) |
 | `<Rock x y size? grow?>` `<Path near far bend?>` `<Field x y width? depth? kind? grow?>` | 岩・道(横 にも おく にも)・はたけ(`kind="crop"`)/田んぼ(`"paddy"`) |
 | `<Basket x y width? items? handle?>` `<Bucket x y width? water?>` `<Crate x y width? tape?>` | かご・バケツ・はこ(x, y は まんなか。`holdPose` の `at` を そのまま わたせる) |
+| `<Footprint x y size? facing? kind? grow?>` | 足あと(`kind` は `'shoe'` くつ・`'bare'` はだし。`facing` は つまさき の むき)。場所 は `walkPrints`・`runPrints` |
+| `<GoalPole x base top grow?>` `<GoalTape a b pull? range? cut? show?>` | ゴール の ポール と テープ。`pull` は むね で おされた ずれ、`range` で 一部 だけ(人 の 前後 に 分けて 描く)、`cut`(0〜1)で きれて たれる |
 
 ### 木・家・生きもの・しるし
 
@@ -271,20 +315,22 @@ const r = run(t, { from: 6, to: 100, start: 0.5, end: 2.8, height: 42 })
 | `<ByDepth items={[{ key, z: 足もとの y, node }]}>` | 地面に 立つ もの を おく → てまえ の じゅんに 描く |
 | `<Bird x y t? flying? facing? size?>` `<Butterfly x y t perched?>` | 小鳥・ちょうちょ(とぶ 道すじ は 場面で 計算) |
 | `<Sweat t x y show dir?>` `<Sigh x y p show? dir?>` `<Hearts t x y show>` `<Notice x y r show dir?>` `<Dust x y p reach?>` | あせ・ためいき・ハート・「はっ」・つちけむり。`show` に `during(…)` を わたす |
+| `<Question x y show t? size? color?>` | 「?」(どっち? だれ?)。あたま の ななめ上 に おく。`t` で ふわふわ |
 | `PALETTE` `CLOTHES` `LOOKS` `shade(色, k)` `mixColor(a, b, k)` `byTime(…)` | 色。むこうがわ・かげ は `shade` |
 
 ### 786字を 作る ときの 注意
 
-- **まず 共通部品 を さがす。** 人・すわり・はしり・おくへ あるく・へや・夜・雨・川・火 は ぜんぶ ある。見本 4まい(人・後・走・夜)を 先に 見る。
+- **まず 共通部品 を さがす。** 人・すわり・はしり・おくへ あるく/はしる・へや・和室・夜・雨・川・海・山・火・かばん・ぼうし・道具 は ぜんぶ ある。見本 6まい(人・後・走・夜・顔・手)を 先に 見る。
 - うしろすがた の 人が 物を もつ・ゆびさす と、うで が 体の おく に かくれる のは 正しい(せなか ごし には 見えない)。見せたい なら 横むき に する。
+- 正面 の 人 が 書く・手 を とる・さし出す ときは、手 を `{ to, depth }` で まえ へ のばす(手 を かた の 下 に おいて ごまかさない)。
 - 正面・うしろむき で ひざ を まげる(すわる・しゃがむ)のは `fore`・`foreBend`(= `posture`)。`swing`・`bend` で 横に まげると、がにまた に なる。
 - 体格 は 話の 中の 年れい に 合わせる(兄弟・親子・先生 と 生徒 は 体格 で 見分ける。色だけ で 見分けない)。
 - 動物(うさぎ・りす・犬・ねこ・牛・馬 など)・乗り物(車・電車・船)は まだ 部品が ない。2字 以上で 使うなら、場面で 描かず `sceneFigures/` に 足す。
 
 ### 部品が 足りないとき
 
-- 場面に いる 1回きり の 物(どんぐり・ふで・たて札 など)は、今まで どおり 場面の 中で 描く。
-- 人の かっこう や 見た目 で 足りない もの(新しい かみがた・服・持ちもの の 手の 形 など)は、**場面で 人を 描きなおさず**、`sceneFigures/` に 足して、テスト を 足す(`sceneFigures.test.tsx`・`sceneFigures.person.test.tsx`・`sceneFigures.motion.test.tsx`・`sceneFigures.scenery.test.tsx`)。見本 ページ(`trials/parts/`)にも 足して、目で たしかめる。
+- 場面に いる 1回きり の 物(どんぐり・たて札 など)は、今まで どおり 場面の 中で 描く(ふで・えんぴつ・ぼう は `tools`)。
+- 人の かっこう や 見た目 で 足りない もの(新しい かみがた・服・持ちもの の 手の 形 など)は、**場面で 人を 描きなおさず**、`sceneFigures/` に 足して、テスト を 足す(`sceneFigures.test.tsx`・`sceneFigures.person.test.tsx`・`sceneFigures.motion.test.tsx`・`sceneFigures.scenery.test.tsx`・`sceneFigures.gear.test.tsx`・`sceneFigures.reach.test.tsx`・`sceneFigures.places.test.tsx`)。見本 ページ(`trials/parts/`)にも 足して、目で たしかめる。
 - 2つ以上の 字で 同じ 物を 描きそうなら、`sceneFigures/` に 足す。
 
 ### 絵の かきかた
