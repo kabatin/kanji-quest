@@ -18,12 +18,12 @@
  *   あなの中では、あたまから すすみ、体は あなの みち に そって まがる。
  *   カラスは はねが せなか から出て、あしは 2ほん。おりる とき はねを ひろげ、とまると たたむ。
  */
-import { backOut, during, easeIn, easeInOut, easeOut, inkTiming, linear, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { during, easeIn, easeInOut, easeOut, inkTiming, linear, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Clouds, Hearts, Notice, Sun, Tuft as GrassTuft } from '../sceneFigures'
 
 const CHAR = '下'
 
-const SUN = '#ffd24a'
 const GRASS = '#69c25a'
 const GRASS_LIGHT = '#92e27c'
 const LEAF = '#55b86e'
@@ -52,8 +52,6 @@ const CROW = '#323847'
 const CROW_DARK = '#262b38'
 const BEAK = '#e0a82e'
 const SWEAT = '#7cc4f2'
-const ALERT = '#e8534a'
-const HEART = '#ff6f8f'
 
 /** くぎり の時間(秒) */
 const GROUND_END = 0.7
@@ -219,21 +217,12 @@ function moodAt(t: number): Mood {
 
 /* ───────── 空と地面 ───────── */
 
+/** 空: 共通部品の お日さま と ゆっくり ながれる 雲(上の すきま) */
 function Sky({ t }: SceneProps) {
-  const pop = span(t, 0, 0.5, backOut)
   return (
     <>
-      <Layer scale={pop} rotate={t * 12} origin={[97, 9]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="96.3" y="1.2" width="1.4" height="3" rx="0.7" fill={SUN} transform={`rotate(${i * 45} 97 9)`} />
-        ))}
-      </Layer>
-      <circle cx="97" cy="9" r={4.4 * pop} fill={SUN} />
-      {/* ゆっくり ながれる 雲(上の すきま) */}
-      <g fill="#ffffff" opacity="0.92" transform={`translate(${t * 1.4} 0)`}>
-        <ellipse cx="16" cy="6.4" rx="6.4" ry="2.6" />
-        <ellipse cx="20.5" cy="4.8" rx="4.4" ry="2.8" />
-      </g>
+      <Sun t={t} x={97} y={9} r={4.4} />
+      <Clouds t={t} at={[[17, 5.6, 0.9]]} speed={1.4} opacity={0.92} />
     </>
   )
 }
@@ -242,7 +231,7 @@ function Tuft({ x, t }: { readonly x: number; readonly t: number }) {
   const base = lineY(x) - 2
   return (
     <Layer rotate={wave(t, 2.6, x * 0.1) * 4} origin={[x, base]}>
-      <path d={`M${x - 1.8} ${base} l0.4 -4.2 l1.3 3.2 l1.1 -4.6 l1 4.6 l1.3 -3 l0.3 4 Z`} fill={GRASS} />
+      <GrassTuft x={x - 1.8} y={base} color={GRASS} />
     </Layer>
   )
 }
@@ -408,41 +397,6 @@ function Crumbs({ t, nose, angle }: { readonly t: number; readonly nose: Pt; rea
   )
 }
 
-/** カラスを 見つけた しゅんかんの「!」 */
-function Alert({ t, frame }: { readonly t: number; readonly frame: Frame }) {
-  const show = during(t, SCARE_AT, SCARE_AT + 0.5, 0.1)
-  if (show <= 0) return null
-  const pop = span(t, SCARE_AT, SCARE_AT + 0.2, backOut)
-  return (
-    <Layer x={frame.cx + 8} y={frame.cy - 9} scale={0.85 * pop} opacity={show}>
-      <rect x="-0.9" y="-4.6" width="1.8" height="4.4" rx="0.9" fill={ALERT} />
-      <circle cx="0" cy="1.2" r="1.1" fill={ALERT} />
-    </Layer>
-  )
-}
-
-/** どんぐりを しまって ほっと した とき の ハート */
-function Hearts({ t, frame }: { readonly t: number; readonly frame: Frame }) {
-  const show = during(t, BACK_AT + 0.2, INK + 0.2, 0.3)
-  if (show <= 0) return null
-  return (
-    <g opacity={show}>
-      {[0, 0.5].map((offset, i) => {
-        const p = ((t - BACK_AT + offset) % 1) / 1
-        return (
-          <path
-            key={offset}
-            d="M0 1.6 C-3 -0.6 -1.6 -3 0 -1.4 C1.6 -3 3 -0.6 0 1.6 Z"
-            fill={HEART}
-            opacity={Math.sin(p * Math.PI)}
-            transform={`translate(${frame.cx + 3 + i * 5 + Math.sin(p * 6) * 1} ${frame.cy - 8 - p * 6}) scale(${0.9 + i * 0.2})`}
-          />
-        )
-      })}
-    </g>
-  )
-}
-
 /* ───────── カラス ───────── */
 
 const CROW_X = 45
@@ -562,6 +516,7 @@ function Scene({ t }: SceneProps) {
   }
 
   const nosePoint = at(s)
+  const nose = toWorld(frame, 6.4, -0.4)
   const nookS = t >= DIG_AT ? Math.max(s, mix(t, DIG_AT, TUCK_AT, S_JUNCTION, PATH_END, easeInOut)) : 0
 
   return (
@@ -578,8 +533,8 @@ function Scene({ t }: SceneProps) {
         </Layer>
         <Crumbs t={t} nose={nosePoint} angle={frame.angle} />
         {t >= FALL_AT && <Acorn x={acorn.x} y={acorn.y} rotate={acorn.r} />}
-        <Alert t={t} frame={frame} />
-        <Hearts t={t} frame={frame} />
+        <Notice x={nose[0]} y={nose[1]} r={4.3} show={during(t, SCARE_AT, SCARE_AT + 0.5, 0.1)} dir={1} />
+        <Hearts t={t - BACK_AT} x={frame.cx + 3} y={frame.cy - 8} show={during(t, BACK_AT + 0.2, INK + 0.2, 0.3)} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Ink char={CHAR} progress={ink.progress} tint={ink.tint} />

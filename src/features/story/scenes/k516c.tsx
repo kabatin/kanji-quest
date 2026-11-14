@@ -13,6 +13,7 @@
  *   → 「よし」と きめて、ひもを ほどく → ぱかっ! どんぐりが 左と右へ とんでいく
  *   → みんな にっこり、りす も ばんざい → ほね が ひかって、絵が うすくなり、字「公」が のこる
  *
+ * 空・のはら は Backdrop、あせ・ハート は Sweat・Hearts。人は 出ない ので、動物(りす・うさぎ・くま)は 部品が まだ なく、ここで 描く。
  * りす・うさぎ・くま は ほんものの つくり を守る(字の形に合わせるために ゆがめない):
  *   うで は かた から出て ひじ で まがる。くび は みじかく、あたま は どう の まんなか の上。
  *   りす は ふくろの うしろに いる(ふくろに かくれて あしは 見えない)。ふさふさの しっぽは 体の うしろ。
@@ -20,13 +21,10 @@
  */
 import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Backdrop, Hearts, Sweat } from '../sceneFigures'
 
 const CHAR = '公'
 
-const SUN = '#ffd24a'
-const HILL = '#e2f2d2'
-const GRASS = '#c5e8a9'
-const LEAF = '#55b86e'
 const FUR = '#d9843b'
 const FUR_DARK = '#b9672a'
 const FUR_BELLY = '#f6dcb6'
@@ -49,7 +47,6 @@ const BEAR = '#b98259'
 const BEAR_DARK = '#9c6a45'
 const BEAR_MUZZLE = '#ead0b0'
 const SWEAT = '#7cc4f2'
-const HEART = '#f07f9e'
 
 /** くぎり の時間(秒) */
 const POP = 0.4
@@ -81,31 +78,6 @@ function LimbShape({ shoulder, limb, color, handColor, width = 5 }: { readonly s
     <>
       <path d={`M${shoulder[0]} ${shoulder[1]} L${limb.elbow[0]} ${limb.elbow[1]} L${limb.hand[0]} ${limb.hand[1]}`} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" />
       <circle cx={limb.hand[0]} cy={limb.hand[1]} r={width * 0.62} fill={handColor} />
-    </>
-  )
-}
-
-function Ground({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
-  return (
-    <>
-      <Layer opacity={sun} rotate={t * 14} origin={[13, 13]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="12.2" y="1.6" width="1.6" height="4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 13 13)`} />
-        ))}
-      </Layer>
-      <circle cx="13" cy="13" r={6.2 * sun} fill={SUN} />
-      <path d="M-4 99 Q18 76 44 90 Q72 70 113 93 V101 H-4 Z" fill={HILL} />
-      <g fill="#ffffff" opacity="0.9" transform={`translate(${t * 1.4} 0)`}>
-        <ellipse cx="62" cy="14" rx="7" ry="3.2" />
-        <ellipse cx="67" cy="12.4" rx="5" ry="3.2" />
-        <ellipse cx="98" cy="22" rx="6" ry="2.8" />
-        <ellipse cx="102.5" cy="20.4" rx="4.4" ry="3" />
-      </g>
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.6" fill={GRASS} />
-      {[6, 34, 70, 103].map((x) => (
-        <path key={x} d={`M${x} 97.5 l1.4 -3.6 l1 3.2 l1.6 -4.2 l0.8 4.6 Z`} fill={LEAF} />
-      ))}
     </>
   )
 }
@@ -227,14 +199,6 @@ function SquirrelBack({ t, mood, look, headTilt }: { readonly t: number; readonl
       </Layer>
     </>
   )
-}
-
-/** あせの しずく(おろおろ しているとき) */
-function SweatDrop({ t }: SceneProps) {
-  const show = during(t, WARY + 0.2, RESOLVE - 0.1, 0.25)
-  if (show <= 0) return null
-  const p = ((t * 1.1) % 1)
-  return <path d="M0 -2.4 Q2 0.6 0 2 Q-2 0.6 0 -2.4 Z" fill={SWEAT} opacity={show * (1 - p * 0.6)} transform={`translate(${61.6} ${29 + p * 5})`} />
 }
 
 /** 4つの うで のかたち(りす)。かた = 43,48 と 57,48 */
@@ -440,27 +404,9 @@ function Acorns({ t, hands }: { readonly t: number; readonly hands: { readonly r
   )
 }
 
-function Hearts({ t }: SceneProps) {
-  const show = during(t, JOY + 0.1, INK + 0.6, 0.3)
-  if (show <= 0) return null
-  return (
-    <g opacity={show} fill={HEART}>
-      {(
-        [
-          [24, 44, 0],
-          [88, 48, 0.3],
-          [64, 22, 0.15],
-        ] as const
-      ).map(([hx, hy, delay]) => {
-        const p = (((t - JOY + delay) * 0.9) % 1 + 1) % 1
-        return <path key={hx} d="M0 2 C-4 -1 -2.6 -3.6 0 -1.8 C2.6 -3.6 4 -1 0 2 Z" transform={`translate(${hx} ${hy - p * 8}) scale(${0.8 + p * 0.5})`} opacity={1 - p * p} />
-      })}
-    </g>
-  )
-}
-
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 4)
+  const joyHearts = during(t, JOY + 0.1, INK + 0.6, 0.3)
 
   // ふくろが どん と おかれる → りすが うしろから ひょっこり
   const sackPop = span(t, 0, POP + 0.2, backOut)
@@ -487,7 +433,7 @@ function Scene({ t }: SceneProps) {
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Ground t={t} />
+        <Backdrop t={t} sun={[13, 13]} clouds={[[60, 12, 0.9], [96, 20, 0.8]]} tufts={[6, 34, 70, 103]} />
         {/* うさぎ と くまの子: 左右から あるいてくる */}
         <Layer opacity={span(t, FRIENDS - 0.1, FRIENDS + 0.15)}>
           <Layer x={rabbitX} y={rabbitHop}>
@@ -512,10 +458,11 @@ function Scene({ t }: SceneProps) {
         <Layer opacity={span(t, POP + 0.3, POP + 0.5)} y={joyHop} scaleY={sq} origin={[50, 74]}>
           <LimbShape shoulder={SQ_SHOULDER_L} limb={arms[0]} color={FUR} handColor={FUR_DARK} />
           <LimbShape shoulder={SQ_SHOULDER_R} limb={arms[1]} color={FUR} handColor={FUR_DARK} />
-          <SweatDrop t={t} />
+          <Sweat t={t} x={61.6} y={29} show={during(t, WARY + 0.2, RESOLVE - 0.1, 0.25)} dir={1} />
         </Layer>
         <Acorns t={t} hands={hands} />
-        <Hearts t={t} />
+        <Hearts t={t} x={24} y={44} show={joyHearts} />
+        <Hearts t={t} x={88} y={48} show={joyHearts} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Ink char={CHAR} progress={ink.progress} tint={ink.tint} />

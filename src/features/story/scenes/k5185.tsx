@@ -1,10 +1,10 @@
 /*
- * 内(うち): 雨の中、家の いりぐちから 中に はいると、そこが「うち」。
+ * 内(うち): 雨の中、家の いりぐちから 中に はいると、そこが「うち」。(共通部品 sceneFigures で 書きなおした)
  *
  * ほね(画と絵の対応)
  *   1画目(丨)  … 家の 左の かべ
  *   2画目(𠃍)  … 家の やね と 右の かべ(右の かべの 下は、いりぐち の とびら)
- *   3・4画目(入) … 家の中に はいった子の 体と あし(中に「入る」すがた。あしを ひらいて 立つ)
+ *   3・4画目(入) … 家の中に はいった子の 体と あし(中に「入る」すがた)
  *                  (字と ぴったりは 重ならない。子は ほんものの 人の つくり で かく)
  *
  * ながれ
@@ -14,34 +14,25 @@
  *   → あったかい 家の中で にっこり、りょうてを あげて 大よろこび
  *   → ほね が ひかって、絵が うすくなり、字「内」が のこる
  *
- * 子は、ほんものの 人の つくり を守る(字の形に合わせるために、体を ゆがめない):
- *   うで は かた から出て ひじ で まがる。くび は みじかく どう の上。あし は こし から。
- *   むきは ずっと 左(家の ほう)。
+ * 人は Person。あるきは walk、かさ を もつ うで は holdPose('overhead')。むきは ずっと 左(家の ほう)。
+ * 雨は Rain を 3つ(やね の 上は やね で とまる ように、はば で 分ける)。家・へや・葉っぱの かさ は ここで 描く。
  */
-import { backOut, during, easeInOut, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
+import { backOut, during, easeInOut, easeOut, inkTiming, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Backdrop, HANG_ARM, holdPose, LOOKS, mixLimb, PALETTE, Person, Rain, walk, type Look, type PersonProps } from '../sceneFigures'
 
 const CHAR = '内'
 
-const SKIN = '#f8cfa6'
-const SKIN_SHADE = '#eeb98a'
-const HAIR = '#5a3b2a'
-const COAT = '#ffc04a'
-const COAT_DARK = '#e0992f'
-const PANTS = '#3e5c86'
-const PANTS_DARK = '#34507a'
-const SHOE = '#d5524a'
 const WOOD = '#c98a54'
 const WOOD_DARK = '#a8764a'
 const DOOR = '#b9774a'
-const LEAF = '#55b86e'
-const LEAF_DARK = '#3f9c59'
-const GRASS = '#c5e8a9'
-const RAIN = '#5aaee8'
-const CLOUD = '#9aa9bd'
-const CLOUD_LIGHT = '#b7c3d3'
+const LEAF = PALETTE.leaf
+const LEAF_DARK = PALETTE.leafDark
 const WARM = '#fff0c2'
 const LAMP = '#ffb84a'
+
+/** 子の 見た目(きいろい 上着・あおい ズボン・あかい くつ) */
+const KID_LOOK: Look = { ...LOOKS.boy, top: '#ffc04a', bottom: '#3e5c86' }
 
 /** くぎり の時間(秒) */
 const COME = 0.8
@@ -57,58 +48,23 @@ const DURATION = 9
 
 /** 子の 足もとの 高さ(家の ゆか) と、いりぐち・まん中の x */
 const FLOOR_Y = 93.5
+const KID_HEIGHT = 38
 const WAIT_X = 97
 const HOME_X = 55
-
-/** 雨の しずく(そとの 雨だけ。やね の上は やね で とまる) */
-const RAIN_COLUMNS = [4, 12, 20, 30, 40, 50, 60, 70, 80, 93, 100, 106]
+/** やね の 高さ(雨は ここで とまる)・地面・かさの はば */
 const ROOF_Y = 30
 const GROUND_Y = 95
+const LEAF_WIDTH = 24
 
-type Mood = 'cold' | 'happy'
-type ArmPose = { readonly swing: number; readonly bend: number }
+/** 子が さむい あいだ(ぶるぶる) */
+const COLD_UNTIL = ENTER + 0.1
 
-const lerp = (a: number, b: number, k: number) => a + (b - a) * k
-const lerpPose = (a: ArmPose, b: ArmPose, k: number): ArmPose => ({ swing: lerp(a.swing, b.swing, k), bend: lerp(a.bend, b.bend, k) })
-
-function Sky({ t }: SceneProps) {
-  const pop = span(t, 0, 0.5, easeOut)
-  const drift = wave(t, 6) * 1.6
-  return (
-    <>
-      <Layer opacity={pop} x={drift}>
-        <ellipse cx="30" cy="9" rx="18" ry="5.4" fill={CLOUD} />
-        <ellipse cx="58" cy="7" rx="22" ry="6" fill={CLOUD} />
-        <ellipse cx="88" cy="9" rx="18" ry="5.4" fill={CLOUD} />
-        <ellipse cx="56" cy="5.2" rx="12" ry="2.6" fill={CLOUD_LIGHT} />
-      </Layer>
-      <ellipse cx="54.5" cy="98" rx="51" ry="5.6" fill={GRASS} />
-      {/* いりぐち の まえの みずたまり */}
-      <ellipse cx="102" cy="96.4" rx="6.4" ry="1.5" fill="#a9d9f7" />
-    </>
-  )
-}
-
-/** そとの 雨。家の やね の上は やね で とまり、とびらの そとは 地面まで おちる。 */
-function Rain({ t }: SceneProps) {
-  const fade = span(t, 0.35, 0.9)
-  if (fade <= 0) return null
-  return (
-    <g opacity={fade * 0.85} stroke={RAIN} strokeWidth="0.9" strokeLinecap="round">
-      {RAIN_COLUMNS.map((x, i) => {
-        const y = 14 + ((t * 55 + i * 23) % 84)
-        const endY = x > 24 && x < 88 ? ROOF_Y : GROUND_Y
-        if (y > endY) return null
-        return <path key={x} d={`M${x} ${y - 5} L${x - 0.8} ${y}`} />
-      })}
-    </g>
-  )
-}
+/* ───────── 家と へや ───────── */
 
 /** 家の中: あたたかい ひかり・ランプ・ちゃわんの ある つくえ。 */
-function Room({ t }: SceneProps) {
+function Interior({ t }: SceneProps) {
   const steam = (i: number) => {
-    const p = ((t * 0.6 + i * 0.33) % 1)
+    const p = (t * 0.6 + i * 0.33) % 1
     return <path key={i} d={`M${33 + i * 1.6 + Math.sin(p * 6 + i) * 0.8} ${77 - p * 6} q1 -1.4 0 -2.6`} fill="none" stroke="#ffffff" strokeWidth="0.8" strokeLinecap="round" opacity={Math.sin(p * Math.PI) * 0.8} />
   }
   return (
@@ -124,7 +80,7 @@ function Room({ t }: SceneProps) {
       <rect x="28.6" y="80" width="12.4" height="2.6" rx="1.2" fill={WOOD_DARK} />
       <path d="M30.6 82.6 V93.4 M39 82.6 V93.4" stroke={WOOD_DARK} strokeWidth="1.6" strokeLinecap="round" />
       <rect x="32" y="76.6" width="5" height="3.6" rx="1.2" fill="#ffffff" />
-      <path d="M32.4 77.4 h4.2" stroke="#f07f9e" strokeWidth="0.8" />
+      <path d="M32.4 77.4 h4.2" stroke={PALETTE.heart} strokeWidth="0.8" />
       {[0, 1].map(steam)}
     </>
   )
@@ -155,84 +111,16 @@ function LeanLeaf({ show }: { readonly show: number }) {
   )
 }
 
-/** かた から出て、ひじ で まがる うで。からだは 左むき。swing = ま下から まえ(左)へ ふった角度 */
-function Arm({ pose, color }: { readonly pose: ArmPose; readonly color: string }) {
-  const rad = (deg: number) => (deg * Math.PI) / 180
-  const upper = 6.5
-  const sx = 0
-  const sy = -24
-  const ex = sx - Math.sin(rad(pose.swing)) * upper
-  const ey = sy + Math.cos(rad(pose.swing)) * upper
-  const fore = pose.swing + pose.bend
-  const hx = ex - Math.sin(rad(fore)) * upper
-  const hy = ey + Math.cos(rad(fore)) * upper
+/** 手に もつ 葉っぱの かさ。at は かさの まんなか(holdPose の at)。しまうとき ちいさくなる */
+function LeafUmbrella({ at, size }: { readonly at: readonly [number, number]; readonly size: number }) {
+  if (size <= 0) return null
+  const half = LEAF_WIDTH / 2
   return (
-    <>
-      <path d={`M${sx} ${sy} L${ex} ${ey} L${hx} ${hy}`} fill="none" stroke={color} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={hx} cy={hy} r="2.3" fill={SKIN} />
-    </>
-  )
-}
-
-function Face({ mood }: { readonly mood: Mood }) {
-  return (
-    <>
-      <circle cx="-2" cy="-29.4" r="1.5" fill="#ff9d9d" opacity="0.55" />
-      {mood === 'cold' ? (
-        <>
-          <path d="M-4.4 -33.4 l3 -0.8" stroke={HAIR} strokeWidth="0.9" strokeLinecap="round" />
-          <circle cx="-2.8" cy="-31.6" r="0.95" fill="#2b2b2b" />
-          <path d="M-4.6 -27.6 q1 -1 2 0 q1 1 2 0" fill="none" stroke="#b9483f" strokeWidth="0.9" strokeLinecap="round" />
-        </>
-      ) : (
-        <>
-          <path d="M-4.2 -31.2 Q-2.8 -33 -1.4 -31.2" fill="none" stroke="#2b2b2b" strokeWidth="1" strokeLinecap="round" />
-          <path d="M-4.6 -28.6 Q-2.8 -26 -0.8 -28.6 Z" fill="#b9483f" />
-        </>
-      )}
-    </>
-  )
-}
-
-type ChildProps = {
-  readonly step: number
-  readonly mood: Mood
-  readonly nearArm: ArmPose
-  readonly farArm: ArmPose
-  readonly leaf: number
-}
-
-/** 子ども(足もとが 0,0。高さ 38 ほど)。 */
-function Child({ step, mood, nearArm, farArm, leaf }: ChildProps) {
-  return (
-    <>
-      <Arm pose={farArm} color={COAT_DARK} />
-      <Layer rotate={step * 22} origin={[0, -14]}>
-        <rect x="-1.2" y="-15" width="4" height="15" rx="2" fill={PANTS_DARK} />
-        <ellipse cx="0.2" cy="-0.9" rx="3.6" ry="1.9" fill={SHOE} />
-      </Layer>
-      <Layer rotate={-step * 22} origin={[0, -14]}>
-        <rect x="-2.8" y="-15" width="4" height="15" rx="2" fill={PANTS} />
-        <ellipse cx="-1.6" cy="-0.9" rx="3.6" ry="1.9" fill={SHOE} />
-      </Layer>
-      {/* くび: みじかく、どう の上 */}
-      <rect x="-1.8" y="-28" width="3.6" height="4.4" rx="1.4" fill={SKIN_SHADE} />
-      <rect x="-5.4" y="-26.4" width="10.8" height="13.4" rx="4.6" fill={COAT} />
-      <path d="M-4 -16 h8" stroke={COAT_DARK} strokeWidth="1" strokeLinecap="round" />
-      {/* あたま(むきは 左) */}
-      <circle cx="0" cy="-31.6" r="6.3" fill={SKIN} />
-      <circle cx="3.6" cy="-30.6" r="1.2" fill={SKIN_SHADE} />
-      <path d="M-5.9 -33 C-6.2 -39.4 5.6 -39.4 6.3 -32.4 L6.3 -27.4 C3.6 -28.6 1.6 -31 -1 -33.6 Q-3.6 -34 -5.9 -33 Z" fill={HAIR} />
-      <Face mood={mood} />
-      {/* てまえの うで: かおの まえに 出る(よろこぶとき、かおの よこで 見える) */}
-      <Arm pose={nearArm} color={COAT} />
-      {/* 葉っぱの かさ: てで もつ。しまうとき ちいさくなる */}
-      <Layer scale={leaf} origin={[-4.7, -34.2]}>
-        <path d="M-4.7 -34.2 L-3.6 -39" stroke={LEAF_DARK} strokeWidth="0.9" strokeLinecap="round" />
-        <path d="M-14 -39.4 C-12 -45.6 8 -45.6 10 -39.4 C6 -37.6 -10 -37.6 -14 -39.4 Z" fill={LEAF} />
-        <path d="M-12.6 -39.6 C-6 -41.2 4 -41.2 8.6 -39.6" fill="none" stroke={LEAF_DARK} strokeWidth="0.8" strokeLinecap="round" />
-      </Layer>
-    </>
+    <Layer x={at[0]} y={at[1]} scale={size} origin={[0, 3]}>
+      <path d={`M0 3 L0 0.6`} stroke={LEAF_DARK} strokeWidth="0.9" strokeLinecap="round" />
+      <path d={`M${-half} 1 C${-half * 0.8} -5.4 ${half * 0.8} -5.4 ${half} 1 C${half * 0.5} 3 ${-half * 0.5} 3 ${-half} 1 Z`} fill={LEAF} />
+      <path d={`M${-half * 0.9} 1 C${-half * 0.4} -1 ${half * 0.4} -1 ${half * 0.8} 1`} fill="none" stroke={LEAF_DARK} strokeWidth="0.8" strokeLinecap="round" />
+    </Layer>
   )
 }
 
@@ -249,47 +137,51 @@ function Shiver({ t, x }: SceneProps & { readonly x: number }) {
   )
 }
 
+/* ───────── 子ども ───────── */
+
+/** 子の 場所・かっこう と、手に もつ かさ(held)。あるいて きて → ぶるぶる → かさを おろして 中へ → 大よろこび */
+function kidAt(t: number): { readonly props: PersonProps; readonly umbrella: readonly [number, number]; readonly size: number } {
+  const goes = t < ENTER
+  const w = goes
+    ? walk(t, { from: WAIT_X + 23, to: WAIT_X, start: COME, end: AT_DOOR, build: 'child', height: KID_HEIGHT })
+    : walk(t, { from: WAIT_X, to: HOME_X, start: ENTER, end: CLOSE + 0.1, build: 'child', height: KID_HEIGHT })
+  const place = { x: w.x, y: FLOOR_Y, build: 'child', height: KID_HEIGHT, facing: 'left', pose: w.pose } as const
+  const hold = holdPose(place, 'overhead', LEAF_WIDTH)
+  const putDown = span(t, PUT_DOWN, ENTER, easeInOut)
+  const cheer = span(t, CHEER, CHEER + 0.35, backOut)
+  const cheerArm = { swing: 150, bend: 12 }
+  const arm = (side: 'leftArm' | 'rightArm') => mixLimb(mixLimb(hold.pose[side] ?? HANG_ARM, w.pose[side] ?? HANG_ARM, putDown), cheerArm, cheer)
+  const shiver = t >= AT_DOOR && t < PUT_DOWN ? wave(t, 0.14) * 0.6 : 0
+  const hop = t >= CHEER && t < INK ? Math.abs(Math.sin((t - CHEER) * Math.PI * 2.2)) * 2.6 : 0
+  const face = t < COLD_UNTIL ? 'worried' : t < CHEER ? 'smile' : 'joy'
+  const props: PersonProps = { ...place, x: w.x + shiver, lift: hop, look: KID_LOOK, face, pose: { ...w.pose, leftArm: arm('leftArm'), rightArm: arm('rightArm') } }
+  return { props, umbrella: hold.at, size: Math.max(0, 1 - putDown) }
+}
+
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 4)
-
-  // あるく: いりぐち まで → (とまって ぶるぶる) → 家の中へ
-  const walk1 = during(t, COME, AT_DOOR, 0.12)
-  const walk2 = during(t, ENTER, CLOSE + 0.1, 0.2)
-  const moving = Math.max(walk1, walk2)
-  const stride = Math.sin(t * Math.PI * 2 * 1.8) * moving
-  const x = t < ENTER ? mix(t, COME, AT_DOOR, WAIT_X + 23, WAIT_X, undefined) : mix(t, ENTER, CLOSE + 0.1, WAIT_X, HOME_X + 4, easeInOut) - span(t, CLOSE + 0.1, CHEER, easeOut) * 4
-  const shiver = t >= AT_DOOR && t < PUT_DOWN ? wave(t, 0.14) * 0.6 : 0
-  const hop = t >= CHEER && t < INK ? -Math.abs(Math.sin((t - CHEER) * Math.PI * 2.2)) * 2.6 : 0
-  const bob = -Math.abs(stride) * 1.2
-
+  const { props, umbrella, size } = kidAt(t)
   const open = span(t, OPEN, OPEN + 0.5, easeOut) * (1 - span(t, CLOSE, CLOSE + 0.5, easeInOut))
-  const putDown = span(t, PUT_DOWN, ENTER, easeInOut)
-  const mood: Mood = t < ENTER + 0.1 ? 'cold' : 'happy'
-
-  // うで: かさを もつ → おろして あるく → りょうてを あげて 大よろこび
-  const holdPose: ArmPose = { swing: 125, bend: 60 }
-  const walkNear: ArmPose = { swing: stride * 26, bend: 12 }
-  const cheer = span(t, CHEER, CHEER + 0.35, backOut)
-  const near = lerpPose(lerpPose(holdPose, walkNear, putDown), { swing: 125, bend: 35 }, cheer)
-  const far = lerpPose(lerpPose({ swing: 8, bend: 10 }, { swing: -stride * 26, bend: 12 }, putDown), { swing: 100, bend: 20 }, cheer)
-
+  const rain = span(t, 0.35, 0.9)
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Sky t={t} />
-        <Room t={t} />
+        <Backdrop t={t} sun={null} overcast={rain} clouds={[[30, 9, 1.1], [88, 9, 1.1]]} tufts={[6, 40, 100]} />
+        {/* いりぐち の まえの みずたまり */}
+        <ellipse cx="102" cy="96.4" rx="6.4" ry="1.5" fill="#a9d9f7" />
+        <Interior t={t} />
         <Door open={open} />
         {/* 家: 左の かべ・やね・右の かべ(右の かべの 下は とびら の ぶん あけておく) */}
         <rect x="20" y="93" width="71" height="3" rx="1.2" fill={WOOD_DARK} />
         <Bone char={CHAR} n={1} color={WOOD} width={6} />
         <Bone char={CHAR} n={2} color={WOOD} width={6} to={0.62} />
-        <Rain t={t} />
+        {/* 雨: 家の やね の 上は やね で とまり、そとは 地面まで おちる */}
+        <Rain t={t} amount={rain} ground={GROUND_Y} left={-2} right={24} />
+        <Rain t={t} amount={rain} ground={ROOF_Y} left={24} right={88} />
+        <Rain t={t} amount={rain} ground={GROUND_Y} left={88} right={111} />
         <LeanLeaf show={span(t, PUT_DOWN + 0.1, PUT_DOWN + 0.35, backOut)} />
-        <ellipse cx={x} cy="94.4" rx="8" ry="1.8" fill="#000000" opacity="0.1" />
-        <Layer x={x + shiver} y={FLOOR_Y + hop + bob}>
-          <Child step={stride} mood={mood} nearArm={near} farArm={far} leaf={Math.max(0, 1 - putDown)} />
-        </Layer>
-        <Shiver t={t} x={x} />
+        <Person {...props} opacity={span(t, COME - 0.3, COME - 0.1)} held={<LeafUmbrella at={umbrella} size={size} />} />
+        <Shiver t={t} x={props.x} />
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
       <Ink char={CHAR} progress={ink.progress} tint={ink.tint} />

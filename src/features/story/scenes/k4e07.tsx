@@ -20,10 +20,10 @@
  */
 import { backOut, during, easeOut, inkTiming, mix, span, wave, type SceneModule, type SceneProps } from '../sceneKit'
 import { Bone, BoneGlow, Ink, Layer, Sparkles } from '../sceneParts'
+import { Hearts, Hills, Meadow, Sun, Sweat } from '../sceneFigures'
 
 const CHAR = '万'
 
-const SUN = '#ffd24a'
 const HILL = '#fbefd0'
 const SAND = '#f2deb0'
 const SAND_DARK = '#e3c98f'
@@ -64,18 +64,13 @@ const BABY_BACK_Y = 77.4
 const BABY_LAND_X = [72, 80, 88, 96] as const
 const BABY_GROUND_Y = 92.6
 
-function Ground({ t }: SceneProps) {
-  const sun = span(t, 0, 0.6, easeOut)
+/** 砂ばくの 背景: 共通部品の お日さま・おか・のはら を 砂いろに して使う */
+function Desert({ t }: SceneProps) {
   return (
     <>
-      <Layer opacity={sun} rotate={t * 14} origin={[10, 8]}>
-        {Array.from({ length: 8 }, (_, i) => (
-          <rect key={i} x="9.2" y="0.6" width="1.6" height="3.4" rx="0.8" fill={SUN} transform={`rotate(${i * 45} 10 8)`} />
-        ))}
-      </Layer>
-      <circle cx="10" cy="8" r={4.6 * sun} fill={SUN} />
-      <path d="M-4 99 Q20 76 48 90 Q78 70 113 92 V101 H-4 Z" fill={HILL} />
-      <ellipse cx="54.5" cy="98" rx="52" ry="5.8" fill={SAND} />
+      <Sun t={t} x={10} y={8} r={4.6} />
+      <Hills color={HILL} />
+      <Meadow y={98} tufts={[]} color={SAND} />
       {[6, 40, 63, 104].map((x) => (
         <ellipse key={x} cx={x} cy="98.6" rx="2.6" ry="1" fill={SAND_DARK} />
       ))}
@@ -233,34 +228,6 @@ function Babies({ t, motherX, motherY }: SceneProps & { readonly motherX: number
   )
 }
 
-/** あるいている間の あせ。体の うしろへ とぶ。 */
-function Sweat({ t }: SceneProps) {
-  const show = during(t, WALK + 0.2, STOP, 0.2)
-  if (show <= 0) return null
-  return (
-    <g opacity={show}>
-      {[0, 0.45].map((offset) => {
-        const p = ((t + offset) % 0.9) / 0.9
-        return <path key={offset} d="M0 -2.2 Q1.9 0.6 0 1.9 Q-1.9 0.6 0 -2.2 Z" fill="#7cc4f2" transform={`translate(${33 - p * 3} ${76 + p * 5}) rotate(-20)`} opacity={1 - p} />
-      })}
-    </g>
-  )
-}
-
-/** うれしい ハートが あたまの上へ ふわり。 */
-function Hearts({ t }: SceneProps) {
-  const show = during(t, GLAD, INK + 0.2, 0.3)
-  if (show <= 0) return null
-  return (
-    <g opacity={show} fill={HEART}>
-      {[0, 0.7].map((offset) => {
-        const p = ((t - GLAD + offset) % 1.4) / 1.4
-        return <path key={offset} d="M0 1.8 C-3.2 -0.8 -2 -3.6 0 -2 C2 -3.6 3.2 -0.8 0 1.8 Z" transform={`translate(${37 - p * 4 + Math.sin(p * 6) * 1.2} ${76 - p * 12}) scale(${0.8 + p * 0.5})`} opacity={Math.sin(p * Math.PI)} />
-      })}
-    </g>
-  )
-}
-
 function Scene({ t }: SceneProps) {
   const ink = inkTiming(t, INK, DONE, 3)
 
@@ -281,16 +248,16 @@ function Scene({ t }: SceneProps) {
   return (
     <>
       <Layer opacity={ink.picture}>
-        <Ground t={t} />
+        <Desert t={t} />
         <RockHouse t={t} />
         <Layer opacity={span(t, WALK - 0.1, WALK + 0.15)}>
           <ellipse cx={51 + walkX} cy="97.4" rx="17" ry="2.2" fill="#000000" opacity="0.1" />
           <Layer x={walkX} y={bob}>
             <Mother stride={stride} mood={mood} tailAngle={tailAngle} pincer={pincer} />
-            <Sweat t={t} />
+            <Sweat t={t} x={34} y={76} show={during(t, WALK + 0.2, STOP, 0.2)} />
           </Layer>
           <Babies t={t} motherX={walkX} motherY={bob} />
-          <Hearts t={t} />
+          <Hearts t={t - GLAD} x={36} y={76} show={during(t, GLAD, INK + 0.2, 0.3)} color={HEART} />
         </Layer>
       </Layer>
       <BoneGlow char={CHAR} opacity={during(t, INK - 0.2, INK + 0.45, 0.2) * 0.85} />
