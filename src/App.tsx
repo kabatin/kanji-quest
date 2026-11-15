@@ -4,6 +4,8 @@ import { getKanji, KANJI } from './data/kanji'
 import { BossScreen, type BossNext } from './features/boss/BossScreen'
 import { Challenge } from './features/challenge/Challenge'
 import { Home } from './features/home/Home'
+import { IntroCoach } from './features/intro/IntroCoach'
+import { IntroWelcome } from './features/intro/IntroWelcome'
 import { ExtendPlay } from './features/limit/ExtendPlay'
 import { LimitScreen } from './features/limit/LimitScreen'
 import { SoonNotice } from './features/limit/SoonNotice'
@@ -21,6 +23,8 @@ import { StageScreen } from './features/stage/StageScreen'
 import { WeakScreen } from './features/weak/WeakScreen'
 import { Zukan, type ZukanView } from './features/zukan/Zukan'
 import { areaBoss, examBoss } from './lib/boss'
+import type { Handed } from './lib/handed'
+import { needsWelcome } from './lib/intro'
 import { setMusic } from './lib/music'
 import { countsAsPlay } from './lib/playGate'
 import { itemName } from './lib/shop'
@@ -71,6 +75,7 @@ export default function App() {
   const skin = useProgress((s) => s.equipped.skin)
   const learned = useProgress((s) => s.learned)
   const clears = useProgress((s) => s.clears)
+  const intro = useProgress((s) => s.intro)
   const bossRules = useBossRules()
   const profileCount = useProfiles((s) => s.profiles.length)
   const screen = stack[stack.length - 1]
@@ -124,9 +129,21 @@ export default function App() {
 
   const review = (char: string) => go({ name: 'learn', char })
 
+  /** はじめての子の さいしょの画面。ききてを うけとり、そのまま さいしょの1字を まなぶ。 */
+  const welcome = screen.name === 'home' && needsWelcome(learned.length, intro)
+  const startFirstKanji = (handed: Handed) => {
+    const { updateSettings, markIntroSeen } = useProgress.getState()
+    updateSettings({ handed })
+    markIntroSeen('handed')
+    const first = ALL_STAGES[0]
+    setStack([...toStage(first), { name: 'learn', char: first.kanji[0], stageId: first.id }])
+  }
+
   return (
     <div className="app" data-skin={itemName(skin)}>
-      {screen.name === 'home' && <Home onGo={go} />}
+      {welcome && <IntroWelcome onPick={startFirstKanji} onSkip={() => useProgress.getState().skipIntro()} />}
+      {screen.name === 'home' && !welcome && <Home onGo={go} />}
+      {screen.name === 'home' && !welcome && <IntroCoach />}
       {screen.name === 'map' && (
         <MapScreen
           area={screen.area}

@@ -114,7 +114,8 @@ describe('「だれが あそぶ？」の画面', () => {
     await user.type(screen.getByRole('textbox', { name: 'なまえ' }), 'はな')
     await user.click(screen.getByRole('button', { name: 'つくる' }))
 
-    // 新しい人は、まっさらな状態で ホームから始まる(その日のログインボーナスも出る)
+    // 新しい人は、まっさらな状態で はじめての あんない から始まる。とばすと ホーム(その日のログインボーナスも出る)
+    await user.click(await screen.findByRole('button', { name: 'あんないを とばす' }))
     await user.click(await screen.findByRole('button', { name: /^コインを/ }))
     expect(screen.getByRole('button', { name: 'あそぶ ひと: はな。きりかえる' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /^ずかん/ })).toHaveTextContent('0 / 240')

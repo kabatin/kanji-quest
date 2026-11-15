@@ -18,6 +18,8 @@ export type WriteReport = {
   readonly maxHint: HintLevel
   /** 「おてほん」(テストでは「わからない」)を押したか */
   readonly askedModel: boolean
+  /** 合格した画の 実際の筆跡(書いた順。1画 = 点の列)。書いた字を のこす きろく に使う(古い呼び出しには ない) */
+  readonly strokes?: readonly (readonly (readonly [number, number])[])[]
 }
 
 /**

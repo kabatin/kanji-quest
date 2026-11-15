@@ -32,6 +32,8 @@ export type WriteState = {
   readonly missLine: readonly Point[] | null
   /** 書く画の順の、自分の線 */
   readonly traces: readonly (StrokeTrace | undefined)[]
+  /** 合格した画の 実際の筆跡(書いた順)。まちがえた線は 入らない。書いた字を のこすのに使う */
+  readonly lines: readonly (readonly Point[])[]
 }
 
 export type WriteAction =
@@ -44,7 +46,7 @@ export type WriteAction =
   | { readonly type: 'restart' }
 
 export function initWrite(strict: boolean): WriteState {
-  return { strict, done: 0, misses: 0, missesHere: 0, hint: 0, maxHint: 0, askedModel: false, issue: null, missLine: null, traces: [] }
+  return { strict, done: 0, misses: 0, missesHere: 0, hint: 0, maxHint: 0, askedModel: false, issue: null, missLine: null, traces: [], lines: [] }
 }
 
 /** 配列の index の所だけを かえた、新しい配列 */
@@ -55,7 +57,7 @@ function withAt<T>(list: readonly (T | undefined)[], index: number, value: T): (
 function passStroke(state: WriteState, points: readonly Point[]): WriteState {
   const before = state.traces[state.done]
   const trace = before && before.points.length > 0 ? before : { points, missed: state.missesHere > 0 }
-  return { ...state, done: state.done + 1, missesHere: 0, hint: 0, issue: null, missLine: null, traces: withAt(state.traces, state.done, trace) }
+  return { ...state, done: state.done + 1, missesHere: 0, hint: 0, issue: null, missLine: null, traces: withAt(state.traces, state.done, trace), lines: [...state.lines.slice(0, state.done), points] }
 }
 
 function missStroke(state: WriteState, issue: StrokeIssue, points: readonly Point[]): WriteState {
@@ -95,11 +97,11 @@ export function writeReducer(state: WriteState, action: WriteAction): WriteState
     case 'giveUp':
       return giveUp(state)
     case 'restart':
-      return { ...state, done: 0, missesHere: 0, hint: 0, issue: null, missLine: null, traces: [] }
+      return { ...state, done: 0, missesHere: 0, hint: 0, issue: null, missLine: null, traces: [], lines: [] }
   }
 }
 
 /** 書きおわったときに 呼び出し側へ渡す、ヒントの きろく */
 export function writeReport(state: WriteState): WriteReport {
-  return { maxHint: state.maxHint, askedModel: state.askedModel }
+  return { maxHint: state.maxHint, askedModel: state.askedModel, strokes: state.lines }
 }

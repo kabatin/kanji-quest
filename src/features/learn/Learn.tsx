@@ -7,6 +7,7 @@ import { buildQuestion } from '../../lib/quiz'
 import type { WriteReport } from '../../lib/strokeHint'
 import { useFeedback } from '../../lib/useFeedback'
 import { useProgress, type LearnGain, type WriteGain } from '../../store/progress'
+import { IntroLearnTip } from '../intro/IntroLearnTip'
 import { Kaku } from '../kaku/Kaku'
 import { Kumiawase } from '../kumiawase/Kumiawase'
 import { StoryPlayer } from '../story/StoryPlayer'
@@ -103,6 +104,7 @@ export function Learn({ kanji, onBack, backLabel, onOpen, next }: Props) {
           </ol>
         )}
       </TopBar>
+      <IntroLearnTip step={step.name} />
       {step.name === 'story' && <StoryPlayer kanji={kanji} onDone={handleStoryDone} />}
       {step.name === 'kumi' && (
         <Kumiawase key={step.index} question={questions[step.index]} showHint={showHint} onSolved={handleKumiSolved} />

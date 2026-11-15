@@ -32,7 +32,7 @@ describe('kakuSession: 書き取りの すすみぐあい', () => {
     expect(levels).toEqual([2, 3, 4, 4])
     const after = play([miss(), miss(), miss(), ok()])
     expect(after).toMatchObject({ hint: 0, maxHint: 4 })
-    expect(writeReport(after)).toEqual({ maxHint: 4, askedModel: false })
+    expect(writeReport(after)).toMatchObject({ maxHint: 4, askedModel: false })
   })
 
   it('テスト: 2回目で いちばん強い ヒント', () => {
@@ -44,7 +44,14 @@ describe('kakuSession: 書き取りの すすみぐあい', () => {
     const state = play([{ type: 'model' }])
     expect(state).toMatchObject({ hint: 3, askedModel: true, misses: 0 })
     expect(writeReducer(state, miss()).hint).toBe(3)
-    expect(writeReport(play([{ type: 'model' }, ok()]))).toEqual({ maxHint: 3, askedModel: true })
+    expect(writeReport(play([{ type: 'model' }, ok()]))).toMatchObject({ maxHint: 3, askedModel: true })
+  })
+
+  it('合格した画の 筆跡を report に のせる(まちがえた線は のせない)', () => {
+    const state = play([miss(), ok()])
+    expect(writeReport(state).strokes).toHaveLength(1)
+    expect(writeReport(state).strokes?.[0]).toEqual(state.lines[0])
+    expect(writeReport(play([ok(), { type: 'restart' }])).strokes).toEqual([])
   })
 
   it('「わからない」は まちがい1回として 3段目を出す。同じ画で もう まちがえていたら 数えない', () => {

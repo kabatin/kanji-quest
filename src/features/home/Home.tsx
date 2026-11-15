@@ -353,7 +353,7 @@ export function Home({ onGo }: Props) {
         <MissionPanel />
         <div className="home__center">
           {/* つついたときは、ひとこと が ぽんと出なおす(key を変えて、出てくる動きを もう一度見せる) */}
-          <p key={pokeLine.line ? pokeLine.count : 0} className={`home__bubble ${pokeLine.line ? 'is-poked' : ''}`} aria-live="polite">
+          <p key={pokeLine.line ? pokeLine.count : 0} data-intro="sentence" className={`home__bubble ${pokeLine.line ? 'is-poked' : ''}`} aria-live="polite">
             <KText text={pokeLine.line ?? mascotLine(learned.length, level, next)} />
           </p>
           <div className="home__calls">
@@ -370,7 +370,7 @@ export function Home({ onGo }: Props) {
           <DockButton icon={iconChallenge} label={'きょうの\nチャレンジ'} tone="play" mark={challengeMark} onClick={() => onGo({ name: 'challenge' })} />
         </DockGroup>
 
-        <button type="button" className="cta" onClick={() => onGo(continueTo(next))}>
+        <button type="button" className="cta" data-intro="next" onClick={() => onGo(continueTo(next))}>
           {next.kind === 'learn' && (
             <>
               <span className="cta__kanji">{next.char}</span>

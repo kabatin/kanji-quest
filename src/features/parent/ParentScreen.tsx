@@ -2,14 +2,17 @@ import { useState } from 'react'
 import { dayKey } from '../../lib/date'
 import type { Profile } from '../../lib/profiles'
 import { useProfiles } from '../../store/profiles'
+import { HomeworkView } from './HomeworkView'
 import { OverviewView } from './OverviewView'
 import { SettingsView } from './SettingsView'
+import { useChildHands } from './useChildHands'
 import { useChildReport } from './useChildReport'
 
-type View = 'overview' | 'settings'
+type View = 'overview' | 'homework' | 'settings'
 
 const VIEWS: readonly { readonly id: View; readonly label: string }[] = [
   { id: 'overview', label: '学習のようす' },
+  { id: 'homework', label: '宿題の字' },
   { id: 'settings', label: '設定' },
 ]
 
@@ -64,15 +67,16 @@ export function ParentScreen({ onBack, onOpen }: Props) {
   const [view, setView] = useState<View>('overview')
   const child = profiles.find((p) => p.id === childId) ?? profiles[0]
   const input = useChildReport(child.id)
+  const hands = useChildHands(child.id)
   const today = dayKey()
 
   return (
     <div className="screen parent" data-view={view}>
       <ParentBar onBack={onBack} profiles={profiles} childId={child.id} onChild={setChildId} view={view} onView={setView} />
       <div id="parent-panel" className="parent__view" role="tabpanel" aria-labelledby={`parent-tab-${view}`}>
-        {view === 'overview' ? (
-          <OverviewView key={child.id} input={input} name={child.name} today={today} canPractice={child.id === activeId} onOpen={onOpen} />
-        ) : (
+        {view === 'overview' && <OverviewView key={child.id} input={input} hands={hands} name={child.name} today={today} canPractice={child.id === activeId} onOpen={onOpen} />}
+        {view === 'homework' && <HomeworkView key={child.id} childId={child.id} input={input} name={child.name} today={today} canPractice={child.id === activeId} onOpen={onOpen} />}
+        {view === 'settings' && (
           <SettingsView childId={child.id} name={child.name} input={input} today={today} />
         )}
       </div>

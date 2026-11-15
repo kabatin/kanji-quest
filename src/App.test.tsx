@@ -117,6 +117,8 @@ async function clearQuiz(user: User, container: HTMLElement, count: number) {
 
 beforeEach(() => {
   state().reset()
+  // はじめての あんないは、ほかの流れの じゃまにならないよう 見おえた状態から始める
+  state().skipIntro()
 })
 
 describe('ホーム', () => {

@@ -44,6 +44,7 @@ import {
 } from '../lib/rewards'
 import { bindAppearance } from '../lib/appearance'
 import { sanitizeHanded, type Handed } from '../lib/handed'
+import { INITIAL_INTRO, markSeen, sanitizeIntro, skipIntro, type IntroState, type IntroTip } from '../lib/intro'
 import { sanitizeVolume, type Volume } from '../lib/volume'
 import { isBetter, type Best, type Level } from '../lib/score'
 import { canBuy, DEFAULT_EQUIPPED, DEFAULT_OWNED, findItem, ownedDecos, type Equipped } from '../lib/shop'
@@ -51,7 +52,10 @@ import { AREAS } from '../data/areas'
 import { KANJI } from '../data/kanji'
 import { decoSpot, isDeco, isMovableDeco, settleDeco, TURN_STEPS, type DecoSpots, type DecoTurns, type Spot } from '../features/home/scene/layout'
 import { isCleared, migrateClears, triesLeft, type Clears, type Tries } from '../lib/stages'
-import { addPlayMinutes, applyReview, EMPTY_RECORDS, updateMisses, withAnswers, type Records } from './records'
+import { homeworkChars } from '../lib/homework'
+import { handsSchema } from '../lib/handwriting'
+import { addPlayMinutes, applyReview, EMPTY_RECORDS, updateMisses, withAnswers, withHands, type Records } from './records'
+import { useParent } from './parent'
 
 export type Settings = {
   readonly sound: boolean
@@ -109,6 +113,8 @@ type ProgressData = Records & {
   /** きょうの チャレンジ(その日の字・むずかしさ・やりおえたか) */
   readonly challengeDay: ChallengeDay
   readonly settings: Settings
+  /** はじめての あんない の 見おえた所(プロフィールごと) */
+  readonly intro: IntroState
 }
 
 /** 何かを達成したときに もらえたもの。画面の えんしゅつ に使う。 */
@@ -215,6 +221,10 @@ type ProgressActions = {
   /** 持っている かざり を しまう(stored = true)・しまに出す(false)。出すときは、ほかと重ならない場所に直す */
   storeDeco: (name: string, stored: boolean) => void
   updateSettings: (patch: Partial<Settings>) => void
+  /** あんないの 吹き出しを 見おえた印をつける */
+  markIntroSeen: (tip: IntroTip) => void
+  /** あんないを とばす(もう出さない) */
+  skipIntro: () => void
   reset: () => void
 }
 
@@ -241,6 +251,7 @@ const INITIAL: ProgressData = {
   zukanSeen: 0,
   bests: {},
   challengeDay: INITIAL_CHALLENGE_DAY,
+  intro: INITIAL_INTRO,
   // タイマーは焦りのもとになるので、最初は見せない
   settings: { sound: true, music: true, speech: true, soundVol: 'normal', musicVol: 'normal', speechVol: 'normal', icons: true, timer: false, handed: 'right', reduceMotion: false },
 }
@@ -456,7 +467,9 @@ export const useProgress = create<ProgressState>()(
       startChallenge: (profileId, today = dayKey()) => {
         const { challengeDay, learned, stamps, misses, reviews } = get()
         if (challengeDay.day === today && challengeDay.chars.length > 0) return challengeDay.chars
-        const chars = pickDailyChars({ kanji: KANJI, learned, stamps, misses, reviews, today, seed: `${profileId}:${today}` })
+        // 保護者が えらんだ字は、先に 出す
+        const homework = homeworkChars(useParent.getState().homework[profileId])
+        const chars = pickDailyChars({ kanji: KANJI, learned, stamps, misses, reviews, today, seed: `${profileId}:${today}`, homework })
         const next = beginChallengeDay(challengeDay, chars, today)
         set({ challengeDay: next })
         return next.chars
@@ -485,6 +498,7 @@ export const useProgress = create<ProgressState>()(
           return {
             // 問題の種類が わからない 古い呼び方では、答えは のこさない(苦手から ぬけた日 だけ)
             ...withAnswers(state, 'boss', result.answers ?? [], today, misses),
+            hands: withHands(state.hands, result.answers ?? [], today),
             xp: state.xp + gain.xp,
             coins: state.coins + gain.coins,
             clears: firstClear ? { ...state.clears, [result.id]: today } : state.clears,
@@ -506,6 +520,7 @@ export const useProgress = create<ProgressState>()(
           const answers = result.answers ?? reviewAnswersOf(state.reviews, result.right, result.wrong)
           return {
             ...withAnswers(state, 'review', answers, today, misses),
+            hands: withHands(state.hands, answers, today),
             xp: state.xp + gain.xp,
             coins: state.coins + gain.coins,
             reviews: applyReview(state.reviews, result.right, result.wrong, today, result.answers),
@@ -526,6 +541,7 @@ export const useProgress = create<ProgressState>()(
           const misses = updateMisses(state.misses, [], result.right)
           return {
             ...withAnswers(state, 'weak', answers, today, misses),
+            hands: withHands(state.hands, answers, today),
             xp: state.xp + gain.xp,
             coins: state.coins + gain.coins,
             misses,
@@ -609,6 +625,8 @@ export const useProgress = create<ProgressState>()(
       },
 
       updateSettings: (patch) => set((state) => ({ settings: { ...state.settings, ...patch } })),
+      markIntroSeen: (tip) => set((state) => ({ intro: markSeen(state.intro, tip) })),
+      skipIntro: () => set((state) => ({ intro: skipIntro(state.intro) })),
       reset: () => set({ ...INITIAL }),
     }),
     {
@@ -626,12 +644,16 @@ export const useProgress = create<ProgressState>()(
           // あとから ふえた項目が、前の保存データに なくても こわれないようにする
           settings: normalizeSettings({ ...INITIAL.settings, ...saved.settings }),
           challengeDay: challengeDaySchema.parse(saved.challengeDay),
+          // あんないは あとから ふえた。なかった・こわれていたら はじめの状態(遊んでいる子には出ない)
+          intro: sanitizeIntro(saved.intro),
           decoSpots: decoSpotsSchema.parse(saved.decoSpots),
           decoTurns: decoTurnsSchema.parse(saved.decoTurns),
           decoStored: decoStoredSchema.parse(saved.decoStored),
           // 答えの きろく は あとから ふえた。こわれていたら 読めるところだけ
           answerLog: answerLogSchema.parse(saved.answerLog),
           answerDays: answerDaysSchema.parse(saved.answerDays),
+          // 書いた字も あとから ふえた。こわれた字は すてる
+          hands: handsSchema.parse(saved.hands),
           // この しくみ が できる前から覚えていた字は、もう見たことにする
           zukanSeen: typeof saved.zukanSeen === 'number' ? saved.zukanSeen : (saved.learned?.length ?? 0),
           daily: saved.daily ? { ...saved.daily, counters: { ...EMPTY_COUNTERS, ...saved.daily.counters } } : INITIAL.daily,

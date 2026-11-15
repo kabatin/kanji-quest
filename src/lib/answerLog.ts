@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { addDays, daysBetween } from './date'
+import type { Strokes } from './handwriting'
 import { hasStamp } from './rewards'
 import { isHinted, MASTERED_INTERVAL, REVIEW_INTERVALS, type AnswerKind, type CharAnswer, type ReviewCard, type Reviews } from './review'
 
@@ -13,7 +14,11 @@ import { isHinted, MASTERED_INTERVAL, REVIEW_INTERVALS, type AnswerKind, type Ch
 export type AnswerWhere = 'learn' | 'review' | 'boss' | 'weak' | 'challenge'
 
 /** 画面から渡す 1問ぶんの答え。hint は 書く問題で出た いちばん上のヒントの段(`<Kaku>` の WriteReport.maxHint) */
-export type AnswerInput = CharAnswer & { readonly kind: AnswerKind }
+export type AnswerInput = CharAnswer & {
+  readonly kind: AnswerKind
+  /** 書く問題で 合格した画の 実際の筆跡(`<Kaku>` の WriteReport.strokes)。見ないで書けた字を のこすのに使う(lib/handwriting) */
+  readonly strokes?: Strokes
+}
 
 /** 書く力の段。0 = まだ / 1 = 見て書けた / 2 = 見ないで書けた / 3 = 日をあけても 見ないで書けた */
 export type WriteLevel = 0 | 1 | 2 | 3

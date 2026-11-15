@@ -1,10 +1,12 @@
 import { expect, test, type Page } from '@playwright/test'
+import { skipIntro } from './skipIntro.js'
 
 const GLYPH_SIZE = 109
 
 /** 最初の画面で、ログインボーナスを受け取ってホームを出す。 */
 async function start(page: Page) {
   await page.goto('/')
+  await skipIntro(page)
   await page.getByRole('dialog', { name: 'ログインボーナス' }).getByRole('button').click()
   await expect(page.getByRole('dialog')).toHaveCount(0)
 }

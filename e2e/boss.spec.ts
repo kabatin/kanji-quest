@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { skipIntro } from './skipIntro.js'
 
 const GLYPH_SIZE = 109
 const BOSS_QUESTIONS = 15
@@ -7,6 +8,7 @@ const FITS = { inner: 0, pageHeight: 768, pageWidth: 1024 }
 /** 中ボスまでの20字を学びおえた状態から始める(ログインボーナスは受け取りずみ)。 */
 async function startWithStageLearned(page: Page) {
   await page.goto('/')
+  await skipIntro(page)
   await page.getByRole('dialog', { name: 'ログインボーナス' }).getByRole('button').click()
   await page.evaluate(async () => {
     const areasPath = '/src/data/areas.ts'
@@ -74,6 +76,7 @@ async function solve(page: Page, root = '.boss-run') {
 
 test('ホームは 3D の しま が出て、画面に収まる。メニューは「あそぶ」「あつめる」に分かれる', async ({ page }) => {
   await page.goto('/')
+  await skipIntro(page)
   await page.getByRole('dialog', { name: 'ログインボーナス' }).getByRole('button').click()
   await expect(page.locator('.island[data-ready="true"]')).toBeVisible({ timeout: 20_000 })
   expect(await overflow(page)).toEqual(FITS)
@@ -208,6 +211,7 @@ test('ボス: とちゅうで やめても1回つかい、3回使いきると �
 
 test('もようがえ: かざり を指で ひっぱると 場所が変わり、読み込みなおしても残る', async ({ page }) => {
   await page.goto('/')
+  await skipIntro(page)
   await page.getByRole('dialog', { name: 'ログインボーナス' }).getByRole('button').click()
   await expect(page.locator('.island[data-ready="true"]')).toBeVisible({ timeout: 20_000 })
   // かざり を持っていない間は、もようがえ を押すと「きせかえで買おう」と案内が出る
@@ -285,6 +289,7 @@ test('もようがえ: かざり を指で ひっぱると 場所が変わり、
 
 test('きせかえ の画面は、どの種類も画面に収まる', async ({ page }) => {
   await page.goto('/')
+  await skipIntro(page)
   await page.getByRole('dialog', { name: 'ログインボーナス' }).getByRole('button').click()
   await page.getByRole('button', { name: /^きせかえ/ }).click()
   for (const tab of ['ぼうし', 'かざり', 'そら', 'カード']) {
@@ -295,12 +300,15 @@ test('きせかえ の画面は、どの種類も画面に収まる', async ({ p
 
 test('あそぶ人: 新しく作って切りかえると進みぐあいが分かれ、読み込みなおすと だれが あそぶか を聞かれる', async ({ page }) => {
   await page.goto('/')
+  await skipIntro(page)
   await page.getByRole('dialog', { name: 'ログインボーナス' }).getByRole('button').click()
   await page.getByRole('button', { name: /^あそぶ ひと/ }).click()
   expect(await overflow(page)).toEqual(FITS)
   await page.getByRole('button', { name: 'あたらしく つくる' }).click()
   await page.getByRole('textbox', { name: 'なまえ' }).fill('はな')
   await page.getByRole('button', { name: 'つくる' }).click()
+  // あたらしい人には はじめての あんない が出る
+  await page.getByRole('button', { name: 'あんないを とばす' }).click()
   await page.getByRole('dialog', { name: 'ログインボーナス' }).getByRole('button').click()
   await expect(page.getByRole('button', { name: /^あそぶ ひと: はな/ })).toBeVisible()
 

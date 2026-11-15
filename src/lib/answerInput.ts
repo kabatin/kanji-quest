@@ -8,5 +8,6 @@ import type { WriteReport } from './strokeHint'
  */
 export function answerOf(question: BossQuestion, mistakes: number, report?: WriteReport): AnswerInput {
   const hint = question.type === 'write' ? report?.maxHint : undefined
-  return { char: question.kanji.char, kind: roundOf(question), ok: mistakes === 0, ...(hint === undefined ? {} : { hint }) }
+  const strokes = question.type === 'write' && mistakes === 0 ? report?.strokes : undefined
+  return { char: question.kanji.char, kind: roundOf(question), ok: mistakes === 0, ...(hint === undefined ? {} : { hint }), ...(strokes && strokes.length > 0 ? { strokes } : {}) }
 }

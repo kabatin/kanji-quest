@@ -2,11 +2,15 @@ import { getKanji } from '../../data/kanji'
 import { answerText, type CharHistory } from '../../lib/charHistory'
 import { MASTERY_LABEL, MASTERY_NOTE } from '../../lib/mastery'
 import { learnedOnText, missText, reviewText, weakText } from '../../lib/parentDetail'
+import type { Hand } from '../../lib/handwriting'
 import { formatDay } from '../../lib/parentReport'
+import { HandPair } from './HandPair'
 
 type Props = {
   readonly history: CharHistory
   readonly today: string
+  /** 子どもが書いた字(見ないで書けた字。なければ なし) */
+  readonly hand?: Hand
   /** その子の名前(あそんでいる人と ちがう子を 見ているときの 案内に使う) */
   readonly name: string
   /** いま あそんでいる子を 見ているか(練習は あそんでいる人で 開く) */
@@ -55,7 +59,7 @@ function Recent({ history }: { readonly history: CharHistory }) {
 }
 
 /** 字を押したときの、くわしい記録。練習する導線も ここ。 */
-export function CharDetail({ history, today, name, canPractice, onPractice, onClose }: Props) {
+export function CharDetail({ history, today, hand, name, canPractice, onPractice, onClose }: Props) {
   const weak = weakText(history)
   return (
     <section className="parent-card cdetail" aria-labelledby="cdetail-title">
@@ -80,6 +84,7 @@ export function CharDetail({ history, today, name, canPractice, onPractice, onCl
       </header>
       {weak && <p className="cdetail__weak">{weak}</p>}
       <div className="cdetail__body">
+        <HandPair char={history.char} hand={hand} />
         <Facts history={history} today={today} />
         <Recent history={history} />
       </div>

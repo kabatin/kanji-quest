@@ -24,6 +24,7 @@ function alreadyCheckedIn() {
 
 beforeEach(() => {
   useProgress.getState().reset()
+  useProgress.getState().skipIntro()
   useParent.setState(DEFAULT_PARENT)
   alreadyCheckedIn()
 })

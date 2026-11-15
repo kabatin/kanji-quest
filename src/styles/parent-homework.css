@@ -1,0 +1,170 @@
+/* 保護者の画面: 宿題の字(左: 字えらびの表、右: えらんだ字の いまの状態) */
+.hw {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr);
+  gap: 10px;
+  height: 100%;
+}
+
+.hw__side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+/* えらんでいる字: 濃い黄色の ふち(押した状態)と 右下の 黄色の しるし */
+.mcell[data-homework='true']::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 9px 9px;
+  border-color: transparent transparent var(--yamabuki) transparent;
+}
+
+.hw__full {
+  padding: 8px 12px;
+  background: #fdf1ee;
+  border: 1px solid #e6b8ad;
+  border-radius: 8px;
+  color: #8f2e1e;
+  font-size: 0.85rem;
+}
+
+.hw-list {
+  flex: 1;
+  min-height: 0;
+}
+
+.hw-list__clear {
+  margin-left: auto;
+  min-height: 32px;
+}
+
+.hw-list__done {
+  padding: 8px 12px;
+  background: #eaf5ec;
+  border: 1px solid #a9d3b0;
+  border-radius: 8px;
+  color: #1f5c2e;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.hw-list__rows {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.hw-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--p-hair);
+}
+
+.hw-row__char {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  background: var(--m-none);
+  border-radius: 6px;
+  color: var(--m-none-ink);
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.hw-row[data-state='learned'] .hw-row__char {
+  background: var(--m-learned);
+  color: #141c47;
+}
+
+.hw-row[data-state='model'] .hw-row__char {
+  background: var(--m-model);
+  color: #ffffff;
+}
+
+.hw-row[data-state='blind'] .hw-row__char {
+  background: var(--m-blind);
+  color: #ffffff;
+}
+
+.hw-row[data-state='solid'] .hw-row__char {
+  background: var(--m-solid);
+  color: #ffffff;
+}
+
+.hw-row__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.hw-row__state {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  font-size: 0.86rem;
+}
+
+.hw-row__count,
+.hw-row__note {
+  color: var(--p-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.hw-row__note {
+  margin: 1px 0 0;
+}
+
+.hw-row__remove {
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: 0 10px;
+  font-size: 0.82rem;
+}
+
+.hw-row__practice {
+  margin-top: 4px;
+  min-height: 32px;
+  padding: 0 10px;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 860px), (max-height: 640px) {
+  .parent[data-view='homework'] .parent__view {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .hw {
+    height: auto;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hw .mmap__scroll {
+    overflow: visible;
+    container-type: inline-size;
+  }
+
+  .hw .mmap__grid {
+    width: min(100%, 720px);
+  }
+
+  .hw-list__rows {
+    overflow: visible;
+  }
+}

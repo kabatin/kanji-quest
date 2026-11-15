@@ -148,7 +148,7 @@ describe('Kaku: 書きおわったあと', () => {
     act(() => vi.advanceTimersByTime(LEARN_DONE_MS - 100))
     expect(onDone).not.toHaveBeenCalled()
     act(() => vi.advanceTimersByTime(200))
-    expect(onDone).toHaveBeenCalledExactlyOnceWith(0, { maxHint: 3, askedModel: true })
+    expect(onDone).toHaveBeenCalledExactlyOnceWith(0, expect.objectContaining({ maxHint: 3, askedModel: true }))
   })
 
   it('テスト: 「くらべる」は出さず、いままでどおり すぐ 次へ。「わからない」も きろく に のこる', () => {
@@ -159,7 +159,7 @@ describe('Kaku: 書きおわったあと', () => {
     for (const pts of strokes) draw(svg, pts)
     expect(screen.queryByRole('button', { name: 'くらべる' })).not.toBeInTheDocument()
     act(() => vi.advanceTimersByTime(WRITE_DONE_MS))
-    expect(onDone).toHaveBeenCalledExactlyOnceWith(1, { maxHint: 3, askedModel: true })
+    expect(onDone).toHaveBeenCalledExactlyOnceWith(1, expect.objectContaining({ maxHint: 3, askedModel: true }))
   })
 
   it('「くらべる」: 自分の線を お手本の上に 画の順に出し、まちがえた画を 赤くする。「つぎへ」まで 進まない', () => {
@@ -181,7 +181,7 @@ describe('Kaku: 書きおわったあと', () => {
     fireEvent.click(screen.getByRole('button', { name: 'もういちど みる' }))
     expect(document.querySelectorAll('.kaku__replay')).toHaveLength(3)
     fireEvent.click(screen.getByRole('button', { name: 'つぎへ' }))
-    expect(onDone).toHaveBeenCalledExactlyOnceWith(1, { maxHint: 2, askedModel: false })
+    expect(onDone).toHaveBeenCalledExactlyOnceWith(1, expect.objectContaining({ maxHint: 2, askedModel: false }))
   })
 
   it('1回で ぜんぶ書けたときは、まちがえた せん の見本を出さない', () => {

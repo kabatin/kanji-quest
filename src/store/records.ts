@@ -1,5 +1,6 @@
 import { logAnswers, markWeakExits, type AnswerBook, type AnswerDays, type AnswerInput, type AnswerLog, type AnswerWhere } from '../lib/answerLog'
 import { addDays, daysBetween } from '../lib/date'
+import { noteHands, type Hands } from '../lib/handwriting'
 import { afterReview, bestAnswers, judgeReview, type CharAnswer, type Reviews } from '../lib/review'
 
 /**
@@ -21,9 +22,11 @@ export type Records = {
   readonly answerLog: AnswerLog
   /** 日ごとの 答えの集計(lib/answerLog) */
   readonly answerDays: AnswerDays
+  /** 書いた字(はじめて 見ないで書けた日の字と、いちばん新しい字。lib/handwriting) */
+  readonly hands: Hands
 }
 
-export const EMPTY_RECORDS: Records = { reviews: {}, learnedOn: {}, misses: {}, playMinutes: {}, partClaims: [], answerLog: {}, answerDays: {} }
+export const EMPTY_RECORDS: Records = { reviews: {}, learnedOn: {}, misses: {}, playMinutes: {}, partClaims: [], answerLog: {}, answerDays: {}, hands: {} }
 
 /** あそんだ時間は、この日数ぶんだけ のこす */
 export const PLAY_LOG_DAYS = 60
@@ -46,9 +49,11 @@ export function updateMisses(misses: Readonly<Record<string, number>>, wrong: re
  */
 export function applyReview(reviews: Reviews, right: readonly string[], wrong: readonly string[], today: string, answers?: readonly CharAnswer[]): Reviews {
   const best = bestAnswers(answers ?? [])
+  // 日が来ていない字(保護者が えらんだ字)は、正解しても 段を進めない
+  const due = right.filter((char) => reviews[char] === undefined || daysBetween(reviews[char].due, today) >= 0)
   return {
     ...reviews,
-    ...Object.fromEntries(right.map((char) => [char, judgeReview(reviews[char], best.get(char) ?? { ok: true }, today)])),
+    ...Object.fromEntries(due.map((char) => [char, judgeReview(reviews[char], best.get(char) ?? { ok: true }, today)])),
     ...Object.fromEntries(wrong.map((char) => [char, afterReview(reviews[char], false, today)])),
   }
 }
@@ -79,3 +84,6 @@ export function withAnswers(
   if (!missesAfter) return book
   return { ...book, answerLog: markWeakExits(book.answerLog, state.misses, missesAfter, today, seed) }
 }
+
+/** 見ないで書けた答えの 筆跡を、書いた字として のこす(ストアの 前の状態の hands に 重ねる) */
+export const withHands = (hands: Hands, answers: readonly AnswerInput[], today: string): Hands => noteHands(hands, answers, today)

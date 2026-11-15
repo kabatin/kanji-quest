@@ -17,9 +17,15 @@ export type TextPiece = {
   readonly isKanji: boolean
 }
 
-/** 印つきの文章を、いま覚えている漢字に合わせて表示用の部品に分ける。 */
-export function resolvePieces(markup: string, learned: ReadonlySet<string>): TextPiece[] {
-  const pieces: TextPiece[] = []
+/** 漢字に切り替わった部分は、タップで読みを見せるために、もとの よみも持つ。 */
+export type ReadablePiece = TextPiece & {
+  /** 漢字に切り替わっているときの、ひらがなの よみ */
+  readonly reading?: string
+}
+
+/** 印つきの文章を、いま覚えている漢字に合わせて、読みつきの部品に分ける。 */
+export function resolveReadablePieces(markup: string, learned: ReadonlySet<string>): ReadablePiece[] {
+  const pieces: ReadablePiece[] = []
   let last = 0
   for (const match of markup.matchAll(SEGMENT)) {
     const [whole, written, reading] = match
@@ -27,11 +33,16 @@ export function resolvePieces(markup: string, learned: ReadonlySet<string>): Tex
     if (start > last) pieces.push({ text: markup.slice(last, start), isKanji: false })
     const kanji = [...written].filter((char) => KANJI_CHAR.test(char))
     const known = kanji.length > 0 && kanji.every((char) => learned.has(char))
-    pieces.push({ text: known ? written : reading, isKanji: known })
+    pieces.push(known ? { text: written, isKanji: true, reading } : { text: reading, isKanji: false })
     last = start + whole.length
   }
   if (last < markup.length) pieces.push({ text: markup.slice(last), isKanji: false })
   return pieces
+}
+
+/** 印つきの文章を、いま覚えている漢字に合わせて表示用の部品に分ける。 */
+export function resolvePieces(markup: string, learned: ReadonlySet<string>): TextPiece[] {
+  return resolveReadablePieces(markup, learned).map(({ text, isKanji }) => ({ text, isKanji }))
 }
 
 /** 印つきの文章を、いま覚えている漢字に合わせた1本の文字列にする。 */

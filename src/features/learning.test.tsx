@@ -19,6 +19,7 @@ beforeEach(() => {
   localStorage.clear()
   useProfiles.getState().reload()
   state().reset()
+  state().skipIntro()
   useParent.getState().reset()
   state().checkIn()
   state().claimLoginBonus()

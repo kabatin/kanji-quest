@@ -28,6 +28,7 @@ function writeAllStrokes(container: HTMLElement, char: string) {
 
 beforeEach(() => {
   state().reset()
+  state().skipIntro()
   state().checkIn()
   state().claimLoginBonus()
   useProgress.setState({ coins: 0 })

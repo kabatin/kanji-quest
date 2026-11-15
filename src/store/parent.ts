@@ -3,6 +3,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { AREA_BOSS_PLAN, type BossPlan } from '../lib/boss'
 import { dayKey } from '../lib/date'
+import { capHomework, toggleHomework } from '../lib/homework'
 import { addExtra, PLAY_EXTRA_MAX, PLAY_LIMIT_CHOICES, PLAY_LIMIT_DEFAULT, type PlayExtra, type PlayLimit } from '../lib/playLimit'
 import { REVIEW_DAILY_DEFAULT } from '../lib/review'
 
@@ -35,11 +36,13 @@ const parentSchema = z.object({
   playLimits: z.record(profileId, playLimitSchema).default({}),
   // 子どもごとの きょうだけの延長
   playExtra: z.record(profileId, z.object({ day: z.string().max(10), minutes: z.number().int().min(0).max(PLAY_EXTRA_MAX) })).default({}),
+  // 子どもごとの「今週 れんしゅう させたい字」(字 → えらんだ日。上限は HOMEWORK_MAX)
+  homework: z.record(profileId, z.record(z.string().min(1).max(4), z.string().max(10)).transform(capHomework)).default({}),
 })
 
 export type ParentSettings = z.infer<typeof parentSchema>
 
-export const DEFAULT_PARENT: ParentSettings = { bossSize: 'normal', bossTries: 3, reviewPerDay: REVIEW_DAILY_DEFAULT, playLimits: {}, playExtra: {} }
+export const DEFAULT_PARENT: ParentSettings = { bossSize: 'normal', bossTries: 3, reviewPerDay: REVIEW_DAILY_DEFAULT, playLimits: {}, playExtra: {}, homework: {} }
 export const PARENT_KEY = 'kanji-zukan-parent'
 
 type ParentState = ParentSettings & {
@@ -50,6 +53,10 @@ type ParentState = ParentSettings & {
   readonly extendPlay: (profileId: string, minutes: number, today?: string) => void
   /** その子の 延長を とりけす */
   readonly cancelExtra: (profileId: string) => void
+  /** その子の しゅくだい の字を えらぶ・はずす(えらんでいる字は はずす)。上限なら false */
+  readonly toggleHomework: (profileId: string, char: string, today?: string) => boolean
+  /** その子の しゅくだい の字を ぜんぶ はずす */
+  readonly clearHomework: (profileId: string) => void
   /** あそぶ人を けしたとき、その子の 時間の設定を わすれる(id は あとで ほかの子に また使われるため) */
   readonly forgetChild: (profileId: string) => void
   readonly reset: () => void
@@ -61,6 +68,7 @@ const settingsOf = (state: ParentSettings): ParentSettings => ({
   reviewPerDay: state.reviewPerDay,
   playLimits: state.playLimits,
   playExtra: state.playExtra,
+  homework: state.homework,
 })
 
 const without = <T>(map: Readonly<Record<string, T>>, id: string): Record<string, T> => Object.fromEntries(Object.entries(map).filter(([key]) => key !== id))
@@ -71,7 +79,7 @@ const todaysExtra = (extra: ParentSettings['playExtra'], today: string): ParentS
 
 export const useParent = create<ParentState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...DEFAULT_PARENT,
       update: (patch) => {
         // 決まった値だけを うけつける
@@ -89,8 +97,19 @@ export const useParent = create<ParentState>()(
       cancelExtra: (id) => {
         set((state) => ({ playExtra: without(state.playExtra, id) }))
       },
+      toggleHomework: (id, char, today = dayKey()) => {
+        const result = toggleHomework(get().homework[profileId.parse(id)] ?? {}, char, today)
+        if (result.full) return false
+        const rest = without(get().homework, id)
+        const homework = Object.keys(result.homework).length === 0 ? rest : { ...rest, [id]: result.homework }
+        set((state) => parentSchema.parse({ ...settingsOf(state), homework }))
+        return true
+      },
+      clearHomework: (id) => {
+        set((state) => ({ homework: without(state.homework, id) }))
+      },
       forgetChild: (id) => {
-        set((state) => ({ playLimits: without(state.playLimits, id), playExtra: without(state.playExtra, id) }))
+        set((state) => ({ playLimits: without(state.playLimits, id), playExtra: without(state.playExtra, id), homework: without(state.homework, id) }))
       },
       reset: () => set(DEFAULT_PARENT),
     }),

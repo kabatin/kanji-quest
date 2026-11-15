@@ -6,9 +6,13 @@ type Props = {
   readonly cells: readonly MasteryCell[]
   readonly selected: string | null
   readonly onSelect: (char: string) => void
+  /** 宿題に えらんでいる字(しるしを つける) */
+  readonly marked?: ReadonlySet<string>
+  /** 題と ひとことを 変えるとき(宿題の字えらびで 使う) */
+  readonly heading?: { readonly title: string; readonly sub: string }
 }
 
-const cellLabel = (cell: MasteryCell): string => `${cell.char} ${MASTERY_LABEL[cell.state]}${cell.weak ? `・苦手(${cell.misses}回)` : ''}`
+const cellLabel = (cell: MasteryCell, marked: boolean): string => `${cell.char} ${MASTERY_LABEL[cell.state]}${cell.weak ? `・苦手(${cell.misses}回)` : ''}${marked ? '・宿題にえらんでいます' : ''}`
 
 /** 凡例: 段階の順(うすい → こい)に、色の見本・名前・字の数。苦手の しるし も。 */
 function MapLegend({ cells }: { readonly cells: readonly MasteryCell[] }) {
@@ -32,17 +36,18 @@ function MapLegend({ cells }: { readonly cells: readonly MasteryCell[] }) {
   )
 }
 
-function Cell({ cell, selected, onSelect }: { readonly cell: MasteryCell; readonly selected: boolean; readonly onSelect: (char: string) => void }) {
+function Cell({ cell, selected, marked, onSelect }: { readonly cell: MasteryCell; readonly selected: boolean; readonly marked: boolean; readonly onSelect: (char: string) => void }) {
   return (
     <button
       type="button"
       className="mcell"
       data-state={cell.state}
       data-weak={cell.weak ? 'true' : undefined}
+      data-homework={marked ? 'true' : undefined}
       data-kanji={cell.char}
-      aria-pressed={selected}
-      aria-label={cellLabel(cell)}
-      title={cellLabel(cell)}
+      aria-pressed={selected || marked}
+      aria-label={cellLabel(cell, marked)}
+      title={cellLabel(cell, marked)}
       onClick={() => onSelect(cell.char)}
     >
       <span>{cell.char}</span>
@@ -51,20 +56,22 @@ function Cell({ cell, selected, onSelect }: { readonly cell: MasteryCell; readon
 }
 
 /** 習熟マップ: 全240字を 学年・ステージの順に、いまの段階で ぬり分ける。字を押すと くわしい記録。 */
-export function MasteryMap({ cells, selected, onSelect }: Props) {
+export function MasteryMap({ cells, selected, onSelect, marked, heading }: Props) {
   const groups = useMemo(() => mapGroups(cells), [cells])
   const anyLearned = cells.some((cell) => cell.state !== 'none')
   return (
     <section className="parent-card mmap" aria-labelledby="mmap-title">
       <header className="parent-card__head parent-card__head--row">
-        <h2 id="mmap-title">習熟マップ</h2>
-        <p className="parent-card__sub">{anyLearned ? '240字を学年・ステージ順に。字を押すと、くわしい記録が出ます。' : 'まだ学んだ字がありません。学ぶと、字ごとに段階の色がつきます。'}</p>
+        <h2 id="mmap-title">{heading?.title ?? '習熟マップ'}</h2>
+        <p className="parent-card__sub">
+          {heading?.sub ?? (anyLearned ? '240字を学年・ステージ順に。字を押すと、くわしい記録が出ます。' : 'まだ学んだ字がありません。学ぶと、字ごとに段階の色がつきます。')}
+        </p>
       </header>
       <MapLegend cells={cells} />
       <div className="mmap__scroll">
         <div className="mmap__grid">
           {groups.map((group) => (
-            <GradeBlock key={group.grade} group={group} selected={selected} onSelect={onSelect} />
+            <GradeBlock key={group.grade} group={group} selected={selected} onSelect={onSelect} marked={marked} />
           ))}
         </div>
       </div>
@@ -72,7 +79,7 @@ export function MasteryMap({ cells, selected, onSelect }: Props) {
   )
 }
 
-function GradeBlock({ group, selected, onSelect }: { readonly group: MapGrade } & Omit<Props, 'cells'>) {
+function GradeBlock({ group, selected, onSelect, marked }: { readonly group: MapGrade } & Omit<Props, 'cells' | 'heading'>) {
   return (
     <div className="mmap__grade" role="group" aria-label={`${group.grade}年生の漢字`}>
       <h3 className="mmap__grade-title">
@@ -86,7 +93,7 @@ function GradeBlock({ group, selected, onSelect }: { readonly group: MapGrade } 
           {area.stages.map((stage) => (
             <div key={stage[0]?.stage} className="mmap__stage">
               {stage.map((cell) => (
-                <Cell key={cell.char} cell={cell} selected={cell.char === selected} onSelect={onSelect} />
+                <Cell key={cell.char} cell={cell} selected={cell.char === selected} marked={marked?.has(cell.char) ?? false} onSelect={onSelect} />
               ))}
             </div>
           ))}

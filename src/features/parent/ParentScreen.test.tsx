@@ -12,6 +12,7 @@ import { ParentScreen } from './ParentScreen'
 
 const today = dayKey()
 const FIRST = ALL_STAGES[0].kanji
+const OTHER = ALL_STAGES[1].kanji[0]
 
 beforeEach(() => {
   localStorage.clear()
@@ -163,5 +164,26 @@ describe('保護者の画面: 設定', () => {
     useProfiles.getState().remove(second)
     expect(useParent.getState().playLimits).toEqual({})
     expect(useParent.getState().playExtra).toEqual({})
+  })
+})
+
+describe('保護者の画面: 宿題の字', () => {
+  it('表から字を押して えらび・はずせる。覚えていない字には 案内が出て、ぜんぶ見ないで書けたら 分かる', async () => {
+    seedActive()
+    const { user } = renderScreen()
+    await user.click(screen.getByRole('tab', { name: '宿題の字' }))
+    const map = screen.getByRole('region', { name: '練習させたい字を選ぶ' })
+    await user.click(within(map).getByRole('button', { name: new RegExp(`^${FIRST[0]} `) }))
+    await user.click(within(map).getByRole('button', { name: new RegExp(`^${OTHER} `) }))
+    expect(useParent.getState().homework.p1).toEqual({ [FIRST[0]]: today, [OTHER]: today })
+    const list = screen.getByRole('region', { name: '今週の練習' })
+    expect(list).toHaveTextContent('2 / 20字')
+    expect(list).toHaveTextContent('まだ覚えていません。「この字を練習する」から学べます')
+    expect(list).not.toHaveTextContent('すべて「見ないで書ける」')
+    await user.click(within(list).getByRole('button', { name: `${OTHER}を はずす` }))
+    expect(list).toHaveTextContent('1 / 20字')
+    expect(list).toHaveTextContent('すべて「見ないで書ける」になりました')
+    await user.click(within(list).getByRole('button', { name: 'ぜんぶ はずす' }))
+    expect(useParent.getState().homework).toEqual({})
   })
 })

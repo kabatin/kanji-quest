@@ -70,6 +70,8 @@ export type PickInput = {
   readonly today: string
   /** 日付と、あそぶ人から決まる種 */
   readonly seed: string
+  /** 保護者が えらんだ字(えらんだ順)。覚えた字なら、先に出す */
+  readonly homework?: readonly string[]
 }
 
 const RECENT_NEAR = 5
@@ -103,14 +105,19 @@ function interest(input: PickInput, char: string, index: number): number {
 export function pickDailyChars(input: PickInput): string[] {
   const known = new Set(input.kanji.map((k) => k.char))
   const rng = seededRng(`${input.seed}:pick`)
+  const count = dailyCount(input.learned.length)
+  const learned = new Set(input.learned)
+  const first = [...new Set(input.homework ?? [])].filter((char) => learned.has(char) && known.has(char)).slice(0, count)
+  const taken = new Set(first)
   const ranked = input.learned
     .map((char, index) => ({ char, index }))
     .filter(({ char }) => known.has(char))
     .map(({ char, index }) => ({ char, score: interest(input, char, index) + rng() * JITTER }))
     .sort((a, b) => b.score - a.score)
-    .slice(0, dailyCount(input.learned.length))
     .map(({ char }) => char)
-  return shuffle(ranked, seededRng(`${input.seed}:order`))
+    .filter((char) => !taken.has(char))
+  const picked = [...first, ...ranked].slice(0, count)
+  return shuffle(picked, seededRng(`${input.seed}:order`))
 }
 
 /** えらんだ字から、きょうの問題を作る。同じ字・同じ種なら、問題も選択肢も同じ。 */

@@ -1,5 +1,7 @@
 import { z } from 'zod'
 import { dayKey } from './date'
+import { HAND_MAX_CHARS } from './handwriting'
+import { HOMEWORK_MAX } from './homework'
 import { MAX_PROFILES, nameSchema, PROFILES_KEY, storageKeyFor } from './profiles'
 
 /**
@@ -11,8 +13,8 @@ import { MAX_PROFILES, nameSchema, PROFILES_KEY, storageKeyFor } from './profile
 export const BACKUP_APP = 'kanji-quest-backup'
 /** バックアップファイル自体の版。形を変えるときに上げる。 */
 export const BACKUP_FORMAT = 1
-/** 読みこむファイルの大きさの上限(文字数)。6人ぶんでも 数百KBほど。 */
-export const MAX_BACKUP_CHARS = 3_000_000
+/** 読みこむファイルの大きさの上限(文字数)。書いた字(1字 2つまで・各1000字まで)が 全部そろった子が 数人 いても おさまる。 */
+export const MAX_BACKUP_CHARS = 8_000_000
 /** store/parent.ts の PARENT_KEY と同じ(テストで 同じことを たしかめる)。 */
 export const PARENT_STORAGE_KEY = 'kanji-zukan-parent'
 const PARENT_STORAGE_VERSION = 1
@@ -24,6 +26,7 @@ const str = z.string().max(100)
 const num = z.number().finite()
 const strList = z.array(str).max(5000)
 const numMap = z.record(str, num)
+const handEntry = z.object({ d: str.max(10), s: z.string().max(HAND_MAX_CHARS) }).strict()
 
 /**
  * 進みぐあい1人ぶんの 中身。ここに書いた項目は、型まで たしかめる(前の版の項目もふくむ)。
@@ -58,6 +61,8 @@ const stateSchema = z
     // 答えの きろく(字ごと)と 日ごとの集計
     answerLog: z.record(str, z.record(str, z.union([num, str, z.array(z.string().max(20)).max(50)]))),
     answerDays: z.record(str, z.array(num).max(10)),
+    // 書いた字(字ごとに 2つまで。lib/handwriting)
+    hands: z.record(z.string().max(4), z.object({ f: handEntry, l: handEntry.optional() }).strict()),
     // 古い版(3 以前)の項目
     points: num,
     skin: str,
@@ -80,6 +85,8 @@ const parentSchema = z
     // 子どもごとの 1日の時間と きょうの延長(前の版の ファイルには ない)
     playLimits: z.record(childId, z.literal([0, 15, 30, 45, 60])).optional(),
     playExtra: z.record(childId, z.object({ day: str, minutes: num }).strict()).optional(),
+    // 子どもごとの しゅくだい の字(字 → えらんだ日)
+    homework: z.record(childId, z.record(z.string().min(1).max(4), str.max(10)).refine((map) => Object.keys(map).length <= HOMEWORK_MAX)).optional(),
   })
   .strict()
 

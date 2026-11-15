@@ -1,0 +1,126 @@
+/* 保護者の画面: 子どもが書いた字(字のくわしい記録・「最近書けた字」) */
+.hand {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  background: #ffffff;
+}
+
+.hand__box {
+  fill: none;
+  stroke: var(--p-border);
+  stroke-width: 1.5;
+}
+
+.hand__guide {
+  fill: none;
+  stroke: var(--p-hair);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.hand__line {
+  fill: none;
+  stroke: var(--p-ink);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 字のくわしい記録: はじめて書けた日の字と、いちばん新しい字を ならべる */
+.hand-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.parent .hand-pair h3 {
+  font-size: 0.85rem;
+}
+
+.hand-pair__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.hand-pair figure {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 120px;
+  margin: 0;
+}
+
+.hand-pair figure .hand {
+  border-radius: 6px;
+}
+
+.hand-pair figcaption {
+  display: flex;
+  flex-direction: column;
+  color: var(--p-ink-2);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.hand-pair figcaption span {
+  font-variant-numeric: tabular-nums;
+}
+
+.hand-pair__wait {
+  flex: 1;
+  align-self: center;
+}
+
+/* 概要の「最近書けた字」 */
+.rhands {
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 12px;
+  padding: 8px 14px;
+}
+
+.rhands .parent-card__head {
+  flex: 0 0 132px;
+}
+
+.rhands .parent-card__empty {
+  flex: 1;
+  padding: 10px 14px;
+}
+
+.rhands__list {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.rhands__item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--p-ink-2);
+  font-size: 0.74rem;
+  text-align: center;
+}
+
+.rhands__item .hand {
+  border-radius: 6px;
+}
+
+.rhands__item:hover .hand__box {
+  stroke: var(--p-ink);
+}
+
+.rhands__day {
+  font-variant-numeric: tabular-nums;
+}

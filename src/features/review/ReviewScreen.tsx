@@ -10,11 +10,12 @@ import type { AnswerInput } from '../../lib/answerLog'
 import type { BossQuestion } from '../../lib/boss'
 import { dayKey } from '../../lib/date'
 import { levelInfo, mascotStage } from '../../lib/level'
-import { buildReviewQuestion, dueChars, isMastered, nextReviewLabel, REVIEW_INTERVALS, REVIEW_SIZE, todaysReview } from '../../lib/review'
+import { buildReviewQuestion, isMastered, nextReviewLabel, REVIEW_INTERVALS, REVIEW_SIZE, todaysReview } from '../../lib/review'
 import { useParent } from '../../store/parent'
 import { itemName } from '../../lib/shop'
 import type { WriteReport } from '../../lib/strokeHint'
 import { useFeedback } from '../../lib/useFeedback'
+import { currentReviewQueue, useReviewQueue } from '../../lib/useReviewQueue'
 import { useProgress, type Gain } from '../../store/progress'
 import { QuestionView } from '../boss/QuestionView'
 
@@ -45,14 +46,14 @@ function StepDots({ step }: { readonly step: number }) {
  */
 export function ReviewScreen({ onHome, onOpen }: Props) {
   const reviews = useProgress((s) => s.reviews)
-  const misses = useProgress((s) => s.misses)
   const xp = useProgress((s) => s.xp)
   const hat = useProgress((s) => s.equipped.hat)
   const finishReview = useProgress((s) => s.finishReview)
   const { play } = useFeedback()
   const [phase, setPhase] = useState<Phase>({ name: 'intro' })
   const today = dayKey()
-  const due = dueChars(reviews, today, misses)
+  // 保護者が えらんだ字は、日が来ていなくても 先に出る
+  const due = useReviewQueue()
   const mastered = Object.values(reviews).filter(isMastered).length
   const done = useProgress((s) => s.reviewDone)
   const limit = useParent((s) => s.reviewPerDay)
@@ -110,7 +111,8 @@ export function ReviewScreen({ onHome, onOpen }: Props) {
 
   if (phase.name === 'result') {
     const reviewsNow = useProgress.getState().reviews
-    const leftNow = todaysReview(dueChars(reviewsNow, today).length, useProgress.getState().reviewDone, today, limit).left
+    const queueNow = currentReviewQueue(today)
+    const leftNow = todaysReview(queueNow.length, useProgress.getState().reviewDone, today, limit).left
     const perfect = phase.outcomes.every((o) => o.ok)
     return (
       <div className="screen review-result">
@@ -150,7 +152,7 @@ export function ReviewScreen({ onHome, onOpen }: Props) {
                 つづけて ふくしゅう
               </button>
             )}
-            {leftNow === 0 && dueChars(reviewsNow, today).length > 0 && (
+            {leftNow === 0 && queueNow.length > 0 && (
               <button type="button" className="btn" onClick={() => setPhase({ name: 'intro' })}>
                 もっと やる
               </button>
