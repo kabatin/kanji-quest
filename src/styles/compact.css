@@ -1259,7 +1259,8 @@
   }
 
   .shop-item__label {
-    font-size: 0.9rem;
+    font-size: 0.74rem;
+    letter-spacing: 0;
   }
 
   .shop-item__state {

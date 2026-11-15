@@ -404,9 +404,18 @@
   line-height: 1;
 }
 
+/* 名前は カードの はばに 収める(長い名前は ことばの 切れ目で 2行に)。2行ぶんの 高さを とって、カードの ならびを そろえる */
 .shop-item__label {
+  display: grid;
+  place-items: center;
+  max-width: 100%;
+  min-height: 2.3em;
   font-size: 0.92rem;
-  white-space: nowrap;
+  line-height: 1.15;
+  text-align: center;
+  text-wrap: balance;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .shop-item__state {
