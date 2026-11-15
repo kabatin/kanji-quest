@@ -366,7 +366,7 @@
 }
 
 /* 横はばが せまい・高さが 低い画面: 字の記録は 画面の右に 重ねて出す(押した字の すぐそばで 読める) */
-@media (max-width: 860px), (max-height: 640px) {
+@media (max-width: 860px) and (orientation: portrait), (max-height: 640px) {
   .cdetail {
     position: fixed;
     inset: 10px 10px 10px auto;

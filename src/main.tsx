@@ -14,6 +14,7 @@ import './styles/settings.css'
 import './styles/learning.css'
 import './styles/parent.css'
 import './styles/rotate.css'
+import './styles/compact.css'
 import App from './App.tsx'
 import { registerServiceWorker } from './lib/pwa'
 

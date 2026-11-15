@@ -1,0 +1,1392 @@
+/* ───────── スマホの よこ向き(高さが 500px 以下) ─────────
+   iPad より ずっと 低いので、共通の土台(画面の余白・上の帯・ボタン・まど)を ここで まとめて 詰める。
+   ほかの CSS の あとに 読みこむので、同じ強さなら ここが 勝つ。画面ごとの 詰めかたは ここに 集める。 */
+@media (max-height: 500px) and (orientation: landscape) {
+  :root {
+    /* ノッチ(切り欠き)は、よこ向きでは 左右に 来る */
+    --sl: env(safe-area-inset-left, 0px);
+    --sr: env(safe-area-inset-right, 0px);
+    --sb: env(safe-area-inset-bottom, 0px);
+    --gap: 8px;
+    --gutter: 14px;
+  }
+
+  /* ── 土台 ── */
+  .screen {
+    gap: var(--gap);
+    padding: 6px calc(var(--gutter) + var(--sr)) calc(8px + var(--sb)) calc(var(--gutter) + var(--sl));
+  }
+
+  .bar {
+    gap: 8px;
+    min-height: 46px;
+  }
+
+  .bar__title {
+    font-size: 1.2rem;
+  }
+
+  .bar__step,
+  .bar__score,
+  .bar__time {
+    padding: 2px 12px;
+    border-width: 2px;
+    font-size: 1rem;
+  }
+
+  .btn {
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 1rem;
+    border-width: 2px;
+    border-radius: 14px;
+    box-shadow: 0 3px 0 var(--line-dark);
+  }
+
+  .btn--primary {
+    box-shadow: 0 3px 0 var(--yamabuki-dark);
+  }
+
+  .btn--danger {
+    box-shadow: 0 3px 0 #8f2e1e;
+  }
+
+  .btn--big {
+    min-height: 52px;
+    padding: 0 24px;
+    font-size: 1.2rem;
+    border-radius: 16px;
+  }
+
+  .btn--round {
+    width: 44px;
+    font-size: 1.15rem;
+  }
+
+  .chip {
+    min-width: 84px;
+  }
+
+  .player-card {
+    gap: 8px;
+    padding: 3px 12px 3px 3px;
+    border-width: 2px;
+    box-shadow: 0 3px 0 var(--line-dark);
+  }
+
+  .player-card__body {
+    min-width: 120px;
+    gap: 1px;
+  }
+
+  .player-card__name {
+    font-size: 0.95rem;
+  }
+
+  .hud-chip {
+    min-height: 40px;
+    gap: 6px;
+    padding: 0 12px;
+    border-width: 2px;
+    font-size: 1rem;
+  }
+
+  .level-badge {
+    gap: 8px;
+    padding: 3px 12px 3px 3px;
+    border-width: 2px;
+  }
+
+  .level-badge__num {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+  }
+
+  .level-badge__bar {
+    width: 96px;
+    height: 10px;
+  }
+
+  .pager .btn {
+    min-width: 72px;
+  }
+
+  /* ── まど: 画面の高さに おさめて、中を スクロール する ── */
+  .modal {
+    padding: 8px calc(12px + var(--sr)) calc(8px + var(--sb)) calc(12px + var(--sl));
+  }
+
+  .modal__panel {
+    gap: 8px;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 12px 18px;
+    border-radius: 22px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .modal__panel h2 {
+    font-size: 1.3rem;
+  }
+
+  .modal__lead {
+    font-size: 1.05rem;
+  }
+
+  .bonus-days {
+    gap: 6px;
+  }
+
+  .bonus-days li {
+    min-width: 0;
+    gap: 2px;
+    padding: 6px 4px;
+    font-size: 1rem;
+  }
+
+  .bonus-days li.is-today {
+    transform: none;
+  }
+
+  /* ── ホーム ── */
+  .home__hud {
+    gap: 8px;
+    padding: 6px calc(var(--gutter) + var(--sr)) 0 calc(var(--gutter) + var(--sl));
+  }
+
+  .home__body {
+    grid-template-columns: minmax(150px, 250px) 1fr minmax(130px, 170px);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 10px;
+    padding: 8px calc(var(--gutter) + var(--sr)) 0 calc(var(--gutter) + var(--sl));
+  }
+
+  .home__body > .missions,
+  .home__body > .grow {
+    max-height: 100%;
+    overflow-y: auto;
+  }
+
+  .home__bubble {
+    margin-top: 0;
+    padding: 6px 14px;
+    border-width: 3px;
+    border-radius: 18px;
+    font-size: 0.95rem;
+  }
+
+  .home__bubble::after {
+    bottom: -11px;
+    width: 14px;
+    height: 14px;
+    border-width: 3px;
+  }
+
+  .home__body .home__center {
+    padding-bottom: 6px;
+  }
+
+  .home__calls {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .review-call {
+    gap: 6px;
+    padding: 3px 12px 3px 4px;
+    border-width: 3px;
+    box-shadow: 0 4px 0 #2f86b8;
+  }
+
+  .review-call.review-call--weak {
+    box-shadow: 0 4px 0 var(--shu);
+  }
+
+  .review-call__icon {
+    width: 34px;
+    height: 34px;
+    padding: 3px;
+  }
+
+  .review-call__text small {
+    font-size: 0.7rem;
+  }
+
+  .review-call__text strong {
+    font-size: 1.1rem;
+  }
+
+  .missions {
+    padding: 0 8px 8px;
+    border-width: 3px;
+    border-radius: 18px;
+    box-shadow: 0 4px 0 rgba(39, 51, 107, 0.18);
+  }
+
+  .missions__title {
+    margin: 0 -8px 6px;
+    padding: 3px 10px;
+    border-radius: 14px 14px 0 0;
+    font-size: 0.9rem;
+    line-height: 1.2;
+  }
+
+  .missions__list {
+    gap: 4px;
+  }
+
+  .mission {
+    grid-template-columns: 30px 1fr auto;
+    gap: 1px 6px;
+    padding: 2px 6px;
+    border-width: 2px;
+    border-radius: 12px;
+    box-shadow: none;
+  }
+
+  .mission__icon {
+    width: 30px;
+    height: 30px;
+    border-width: 2px;
+  }
+
+  .mission__icon > * {
+    width: 22px;
+    height: 22px;
+  }
+
+  .mission__label {
+    font-size: 0.72rem;
+    line-height: 1.15;
+  }
+
+  .mission__num {
+    font-size: 0.7rem;
+    line-height: 1;
+  }
+
+  .mission__meter {
+    min-height: 10px;
+    gap: 4px;
+  }
+
+  .mission__bar {
+    height: 6px;
+  }
+
+  .mission__claim {
+    min-width: 44px;
+    min-height: 40px;
+    padding: 0 6px;
+    border-width: 2px;
+    border-radius: 10px;
+    box-shadow: 0 3px 0 var(--yamabuki-dark);
+    font-size: 0.8rem;
+  }
+
+  .mission__seal {
+    width: 36px;
+    height: 36px;
+    border-width: 2px;
+  }
+
+  .grow {
+    gap: 3px;
+    padding: 0 8px 6px;
+    border-width: 3px;
+    border-radius: 18px;
+    box-shadow: 0 4px 0 rgba(39, 51, 107, 0.18);
+  }
+
+  .grow__name {
+    margin: 0 -8px;
+    padding: 3px 8px;
+    border-bottom-width: 3px;
+    border-radius: 14px 14px 0 0;
+    font-size: 0.9rem;
+  }
+
+  .grow__forms {
+    grid-template-columns: 50px 1fr 40px;
+  }
+
+  .grow__now {
+    width: 50px;
+  }
+
+  .grow__silhouette {
+    width: 38px;
+  }
+
+  .grow__goal {
+    font-size: 1.5rem;
+  }
+
+  .grow__bar {
+    height: 8px;
+  }
+
+  .grow__next {
+    font-size: 0.72rem;
+    line-height: 1.25;
+  }
+
+  /* 森の そだちぐあいは、せまい画面では かくす(つづきは ホームの しま で 見える) */
+  .grow__forest {
+    display: none;
+  }
+
+  .dock {
+    gap: 8px;
+    padding: 0 calc(var(--gutter) + var(--sr)) calc(8px + var(--sb)) calc(var(--gutter) + var(--sl));
+  }
+
+  .dock__group {
+    padding: 14px 6px 6px;
+    border-width: 3px;
+    border-radius: 18px;
+  }
+
+  .dock__title {
+    top: -11px;
+    left: 10px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+  }
+
+  .dock__buttons {
+    gap: 5px;
+  }
+
+  .dock-btn {
+    width: 68px;
+    height: 58px;
+    padding: 2px 0 3px;
+    border-width: 2px;
+    border-radius: 12px;
+    box-shadow: 0 3px 0 var(--tone);
+    font-size: 0.74rem;
+  }
+
+  .dock-btn__icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .dock-btn__count {
+    font-size: 0.66rem;
+  }
+
+  .dock-btn__badge {
+    top: -8px;
+    right: -6px;
+    min-width: 22px;
+    height: 22px;
+    border-width: 2px;
+    font-size: 0.7rem;
+  }
+
+  .dock .cta {
+    min-height: 58px;
+    gap: 8px;
+    margin-bottom: 4px;
+    padding: 4px 12px 4px 8px;
+    border-width: 4px;
+    border-radius: 20px;
+    box-shadow: 0 5px 0 var(--ai);
+  }
+
+  .cta__kanji {
+    width: 46px;
+    height: 46px;
+    border-width: 3px;
+    border-radius: 12px;
+    font-size: 1.9rem;
+  }
+
+  .dock .cta__text {
+    font-size: 1.05rem;
+  }
+
+  .cta__text small {
+    font-size: 0.75rem;
+  }
+
+  .cta__go {
+    font-size: 1.3rem;
+  }
+
+  /* ── 書き取り・ものがたり: 絵を 高さいっぱいの 正方形に して、ぼたんは よこ ── */
+  .kaku,
+  .story {
+    gap: 16px;
+  }
+
+  .kaku__board {
+    width: min(calc(100dvh - 76px - var(--sb)), 520px);
+    border-width: 4px;
+    border-radius: 22px;
+    box-shadow: 0 5px 0 var(--ai);
+  }
+
+  .story__stage {
+    width: min(calc(100dvh - 76px - var(--sb)), 500px);
+    padding: 10px;
+    border-width: 4px;
+    border-radius: 22px;
+    box-shadow: 0 5px 0 var(--ai);
+  }
+
+  .kaku__side,
+  .story__text {
+    gap: 8px;
+  }
+
+  .kaku__lead {
+    font-size: 1.15rem;
+  }
+
+  .kaku__count {
+    font-size: 1.5rem;
+  }
+
+  .kaku__actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .story__caption {
+    font-size: 1.25rem;
+    line-height: 1.5;
+  }
+
+  .story__yomi {
+    font-size: 1.8rem;
+  }
+
+  .story__actions {
+    margin-top: 0;
+  }
+
+  /* ── くみあわせ: 3列(もと + こたえ)を、高さ いっぱいに 1画面へ ── */
+  .kumi {
+    gap: 8px 14px;
+  }
+
+  .kumi--yoko,
+  .kumi--kakomu,
+  .kumi--tate {
+    grid-template-columns: minmax(110px, 190px) auto minmax(0, 1fr);
+    grid-template-areas:
+      'goal goal goal'
+      'fixed plus choices'
+      'retry retry retry';
+    justify-items: stretch;
+  }
+
+  .kumi--tate .kumi__fixed {
+    max-width: none;
+  }
+
+  .kumi--tate .kumi__choices,
+  .kumi__choices {
+    grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+    gap: 8px;
+  }
+
+  .kumi__goal,
+  .kaku__goal {
+    min-height: 48px;
+    gap: 8px;
+    padding: 2px 18px 2px 10px;
+    border-width: 3px;
+  }
+
+  .kumi__goal-icon,
+  .kaku__goal-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .kumi__goal-label,
+  .kaku__goal-label {
+    font-size: 1.3rem;
+  }
+
+  .kumi__goal-text {
+    font-size: 1rem;
+  }
+
+  .kumi__goal--story {
+    padding: 6px 18px;
+    border-radius: 20px;
+  }
+
+  .kumi__goal-story {
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .kumi__plus {
+    font-size: 1.8rem;
+  }
+
+  .kumi__retry {
+    min-height: 1.2em;
+    font-size: 1rem;
+  }
+
+  .kumi--merged {
+    grid-template-columns: min(calc(100dvh - 90px), 420px);
+  }
+
+  .part-card {
+    --glyph-size: 64px;
+    gap: 2px;
+    min-height: 0;
+    padding: 6px;
+    border-width: 3px;
+    border-radius: 16px;
+    box-shadow: 0 4px 0 var(--card-border);
+  }
+
+  .kumi__fixed .part-card,
+  .kumi--tate .kumi__fixed .part-card {
+    --glyph-size: 96px;
+    gap: 10px;
+  }
+
+  .part-card__hint {
+    height: 34px;
+  }
+
+  .part-card__icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .part-card__label {
+    font-size: 1rem;
+  }
+
+  .parts-pick .part-card {
+    --glyph-size: 56px;
+    min-height: 84px;
+  }
+
+  .parts-pick__choices {
+    grid-template-columns: repeat(3, minmax(0, 150px));
+    gap: 8px;
+  }
+
+  .erabi__choices {
+    gap: 10px;
+  }
+
+  /* ── ボス ── */
+  .boss-intro__body {
+    grid-template-columns: minmax(160px, 34%) 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+
+  .boss-intro__stage {
+    padding: 10px 8px;
+    border-width: 4px;
+    border-radius: 22px;
+  }
+
+  .boss-intro__monster {
+    width: min(26vh, 150px);
+  }
+
+  .boss-intro__name {
+    font-size: 1.3rem;
+  }
+
+  .boss-intro__side {
+    gap: 6px;
+  }
+
+  /* いちばん だいじな ボタンを 上に */
+  .boss-intro__actions {
+    order: -1;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .boss-intro__actions .btn {
+    flex: 1;
+  }
+
+  .boss-rules {
+    gap: 4px;
+  }
+
+  .boss-rules li {
+    grid-template-columns: 28px 1fr;
+    gap: 6px;
+    padding: 3px 10px;
+    border-width: 2px;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    line-height: 1.3;
+  }
+
+  .boss-rules li > span:first-child {
+    font-size: 1.15rem;
+  }
+
+  .boss-intro__tries {
+    font-size: 0.95rem;
+  }
+
+  .boss-intro__reward,
+  .boss-intro__note {
+    font-size: 0.8rem;
+  }
+
+  .boss-result {
+    gap: 14px;
+  }
+
+  .boss-result__monster {
+    width: min(22vh, 120px);
+  }
+
+  .boss-result__main,
+  .boss-result__side {
+    gap: 6px;
+  }
+
+  .boss-result__score strong {
+    font-size: 3rem;
+  }
+
+  .boss-result__title {
+    font-size: 1.3rem;
+  }
+
+  .boss-result__actions {
+    gap: 6px;
+  }
+
+  .boss-run__monster {
+    width: 44px;
+  }
+
+  .boss-notice {
+    top: 96px;
+  }
+
+  /* ── せってい ── */
+  .settings__body {
+    grid-template-columns: 200px 1fr;
+    gap: 10px;
+  }
+
+  .settings__me {
+    gap: 4px;
+    padding: 8px;
+    border-width: 3px;
+    border-radius: 20px;
+    box-shadow: 0 4px 0 rgba(39, 51, 107, 0.18);
+    overflow-y: auto;
+  }
+
+  .settings__mascot {
+    width: 64px;
+  }
+
+  .settings__name {
+    font-size: 1.15rem;
+  }
+
+  .settings__stats {
+    gap: 4px;
+  }
+
+  .settings__me .btn {
+    padding: 0 6px;
+    font-size: 0.85rem;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  .settings__stats dd {
+    font-size: 1.1rem;
+  }
+
+  .settings__main {
+    gap: 10px;
+  }
+
+  .settings__group {
+    padding: 0 10px 8px;
+    border-width: 3px;
+    border-radius: 18px;
+  }
+
+  .setting {
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    gap: 8px;
+    min-height: 54px;
+    padding: 4px 8px;
+    border-width: 2px;
+    border-radius: 14px;
+  }
+
+  .setting__icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+  }
+
+  .setting__label {
+    font-size: 0.95rem;
+  }
+
+  .setting--choice {
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    min-height: 54px;
+  }
+
+  .setting--choice .setting__text {
+    min-width: 0;
+  }
+
+  .choice__item {
+    min-width: 56px;
+    min-height: 44px;
+    padding: 0 8px;
+    border-width: 2px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+  }
+
+  .switch {
+    width: 60px;
+    height: 40px;
+  }
+
+  .switch__knob {
+    top: 5px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .switch input:checked + .switch__track .switch__knob {
+    transform: translateX(24px);
+  }
+
+  .settings__about {
+    min-height: 36px;
+    gap: 10px;
+  }
+
+  .settings__logo {
+    font-size: 1.2rem;
+    white-space: nowrap;
+  }
+
+  /* ── だれが あそぶ ── */
+  .profiles__logo {
+    font-size: 1.8rem;
+  }
+
+  .profiles__list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .profile-card {
+    height: 170px;
+    padding: 6px;
+    border-width: 3px;
+    border-radius: 20px;
+    box-shadow: 0 4px 0 var(--line-dark);
+  }
+
+  .profile-card.is-active {
+    box-shadow: 0 4px 0 var(--ai);
+  }
+
+  .profile-card__mascot {
+    width: min(100%, 64px);
+  }
+
+  .profile-card__name {
+    font-size: 1.1rem;
+  }
+
+  .profile-card__facts {
+    font-size: 0.8rem;
+  }
+
+  .profile-card__plus {
+    width: 56px;
+    height: 56px;
+    border-width: 3px;
+    font-size: 2rem;
+  }
+
+  .profile-card__edit .btn {
+    min-height: 44px;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  /* ── 学びおえた画面・なかま ── */
+  .result {
+    grid-template-columns: minmax(150px, 0.8fr) 1.4fr;
+    gap: 14px;
+    align-items: start;
+  }
+
+  .result__main,
+  .result__side {
+    gap: 6px;
+    max-height: 100%;
+  }
+
+  .result__side {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .result__kanji {
+    width: min(24vh, 130px);
+    padding: 6px;
+    border-width: 3px;
+    border-radius: 20px;
+  }
+
+  .result__yomi {
+    font-size: 1.15rem;
+  }
+
+  .result__stamps {
+    gap: 8px;
+    font-size: 1rem;
+  }
+
+  .result__explain {
+    min-height: 44px;
+    padding: 4px 12px;
+    font-size: 0.9rem;
+  }
+
+  /* 次へ すすむ ボタンを、いちばん 上に */
+  .result__side .result__cheer {
+    order: -2;
+  }
+
+  .result__side .result__actions {
+    order: -1;
+    gap: 8px;
+  }
+
+  .nakama {
+    gap: 4px;
+  }
+
+  .nakama__title {
+    font-size: 0.95rem;
+  }
+
+  .nakama__group {
+    gap: 8px;
+    padding: 4px 8px;
+    border-width: 2px;
+  }
+
+  .nakama__part {
+    min-width: 48px;
+    font-size: 0.8rem;
+  }
+
+  .nakama__kanji {
+    width: 52px;
+    min-height: 60px;
+    border-width: 2px;
+    border-radius: 12px;
+    box-shadow: 0 3px 0 var(--card-border);
+  }
+
+  .nakama__char {
+    font-size: 1.5rem;
+  }
+
+  .gains {
+    gap: 4px;
+  }
+
+  .gains li,
+  .result .gains li {
+    padding: 2px 12px;
+    border-width: 2px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  /* ── ふくしゅう・にがて れんしゅう ── */
+  .review__body {
+    grid-template-columns: 1fr minmax(0, 300px);
+    gap: 12px;
+  }
+
+  .review__hero {
+    gap: 4px;
+    padding: 8px 14px;
+    border-width: 4px;
+    border-radius: 24px;
+    box-shadow: 0 5px 0 #2f86b8;
+  }
+
+  .review__icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .review__count {
+    font-size: 1.1rem;
+  }
+
+  .review__count strong {
+    font-size: 2.6rem;
+  }
+
+  .review__lead {
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  .review__done {
+    font-size: 1.4rem;
+  }
+
+  .review__chars {
+    gap: 6px;
+  }
+
+  .review__chars span {
+    width: 44px;
+    height: 44px;
+    border-width: 3px;
+    border-radius: 12px;
+    font-size: 1.4rem;
+  }
+
+  .review__how {
+    gap: 4px;
+  }
+
+  .review__how li {
+    gap: 8px;
+    padding: 4px 10px;
+    border-width: 2px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+
+  .review__how-step {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+  }
+
+  .review__how-goal strong {
+    font-size: 1.2rem;
+  }
+
+  .review-result {
+    grid-template-columns: 1fr 1.3fr;
+    gap: 12px;
+  }
+
+  .review-result__main,
+  .review-result__side {
+    gap: 6px;
+  }
+
+  .review-result__mascot {
+    width: min(18vh, 90px);
+  }
+
+  .review-result__title {
+    font-size: 1.3rem;
+  }
+
+  .review-list {
+    gap: 4px;
+    max-height: calc(100dvh - 190px);
+    overflow-y: auto;
+  }
+
+  .review-item {
+    grid-template-columns: 44px 28px auto 1fr;
+    gap: 8px;
+    padding: 3px 10px 3px 3px;
+    border-width: 2px;
+    border-radius: 12px;
+  }
+
+  .review-item__char {
+    width: 40px;
+    height: 40px;
+    border-width: 2px;
+    border-radius: 10px;
+    font-size: 1.4rem;
+  }
+
+  .review-item__mark {
+    font-size: 1.2rem;
+  }
+
+  .review-item__next {
+    font-size: 0.8rem;
+  }
+
+  .review-result__actions {
+    min-width: 0;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  /* ── きょうの チャレンジ ── */
+  .daily {
+    gap: 8px;
+  }
+
+  .daily__card {
+    gap: 2px;
+    padding: 8px 24px;
+    border-width: 3px;
+  }
+
+  .daily__stars {
+    font-size: 1.4rem;
+  }
+
+  .daily__label {
+    font-size: 1.15rem;
+  }
+
+  .daily__count {
+    font-size: 1rem;
+  }
+
+  .daily__best,
+  .daily__note,
+  .daily__tomorrow {
+    font-size: 0.85rem;
+  }
+
+  .quiz-result {
+    gap: 14px;
+  }
+
+  .quiz-result__main,
+  .quiz-result__side {
+    gap: 6px;
+  }
+
+  .quiz-result__seal {
+    width: min(30vh, 130px);
+    height: min(30vh, 130px);
+    border-width: 6px;
+    outline-width: 3px;
+    outline-offset: 5px;
+    font-size: 1.7rem;
+  }
+
+  .quiz-result__score {
+    font-size: 2rem;
+  }
+
+  .quiz-result__mascot {
+    width: min(20vh, 90px);
+  }
+
+  .quiz-result__actions {
+    gap: 6px;
+  }
+
+  /* ── ステージ ── */
+  .stage__cards {
+    gap: 8px;
+  }
+
+  .stage-card {
+    gap: 2px;
+    padding: 6px 4px;
+    border-width: 3px;
+    border-radius: 18px;
+    box-shadow: 0 4px 0 var(--card-border);
+  }
+
+  .stage-card.is-next {
+    box-shadow: 0 4px 0 var(--ai);
+  }
+
+  .stage-card__icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .stage-card__glyph {
+    width: min(100%, 84px);
+  }
+
+  .stage-card__yomi {
+    font-size: 0.95rem;
+  }
+
+  .stage__boss {
+    gap: 10px;
+    min-height: 0;
+    padding: 4px 14px;
+    border-width: 3px;
+    border-radius: 18px;
+  }
+
+  .stage__monster {
+    width: 52px;
+  }
+
+  .stage__boss-name {
+    font-size: 1.05rem;
+  }
+
+  .stage__boss .stage__rest {
+    font-size: 0.9rem;
+  }
+
+  /* ── きせかえ ── */
+  .shop__body {
+    grid-template-columns: 170px 1fr;
+    gap: 12px;
+  }
+
+  .shop__me {
+    gap: 2px;
+    padding: 8px;
+    border-width: 3px;
+    border-radius: 20px;
+  }
+
+  .shop__mascot {
+    width: 84px;
+  }
+
+  .shop__level {
+    font-size: 1.1rem;
+  }
+
+  .shop__level small,
+  .shop__grow {
+    font-size: 0.75rem;
+  }
+
+  .form-road {
+    gap: 3px;
+    margin-top: 2px;
+  }
+
+  .form-road__mascot {
+    width: 28px;
+  }
+
+  .shop__main {
+    gap: 8px;
+  }
+
+  .shop__tabs {
+    gap: 6px;
+  }
+
+  .shop__items {
+    grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+    gap: 8px;
+  }
+
+  .shop-item {
+    gap: 2px;
+    padding: 6px 4px;
+    border-width: 3px;
+    border-radius: 16px;
+    box-shadow: 0 4px 0 var(--line);
+  }
+
+  .shop-item.is-on {
+    box-shadow: 0 4px 0 var(--ai);
+  }
+
+  .shop-item__mascot {
+    width: 60px;
+  }
+
+  .shop-item__sky {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+  }
+
+  .shop-item__card {
+    width: 76px;
+  }
+
+  .shop-item__card .part-card {
+    --glyph-size: 40px;
+    min-height: 64px;
+  }
+
+  .shop-item__label {
+    font-size: 0.9rem;
+  }
+
+  .shop-item__state {
+    padding: 0 8px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  /* ── レベルアップ ── */
+  .levelup__forms {
+    gap: 10px;
+  }
+
+  .levelup__before {
+    width: 56px;
+  }
+
+  .levelup__after {
+    width: min(26vh, 100px);
+  }
+
+  .levelup__arrow {
+    font-size: 1.4rem;
+  }
+
+  .levelup__name {
+    font-size: 1.15rem;
+  }
+
+  .levelup__unlocked {
+    padding: 2px 14px;
+    font-size: 0.85rem;
+  }
+
+  /* ── ほかの小さな直し ── */
+  .settings__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .settings__stats dt {
+    flex-wrap: wrap;
+    font-size: 0.65rem;
+    white-space: normal;
+  }
+
+  .settings__stats dd {
+    font-size: 1rem;
+  }
+
+  .quiz-result__seal {
+    font-size: 1.25rem;
+    letter-spacing: -0.05em;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  /* ── 保護者の画面: 押す物は 40px 以上、切り欠きを さける ── */
+  .parent {
+    padding-left: calc(var(--gutter) + var(--sl));
+    padding-right: calc(var(--gutter) + var(--sr));
+    padding-bottom: calc(6px + var(--sb));
+  }
+
+  .pbar__child,
+  .pseg__btn,
+  .parent .btn,
+  .hw-list__clear,
+  .hw-row__remove,
+  .hw-row__practice {
+    min-height: 40px;
+  }
+}
+
+/* 幅も 小さい(667px など): すみまるの 成長の パネルは かくして、しまを 見せる */
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 720px) {
+  .home__body {
+    grid-template-columns: minmax(150px, 210px) 1fr;
+  }
+
+  .home__body > .grow {
+    display: none;
+  }
+
+  .review-call__text small,
+  .review-call__text {
+    white-space: nowrap;
+  }
+
+  /* 下のメニューが 横に はみださないよう、ボタンを 少し せまく */
+  .dock {
+    gap: 6px;
+    padding-left: calc(10px + var(--sl));
+    padding-right: calc(10px + var(--sr));
+  }
+
+  .dock__buttons {
+    gap: 4px;
+  }
+
+  .dock-btn {
+    width: 60px;
+  }
+
+  .dock .cta {
+    gap: 6px;
+    padding: 4px 8px 4px 6px;
+  }
+
+  .cta__kanji {
+    width: 38px;
+    height: 38px;
+    font-size: 1.5rem;
+  }
+
+  .dock .cta__text {
+    font-size: 0.95rem;
+  }
+
+  /* くみあわせの こたえ(4つ)が 1行に 並ぶよう、カードを せまく */
+  .kumi--yoko,
+  .kumi--kakomu,
+  .kumi--tate {
+    grid-template-columns: minmax(96px, 130px) auto minmax(0, 1fr);
+    gap: 8px 8px;
+  }
+
+  .kumi__choices {
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 6px;
+  }
+
+  .part-card {
+    --glyph-size: 52px;
+  }
+
+  .kumi__fixed .part-card,
+  .kumi--tate .kumi__fixed .part-card {
+    --glyph-size: 72px;
+    gap: 6px;
+  }
+}

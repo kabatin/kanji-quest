@@ -180,3 +180,62 @@
     flex-direction: column;
   }
 }
+
+/* スマホの よこ向き(高さが 500px 以下): 1画面に おさめる(ほかの画面は styles/compact.css) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .intro-welcome {
+    gap: 8px;
+    padding: 8px 16px;
+  }
+
+  .intro-welcome__ask {
+    font-size: 1.4rem;
+  }
+
+  .intro-welcome__choices {
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  .intro-welcome__choice {
+    min-width: 160px;
+    min-height: 88px;
+    gap: 2px;
+    font-size: 1.3rem;
+  }
+
+  .intro-welcome__hand {
+    font-size: 1.8rem;
+  }
+
+  .intro-welcome__note {
+    font-size: 0.85rem;
+  }
+
+  .intro-skip,
+  .intro-skip--small {
+    min-height: 40px;
+  }
+
+  .intro-tip {
+    top: 56px;
+  }
+
+  .intro-tip .mascot-says__mascot {
+    width: 40px;
+  }
+
+  .intro-tip .mascot-says__bubble {
+    font-size: 1rem;
+  }
+
+  .intro-coach__card {
+    padding: 8px 12px;
+    border-width: 3px;
+  }
+
+  .intro-coach__text {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+}

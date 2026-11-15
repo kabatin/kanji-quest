@@ -144,7 +144,7 @@
   font-size: 0.82rem;
 }
 
-@media (max-width: 860px), (max-height: 640px) {
+@media (max-width: 860px) and (orientation: portrait), (max-height: 640px) {
   .parent[data-view='homework'] .parent__view {
     overflow-y: auto;
     overscroll-behavior: contain;

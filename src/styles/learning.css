@@ -466,7 +466,7 @@
   height: 24px;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 760px) and (orientation: portrait) {
   .review__body,
   .review-result {
     grid-template-columns: 1fr;

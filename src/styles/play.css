@@ -813,7 +813,7 @@
   color: #ffffff;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 760px) and (orientation: portrait) {
   .story,
   .kaku,
   .quiz-result,
@@ -1104,7 +1104,7 @@
   order: 1;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 760px) and (orientation: portrait) {
   .kaku[data-handed],
   .story[data-handed] {
     grid-template-columns: 1fr;

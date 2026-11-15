@@ -302,7 +302,7 @@
 }
 
 /* 横はばが せまい・高さが 低い画面: 1列にして、区画ごと この中で スクロールする */
-@media (max-width: 860px), (max-height: 640px) {
+@media (max-width: 860px) and (orientation: portrait), (max-height: 640px) {
   .parent[data-view='overview'] .parent__view {
     overflow-y: auto;
     overscroll-behavior: contain;
