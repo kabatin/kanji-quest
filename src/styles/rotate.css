@@ -1,0 +1,84 @@
+/* たて向きのときの案内。よこ向きで あそぶ アプリなので、たて では 本体を かくして 案内だけを出す。 */
+.rotate-guide {
+  display: none;
+}
+
+@media (orientation: portrait) {
+  #root {
+    visibility: hidden;
+  }
+
+  .rotate-guide {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 24px;
+    background: var(--ai);
+    color: #ffffff;
+    text-align: center;
+  }
+
+  .rotate-guide__art {
+    width: min(46vw, 220px);
+    height: auto;
+  }
+
+  .rotate-guide__device {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 5;
+    transform-origin: 60px 60px;
+    animation: rotate-guide-turn 2.4s ease-in-out infinite;
+  }
+
+  .rotate-guide__arrow {
+    fill: none;
+    stroke: var(--yamabuki);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .rotate-guide__lead {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 8vw, 3rem);
+  }
+
+  .rotate-guide__note {
+    max-width: 22em;
+    margin: 0;
+    font-size: clamp(0.95rem, 3.6vw, 1.2rem);
+    line-height: 1.6;
+    opacity: 0.85;
+  }
+}
+
+@keyframes rotate-guide-turn {
+  0%,
+  25% {
+    transform: rotate(0deg);
+  }
+
+  60%,
+  100% {
+    transform: rotate(90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotate-guide__device {
+    animation: none;
+    transform: rotate(90deg);
+  }
+}
+
+[data-motion='reduce'] .rotate-guide__device {
+  animation: none;
+  transform: rotate(90deg);
+}

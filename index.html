@@ -16,6 +16,15 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- たて向きのときだけ出す案内(よこ向きで あそぶ アプリ)。出し分けは CSS(src/styles/rotate.css) -->
+    <div id="rotate-guide" class="rotate-guide" role="status" aria-live="polite">
+      <svg class="rotate-guide__art" viewBox="0 0 120 120" aria-hidden="true">
+        <rect class="rotate-guide__device" x="42" y="22" width="36" height="76" rx="7" />
+        <path class="rotate-guide__arrow" d="M92 40a40 40 0 0 1 6 34m0 0-9-5m9 5 4-10" />
+      </svg>
+      <p class="rotate-guide__lead">よこに してね</p>
+      <p class="rotate-guide__note">がめんが まわらないときは、「がめんの むきの ロック」を はずしてね</p>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -13,6 +13,7 @@ import './styles/home-panels.css'
 import './styles/settings.css'
 import './styles/learning.css'
 import './styles/parent.css'
+import './styles/rotate.css'
 import App from './App.tsx'
 import { registerServiceWorker } from './lib/pwa'
 
