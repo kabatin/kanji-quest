@@ -60,7 +60,12 @@ for (const [name, size] of [['スマホ 844x390', SIZES.phone], ['iPad 1024x768'
       await page.waitForTimeout(800)
       await clean(page, '書き取り')
       await writeStrokes(page, '日')
-      await page.waitForTimeout(1500)
+      // 書きおえると 2秒で 結果に うつる。「くらべる」を おすと「つぎへ」まで 止まるので、その画面を 点検してから 進む
+      // (うつる とちゅうで 点検が走ると、結果が ばらつく)
+      await page.getByRole('button', { name: 'くらべる' }).click()
+      await clean(page, 'くらべる')
+      await page.getByRole('button', { name: 'つぎへ' }).click()
+      await page.locator('.result').waitFor()
       await clean(page, '学ぶの結果')
     })
 
