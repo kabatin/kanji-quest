@@ -231,6 +231,2150 @@
   "word-53cb": {
    "kind": "text",
    "value": "友。"
+  },
+  "explain-4e00": {
+   "kind": "text",
+   "value": "横に、棒が、一本。一つの、しるし。一。"
+  },
+  "explain-53f3": {
+   "kind": "text",
+   "value": "ご飯を、口に、運ぶ、手。その、手が、ある、方。右。"
+  },
+  "goal-53f3-0": {
+   "kind": "text",
+   "value": "右を、つくろう。"
+  },
+  "explain-96e8": {
+   "kind": "text",
+   "value": "空の、雲から、しずくが、ぽつぽつ、落ちてくる。雨。"
+  },
+  "word-5186": {
+   "kind": "text",
+   "value": "円。"
+  },
+  "explain-5186": {
+   "kind": "text",
+   "value": "丸い、お金が、ぴかり。丸い、形の、こと。円。"
+  },
+  "word-738b": {
+   "kind": "text",
+   "value": "王。"
+  },
+  "explain-738b": {
+   "kind": "text",
+   "value": "大きな、おのは、強い、しるし。おのを、持つ、人が、王様。王。"
+  },
+  "explain-97f3": {
+   "kind": "text",
+   "value": "朝日が、のぼる。立って、歌うと、声が、ひびく。音。"
+  },
+  "goal-97f3-0": {
+   "kind": "text",
+   "value": "音を、つくろう。"
+  },
+  "word-4e0b": {
+   "kind": "text",
+   "value": "下。"
+  },
+  "explain-4e0b": {
+   "kind": "text",
+   "value": "横の、線を、引く。その、下に、しるしを、つける。下。"
+  },
+  "word-706b": {
+   "kind": "text",
+   "value": "火。"
+  },
+  "explain-706b": {
+   "kind": "text",
+   "value": "たきぎが、めらめら、燃える。ゆれる、ほのおの、形。火。"
+  },
+  "word-82b1": {
+   "kind": "text",
+   "value": "花。"
+  },
+  "explain-82b1": {
+   "kind": "text",
+   "value": "草が、のびて、つぼみが、ひらく。下は、音の、しるし。花。"
+  },
+  "goal-82b1-0": {
+   "kind": "text",
+   "value": "花を、つくろう。"
+  },
+  "word-8c9d": {
+   "kind": "text",
+   "value": "貝。"
+  },
+  "explain-8c9d": {
+   "kind": "text",
+   "value": "海で、ひろった、貝がら。昔は、お金の、かわりだった。貝。"
+  },
+  "word-5b66": {
+   "kind": "text",
+   "value": "学ぶ。"
+  },
+  "explain-5b66": {
+   "kind": "text",
+   "value": "屋根の、下に、子どもが、集まる。手を、とって、教わる。学ぶ。"
+  },
+  "word-6c17": {
+   "kind": "text",
+   "value": "気。"
+  },
+  "explain-6c17": {
+   "kind": "text",
+   "value": "ご飯を、たくと、ゆげが、ゆらゆら、のぼる。目に、見えにくい、もの。気。"
+  },
+  "explain-4e5d": {
+   "kind": "text",
+   "value": "うでを、ぐっと、曲げた、形。その、字を、借りて、数に、した。九。"
+  },
+  "word-4f11": {
+   "kind": "text",
+   "value": "休む。"
+  },
+  "explain-4f11": {
+   "kind": "text",
+   "value": "人が、木に、もたれて、一休み。休む。"
+  },
+  "goal-4f11-0": {
+   "kind": "text",
+   "value": "休むを、つくろう。"
+  },
+  "word-7389": {
+   "kind": "text",
+   "value": "玉。"
+  },
+  "explain-7389": {
+   "kind": "text",
+   "value": "きれいな、石を、ひもで、つなぐ。点を、一つ、つけて、目印。玉。"
+  },
+  "goal-7389-0": {
+   "kind": "text",
+   "value": "玉を、つくろう。"
+  },
+  "explain-91d1": {
+   "kind": "text",
+   "value": "土の、中に、小さな、つぶ。ほると、きらきら、光る。金。"
+  },
+  "word-7a7a": {
+   "kind": "text",
+   "value": "空。"
+  },
+  "explain-7a7a": {
+   "kind": "text",
+   "value": "穴の、中は、からっぽ。見上げると、上も、広くて、からっぽ。空。"
+  },
+  "goal-7a7a-0": {
+   "kind": "text",
+   "value": "空を、つくろう。"
+  },
+  "explain-6708": {
+   "kind": "text",
+   "value": "夜の、空に、かけた、月が、光る。三日月の、形。月。"
+  },
+  "explain-72ac": {
+   "kind": "text",
+   "value": "犬を、横から、見た、形。点は、ぴんと、立った、耳。犬。"
+  },
+  "goal-72ac-0": {
+   "kind": "text",
+   "value": "犬を、つくろう。"
+  },
+  "word-898b": {
+   "kind": "text",
+   "value": "見る。"
+  },
+  "explain-898b": {
+   "kind": "text",
+   "value": "大きな、めの、下に、足。人が、めを、あけて、じっと。見る。"
+  },
+  "goal-898b-0": {
+   "kind": "text",
+   "value": "見るを、つくろう。"
+  },
+  "word-4e94": {
+   "kind": "text",
+   "value": "五。"
+  },
+  "explain-4e94": {
+   "kind": "text",
+   "value": "上の、線と、下の、線。あいだで、ななめの、線が、まじわる。五。"
+  },
+  "word-53e3": {
+   "kind": "text",
+   "value": "口。"
+  },
+  "explain-53e3": {
+   "kind": "text",
+   "value": "あーんと、大きく、あけた、口。その、形。口。"
+  },
+  "explain-6821": {
+   "kind": "text",
+   "value": "木を、組んで、建てた、学び屋。右は、音の、しるし。校。"
+  },
+  "goal-6821-0": {
+   "kind": "text",
+   "value": "校を、つくろう。"
+  },
+  "word-5de6": {
+   "kind": "text",
+   "value": "左。"
+  },
+  "explain-5de6": {
+   "kind": "text",
+   "value": "道具を、しっかり、持つ、手。その、手が、ある、方。左。"
+  },
+  "goal-5de6-0": {
+   "kind": "text",
+   "value": "左を、つくろう。"
+  },
+  "word-4e09": {
+   "kind": "text",
+   "value": "三。"
+  },
+  "explain-4e09": {
+   "kind": "text",
+   "value": "横に、棒が、三本、ならぶ。三つの、しるし。三。"
+  },
+  "word-5c71": {
+   "kind": "text",
+   "value": "山。"
+  },
+  "explain-5c71": {
+   "kind": "text",
+   "value": "高い、みねが、三つ、ならぶ。まんなかが、一番、高い。山。"
+  },
+  "word-5b50": {
+   "kind": "text",
+   "value": "子。"
+  },
+  "explain-5b50": {
+   "kind": "text",
+   "value": "頭の、大きな、赤ちゃん。両手を、広げて、いる。子。"
+  },
+  "explain-56db": {
+   "kind": "text",
+   "value": "四角の、かどを、数えよう。一、二、三、し。かどは、四つ。四。"
+  },
+  "word-7cf8": {
+   "kind": "text",
+   "value": "糸。"
+  },
+  "explain-7cf8": {
+   "kind": "text",
+   "value": "まゆから、細い、糸を、とる。ねじって、たばねた、形。糸。"
+  },
+  "word-5b57": {
+   "kind": "text",
+   "value": "字。"
+  },
+  "explain-5b57": {
+   "kind": "text",
+   "value": "屋根の、下で、子どもが、育つ。子どもの、ように、ふえて、いく。字。"
+  },
+  "goal-5b57-0": {
+   "kind": "text",
+   "value": "字を、つくろう。"
+  },
+  "word-8033": {
+   "kind": "text",
+   "value": "耳。"
+  },
+  "explain-8033": {
+   "kind": "text",
+   "value": "音を、聞く、耳。人の、耳の、形。耳。"
+  },
+  "word-4e03": {
+   "kind": "text",
+   "value": "七。"
+  },
+  "explain-4e03": {
+   "kind": "text",
+   "value": "横の、棒を、縦の、線で、すぱっと、切る。その、字を、借りた。七。"
+  },
+  "word-8eca": {
+   "kind": "text",
+   "value": "車。"
+  },
+  "explain-8eca": {
+   "kind": "text",
+   "value": "車を、上から、見た、形。両側に、輪。まんなかに、はこ。車。"
+  },
+  "word-624b": {
+   "kind": "text",
+   "value": "手。"
+  },
+  "explain-624b": {
+   "kind": "text",
+   "value": "五本の、指を、ぱっと、広げる。手の、形。手。"
+  },
+  "word-5341": {
+   "kind": "text",
+   "value": "十。"
+  },
+  "explain-5341": {
+   "kind": "text",
+   "value": "棒を、十本、集めて、一つに、たばねる。まとまりの、しるし。十。"
+  },
+  "word-51fa": {
+   "kind": "text",
+   "value": "出る。"
+  },
+  "explain-51fa": {
+   "kind": "text",
+   "value": "穴の、中から、足が、外へ、ふみだす。出る。"
+  },
+  "word-5973": {
+   "kind": "text",
+   "value": "女。"
+  },
+  "explain-5973": {
+   "kind": "text",
+   "value": "ひざを、ついて、手を、前に、重ねる。その、姿。女。"
+  },
+  "word-5c0f": {
+   "kind": "text",
+   "value": "小さい。"
+  },
+  "explain-5c0f": {
+   "kind": "text",
+   "value": "小さな、つぶが、三つ、ぱらぱら。砂つぶ、みたい。小さい。"
+  },
+  "word-4e0a": {
+   "kind": "text",
+   "value": "上。"
+  },
+  "explain-4e0a": {
+   "kind": "text",
+   "value": "横の、線を、引く。その、上に、しるしを、つける。上。"
+  },
+  "word-68ee": {
+   "kind": "text",
+   "value": "森。"
+  },
+  "explain-68ee": {
+   "kind": "text",
+   "value": "木が、一本。そこに、林が、くわわる。木が、たくさん。森。"
+  },
+  "goal-68ee-0": {
+   "kind": "text",
+   "value": "森を、つくろう。"
+  },
+  "word-4eba": {
+   "kind": "text",
+   "value": "人。"
+  },
+  "explain-4eba": {
+   "kind": "text",
+   "value": "人が、横をむいて、立っているよ。うでを、前に、のばしている。人。"
+  },
+  "explain-6c34": {
+   "kind": "text",
+   "value": "まんなかを、水が、流れるよ。両側に、しぶきが、とぶ。水。"
+  },
+  "word-6b63": {
+   "kind": "text",
+   "value": "正しい。"
+  },
+  "explain-6b63": {
+   "kind": "text",
+   "value": "上に、線が、一本。足が、線にむかって、まっすぐ、すすむよ。正しい。"
+  },
+  "goal-6b63-0": {
+   "kind": "text",
+   "value": "正しいを、つくろう。"
+  },
+  "word-751f": {
+   "kind": "text",
+   "value": "生まれる。"
+  },
+  "explain-751f": {
+   "kind": "text",
+   "value": "土から、草の芽が、出てきたよ。ぐんぐん、のびる。生まれる。"
+  },
+  "word-9752": {
+   "kind": "text",
+   "value": "青。"
+  },
+  "explain-9752": {
+   "kind": "text",
+   "value": "上は、草の芽。下は、井戸の、きれいな水。どちらも、青いよ。青。"
+  },
+  "word-5915": {
+   "kind": "text",
+   "value": "夕。"
+  },
+  "explain-5915": {
+   "kind": "text",
+   "value": "夕方、空に、三日月が、出てきたよ。月の、形。夕。"
+  },
+  "explain-77f3": {
+   "kind": "text",
+   "value": "がけの、下に、石が、ころんと、落ちているよ。石。"
+  },
+  "word-8d64": {
+   "kind": "text",
+   "value": "赤。"
+  },
+  "explain-8d64": {
+   "kind": "text",
+   "value": "火が、大きく、燃えているよ。真っ赤な、色。赤。"
+  },
+  "explain-5343": {
+   "kind": "text",
+   "value": "人の、形に、横棒を、一本、たすよ。とても、大きな、かず。千。"
+  },
+  "word-5ddd": {
+   "kind": "text",
+   "value": "川。"
+  },
+  "explain-5ddd": {
+   "kind": "text",
+   "value": "岸と、岸の、あいだを、水が、流れるよ。三本の、すじ。川。"
+  },
+  "word-5148": {
+   "kind": "text",
+   "value": "先。"
+  },
+  "explain-5148": {
+   "kind": "text",
+   "value": "人の、上に、足が、あるよ。足が、前に、出る。先。"
+  },
+  "word-65e9": {
+   "kind": "text",
+   "value": "早い。"
+  },
+  "explain-65e9": {
+   "kind": "text",
+   "value": "朝、お日さまが、十字の、しるしの、上に、のぼるよ。早い。"
+  },
+  "goal-65e9-0": {
+   "kind": "text",
+   "value": "早いを、つくろう。"
+  },
+  "word-8349": {
+   "kind": "text",
+   "value": "草。"
+  },
+  "explain-8349": {
+   "kind": "text",
+   "value": "上は、草の、しるし。風に、ゆれる。下は、音の、しるしだよ。草。"
+  },
+  "goal-8349-0": {
+   "kind": "text",
+   "value": "草を、つくろう。"
+  },
+  "explain-8db3": {
+   "kind": "text",
+   "value": "上は、丸い、ひざ。下は、歩く、足あとだよ。足。"
+  },
+  "goal-8db3-0": {
+   "kind": "text",
+   "value": "足を、つくろう。"
+  },
+  "word-6751": {
+   "kind": "text",
+   "value": "村。"
+  },
+  "explain-6751": {
+   "kind": "text",
+   "value": "木の、あるところに、人が、集まるよ。右は、音の、しるし。村。"
+  },
+  "goal-6751-0": {
+   "kind": "text",
+   "value": "村を、つくろう。"
+  },
+  "word-5927": {
+   "kind": "text",
+   "value": "大きい。"
+  },
+  "explain-5927": {
+   "kind": "text",
+   "value": "人が、両手と、両足を、広げたよ。大きい。"
+  },
+  "word-7537": {
+   "kind": "text",
+   "value": "男。"
+  },
+  "explain-7537": {
+   "kind": "text",
+   "value": "田んぼで、力をだして、土を、耕すよ。男。"
+  },
+  "goal-7537-0": {
+   "kind": "text",
+   "value": "男を、つくろう。"
+  },
+  "word-7af9": {
+   "kind": "text",
+   "value": "竹。"
+  },
+  "word-4e2d": {
+   "kind": "text",
+   "value": "中。"
+  },
+  "explain-4e2d": {
+   "kind": "text",
+   "value": "棒が、一本。四角の、まんなかを、通るよ。中。"
+  },
+  "explain-866b": {
+   "kind": "text",
+   "value": "小さな、生き物が、くねくね、動くよ。虫。"
+  },
+  "word-753a": {
+   "kind": "text",
+   "value": "町。"
+  },
+  "explain-753a": {
+   "kind": "text",
+   "value": "田んぼの、あいだの、道。右は、音の、しるしだよ。町。"
+  },
+  "goal-753a-0": {
+   "kind": "text",
+   "value": "町を、つくろう。"
+  },
+  "word-5929": {
+   "kind": "text",
+   "value": "天。"
+  },
+  "explain-5929": {
+   "kind": "text",
+   "value": "手を、広げた、ひと。頭の、上に、線が、一本。一番、上だよ。天。"
+  },
+  "goal-5929-0": {
+   "kind": "text",
+   "value": "天を、つくろう。"
+  },
+  "word-7530": {
+   "kind": "text",
+   "value": "田。"
+  },
+  "explain-7530": {
+   "kind": "text",
+   "value": "四角い、田んぼ。あぜ道で、四つに、区切ったよ。田。"
+  },
+  "word-571f": {
+   "kind": "text",
+   "value": "土。"
+  },
+  "explain-571f": {
+   "kind": "text",
+   "value": "地面の、上に、土が、盛り上がっているよ。土。"
+  },
+  "word-4e8c": {
+   "kind": "text",
+   "value": "二。"
+  },
+  "explain-4e8c": {
+   "kind": "text",
+   "value": "棒が、二本。上が、短くて、下が、長いよ。二。"
+  },
+  "word-65e5": {
+   "kind": "text",
+   "value": "日。"
+  },
+  "explain-65e5": {
+   "kind": "text",
+   "value": "丸い、お日さまが、ぴかぴか、光るよ。丸が、四角く、なった。日。"
+  },
+  "word-5e74": {
+   "kind": "text",
+   "value": "年。"
+  },
+  "explain-5e74": {
+   "kind": "text",
+   "value": "みのった、いねを、人が、かついで、歩くよ。いねが、みのると、一年。とし。"
+  },
+  "explain-767d": {
+   "kind": "text",
+   "value": "どんぐりの、からを、むくよ。中は、真っ白。白。"
+  },
+  "word-767e": {
+   "kind": "text",
+   "value": "百。"
+  },
+  "explain-767e": {
+   "kind": "text",
+   "value": "上に、棒が、一本。下の、白は、音の、しるしだよ。百。"
+  },
+  "goal-767e-0": {
+   "kind": "text",
+   "value": "百を、つくろう。"
+  },
+  "word-6587": {
+   "kind": "text",
+   "value": "文。"
+  },
+  "explain-6587": {
+   "kind": "text",
+   "value": "人の、胸に、もようが、書いてあるよ。もようから、文字に、なった。文。"
+  },
+  "word-6728": {
+   "kind": "text",
+   "value": "木。"
+  },
+  "explain-6728": {
+   "kind": "text",
+   "value": "木が、一本、立っているよ。みきと、枝と、根っこ。木。"
+  },
+  "word-672c": {
+   "kind": "text",
+   "value": "本。"
+  },
+  "explain-672c": {
+   "kind": "text",
+   "value": "木の、根もとに、しるしを、一本、つけるよ。ここが、根もと。本。"
+  },
+  "goal-672c-0": {
+   "kind": "text",
+   "value": "本を、つくろう。"
+  },
+  "word-540d": {
+   "kind": "text",
+   "value": "名。"
+  },
+  "explain-540d": {
+   "kind": "text",
+   "value": "夕方は、暗くて、顔が、見えない。口で、名前を、言うよ。名。"
+  },
+  "goal-540d-0": {
+   "kind": "text",
+   "value": "名を、つくろう。"
+  },
+  "word-76ee": {
+   "kind": "text",
+   "value": "目。"
+  },
+  "explain-76ee": {
+   "kind": "text",
+   "value": "めの、形。横向きの、めを、縦に、したよ。目。"
+  },
+  "word-7acb": {
+   "kind": "text",
+   "value": "立つ。"
+  },
+  "explain-7acb": {
+   "kind": "text",
+   "value": "人が、両足を、ひらいて、地面の、上に、立っているよ。立つ。"
+  },
+  "explain-529b": {
+   "kind": "text",
+   "value": "土を、ほる、道具の、形。力を、入れて、ほるよ。力。"
+  },
+  "explain-6797": {
+   "kind": "text",
+   "value": "木が、一本。となりに、もう一本。木が、ならんで、はやし。"
+  },
+  "goal-6797-0": {
+   "kind": "text",
+   "value": "林を、つくろう。"
+  },
+  "word-516d": {
+   "kind": "text",
+   "value": "六。"
+  },
+  "explain-516d": {
+   "kind": "text",
+   "value": "屋根の、ある、家の、形に、にているよ。六。"
+  },
+  "word-5f15": {
+   "kind": "text",
+   "value": "引く。"
+  },
+  "explain-5f15": {
+   "kind": "text",
+   "value": "弓に、まっすぐな つる。ぐいっと、ひっぱるよ。引く。"
+  },
+  "goal-5f15-0": {
+   "kind": "text",
+   "value": "引くを、つくろう。"
+  },
+  "goal-7fbd-0": {
+   "kind": "text",
+   "value": "羽を、つくろう。"
+  },
+  "word-96f2": {
+   "kind": "text",
+   "value": "雲。"
+  },
+  "explain-96f2": {
+   "kind": "text",
+   "value": "もくもくが、空へ のぼる。やがて、雨を ふらせるよ。雲。"
+  },
+  "goal-96f2-0": {
+   "kind": "text",
+   "value": "雲を、つくろう。"
+  },
+  "word-5712": {
+   "kind": "text",
+   "value": "園。"
+  },
+  "goal-5712-0": {
+   "kind": "text",
+   "value": "園を、つくろう。"
+  },
+  "word-9060": {
+   "kind": "text",
+   "value": "遠い。"
+  },
+  "explain-9060": {
+   "kind": "text",
+   "value": "道を、ずっと ずっと 歩いて いく。円の 音が つくよ。遠い。"
+  },
+  "goal-9060-0": {
+   "kind": "text",
+   "value": "遠いを、つくろう。"
+  },
+  "word-4f55": {
+   "kind": "text",
+   "value": "何。"
+  },
+  "explain-4f55": {
+   "kind": "text",
+   "value": "荷物を かついだ 人が、歩いて 来る。それ、なあに。何。"
+  },
+  "goal-4f55-0": {
+   "kind": "text",
+   "value": "何を、つくろう。"
+  },
+  "word-79d1": {
+   "kind": "text",
+   "value": "科。"
+  },
+  "explain-79d1": {
+   "kind": "text",
+   "value": "いねを、ますに 入れて 計る。種類ごとに 分けるよ。科。"
+  },
+  "goal-79d1-0": {
+   "kind": "text",
+   "value": "科を、つくろう。"
+  },
+  "explain-590f": {
+   "kind": "text",
+   "value": "人の 頭の 上に、お日さまが ぎらぎら。暑い 季節。夏。"
+  },
+  "goal-5bb6-0": {
+   "kind": "text",
+   "value": "家を、つくろう。"
+  },
+  "word-6b4c": {
+   "kind": "text",
+   "value": "歌。"
+  },
+  "explain-6b4c": {
+   "kind": "text",
+   "value": "大きく 口を あけて、声を 出す。かの 音が つくよ。歌。"
+  },
+  "goal-6b4c-0": {
+   "kind": "text",
+   "value": "歌を、つくろう。"
+  },
+  "word-753b": {
+   "kind": "text",
+   "value": "画。"
+  },
+  "explain-753b": {
+   "kind": "text",
+   "value": "筆を 持って、線を 引く。四角く 区切って、絵を 書くよ。画。"
+  },
+  "word-56de": {
+   "kind": "text",
+   "value": "回る。"
+  },
+  "explain-56de": {
+   "kind": "text",
+   "value": "水が、ぐるぐる うずを まく。外も、中も、ぐるぐる。回る。"
+  },
+  "goal-56de-0": {
+   "kind": "text",
+   "value": "回るを、つくろう。"
+  },
+  "word-4f1a": {
+   "kind": "text",
+   "value": "会う。"
+  },
+  "explain-4f1a": {
+   "kind": "text",
+   "value": "なべの 上に、ふたが 下りて 来る。ぴったり、重なった。会う。"
+  },
+  "goal-4f1a-0": {
+   "kind": "text",
+   "value": "会うを、つくろう。"
+  },
+  "word-6d77": {
+   "kind": "text",
+   "value": "海。"
+  },
+  "explain-6d77": {
+   "kind": "text",
+   "value": "水が、いっぱい 集まって、広がる。かいの 音が つくよ。海。"
+  },
+  "goal-6d77-0": {
+   "kind": "text",
+   "value": "海を、つくろう。"
+  },
+  "word-7d75": {
+   "kind": "text",
+   "value": "絵。"
+  },
+  "explain-7d75": {
+   "kind": "text",
+   "value": "赤や 青の 糸で、きれいな もようを ぬう。えの 音が つくよ。絵。"
+  },
+  "goal-7d75-0": {
+   "kind": "text",
+   "value": "絵を、つくろう。"
+  },
+  "word-5916": {
+   "kind": "text",
+   "value": "外。"
+  },
+  "explain-5916": {
+   "kind": "text",
+   "value": "夕方、月が 出た。外に 出て、うらないを するよ。外。"
+  },
+  "goal-5916-0": {
+   "kind": "text",
+   "value": "外を、つくろう。"
+  },
+  "explain-89d2": {
+   "kind": "text",
+   "value": "動物の 頭に 生えた、かたい つの。その 形だよ。つの。"
+  },
+  "word-697d": {
+   "kind": "text",
+   "value": "楽しい。"
+  },
+  "explain-697d": {
+   "kind": "text",
+   "value": "木に、糸を 張った 楽器。ぽろんと 鳴らすと、うきうき。楽しい。"
+  },
+  "word-6d3b": {
+   "kind": "text",
+   "value": "活。"
+  },
+  "explain-6d3b": {
+   "kind": "text",
+   "value": "水が、ざあざあ、いきおいよく 流れる。元気 いっぱい。活。"
+  },
+  "goal-6d3b-0": {
+   "kind": "text",
+   "value": "活を、つくろう。"
+  },
+  "word-9593": {
+   "kind": "text",
+   "value": "間。"
+  },
+  "goal-9593-0": {
+   "kind": "text",
+   "value": "間を、つくろう。"
+  },
+  "word-4e38": {
+   "kind": "text",
+   "value": "丸。"
+  },
+  "explain-4e38": {
+   "kind": "text",
+   "value": "九の 横に、丸い 玉が、ころんと 落ちて 来た。丸。"
+  },
+  "goal-4e38-0": {
+   "kind": "text",
+   "value": "丸を、つくろう。"
+  },
+  "word-5ca9": {
+   "kind": "text",
+   "value": "岩。"
+  },
+  "explain-5ca9": {
+   "kind": "text",
+   "value": "山の 上に、ごろんと、大きな 石。岩。"
+  },
+  "goal-5ca9-0": {
+   "kind": "text",
+   "value": "岩を、つくろう。"
+  },
+  "word-9854": {
+   "kind": "text",
+   "value": "顔。"
+  },
+  "explain-9854": {
+   "kind": "text",
+   "value": "頭の、前の ところ。目や 鼻が あるよ。がんの 音が つく。顔。"
+  },
+  "goal-9854-0": {
+   "kind": "text",
+   "value": "顔を、つくろう。"
+  },
+  "word-6c7d": {
+   "kind": "text",
+   "value": "汽。"
+  },
+  "explain-6c7d": {
+   "kind": "text",
+   "value": "水が、ぐらぐら 熱く なる。ゆげが、ふわふわ のぼるよ。汽。"
+  },
+  "goal-6c7d-0": {
+   "kind": "text",
+   "value": "汽を、つくろう。"
+  },
+  "word-8a18": {
+   "kind": "text",
+   "value": "記す。"
+  },
+  "explain-8a18": {
+   "kind": "text",
+   "value": "聞いた 言葉を、忘れないように、書いて おく。きの 音が つくよ。記す。"
+  },
+  "goal-8a18-0": {
+   "kind": "text",
+   "value": "記すを、つくろう。"
+  },
+  "word-5e30": {
+   "kind": "text",
+   "value": "帰る。"
+  },
+  "explain-5e30": {
+   "kind": "text",
+   "value": "てくてく、歩いて いく。ほうきの ある、自分の 家に つくよ。帰る。"
+  },
+  "goal-5e30-0": {
+   "kind": "text",
+   "value": "帰るを、つくろう。"
+  },
+  "explain-5f13": {
+   "kind": "text",
+   "value": "矢を とばす 道具。ぐにゃりと 曲がった、その 形だよ。弓。"
+  },
+  "explain-725b": {
+   "kind": "text",
+   "value": "前から 見た、牛の 頭。上に、つのが 二本。牛。"
+  },
+  "word-9b5a": {
+   "kind": "text",
+   "value": "魚。"
+  },
+  "explain-9b5a": {
+   "kind": "text",
+   "value": "上が 頭。まんなかが うろこ。下が 尾びれ。すいすい 泳ぐ。魚。"
+  },
+  "word-4eac": {
+   "kind": "text",
+   "value": "京。"
+  },
+  "explain-4eac": {
+   "kind": "text",
+   "value": "高い ところに 立つ、大きな 建物。みやこの しるしだよ。京。"
+  },
+  "word-5f37": {
+   "kind": "text",
+   "value": "強い。"
+  },
+  "explain-5f37": {
+   "kind": "text",
+   "value": "ぴんと 張った 弓。かたい 殻の 虫。どっちも、負けないよ。強い。"
+  },
+  "goal-5f37-0": {
+   "kind": "text",
+   "value": "強いを、つくろう。"
+  },
+  "word-6559": {
+   "kind": "text",
+   "value": "教える。"
+  },
+  "explain-6559": {
+   "kind": "text",
+   "value": "先生が、棒を ふって、子どもに 学ばせる。教える。"
+  },
+  "goal-6559-0": {
+   "kind": "text",
+   "value": "教えるを、つくろう。"
+  },
+  "word-8fd1": {
+   "kind": "text",
+   "value": "近い。"
+  },
+  "explain-8fd1": {
+   "kind": "text",
+   "value": "道を、ちょっと 歩けば、すぐ つくよ。きんの 音が つく。近い。"
+  },
+  "goal-8fd1-0": {
+   "kind": "text",
+   "value": "近いを、つくろう。"
+  },
+  "word-5144": {
+   "kind": "text",
+   "value": "兄。"
+  },
+  "explain-5144": {
+   "kind": "text",
+   "value": "足の 上に、大きな 口。みんなに 声を かける、年上の 人。兄。"
+  },
+  "goal-5144-0": {
+   "kind": "text",
+   "value": "兄を、つくろう。"
+  },
+  "word-5f62": {
+   "kind": "text",
+   "value": "形。"
+  },
+  "explain-5f62": {
+   "kind": "text",
+   "value": "四角い わくに、きれいな もようを つける。姿が できたよ。形。"
+  },
+  "goal-5f62-0": {
+   "kind": "text",
+   "value": "形を、つくろう。"
+  },
+  "word-8a08": {
+   "kind": "text",
+   "value": "計る。"
+  },
+  "explain-8a08": {
+   "kind": "text",
+   "value": "一、二、三と、声に 出して 数える。十で ひとまとめ。計る。"
+  },
+  "goal-8a08-0": {
+   "kind": "text",
+   "value": "計るを、つくろう。"
+  },
+  "word-5143": {
+   "kind": "text",
+   "value": "元。"
+  },
+  "explain-5143": {
+   "kind": "text",
+   "value": "人の 体の、一番 上は 頭。ここが はじまりだよ。元。"
+  },
+  "goal-5143-0": {
+   "kind": "text",
+   "value": "元を、つくろう。"
+  },
+  "word-8a00": {
+   "kind": "text",
+   "value": "言う。"
+  },
+  "explain-8a00": {
+   "kind": "text",
+   "value": "下に 口。そこから、言葉が 次々 出て 来るよ。言う。"
+  },
+  "explain-539f": {
+   "kind": "text",
+   "value": "がけの 下から、水が わき出る。川の はじまりだよ。原。"
+  },
+  "goal-539f-0": {
+   "kind": "text",
+   "value": "原を、つくろう。"
+  },
+  "word-6238": {
+   "kind": "text",
+   "value": "戸。"
+  },
+  "explain-6238": {
+   "kind": "text",
+   "value": "門の とびらの、片方だけ。ぱたんと ひらく、その 形だよ。戸。"
+  },
+  "word-53e4": {
+   "kind": "text",
+   "value": "古い。"
+  },
+  "explain-53e4": {
+   "kind": "text",
+   "value": "昔の 話が、口から 口へ、じゅっかいも 伝わった。とても 昔の 話。古い。"
+  },
+  "goal-53e4-0": {
+   "kind": "text",
+   "value": "古いを、つくろう。"
+  },
+  "explain-5348": {
+   "kind": "text",
+   "value": "もちを つく、きねの 形から できたよ。お昼の 時間を 表す。ご。"
+  },
+  "word-5f8c": {
+   "kind": "text",
+   "value": "後ろ。"
+  },
+  "explain-5f8c": {
+   "kind": "text",
+   "value": "道を 歩く 足に、ひもが からまった。みんなより 遅れて しまう。後ろ。"
+  },
+  "word-8a9e": {
+   "kind": "text",
+   "value": "語。"
+  },
+  "explain-8a9e": {
+   "kind": "text",
+   "value": "左は、言葉を 言う しるし。右は、ごの 音の しるし。言葉で 語る。語。"
+  },
+  "goal-8a9e-0": {
+   "kind": "text",
+   "value": "語を、つくろう。"
+  },
+  "explain-5de5": {
+   "kind": "text",
+   "value": "大工さんが 使う、道具の 形から できたよ。物を 作る 仕事。工。"
+  },
+  "explain-516c": {
+   "kind": "text",
+   "value": "ひとりじめの はこを、ぱかっと ひらく。みんなの 物に する。こう。"
+  },
+  "word-5e83": {
+   "kind": "text",
+   "value": "広い。"
+  },
+  "explain-5e83": {
+   "kind": "text",
+   "value": "大きな 屋根の 下は、ひろびろ。中の 形は、音の しるし。広い。"
+  },
+  "goal-5e83-0": {
+   "kind": "text",
+   "value": "広いを、つくろう。"
+  },
+  "word-4ea4": {
+   "kind": "text",
+   "value": "交わる。"
+  },
+  "explain-4ea4": {
+   "kind": "text",
+   "value": "人が、足を ばってんに 組んで 立っている。足と 足が、まじわる。"
+  },
+  "goal-4ea4-0": {
+   "kind": "text",
+   "value": "交わるを、つくろう。"
+  },
+  "word-5149": {
+   "kind": "text",
+   "value": "光。"
+  },
+  "explain-5149": {
+   "kind": "text",
+   "value": "人が、頭の 上に、火を かかげている。あたりを てらす。光。"
+  },
+  "word-8003": {
+   "kind": "text",
+   "value": "考える。"
+  },
+  "explain-8003": {
+   "kind": "text",
+   "value": "長生きの お年寄りは、物知り。下は、こうの 音の しるし。じっくり、考える。"
+  },
+  "goal-8003-0": {
+   "kind": "text",
+   "value": "考えるを、つくろう。"
+  },
+  "word-884c": {
+   "kind": "text",
+   "value": "行く。"
+  },
+  "explain-884c": {
+   "kind": "text",
+   "value": "道と 道が 出会う、十字路の 形。人が 歩いて、いく。"
+  },
+  "goal-884c-0": {
+   "kind": "text",
+   "value": "行くを、つくろう。"
+  },
+  "word-9ad8": {
+   "kind": "text",
+   "value": "高い。"
+  },
+  "explain-9ad8": {
+   "kind": "text",
+   "value": "屋根の ある、高い 建物の 形から できたよ。見上げるほど、高い。"
+  },
+  "word-9ec4": {
+   "kind": "text",
+   "value": "黄。"
+  },
+  "explain-9ec4": {
+   "kind": "text",
+   "value": "昔の 人が、腰に さげた、黄色い 玉の 形。ゆらゆら ゆれる。黄。"
+  },
+  "word-5408": {
+   "kind": "text",
+   "value": "合う。"
+  },
+  "explain-5408": {
+   "kind": "text",
+   "value": "入れ物に、上から ふたを かぶせる。ぴったり、あう。"
+  },
+  "goal-5408-0": {
+   "kind": "text",
+   "value": "合うを、つくろう。"
+  },
+  "word-8c37": {
+   "kind": "text",
+   "value": "谷。"
+  },
+  "explain-8c37": {
+   "kind": "text",
+   "value": "山と 山の 間が、深く われている。そこから 水が 流れ出る。谷。"
+  },
+  "word-56fd": {
+   "kind": "text",
+   "value": "国。"
+  },
+  "explain-56fd": {
+   "kind": "text",
+   "value": "かこいの 中に、大切な 宝の 玉。みんなで 守る。国。"
+  },
+  "goal-56fd-0": {
+   "kind": "text",
+   "value": "国を、つくろう。"
+  },
+  "word-9ed2": {
+   "kind": "text",
+   "value": "黒。"
+  },
+  "explain-9ed2": {
+   "kind": "text",
+   "value": "下で、火が 燃える。上の けむ出しに、すすが ついて、真っ黒。黒。"
+  },
+  "goal-9ed2-0": {
+   "kind": "text",
+   "value": "黒を、つくろう。"
+  },
+  "word-4eca": {
+   "kind": "text",
+   "value": "今。"
+  },
+  "explain-4eca": {
+   "kind": "text",
+   "value": "ふたを、ぱたんと かぶせて つかまえる。今、この 時を のがさない。今。"
+  },
+  "word-624d": {
+   "kind": "text",
+   "value": "才。"
+  },
+  "explain-624d": {
+   "kind": "text",
+   "value": "土から、小さな 芽が 出てきた。これから のびる 力が ある。才。"
+  },
+  "word-7d30": {
+   "kind": "text",
+   "value": "細い。"
+  },
+  "explain-7d30": {
+   "kind": "text",
+   "value": "左は、糸。細くて 長い。右は、さいの 音の しるし。細い。"
+  },
+  "goal-7d30-0": {
+   "kind": "text",
+   "value": "細いを、つくろう。"
+  },
+  "word-4f5c": {
+   "kind": "text",
+   "value": "作る。"
+  },
+  "explain-4f5c": {
+   "kind": "text",
+   "value": "人が、手を 動かして、物を 作る。右は、さくの 音の しるし。作る。"
+  },
+  "goal-4f5c-0": {
+   "kind": "text",
+   "value": "作るを、つくろう。"
+  },
+  "explain-7b97": {
+   "kind": "text",
+   "value": "竹の 棒を、両手で ならべて、数を 数える。計算の、さん。"
+  },
+  "word-6b62": {
+   "kind": "text",
+   "value": "止まる。"
+  },
+  "explain-6b62": {
+   "kind": "text",
+   "value": "足あとの 形から できたよ。歩いてきた 足が、ぴたっと、止まる。"
+  },
+  "explain-5e02": {
+   "kind": "text",
+   "value": "屋根の 下に、布の 旗を 立てた。物を 売る 人が 集まる。いち。"
+  },
+  "word-77e2": {
+   "kind": "text",
+   "value": "矢。"
+  },
+  "explain-59c9": {
+   "kind": "text",
+   "value": "左は、女の 人。右は、しの おとの しるし。年上の 兄弟。姉。"
+  },
+  "goal-59c9-0": {
+   "kind": "text",
+   "value": "姉を、つくろう。"
+  },
+  "word-601d": {
+   "kind": "text",
+   "value": "思う。"
+  },
+  "explain-601d": {
+   "kind": "text",
+   "value": "上は、頭。下は、心。頭と 心を 使って、思う。"
+  },
+  "goal-601d-0": {
+   "kind": "text",
+   "value": "思うを、つくろう。"
+  },
+  "word-7d19": {
+   "kind": "text",
+   "value": "紙。"
+  },
+  "explain-7d19": {
+   "kind": "text",
+   "value": "糸の ように 細い せんいを 集めて 作る。右は、しの おとの しるし。紙。"
+  },
+  "goal-7d19-0": {
+   "kind": "text",
+   "value": "紙を、つくろう。"
+  },
+  "explain-5bfa": {
+   "kind": "text",
+   "value": "土の 上に 立つ、お寺。手を 合わせて、お参りする。寺。"
+  },
+  "goal-5bfa-0": {
+   "kind": "text",
+   "value": "寺を、つくろう。"
+  },
+  "word-81ea": {
+   "kind": "text",
+   "value": "自。"
+  },
+  "explain-81ea": {
+   "kind": "text",
+   "value": "顔の まんなかの、鼻の 形から できたよ。自分の 意味で 使う。自。"
+  },
+  "word-6642": {
+   "kind": "text",
+   "value": "時。"
+  },
+  "explain-6642": {
+   "kind": "text",
+   "value": "お日さまが 動くと、時が 進む。右は、じの 音の しるし。時。"
+  },
+  "goal-6642-0": {
+   "kind": "text",
+   "value": "時を、つくろう。"
+  },
+  "word-5ba4": {
+   "kind": "text",
+   "value": "室。"
+  },
+  "explain-5ba4": {
+   "kind": "text",
+   "value": "屋根の 下に ある、部屋。下は、しつの 音の しるし。室。"
+  },
+  "goal-5ba4-0": {
+   "kind": "text",
+   "value": "室を、つくろう。"
+  },
+  "word-793e": {
+   "kind": "text",
+   "value": "社。"
+  },
+  "explain-793e": {
+   "kind": "text",
+   "value": "土を 盛り上げて、土地の 神さまを まつる。神さまの いる 場所。社。"
+  },
+  "goal-793e-0": {
+   "kind": "text",
+   "value": "社を、つくろう。"
+  },
+  "word-5f31": {
+   "kind": "text",
+   "value": "弱い。"
+  },
+  "explain-5f31": {
+   "kind": "text",
+   "value": "ぐにゃりと 曲がる、やわらかい 弓が、二つ。矢を 遠くへ とばせない。弱い。"
+  },
+  "word-9996": {
+   "kind": "text",
+   "value": "首。"
+  },
+  "explain-9996": {
+   "kind": "text",
+   "value": "髪の毛の 生えた、頭の かたちから できたよ。頭を ささえる ところ。首。"
+  },
+  "word-79cb": {
+   "kind": "text",
+   "value": "秋。"
+  },
+  "explain-79cb": {
+   "kind": "text",
+   "value": "いねが みのった。いねに つく 虫を、火で 追いはらう。収かくの 季節。秋。"
+  },
+  "goal-79cb-0": {
+   "kind": "text",
+   "value": "秋を、つくろう。"
+  },
+  "word-9031": {
+   "kind": "text",
+   "value": "週。"
+  },
+  "explain-9031": {
+   "kind": "text",
+   "value": "道を ぐるりと、一まわり。七日で、一まわりする。週。"
+  },
+  "goal-9031-0": {
+   "kind": "text",
+   "value": "週を、つくろう。"
+  },
+  "explain-6625": {
+   "kind": "text",
+   "value": "お日さまの 光を あびて、草の 芽が、にょきにょき のびる。春。"
+  },
+  "word-66f8": {
+   "kind": "text",
+   "value": "書く。"
+  },
+  "explain-66f8": {
+   "kind": "text",
+   "value": "筆を 手に 持って、文字を 書く。下は、音の しるしで、お日さまでは ないよ。書く。"
+  },
+  "goal-66f8-0": {
+   "kind": "text",
+   "value": "書くを、つくろう。"
+  },
+  "word-5c11": {
+   "kind": "text",
+   "value": "少し。"
+  },
+  "explain-5c11": {
+   "kind": "text",
+   "value": "ちいさい つぶを、ななめに けずりとる。残ったのは、ほんの 少し。"
+  },
+  "goal-5c11-0": {
+   "kind": "text",
+   "value": "少しを、つくろう。"
+  },
+  "word-5834": {
+   "kind": "text",
+   "value": "場。"
+  },
+  "explain-5834": {
+   "kind": "text",
+   "value": "土の、なかまの、漢字。広い、土の、場所。右は、じょうの、音。場。"
+  },
+  "goal-5834-0": {
+   "kind": "text",
+   "value": "場を、つくろう。"
+  },
+  "word-8272": {
+   "kind": "text",
+   "value": "色。"
+  },
+  "explain-8272": {
+   "kind": "text",
+   "value": "雨の、あとに、にじが、出た。赤、きいろ、青。色が、いっぱい。色。"
+  },
+  "word-98df": {
+   "kind": "text",
+   "value": "食べる。"
+  },
+  "explain-98df": {
+   "kind": "text",
+   "value": "うつわに、ご飯が、山もり。大きな、口で、いただきます。食べる。"
+  },
+  "explain-5fc3": {
+   "kind": "text",
+   "value": "心ぞうの、形から、できたよ。胸で、どきどき、動く。心。"
+  },
+  "word-65b0": {
+   "kind": "text",
+   "value": "新しい。"
+  },
+  "explain-65b0": {
+   "kind": "text",
+   "value": "おのを、ふりおろして、木を、切る。切りたての、木は、きれい。左は、しんの、音。新しい。"
+  },
+  "goal-65b0-0": {
+   "kind": "text",
+   "value": "新しいを、つくろう。"
+  },
+  "explain-89aa": {
+   "kind": "text",
+   "value": "見るの、なかまの、漢字。子どもを、そばで、見守る。左は、しんの、音。親。"
+  },
+  "goal-89aa-0": {
+   "kind": "text",
+   "value": "親を、つくろう。"
+  },
+  "word-56f3": {
+   "kind": "text",
+   "value": "図。"
+  },
+  "explain-56f3": {
+   "kind": "text",
+   "value": "四角い、かこいの、中に、土地の、ようすを、書く。地図が、できた。図。"
+  },
+  "word-6570": {
+   "kind": "text",
+   "value": "数。"
+  },
+  "explain-6570": {
+   "kind": "text",
+   "value": "棒を、手に、持つ。一つ、二つと、たたいて、数える。左は、すうの、音。数。"
+  },
+  "goal-6570-0": {
+   "kind": "text",
+   "value": "数を、つくろう。"
+  },
+  "explain-897f": {
+   "kind": "text",
+   "value": "鳥の、巣の、形。夕方、鳥は、巣に、帰る。お日さまが、しずむ、方。西。"
+  },
+  "word-58f0": {
+   "kind": "text",
+   "value": "声。"
+  },
+  "explain-661f": {
+   "kind": "text",
+   "value": "夜空で、きらきら、光る、星。下は、せいの、音。星。"
+  },
+  "goal-661f-0": {
+   "kind": "text",
+   "value": "星を、つくろう。"
+  },
+  "word-6674": {
+   "kind": "text",
+   "value": "晴れ。"
+  },
+  "explain-6674": {
+   "kind": "text",
+   "value": "青い、空に、お日さまが、出た。雲が、なくて、いい、天気。晴れ。"
+  },
+  "goal-6674-0": {
+   "kind": "text",
+   "value": "晴れを、つくろう。"
+  },
+  "word-5207": {
+   "kind": "text",
+   "value": "切る。"
+  },
+  "explain-5207": {
+   "kind": "text",
+   "value": "刀の、なかまの、漢字。刀で、すぱっと、切る。左は、音の、しるし。切る。"
+  },
+  "goal-5207-0": {
+   "kind": "text",
+   "value": "切るを、つくろう。"
+  },
+  "word-96ea": {
+   "kind": "text",
+   "value": "雪。"
+  },
+  "explain-96ea": {
+   "kind": "text",
+   "value": "空から、ふわふわ、落ちてくる。手のひらに、そっと、のるよ。雪。"
+  },
+  "goal-96ea-0": {
+   "kind": "text",
+   "value": "雪を、つくろう。"
+  },
+  "word-8239": {
+   "kind": "text",
+   "value": "船。"
+  },
+  "explain-8239": {
+   "kind": "text",
+   "value": "水に、うかぶ、船。波で、ゆらゆら、ゆれる。右は、せんの、音。船。"
+  },
+  "goal-8239-0": {
+   "kind": "text",
+   "value": "船を、つくろう。"
+  },
+  "explain-7dda": {
+   "kind": "text",
+   "value": "糸の、ように、細く、長く、のびる。右の、泉は、せんの、音。線。"
+  },
+  "goal-7dda-0": {
+   "kind": "text",
+   "value": "泉を、つくろう。"
+  },
+  "goal-7dda-1": {
+   "kind": "text",
+   "value": "線を、つくろう。"
+  },
+  "explain-524d": {
+   "kind": "text",
+   "value": "船に、足を、のせる。船は、すいすい、前へ、進む。前。"
+  },
+  "word-7d44": {
+   "kind": "text",
+   "value": "組。"
+  },
+  "explain-7d44": {
+   "kind": "text",
+   "value": "糸を、何本も、合わせて、ひもを、あむ。右は、音の、しるし。組。"
+  },
+  "goal-7d44-0": {
+   "kind": "text",
+   "value": "組を、つくろう。"
+  },
+  "word-8d70": {
+   "kind": "text",
+   "value": "走る。"
+  },
+  "explain-8d70": {
+   "kind": "text",
+   "value": "うでを、大きく、ふる、人。下は、足。びゅんびゅん、かける。走る。"
+  },
+  "goal-8d70-0": {
+   "kind": "text",
+   "value": "走るを、つくろう。"
+  },
+  "word-591a": {
+   "kind": "text",
+   "value": "多い。"
+  },
+  "explain-591a": {
+   "kind": "text",
+   "value": "お肉を、一枚。そのうえに、もう、一枚。重ねて、たくさん。多い。"
+  },
+  "goal-591a-0": {
+   "kind": "text",
+   "value": "多いを、つくろう。"
+  },
+  "word-592a": {
+   "kind": "text",
+   "value": "太い。"
+  },
+  "explain-592a": {
+   "kind": "text",
+   "value": "大きい、人に、点を、一つ、つける。もっと、どっしり。太い。"
+  },
+  "goal-592a-0": {
+   "kind": "text",
+   "value": "太いを、つくろう。"
+  },
+  "word-4f53": {
+   "kind": "text",
+   "value": "体。"
+  },
+  "explain-4f53": {
+   "kind": "text",
+   "value": "人と、木の、根もと。根もとの、ように、人を、ささえる。体。"
+  },
+  "goal-4f53-0": {
+   "kind": "text",
+   "value": "体を、つくろう。"
+  },
+  "word-53f0": {
+   "kind": "text",
+   "value": "台。"
+  },
+  "explain-53f0": {
+   "kind": "text",
+   "value": "四角い、台が、ある。上に、三角の、つみきを、のせる。台。"
+  },
+  "goal-53f0-0": {
+   "kind": "text",
+   "value": "台を、つくろう。"
+  },
+  "word-5730": {
+   "kind": "text",
+   "value": "地。"
+  },
+  "explain-5730": {
+   "kind": "text",
+   "value": "土の、なかまの、漢字。どこまでも、広がる、土。右は、ちの、音。地。"
+  },
+  "goal-5730-0": {
+   "kind": "text",
+   "value": "地を、つくろう。"
+  },
+  "word-6c60": {
+   "kind": "text",
+   "value": "池。"
+  },
+  "explain-6c60": {
+   "kind": "text",
+   "value": "さんずいは、水の、しるし。水が、たまって、いけ。右は、ちの、音。池。"
+  },
+  "goal-6c60-0": {
+   "kind": "text",
+   "value": "池を、つくろう。"
+  },
+  "word-77e5": {
+   "kind": "text",
+   "value": "知る。"
+  },
+  "explain-77e5": {
+   "kind": "text",
+   "value": "矢が、びゅんと、とぶ。矢の、ように、はやく、口で、答える。よく、わかっている。知る。"
+  },
+  "goal-77e5-0": {
+   "kind": "text",
+   "value": "知るを、つくろう。"
+  },
+  "word-8336": {
+   "kind": "text",
+   "value": "茶。"
+  },
+  "explain-8336": {
+   "kind": "text",
+   "value": "上は、草の、しるし。お茶の、木の、葉っぱを、つんで、飲むよ。茶。"
+  },
+  "explain-663c": {
+   "kind": "text",
+   "value": "日の出から、お日さまが、ぐんぐん、のぼる。ものさしで、計ると、一番、高い。昼。"
+  },
+  "goal-663c-0": {
+   "kind": "text",
+   "value": "昼を、つくろう。"
+  },
+  "word-9577": {
+   "kind": "text",
+   "value": "長い。"
+  },
+  "explain-9577": {
+   "kind": "text",
+   "value": "髪の、長い、おじいさんが、つえを、ついて、立っている。長い。"
+  },
+  "explain-9ce5": {
+   "kind": "text",
+   "value": "鳥の、形から、できたよ。くちばしと、羽と、足。鳥。"
+  },
+  "word-671d": {
+   "kind": "text",
+   "value": "朝。"
+  },
+  "explain-671d": {
+   "kind": "text",
+   "value": "草の、あいだから、お日さまが、のぼる。空には、まだ、お月さま。朝。"
+  },
+  "goal-671d-0": {
+   "kind": "text",
+   "value": "朝を、つくろう。"
+  },
+  "word-76f4": {
+   "kind": "text",
+   "value": "直す。"
+  },
+  "explain-76f4": {
+   "kind": "text",
+   "value": "目で、まっすぐ、見る。曲がった、ものを、まっすぐに、する。直す。"
+  },
+  "word-901a": {
+   "kind": "text",
+   "value": "通る。"
+  },
+  "explain-901a": {
+   "kind": "text",
+   "value": "道の、なかまの、漢字。道を、まっすぐ、進んで、通りぬける。上は、つうの、音。通る。"
+  },
+  "goal-901a-0": {
+   "kind": "text",
+   "value": "通るを、つくろう。"
+  },
+  "word-5f1f": {
+   "kind": "text",
+   "value": "弟。"
+  },
+  "explain-5f1f": {
+   "kind": "text",
+   "value": "棒に、ひもを、順番に、巻く。順番が、あとの、男の子。弟。"
+  },
+  "word-5e97": {
+   "kind": "text",
+   "value": "店。"
+  },
+  "explain-5e97": {
+   "kind": "text",
+   "value": "屋根の、下に、品物を、ならべる。中は、てんの、音。店。"
+  },
+  "goal-5e97-0": {
+   "kind": "text",
+   "value": "店を、つくろう。"
+  },
+  "explain-70b9": {
+   "kind": "text",
+   "value": "火が、燃えると、黒い、すすが、つく。小さな、黒い、しるし。上は、てんの、音。点。"
+  },
+  "goal-70b9-0": {
+   "kind": "text",
+   "value": "点を、つくろう。"
+  },
+  "word-96fb": {
+   "kind": "text",
+   "value": "電。"
+  },
+  "explain-96fb": {
+   "kind": "text",
+   "value": "雨の、中で、いなずまが、ぴかっと、光る。雷の、力。電。"
+  },
+  "goal-96fb-0": {
+   "kind": "text",
+   "value": "電を、つくろう。"
+  },
+  "word-5200": {
+   "kind": "text",
+   "value": "刀。"
+  },
+  "explain-51ac": {
+   "kind": "text",
+   "value": "足の、下に、氷が、はる。つるつる、すべる、寒い、季節。冬。"
+  },
+  "goal-51ac-0": {
+   "kind": "text",
+   "value": "冬を、つくろう。"
+  },
+  "word-5f53": {
+   "kind": "text",
+   "value": "当たる。"
+  },
+  "explain-5f53": {
+   "kind": "text",
+   "value": "三本の、矢が、まとに、とんでいく。まんなかに、ぴたっと。当たる。"
+  },
+  "word-6771": {
+   "kind": "text",
+   "value": "東。"
+  },
+  "explain-6771": {
+   "kind": "text",
+   "value": "木のむこうから、お日さまがのぼる。お日さまがのぼる方が、東。"
+  },
+  "goal-6771-0": {
+   "kind": "text",
+   "value": "東を、つくろう。"
+  },
+  "word-7b54": {
+   "kind": "text",
+   "value": "答え。"
+  },
+  "explain-7b54": {
+   "kind": "text",
+   "value": "竹のふだに、返事を書く。聞かれたことに、ぴったり合う。答え。"
+  },
+  "goal-7b54-0": {
+   "kind": "text",
+   "value": "答えを、つくろう。"
+  },
+  "word-982d": {
+   "kind": "text",
+   "value": "頭。"
+  },
+  "explain-982d": {
+   "kind": "text",
+   "value": "大きな頭のかたちが、頭のしるし。左の豆は、音のパーツ。頭。"
+  },
+  "goal-982d-0": {
+   "kind": "text",
+   "value": "頭を、つくろう。"
+  },
+  "word-540c": {
+   "kind": "text",
+   "value": "同じ。"
+  },
+  "explain-540c": {
+   "kind": "text",
+   "value": "筒と、筒を、重ねる。太さが、ぴったり。どちらも、同じ。"
+  },
+  "explain-9053": {
+   "kind": "text",
+   "value": "頭を、前にむけて、てくてくすすむ。人が通るところが、道。"
+  },
+  "goal-9053-0": {
+   "kind": "text",
+   "value": "道を、つくろう。"
+  },
+  "word-8aad": {
+   "kind": "text",
+   "value": "読む。"
+  },
+  "explain-8aad": {
+   "kind": "text",
+   "value": "言葉のなかまだよ。右がわは、音のパーツ。声に出して、本を、読む。"
+  },
+  "goal-8aad-0": {
+   "kind": "text",
+   "value": "読むを、つくろう。"
+  },
+  "explain-5185": {
+   "kind": "text",
+   "value": "家の入り口から、中に入る。入ったところが、うち。"
+  },
+  "word-5357": {
+   "kind": "text",
+   "value": "南。"
+  },
+  "explain-5357": {
+   "kind": "text",
+   "value": "あたたかい小屋の中で、草の芽が、ぐんぐんのびる。あたたかい方が、南。"
+  },
+  "word-8089": {
+   "kind": "text",
+   "value": "肉。"
+  },
+  "explain-8089": {
+   "kind": "text",
+   "value": "切りわけた、お肉のかたち。中の線は、お肉のすじ。肉。"
+  },
+  "word-99ac": {
+   "kind": "text",
+   "value": "馬。"
+  },
+  "explain-99ac": {
+   "kind": "text",
+   "value": "たてがみを、なびかせて、走る馬のかたち。横の線が、たてがみだよ。馬。"
+  },
+  "word-58f2": {
+   "kind": "text",
+   "value": "売る。"
+  },
+  "explain-58f2": {
+   "kind": "text",
+   "value": "買ったものを、みせの外に出す。ほしい人に、わたして、売る。"
+  },
+  "word-8cb7": {
+   "kind": "text",
+   "value": "買う。"
+  },
+  "explain-8cb7": {
+   "kind": "text",
+   "value": "あみで、貝を集める。貝は、昔のお金。お金で、ものを、買う。"
+  },
+  "word-9ea6": {
+   "kind": "text",
+   "value": "麦。"
+  },
+  "explain-9ea6": {
+   "kind": "text",
+   "value": "麦のほと、下に足のかたち。足でふむと、強く育つ。麦。"
+  },
+  "word-534a": {
+   "kind": "text",
+   "value": "半。"
+  },
+  "word-756a": {
+   "kind": "text",
+   "value": "番。"
+  },
+  "explain-756a": {
+   "kind": "text",
+   "value": "田んぼに、たねを、ぱらぱらまく。一つずつ、順番に。番。"
+  },
+  "goal-756a-0": {
+   "kind": "text",
+   "value": "番を、つくろう。"
+  },
+  "word-7236": {
+   "kind": "text",
+   "value": "父。"
+  },
+  "explain-7236": {
+   "kind": "text",
+   "value": "手に、おのを持って、働く人。家を守る、お父さん。父。"
+  },
+  "word-98a8": {
+   "kind": "text",
+   "value": "風。"
+  },
+  "explain-98a8": {
+   "kind": "text",
+   "value": "船のほが、風を受けて、ふくらむ。ほの中に、虫が一ぴき。風。"
+  },
+  "word-5206": {
+   "kind": "text",
+   "value": "分ける。"
+  },
+  "explain-5206": {
+   "kind": "text",
+   "value": "刀で、すぱっと切る。右と左、二つに、分ける。"
+  },
+  "goal-5206-0": {
+   "kind": "text",
+   "value": "分けるを、つくろう。"
+  },
+  "word-805e": {
+   "kind": "text",
+   "value": "聞く。"
+  },
+  "explain-805e": {
+   "kind": "text",
+   "value": "門のむこうから、音がする。耳をちかづけて、よく聞く。"
+  },
+  "goal-805e-0": {
+   "kind": "text",
+   "value": "聞くを、つくろう。"
+  },
+  "word-7c73": {
+   "kind": "text",
+   "value": "米。"
+  },
+  "explain-7c73": {
+   "kind": "text",
+   "value": "いねのほに、小さなつぶが、たくさんならぶ。つぶの一つ一つが、こめ。"
+  },
+  "word-6b69": {
+   "kind": "text",
+   "value": "歩く。"
+  },
+  "explain-6b69": {
+   "kind": "text",
+   "value": "右足、左足。足あとが、二つならぶ。前に進んで、歩く。"
+  },
+  "goal-6b69-0": {
+   "kind": "text",
+   "value": "歩くを、つくろう。"
+  },
+  "word-65b9": {
+   "kind": "text",
+   "value": "方。"
+  },
+  "explain-65b9": {
+   "kind": "text",
+   "value": "土を耕す、すきのかたち。おした方へ、まっすぐ進む。ほう。"
+  },
+  "word-5317": {
+   "kind": "text",
+   "value": "北。"
+  },
+  "explain-5317": {
+   "kind": "text",
+   "value": "二人が、背中を向け合う。お日さまに、背中を向けた方が、北。"
+  },
+  "word-6bce": {
+   "kind": "text",
+   "value": "毎。"
+  },
+  "explain-6bce": {
+   "kind": "text",
+   "value": "髪かざりをつけた、お母さんのかたち。毎日、きれいにつけるよ。まい。"
+  },
+  "explain-59b9": {
+   "kind": "text",
+   "value": "女の子のなかまだよ。右がわは、まいの音のパーツ。年下の、妹。"
+  },
+  "goal-59b9-0": {
+   "kind": "text",
+   "value": "妹を、つくろう。"
+  },
+  "explain-4e07": {
+   "kind": "text",
+   "value": "昔は、さそりの絵。音が同じだったから、数に借りた。まん。"
+  },
+  "word-660e": {
+   "kind": "text",
+   "value": "明るい。"
+  },
+  "explain-660e": {
+   "kind": "text",
+   "value": "お日さまと、お月さま。二つ並んで、ぴかぴか光る。とても、明るい。"
+  },
+  "goal-660e-0": {
+   "kind": "text",
+   "value": "明るいを、つくろう。"
+  },
+  "word-9cf4": {
+   "kind": "text",
+   "value": "鳴く。"
+  },
+  "explain-9cf4": {
+   "kind": "text",
+   "value": "にわとりが、口を大きくあけて、こけこっこー。鳥が、鳴く。"
+  },
+  "goal-9cf4-0": {
+   "kind": "text",
+   "value": "鳴くを、つくろう。"
+  },
+  "word-6bdb": {
+   "kind": "text",
+   "value": "毛。"
+  },
+  "explain-6bdb": {
+   "kind": "text",
+   "value": "動物の体に、ふさふさ生えている。長くのびた、けのかたち。毛。"
+  },
+  "word-9580": {
+   "kind": "text",
+   "value": "門。"
+  },
+  "explain-9580": {
+   "kind": "text",
+   "value": "右と左に、とびらが二枚。ぱたんとひらく、門のかたち。門。"
+  },
+  "explain-591c": {
+   "kind": "text",
+   "value": "うでを広げた人の、わきの下に、お月さま。月が出たら、夜。"
+  },
+  "word-91ce": {
+   "kind": "text",
+   "value": "野。"
+  },
+  "explain-91ce": {
+   "kind": "text",
+   "value": "田んぼと、土がある、里。そのまわりに、広い野原。右は、音のパーツ。野。"
+  },
+  "goal-91ce-0": {
+   "kind": "text",
+   "value": "野を、つくろう。"
+  },
+  "explain-53cb": {
+   "kind": "text",
+   "value": "一人の手と、もう一人の手。手と手をつないで、仲よし。友。"
+  },
+  "word-7528": {
+   "kind": "text",
+   "value": "用。"
+  },
+  "explain-7528": {
+   "kind": "text",
+   "value": "取っ手のついた、おけのかたち。水をくむのに使う、道具だよ。用。"
+  },
+  "word-66dc": {
+   "kind": "text",
+   "value": "曜。"
+  },
+  "explain-66dc": {
+   "kind": "text",
+   "value": "お日さまが、ぴかぴか光る。右がわは、音のパーツ。日曜日の、よう。"
+  },
+  "goal-66dc-0": {
+   "kind": "text",
+   "value": "曜を、つくろう。"
+  },
+  "word-6765": {
+   "kind": "text",
+   "value": "来る。"
+  },
+  "explain-6765": {
+   "kind": "text",
+   "value": "みのなった、麦のかたち。麦は、天から来た、おくり物。来る。"
+  },
+  "word-91cc": {
+   "kind": "text",
+   "value": "里。"
+  },
+  "explain-91cc": {
+   "kind": "text",
+   "value": "上に、田んぼ。下に、土。田んぼのあるところに、人がすむ。里。"
+  },
+  "word-7406": {
+   "kind": "text",
+   "value": "理。"
+  },
+  "explain-7406": {
+   "kind": "text",
+   "value": "石をみがいて、きれいなすじを出す。玉のなかま。右は、音のパーツ。理。"
+  },
+  "goal-7406-0": {
+   "kind": "text",
+   "value": "理を、つくろう。"
+  },
+  "word-8a71": {
+   "kind": "text",
+   "value": "話す。"
+  },
+  "explain-8a71": {
+   "kind": "text",
+   "value": "口から出る、言葉。舌を、ぺらぺら動かして、話す。"
+  },
+  "explain-58f0": {
+   "kind": "text",
+   "value": "つるした、石の、楽器を、たたく。いい、音が、耳に、届く。声。"
+  },
+  "explain-534a": {
+   "kind": "text",
+   "value": "大きな牛を、まんなかで、二つに分ける。一つ分が、半分。半。"
   }
  },
  "words": {}
