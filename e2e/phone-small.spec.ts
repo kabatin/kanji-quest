@@ -25,6 +25,8 @@ test('高さが 足りない画面では ページぜんたいを ちぢめ、�
   expect(size.sw).toBeLessThanOrEqual(size.w)
   expect(size.sh).toBeLessThanOrEqual(size.h)
 
+  // 出てくる動きが おわってから はかる
+  await page.evaluate(() => Promise.all(document.getAnimations().filter((an) => an.effect?.getComputedTiming().iterations !== Infinity).map((an) => an.finished.catch(() => undefined))))
   await page.screenshot({ path: '.scene-sheets/phone-844x280-home.png' })
   const boxes: Record<string, Box> = {}
   for (const [name, selector] of [

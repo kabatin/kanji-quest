@@ -170,7 +170,8 @@
   }
 
   .home__bubble {
-    margin-top: 0;
+    /* 出てくる動き(はねる)の間も、上の帯に かからない すきま */
+    margin-top: 10px;
     padding: 6px 14px;
     border-width: 3px;
     border-radius: 18px;
