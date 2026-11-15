@@ -1,6 +1,7 @@
 /*
- * 保護者向けの画面。子ども向けの画面と区別できるよう、
- * 落ち着いた色・ふつうの漢字かなまじり・小さめの文字にしている。
+ * 保護者向けの画面。色と書体は アプリ本体と同じ(藍・空・朱、Zen Maru Gothic)。
+ * 形と余白は おとな向け: 細い線・小さめの角丸・影なし・ふつうの太さの文字。
+ * 学習のようす は parent-overview.css、設定 は parent-settings.css。
  */
 .parent-gate__card {
   align-self: center;
@@ -50,308 +51,268 @@
   font-size: 0.9rem;
 }
 
+/* ---- 画面の わく ---- */
 .parent {
+  /* 文字と線 */
+  --p-ink: var(--ai);
+  --p-ink-2: #4a5480;
+  --p-muted: #6b7394;
+  --p-surface: #ffffff;
+  --p-sunken: #f3f6fa;
+  --p-hair: #e3e8f0;
+  --p-border: #d3dcea;
+  /* 習熟の段階(ひとつの色あいで うすい → こい。色の見え方が ちがっても 段階が読める) */
+  --m-none: #f4f6fa;
+  --m-none-ink: #7a83a6;
+  --m-learned: #9aa9e0;
+  --m-model: #7385cf;
+  --m-blind: #4a5aa8;
+  --m-solid: #27336b;
+  --p-weak: var(--shu);
+  --p-focus: var(--yamabuki-dark);
+
+  gap: 10px;
+  /* 中の区画が スクロールする。ページ(この画面)は 動かさない */
+  overflow: hidden;
+  padding-bottom: 10px;
+  color: var(--p-ink);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.parent h1,
+.parent h2,
+.parent h3 {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 700;
+}
+
+.pbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  flex-shrink: 0;
+}
+
+.pbar__title {
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+}
+
+.pbar__spacer {
+  flex: 1;
+}
+
+.pbar__children {
+  display: flex;
+  gap: 6px;
+}
+
+.pbar__child {
+  min-height: 36px;
+  padding: 0 14px;
+  background: transparent;
+  border: 1px solid var(--p-border);
+  border-radius: 999px;
+  color: var(--p-ink-2);
+  font-size: 0.92rem;
   font-weight: 500;
 }
 
-.parent__tabs {
-  display: flex;
-  gap: 8px;
-  margin-left: 8px;
+.pbar__child[aria-selected='true'] {
+  background: var(--p-ink);
+  border-color: var(--p-ink);
+  color: #ffffff;
+  font-weight: 700;
 }
 
-.parent__tabs .btn {
-  min-width: 0;
-  min-height: 44px;
-  font-size: 0.95rem;
-}
-
-.parent__body {
+.parent__view {
+  position: relative;
   flex: 1;
   min-height: 0;
-  display: grid;
-  grid-template-columns: 1fr 1.25fr;
-  grid-template-rows: auto auto;
-  gap: 14px;
-  overflow-y: auto;
 }
 
+.parent__trust {
+  flex-shrink: 0;
+  color: var(--p-muted);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+/* ---- 共通の部品 ---- */
 .parent-card {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 0;
   padding: 14px 16px;
-  background: #ffffff;
-  border: 2px solid var(--line-dark);
-  border-radius: 18px;
+  background: var(--p-surface);
+  border: 1px solid var(--p-border);
+  border-radius: 12px;
 }
 
 .parent-card h2 {
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 1rem;
 }
 
-.parent__sub {
-  margin-top: 6px;
+.parent-card__head {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
-.parent__facts {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+/* 題と ひとこと を 1行に(はばが 足りなければ 折り返す) */
+.parent-card__head--row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 12px;
 }
 
-.parent__facts div {
-  padding: 6px 8px;
-  background: var(--sky);
-  border-radius: 12px;
+.parent-card__sub,
+.parent-card__note,
+.parent__offline {
+  color: var(--p-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
 }
 
-.parent__facts dt {
-  color: var(--muted);
-  font-size: 0.75rem;
-}
-
-.parent__facts dd {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.2;
-}
-
-.parent__facts small {
-  color: var(--muted);
-  font-size: 0.75rem;
-}
-
-.parent__grades {
+.parent-card__empty {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  padding: 14px;
+  background: var(--p-sunken);
+  border-radius: 8px;
+  color: var(--p-ink-2);
+  font-size: 0.88rem;
 }
 
-.parent__grades li {
-  display: grid;
-  grid-template-columns: 64px 1fr 72px;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
-}
-
-.parent__meter span {
-  background: var(--wakaba);
-}
-
-.parent__num {
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-}
-
-.parent__note,
-.parent__empty,
-.parent__offline {
-  color: var(--muted);
-  font-size: 0.82rem;
-}
-
-.parent__note strong {
-  color: var(--ai);
-  font-size: 1.05rem;
-}
-
-.parent__charts {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-/* 7日ぶんの棒グラフ。1つの量だけを、1つの色の 細い棒で見せる */
-.week-chart {
-  margin: 0;
-}
-
-.week-chart__title {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
-.week-chart__total {
-  color: var(--muted);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-}
-
-.week-chart__plot {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
-  height: 128px;
-  margin-top: 6px;
-  /* 目もりの線は うすく、下の線(0)だけ はっきり */
-  border-bottom: 2px solid var(--line-dark);
-}
-
-.week-chart__col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  min-width: 0;
-}
-
-.week-chart__value {
-  min-height: 1.2em;
-  color: var(--ai);
-  font-size: 0.78rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.week-chart__bar {
-  width: 14px;
-  min-height: 0;
-  border-radius: 4px 4px 0 0;
-}
-
-.week-chart--learn .week-chart__bar {
-  background: #3a8f4f;
-}
-
-.week-chart--time .week-chart__bar {
-  background: #2f86b8;
-}
-
-.week-chart__col:hover .week-chart__bar {
-  filter: brightness(1.15);
-}
-
-.week-chart__day {
-  order: 3;
-  margin-top: 4px;
-  transform: translateY(18px);
-  color: var(--muted);
-  font-size: 0.72rem;
-}
-
-.week-chart__col.is-today .week-chart__day {
-  color: var(--ai);
-  font-weight: 700;
-}
-
-.week-chart__plot {
-  margin-bottom: 20px;
-}
-
-.parent__weak {
-  display: flex;
+/* 1つだけ選べる ボタンの並び */
+.pseg {
+  display: inline-flex;
   flex-wrap: wrap;
-  gap: 8px;
-}
-
-.parent__weak li {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   gap: 2px;
+  padding: 2px;
+  background: var(--p-sunken);
+  border: 1px solid var(--p-border);
+  border-radius: 10px;
 }
 
-.parent__weak small {
-  color: var(--muted);
-  font-size: 0.75rem;
+.pseg__btn {
+  min-height: 36px;
+  min-width: 56px;
+  padding: 0 12px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: var(--p-ink-2);
+  font-size: 0.88rem;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-.parent__weak-char {
-  width: 52px;
-  height: 52px;
-  padding: 0;
-  background: #fff6ef;
-  border: 2px solid #e8a58f;
-  border-radius: 12px;
-  font-size: 1.7rem;
-  line-height: 1;
+.pseg__btn[aria-pressed='true'],
+.pseg__btn[aria-selected='true'] {
+  background: var(--p-ink);
+  color: #ffffff;
+  font-weight: 700;
 }
 
 .parent__option {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  font-size: 0.9rem;
+  gap: 6px 12px;
 }
 
-.parent__option > span {
-  min-width: 72px;
-}
-
-.parent__option .btn {
-  min-width: 0;
-  min-height: 42px;
-  padding: 0 14px;
-  font-size: 0.9rem;
-}
-
-/* 記録のバックアップ(2列のどちらにも かたよらず、よこ一杯に) */
-.parent-card--backup {
-  grid-column: 1 / -1;
-}
-
-.parent__backup-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.parent__backup-actions .btn {
-  min-width: 0;
-  min-height: 44px;
-  padding: 0 16px;
-  font-size: 0.9rem;
-}
-
-.parent__backup-confirm {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px 14px;
-  background: var(--sky);
-  border-radius: 12px;
-  font-size: 0.9rem;
-}
-
-.parent__backup-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 18px;
-}
-
-.parent__backup-list small {
-  color: var(--muted);
-  font-size: 0.8rem;
-}
-
-.parent__backup-warn {
-  color: var(--danger);
-  font-size: 0.85rem;
-}
-
-.parent__backup-status {
+.parent__option-label {
+  min-width: 7.5em;
+  color: var(--p-ink-2);
   font-size: 0.88rem;
 }
 
-.parent__backup-status.is-ok {
-  color: var(--ai);
+.parent__ghost,
+.parent__primary,
+.parent .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  min-width: 0;
+  padding: 0 14px;
+  background: var(--p-surface);
+  border: 1px solid var(--p-border);
+  border-radius: 8px;
+  box-shadow: none;
+  color: var(--p-ink);
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color 0.15s;
 }
 
-.parent__backup-status.is-error {
-  color: var(--danger);
+.parent__ghost:hover:not(:disabled),
+.parent .btn:hover:not(:disabled) {
+  background: var(--p-sunken);
 }
 
-@media (max-width: 760px) {
-  .parent__body,
-  .parent__charts {
-    grid-template-columns: 1fr;
+.parent__ghost:disabled {
+  opacity: 0.4;
+}
+
+.parent__ghost--quiet {
+  border-color: transparent;
+  color: var(--p-muted);
+  text-decoration: underline;
+}
+
+.parent__primary {
+  min-height: 44px;
+  padding: 0 20px;
+  background: var(--yamabuki);
+  border-color: var(--yamabuki-dark);
+  font-weight: 700;
+}
+
+.parent .btn:active:not(:disabled) {
+  transform: none;
+  box-shadow: none;
+}
+
+.parent .btn--danger {
+  background: var(--danger);
+  border-color: #8f2e1e;
+  color: #ffffff;
+}
+
+.parent button:focus-visible,
+.parent [tabindex]:focus-visible,
+.parent summary:focus-visible {
+  outline: 3px solid var(--p-focus);
+  outline-offset: 2px;
+}
+
+:root[data-motion='reduce'] .parent * {
+  animation: none !important;
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parent * {
+    transition: none !important;
+  }
+}
+
+/* 高さの低い画面(スマホを よこ に した ときなど): ふちを せまく */
+@media (max-height: 640px) {
+  .parent {
+    gap: 8px;
+    padding-top: 8px;
+    padding-bottom: 6px;
   }
 }

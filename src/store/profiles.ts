@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { loadProfiles, MAX_PROFILES, nameSchema, nextProfileId, PROFILES_KEY, storageKeyFor, type Profile, type ProfilesData } from '../lib/profiles'
+import { useParent } from './parent'
 import { loadProgressFrom } from './progress'
 
 type ProfilesActions = {
@@ -52,6 +53,8 @@ export const useProfiles = create<ProfilesState>()((set, get) => {
       // いま あそんでいる人を消すときは、先に べつの人に切りかえる
       if (activeId === id) get().select(rest[0].id)
       localStorage.removeItem(storageKeyFor(id))
+      // その子の 1日の時間の設定も わすれる(id は あとで ほかの子に また使われるため)
+      useParent.getState().forgetChild(id)
       commit({ profiles: rest, activeId: get().activeId })
       return true
     },

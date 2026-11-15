@@ -201,16 +201,9 @@ describe('保護者の方へ', () => {
     await user.type(screen.getByRole('textbox', { name: '答え' }), String(a * b))
     await user.click(screen.getByRole('button', { name: 'ひらく' }))
 
-    expect(screen.getByRole('heading', { name: '保護者の方へ' })).toBeInTheDocument()
     const summary = screen.getByRole('region', { name: 'プレイヤー1さんの まとめ' })
-    expect(within(summary).getByText('覚えた漢字').nextElementSibling).toHaveTextContent('2 / 240')
-    expect(within(summary).getByText('今日の復習').nextElementSibling).toHaveTextContent('1 字')
-    const week = screen.getByRole('region', { name: 'この1週間' })
-    expect(week).toHaveTextContent('7日で 1字')
-    expect(week).toHaveTextContent('7日で 12分')
-    const weak = screen.getByRole('region', { name: '苦手な漢字' })
-    expect(within(weak).getByRole('button', { name: '山(2回 間違い)を開く' })).toBeInTheDocument()
-    expect(screen.getByRole('status')).toHaveTextContent('このブラウザ')
+    expect(within(summary).getByText('覚えた字').nextElementSibling).toHaveTextContent('2 / 240字')
+    expect(screen.getByRole('button', { name: '山 学んだ・苦手(2回)' })).toBeInTheDocument()
   })
 
   it('ボスの問題の数と1日の回数を変えると、ボスの画面に反映される', async () => {
@@ -220,6 +213,7 @@ describe('保護者の方へ', () => {
     const answer = await openParent(user)
     await user.type(screen.getByRole('textbox', { name: '答え' }), String(answer))
     await user.click(screen.getByRole('button', { name: 'ひらく' }))
+    await user.click(screen.getByRole('tab', { name: '設定' }))
     await user.click(screen.getByRole('button', { name: '短め(10問)' }))
     await user.click(screen.getByRole('button', { name: '5回' }))
     await user.click(screen.getByRole('button', { name: '15字' }))

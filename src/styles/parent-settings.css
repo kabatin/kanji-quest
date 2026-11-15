@@ -1,0 +1,172 @@
+/* 保護者の画面: 設定(1日の時間・あそびの設定・オフライン・記録を残す/戻す) */
+.ps {
+  /* 読み上げ用の表(.sr-only は 絶対配置)も、この中に とどめる */
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-content: start;
+  gap: 10px;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.ps__col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ps .parent-card {
+  gap: 10px;
+}
+
+/* ---- 1日の時間 ---- */
+.ptime__today {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--p-sunken);
+  border-radius: 8px;
+}
+
+.ptime__status {
+  font-size: 0.92rem;
+}
+
+.ptime__meter {
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: #dfe5ef;
+  overflow: hidden;
+}
+
+.ptime__meter span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--m-blind);
+}
+
+.ptime__extend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* この7日の 遊んだ時間 */
+.pweek {
+  margin: 0;
+}
+
+.pweek__title {
+  color: var(--p-ink-2);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.pweek__svg {
+  display: block;
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  font-family: var(--font-body);
+}
+
+.pweek__bar {
+  fill: #2f86b8;
+}
+
+.pweek__day:hover .pweek__bar {
+  fill: #2672a0;
+}
+
+.pweek__day.is-today .gchart__tick {
+  fill: var(--p-ink);
+  font-weight: 700;
+}
+
+.pweek__limit line {
+  stroke: var(--p-ink-2);
+  stroke-width: 1;
+}
+
+.pweek__limit text {
+  fill: var(--p-ink-2);
+  font-size: 10px;
+}
+
+/* ---- オフライン・記録を残す/戻す ---- */
+/* オフラインは 1行に まとめる(題 + いまの ようす) */
+.ps .poffline {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 14px;
+  padding-block: 10px;
+}
+
+.poffline h2 {
+  flex-shrink: 0;
+}
+
+.parent__offline {
+  font-size: 0.88rem;
+}
+
+.parent-card--backup .parent__note {
+  color: var(--p-muted);
+  font-size: 0.8rem;
+}
+
+.parent__backup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.parent__backup-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--p-sunken);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.parent__backup-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+}
+
+.parent__backup-list small {
+  color: var(--p-muted);
+  font-size: 0.8rem;
+}
+
+.parent__backup-warn {
+  color: var(--danger);
+  font-size: 0.85rem;
+}
+
+.parent__backup-status {
+  font-size: 0.88rem;
+}
+
+.parent__backup-status.is-ok {
+  color: var(--p-ink);
+}
+
+.parent__backup-status.is-error {
+  color: var(--danger);
+}
+
+@media (max-width: 860px) {
+  .ps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

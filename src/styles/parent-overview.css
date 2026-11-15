@@ -1,0 +1,330 @@
+/* 保護者の画面: 学習のようす の わく(まとめ・習熟マップ・右の区画)。グラフ・割合・字の記録 は parent-charts.css */
+.pv {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  height: 100%;
+}
+
+/* ---- いちばん上の まとめ ---- */
+.psum {
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 20px;
+}
+
+.psum__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.psum__title {
+  color: var(--p-muted);
+  font-size: 0.8rem;
+}
+
+.parent-card .psum__title {
+  font-size: 0.8rem;
+}
+
+.psum__lead {
+  font-size: 1.06rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.psum__line {
+  color: var(--p-ink-2);
+  font-size: 0.92rem;
+}
+
+.psum__figures {
+  display: flex;
+  gap: 26px;
+  margin: 0;
+  padding-left: 22px;
+  border-left: 1px solid var(--p-hair);
+}
+
+.psum__figures dt {
+  color: var(--p-muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.psum__figures dd {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.psum__figures small {
+  color: var(--p-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.pv__main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr);
+  gap: 10px;
+  min-height: 0;
+}
+
+.pv__side {
+  position: relative;
+  min-height: 0;
+}
+
+.pv__cards {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* 字の記録を かさねている間は、下の グラフを 見せない(消さずに のこす) */
+.pv__cards.is-covered {
+  visibility: hidden;
+}
+
+/* ---- 習熟マップ ---- */
+.mmap {
+  min-height: 0;
+}
+
+.mmap__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 11px;
+  font-size: 0.74rem;
+}
+
+.mmap__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mmap__legend-name {
+  color: var(--p-ink-2);
+}
+
+.mmap__legend-count {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.mmap__swatch {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--m-none);
+  box-shadow: inset 0 0 0 1px var(--p-border);
+}
+
+.mmap__swatch[data-state='learned'] {
+  background: var(--m-learned);
+  box-shadow: none;
+}
+
+.mmap__swatch[data-state='model'] {
+  background: var(--m-model);
+  box-shadow: none;
+}
+
+.mmap__swatch[data-state='blind'] {
+  background: var(--m-blind);
+  box-shadow: none;
+}
+
+.mmap__swatch[data-state='solid'] {
+  background: var(--m-solid);
+  box-shadow: none;
+}
+
+.mmap__weak-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 3px;
+  border-radius: 50%;
+  background: var(--p-weak);
+}
+
+.mmap__legend-weak {
+  padding-left: 9px;
+  border-left: 1px solid var(--p-hair);
+}
+
+/* マップは 区画の 高さ にも合わせて 小さくなり、240字が スクロールなしで おさまる */
+.mmap__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  container-type: size;
+}
+
+/* 12行(20字ずつ)+ 学年の題・すきま が 高さに おさまる はば */
+.mmap__grid {
+  width: min(100%, 760px, calc(164cqh - 104px));
+}
+
+.mmap__grade + .mmap__grade {
+  margin-top: 8px;
+}
+
+.mmap__grade-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 3px;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.parent h3.mmap__grade-title span {
+  color: var(--p-muted);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 1エリア = 8ステージ(2行)。ステージ(5字)の間を すこし あける */
+.mmap__area {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 3px 6px;
+}
+
+.mmap__area + .mmap__area {
+  margin-top: 5px;
+}
+
+.mmap__stage {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.mcell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  background: var(--m-none);
+  border: 0;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px var(--p-hair);
+  color: var(--m-none-ink);
+  font-family: var(--font-body);
+  font-weight: 500;
+  line-height: 1;
+  /* 字の大きさは ます の大きさに合わせる */
+  container-type: inline-size;
+}
+
+.mcell span {
+  font-size: 60cqi;
+}
+
+.mcell[data-state='learned'] {
+  background: var(--m-learned);
+  box-shadow: none;
+  color: #141c47;
+}
+
+.mcell[data-state='model'] {
+  background: var(--m-model);
+  box-shadow: none;
+  color: #ffffff;
+}
+
+.mcell[data-state='blind'] {
+  background: var(--m-blind);
+  box-shadow: none;
+  color: #ffffff;
+}
+
+.mcell[data-state='solid'] {
+  background: var(--m-solid);
+  box-shadow: none;
+  color: #ffffff;
+}
+
+/* 苦手の しるし: 右上の 点(白い ふち で、どの段階の色の上でも 見える) */
+.mcell[data-weak='true']::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--p-weak);
+  box-shadow: 0 0 0 1.5px #ffffff;
+}
+
+.mcell:hover {
+  outline: 2px solid var(--line-dark);
+  outline-offset: 0;
+}
+
+.parent .mcell[aria-pressed='true'] {
+  z-index: 1;
+  outline: 3px solid var(--p-focus);
+  outline-offset: 1px;
+}
+
+/* 横はばが せまい・高さが 低い画面: 1列にして、区画ごと この中で スクロールする */
+@media (max-width: 860px), (max-height: 640px) {
+  .parent[data-view='overview'] .parent__view {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .pv {
+    height: auto;
+    grid-template-rows: none;
+  }
+
+  .pv__main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mmap__scroll,
+  .pv__cards {
+    overflow: visible;
+  }
+
+  .mmap__scroll {
+    container-type: inline-size;
+  }
+
+  .mmap__grid {
+    width: min(100%, 720px);
+  }
+
+  .psum {
+    flex-wrap: wrap;
+    gap: 10px 20px;
+  }
+
+  .psum__figures {
+    padding-left: 0;
+    border-left: 0;
+  }
+}

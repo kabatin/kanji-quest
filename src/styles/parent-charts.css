@@ -1,0 +1,377 @@
+/* 保護者の画面: 週ごとの伸び(折れ線)・書く力の割合・字の くわしい記録。わく と 習熟マップ は parent-overview.css */
+/* ---- 週ごとの伸び(折れ線) ---- */
+.gchart {
+  margin: 0;
+}
+
+.gchart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  color: var(--p-ink-2);
+  font-size: 0.8rem;
+}
+
+.gchart__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gchart__key {
+  width: 16px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--m-model);
+}
+
+.gchart__key--freeWritten,
+.gchart__tip-row--freeWritten::before {
+  background: var(--m-solid);
+}
+
+.gchart__plot {
+  position: relative;
+  border-radius: 6px;
+}
+
+.gchart__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--font-body);
+}
+
+.gchart__grid {
+  stroke: var(--p-hair);
+  stroke-width: 1;
+}
+
+.gchart__base {
+  stroke: #c3cad8;
+  stroke-width: 1;
+}
+
+.gchart__tick {
+  fill: var(--p-muted);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.gchart__end {
+  fill: var(--p-ink);
+  font-size: 11.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.gchart__series--learned,
+.gchart__pick--learned {
+  color: var(--m-model);
+}
+
+.gchart__series--freeWritten,
+.gchart__pick--freeWritten {
+  color: var(--m-solid);
+}
+
+.gchart__area {
+  fill: currentColor;
+  opacity: 0.1;
+}
+
+.gchart__line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  animation: gchart-draw 0.7s ease-out both;
+}
+
+@keyframes gchart-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.gchart__dot,
+.gchart__pick {
+  fill: currentColor;
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.gchart__cross {
+  stroke: var(--line-dark);
+  stroke-width: 1;
+}
+
+.gchart__hit {
+  fill: transparent;
+  cursor: crosshair;
+  touch-action: pan-y;
+}
+
+.gchart__tip {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  padding: 6px 10px;
+  background: #ffffff;
+  border: 1px solid var(--p-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(20, 28, 71, 0.12);
+  font-size: 0.76rem;
+  pointer-events: none;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.gchart__tip.is-start {
+  transform: none;
+}
+
+.gchart__tip.is-end {
+  transform: translateX(-100%);
+}
+
+.gchart__tip-day {
+  color: var(--p-muted);
+}
+
+.gchart__tip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--p-ink-2);
+}
+
+.gchart__tip-row::before {
+  content: '';
+  width: 12px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--m-model);
+}
+
+.gchart__tip-row strong {
+  color: var(--p-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.gcard__now strong {
+  font-size: 1.3rem;
+}
+
+/* ---- 書く力の割合 ---- */
+.rcard__tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.prate {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 12px 10px;
+  background: var(--p-sunken);
+  border-radius: 8px;
+}
+
+.parent h3.prate__label {
+  color: var(--p-ink-2);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.prate__value {
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.prate__value small {
+  margin-left: 2px;
+  font-size: 0.9rem;
+}
+
+.prate__meter {
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: #dfe5ef;
+  overflow: hidden;
+}
+
+.prate__meter span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--m-blind);
+}
+
+.prate__detail {
+  color: var(--p-muted);
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.prate__few {
+  padding: 4px 0 0;
+  color: var(--p-ink-2);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.rcard__about summary {
+  color: var(--p-ink-2);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.rcard__about p {
+  margin-top: 4px;
+  color: var(--p-muted);
+  font-size: 0.78rem;
+}
+
+/* ---- 字の くわしい記録 ---- */
+/* 右の区画に かさねる */
+.cdetail {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(20, 28, 71, 0.1);
+}
+
+.cdetail__head {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+  padding-right: 76px;
+}
+
+.cdetail__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.cdetail__char {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  background: var(--paper);
+  border: 1px solid var(--p-border);
+  border-radius: 10px;
+  font-size: 56px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.cdetail__title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cdetail__title h2 small {
+  margin-left: 6px;
+  color: var(--p-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.cdetail__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.cdetail__weak {
+  padding: 8px 12px;
+  background: #fdeeea;
+  border-left: 3px solid var(--p-weak);
+  border-radius: 6px;
+  color: #8f2e1e;
+  font-size: 0.84rem;
+}
+
+.cdetail__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.cdetail__facts {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 14px;
+  margin: 0;
+}
+
+.cdetail__facts div {
+  display: contents;
+}
+
+.cdetail__facts dt {
+  color: var(--p-muted);
+  font-size: 0.8rem;
+}
+
+.cdetail__facts dd {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.parent .cdetail__recent h3 {
+  margin-bottom: 4px;
+  font-size: 0.82rem;
+}
+
+.cdetail__recent li {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--p-hair);
+  color: var(--p-ink-2);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.cdetail__recent li[data-ok='false'] {
+  color: #8f2e1e;
+}
+
+.cdetail__foot {
+  display: flex;
+  padding-top: 2px;
+}
+
+/* 横はばが せまい・高さが 低い画面: 字の記録は 画面の右に 重ねて出す(押した字の すぐそばで 読める) */
+@media (max-width: 860px), (max-height: 640px) {
+  .cdetail {
+    position: fixed;
+    inset: 10px 10px 10px auto;
+    z-index: 30;
+    width: min(440px, calc(100% - 20px));
+    box-shadow: 0 10px 40px rgba(20, 28, 71, 0.28);
+  }
+}

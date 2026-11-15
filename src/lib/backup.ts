@@ -49,7 +49,7 @@ const stateSchema = z
     decoStored: strList,
     zukanSeen: num,
     bests: z.record(str, z.object({ score: num, timeMs: num })),
-    settings: z.record(str, z.boolean()),
+    settings: z.record(str, z.union([z.boolean(), z.string().max(40), num])),
     reviews: z.record(str, z.object({ due: str, step: num })),
     learnedOn: z.record(str, str),
     misses: numMap,
