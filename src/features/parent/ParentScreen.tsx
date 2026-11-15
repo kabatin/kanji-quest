@@ -10,6 +10,7 @@ import { readChildRecords } from '../../store/childRecords'
 import { BOSS_PLANS, BOSS_SIZES, BOSS_TRY_CHOICES, useParent, type BossSize } from '../../store/parent'
 import { useProfiles } from '../../store/profiles'
 import { useProgress } from '../../store/progress'
+import { BackupCard } from './BackupCard'
 import { WeekChart } from './WeekChart'
 
 const SIZE_LABEL: Record<BossSize, string> = { short: '短め', normal: 'ふつう' }
@@ -181,6 +182,8 @@ export function ParentScreen({ onBack, onOpen }: Props) {
                 : `アプリ ${offline.shell ? '保存済み ✓' : '未保存'} / 音声 ${offline.voiceCached} / ${offline.voiceTotal}`}
           </p>
         </section>
+
+        <BackupCard />
       </div>
     </div>
   )
