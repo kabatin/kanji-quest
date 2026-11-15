@@ -13,20 +13,34 @@ export function CoinCount() {
   )
 }
 
-/** レベルと、次のレベルまでのゲージ。 */
-export function LevelBadge() {
+/**
+ * あそぶ人の ふだ: レベル・名前・次のレベルまでの ゲージと けいけんち。
+ * おすと、あそぶ人を きりかえる画面へ。
+ */
+export function PlayerCard({ name, onSwitch }: { readonly name: string; readonly onSwitch: () => void }) {
   const xp = useProgress((s) => s.xp)
   const { level, into, need } = levelInfo(xp)
   return (
-    <span className="level-badge" aria-label={`レベル ${level}`}>
-      <span className="level-badge__num">
+    <button type="button" className="player-card" onClick={onSwitch} aria-label={`あそぶ ひと: ${name}。きりかえる`}>
+      <span className="level-badge__num" aria-label={`レベル ${level}`}>
         <small>レベル</small>
         <span className="level-badge__digits">{level}</span>
       </span>
-      <span className="level-badge__bar" role="progressbar" aria-valuemin={0} aria-valuemax={need} aria-valuenow={into}>
-        <span style={{ width: `${(into / need) * 100}%` }} />
+      <span className="player-card__body">
+        <span className="player-card__top">
+          <span className="player-card__name">{name}</span>
+          <span className="player-card__swap" aria-hidden="true">
+            ⇄
+          </span>
+        </span>
+        <span className="level-badge__bar" role="progressbar" aria-valuemin={0} aria-valuemax={need} aria-valuenow={into}>
+          <span style={{ width: `${(into / need) * 100}%` }} />
+        </span>
+        <span className="player-card__xp">
+          けいけんち {into} / {need}
+        </span>
       </span>
-    </span>
+    </button>
   )
 }
 

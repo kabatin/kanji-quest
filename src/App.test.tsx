@@ -11,12 +11,12 @@ import { dayKey } from './lib/date'
 import { levelInfo } from './lib/level'
 import { hasStamp } from './lib/rewards'
 import { bossesOfGrade, examId, stagesOfGrade } from './lib/stages'
-import { bestKey, DEFAULT_QUESTION_COUNT } from './lib/score'
+import { dailyCount } from './lib/dailyChallenge'
+import { bestKey } from './lib/score'
 import { trackFor } from './nav'
 import { useProgress } from './store/progress'
 
 const WAIT = { timeout: 4000 }
-const QUESTION_COUNT = DEFAULT_QUESTION_COUNT
 
 type User = ReturnType<typeof userEvent.setup>
 
@@ -151,7 +151,7 @@ describe('ホーム', () => {
     alreadyCheckedIn()
     render(<App />)
     const play = screen.getByRole('region', { name: 'あそぶ' })
-    expect(within(play).getAllByRole('button').map((b) => b.textContent)).toEqual(['ぼうけん', 'チャレンジ'])
+    expect(within(play).getAllByRole('button').map((b) => b.textContent)).toEqual(['ぼうけん', 'きょうの\nチャレンジ'])
     const collect = screen.getByRole('region', { name: 'あつめる' })
     expect(within(collect).getByRole('button', { name: /^ずかん/ })).toHaveTextContent('0 / 240')
     expect(within(collect).getByRole('button', { name: /^パーツ/ })).toBeInTheDocument()
@@ -623,31 +623,45 @@ describe('ぼうけん: ボス', () => {
   })
 })
 
-describe('チャレンジ', () => {
-  it('数と範囲をえらべて、全問1回で正解すると かんぺき と自己ベストになる', async () => {
+describe('きょうの チャレンジ', () => {
+  it('おぼえた字が まだ ないうちは、あそべない', async () => {
     alreadyCheckedIn()
+    const user = userEvent.setup()
+    render(<App />)
+    expect(within(screen.getByRole('region', { name: 'あそぶ' })).queryByLabelText('まだ やっていないよ')).not.toBeInTheDocument()
+    await user.click(within(screen.getByRole('region', { name: 'あそぶ' })).getByRole('button', { name: /きょうの\s+チャレンジ/ }))
+    expect(screen.queryByRole('button', { name: 'はじめる' })).not.toBeInTheDocument()
+  })
+
+  it('選ばずに すぐ始まり、全問1回で正解すると かんぺき と自己ベスト。ホームには「できた」が出る', async () => {
+    alreadyCheckedIn()
+    const learned = ['一', '二', '三', '四', '五', '六', '七']
+    useProgress.setState({ learned })
+    const count = dailyCount(learned.length)
     useProgress.getState().updateSettings({ timer: true })
     const user = userEvent.setup()
     const { container } = render(<App />)
-    await user.click(screen.getByRole('button', { name: 'チャレンジ' }))
-    expect(screen.getByRole('button', { name: 'おぼえた' })).toBeDisabled()
-    await user.click(screen.getByRole('button', { name: '10もん' }))
-    expect(state().challenge.count).toBe(10)
-    await user.click(screen.getByRole('button', { name: '5もん' }))
-    await user.click(screen.getByRole('button', { name: /え なし/ }))
+    expect(screen.getByLabelText('まだ やっていないよ')).toBeInTheDocument()
+    await user.click(within(screen.getByRole('region', { name: 'あそぶ' })).getByRole('button', { name: /きょうの\s+チャレンジ/ }))
+    expect(screen.getByText(`${count}もん`)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: '10もん' })).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'はじめる' }))
     expect(screen.getByText(/⏱/)).toBeInTheDocument()
 
-    await clearQuiz(user, container, QUESTION_COUNT)
+    await clearQuiz(user, container, count)
 
     expect(await screen.findByRole('img', { name: 'かんぺき' }, WAIT)).toBeInTheDocument()
     expect(screen.getByText('じこベスト！')).toBeInTheDocument()
-    expect(screen.getByText(`さいこう ${QUESTION_COUNT} れんぞく`)).toBeInTheDocument()
-    expect(state().bests[bestKey(2, QUESTION_COUNT)]?.score).toBeGreaterThanOrEqual(QUESTION_COUNT * 10)
+    expect(screen.getByText('あしたも あたらしい チャレンジが あるよ')).toBeInTheDocument()
+    expect(state().bests[bestKey(1, count)]?.score).toBeGreaterThanOrEqual(count * 10)
+    expect(state().challengeDay).toMatchObject({ done: true, level: 1, next: 2 })
 
     await user.click(screen.getByRole('button', { name: 'もういっかい' }))
-    expect(screen.getByText(`1 / ${QUESTION_COUNT}`)).toBeInTheDocument()
+    expect(screen.getByText(`1 / ${count}`)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: '← やめる' }))
-    expect(screen.getByRole('heading', { name: 'チャレンジ' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'きょうの チャレンジ' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /ホーム/ }))
+    expect(screen.getByLabelText('できた')).toBeInTheDocument()
   }, 30_000)
 })
 

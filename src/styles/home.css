@@ -524,3 +524,80 @@
 .stage-card__yomi {
   font-size: 1.15rem;
 }
+
+/* きょうの チャレンジ: まだ やっていない日は「!」、おわった日は「できた」 */
+.dock-btn--todo .dock-btn__label,
+.dock-btn--done .dock-btn__label {
+  font-size: 0.9em;
+}
+
+.dock-btn__done {
+  position: absolute;
+  top: -10px;
+  right: -8px;
+  padding: 4px 8px;
+  background: var(--wakaba);
+  border: 3px solid #ffffff;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 0.8rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* きょうの チャレンジの はじまる前の画面 */
+.daily {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.daily__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: min(100%, 380px);
+  padding: 20px 28px;
+  background: var(--card-bg);
+  border: 4px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 0 var(--card-border);
+}
+
+.daily__stars {
+  font-size: 2rem;
+  color: var(--yamabuki);
+  -webkit-text-stroke: 1.5px var(--yamabuki-dark);
+}
+
+.daily__label {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.4rem;
+}
+
+.daily__count {
+  font-size: 1.15rem;
+}
+
+.daily__best,
+.daily__note {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.daily__done {
+  color: var(--wakaba-dark);
+  font-size: 1.1rem;
+}
+
+.daily__tomorrow {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-align: center;
+}

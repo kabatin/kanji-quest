@@ -5,12 +5,14 @@ import iconHanko from '../../assets/art/icon-hanko.webp'
 import iconKisekae from '../../assets/art/icon-kisekae.webp'
 import iconParts from '../../assets/art/icon-parts.webp'
 import iconZukan from '../../assets/art/icon-zukan.webp'
-import { CoinCount, LevelBadge, StreakCount } from '../../components/Hud'
+import { CoinCount, PlayerCard, StreakCount } from '../../components/Hud'
 import { KText } from '../../components/KText'
 import { AREAS } from '../../data/areas'
 import { KANJI } from '../../data/kanji'
 import { PARTS } from '../../data/parts'
+import { dayKey } from '../../lib/date'
 import { SPOT_LABEL } from '../../lib/boss'
+import { isChallengeDone, MIN_LEARNED_FOR_CHALLENGE } from '../../lib/dailyChallenge'
 import { levelInfo, mascotStage, nextMascotLevel } from '../../lib/level'
 import { stampCount } from '../../lib/rewards'
 import { COLLECTIBLE_TOTAL, collectedCount, findItem, itemName, ownedDecos } from '../../lib/shop'
@@ -80,15 +82,27 @@ type DockButtonProps = {
   readonly badge?: number
   /** 右上の数が 何の数か(読み上げ用)。省くと「ごほうび」 */
   readonly badgeLabel?: string
+  /** todo = まだ やっていない(目に入る印)/ done = できた */
+  readonly mark?: 'todo' | 'done'
   readonly onClick: () => void
 }
 
-function DockButton({ icon, label, count, tone, badge = 0, badgeLabel = 'ごほうび', onClick }: DockButtonProps) {
+function DockButton({ icon, label, count, tone, badge = 0, badgeLabel = 'ごほうび', mark, onClick }: DockButtonProps) {
   return (
-    <button type="button" className={`dock-btn dock-btn--${tone}`} onClick={onClick}>
+    <button type="button" className={`dock-btn dock-btn--${tone} ${mark ? `dock-btn--${mark}` : ''}`} onClick={onClick}>
       <img className="dock-btn__icon" src={icon} alt="" draggable={false} />
       <span className="dock-btn__label">{label}</span>
       {count && <small className="dock-btn__count">{count}</small>}
+      {mark === 'todo' && (
+        <span className="dock-btn__badge" aria-label="まだ やっていないよ">
+          !
+        </span>
+      )}
+      {mark === 'done' && (
+        <span className="dock-btn__done" aria-label="できた">
+          ✓ できた
+        </span>
+      )}
       {badge > 0 && (
         <span className="dock-btn__badge" aria-label={`${badgeLabel} ${badge}こ`}>
           {badge}
@@ -162,6 +176,7 @@ export function Home({ onGo }: Props) {
   /** もようがえ で えらんでいる かざり(さいごに つかんだもの) */
   const [picked, setPicked] = useState<string | null>(null)
   const checkIn = useProgress((s) => s.checkIn)
+  const challengeDay = useProgress((s) => s.challengeDay)
   // もようがえ: しまの かざり を指で うごかす。3D の しま が出ていて、うごかせる かざり を持っているときだけ できる。
   // できないときも ボタンは出しておき、押したら「どうすれば できるか」を知らせる
   const [editing, setEditing] = useState(false)
@@ -179,6 +194,7 @@ export function Home({ onGo }: Props) {
     checkIn()
   }, [checkIn])
 
+  const challengeMark = learned.length < MIN_LEARNED_FOR_CHALLENGE ? undefined : isChallengeDone(challengeDay, dayKey()) ? 'done' : 'todo'
   const { level } = levelInfo(xp)
   const stage = mascotStage(level)
   const next = nextStep(AREAS, learned, clears)
@@ -317,23 +333,17 @@ export function Home({ onGo }: Props) {
         </div>
       )}
       <header className="home__hud">
-        <button type="button" className="player-chip" onClick={() => onGo({ name: 'profiles' })} aria-label={`あそぶ ひと: ${playerName}。きりかえる`}>
-          <span className="player-chip__name">{playerName}</span>
-          <span className="player-chip__swap" aria-hidden="true">
-            ⇄
-          </span>
-        </button>
-        <LevelBadge />
-        <StreakCount />
+        <PlayerCard name={playerName} onSwitch={() => onGo({ name: 'profiles' })} />
         <span className="bar__spacer" />
-        <button type="button" className="btn hud-edit" onClick={startEditing}>
-          <span aria-hidden="true">🪴</span> もようがえ
-        </button>
+        <StreakCount />
         <span className="hud-chip hud-chip--stamp" aria-label={`はんこ ${stampTotal}こ`}>
           <img className="hud-chip__art" src={iconHanko} alt="" draggable={false} />
           {stampTotal}
         </span>
         <CoinCount />
+        <button type="button" className="btn btn--round hud-edit" onClick={startEditing} aria-label="もようがえ">
+          <span aria-hidden="true">🪴</span>
+        </button>
         <button type="button" className="btn btn--round" onClick={() => onGo({ name: 'settings' })} aria-label="せってい">
           ⚙
         </button>
@@ -357,7 +367,7 @@ export function Home({ onGo }: Props) {
       <nav className="dock" aria-label="メニュー">
         <DockGroup title="あそぶ" tone="play">
           <DockButton icon={iconBouken} label="ぼうけん" tone="play" onClick={() => onGo({ name: 'map', area: areaOf(next) })} />
-          <DockButton icon={iconChallenge} label="チャレンジ" tone="play" onClick={() => onGo({ name: 'challenge' })} />
+          <DockButton icon={iconChallenge} label={'きょうの\nチャレンジ'} tone="play" mark={challengeMark} onClick={() => onGo({ name: 'challenge' })} />
         </DockGroup>
 
         <button type="button" className="cta" onClick={() => onGo(continueTo(next))}>

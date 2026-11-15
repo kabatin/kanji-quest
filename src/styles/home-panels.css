@@ -35,6 +35,8 @@
 }
 
 .dock-btn__label {
+  white-space: pre-line;
+  text-align: center;
   line-height: 1.15;
 }
 

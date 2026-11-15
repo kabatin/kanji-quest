@@ -94,7 +94,7 @@ test('どの画面もタブレットの画面内に収まり、ページ全体�
   await page.getByRole('button', { name: '← ぼうけん' }).click()
   await page.getByRole('button', { name: '← ホーム' }).click()
 
-  for (const menu of [/^パーツ/, /^チャレンジ$/, /^きせかえ/]) {
+  for (const menu of [/^パーツ/, /^きょうの\s+チャレンジ(?!を)/, /^きせかえ/]) {
     await page.getByRole('button', { name: menu }).click()
     await expect(page.locator('.bar__title')).toBeVisible()
     expect(await overflow(page)).toEqual(FITS)
