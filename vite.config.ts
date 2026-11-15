@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { precachePlugin } from './scripts/precache-plugin.ts'
+import { voiceDevPlugin } from './scripts/voice-dev-plugin.mjs'
 import { defineConfig } from 'vitest/config'
 
 const { version } = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')) as { version: string }
@@ -12,8 +13,9 @@ export default defineConfig({
   // どのフォルダに置いても動くよう、ファイルの場所は index.html からの相対で書き出す
   // (レンタルサーバーの https://example.com/kanji/ のような場所にも そのまま置ける)
   base: './',
+  // voiceDevPlugin: 開発サーバーだけ。?voices の音声チェック画面のための中継(公開版には入らない)
   // precachePlugin: オフラインで使うための ファイルの一覧(dist/precache.json)を書き出す
-  plugins: [react(), precachePlugin(fileURLToPath(new URL('./public', import.meta.url)))],
+  plugins: [react(), precachePlugin(fileURLToPath(new URL('./public', import.meta.url))), voiceDevPlugin()],
   build: {
     // 漢字の画のデータ と three.js は、分けても 500kB を少し こえる(これ以上は分けられない)
     chunkSizeWarningLimit: 600,

@@ -1,71 +1,56 @@
 // src/data/narration.json の文章を、AivisSpeech(VOICEVOX 互換 API)で音声にして public/voice に書き出す。
 // 使い方: AivisSpeech を起動してから
-//   node scripts/build-voice.mjs [スタイルID] [--force]
-// ffmpeg が必要(wav を mp3 にする)。すでにあるファイルは作りなおさない(--force で全部作りなおす)。
-import { execFileSync } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+//   node scripts/build-voice.mjs [スタイルID] [--force] [--only <ID…>] [--changed]
+//   (既定)   まだない音声だけ作る      --force   全部作りなおす
+//   --only   指定した ID だけ作りなおす(例: --only word-529b explain-5165)
+//   --changed scripts/voice-overrides.json を変えた(または 消した)クリップだけ作りなおす
+// 読みまちがい・アクセントは scripts/voice-overrides.json で直す(README「音声」、?voices の画面)。
+// ffmpeg が必要(wav を mp3 にする)。
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { loadBuilt, loadClips, loadOverrides, loadStyleId, mp3PathFor, paths, rebuildClip, specHash } from './voice-engine.mjs'
+import { hasOverride, resolveSpec } from './voice-logic.mjs'
 
-const ENGINE = process.env.VOICE_ENGINE_URL ?? 'http://127.0.0.1:10101'
-const DEFAULT_STYLE_ID = 888753760 // まお(ノーマル)
-const SPEED = 0.92
-const PAUSE_SCALE = 1.15
-
-const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const outDir = join(root, 'public', 'voice')
-const manifestPath = join(root, 'src', 'assets', 'voice-manifest.json')
-
-const codepoint = (char) => char.codePointAt(0).toString(16)
-
-/** narration.json から「クリップID → 読ませる文」の一覧を作る。ID の決め方は src/lib/voice.ts と同じ。 */
-function listClips(narration) {
-  return Object.entries(narration).flatMap(([char, entry]) => [
-    { id: `word-${codepoint(char)}`, text: `${entry.word}。` },
-    { id: `explain-${codepoint(char)}`, text: entry.speech },
-    ...entry.goals.map((text, i) => ({ id: `goal-${codepoint(char)}-${i}`, text })),
-  ])
+function parseArgs(argv) {
+  const onlyAt = argv.indexOf('--only')
+  const flags = new Set(argv.filter((a) => a.startsWith('--')))
+  const only = onlyAt < 0 ? [] : argv.slice(onlyAt + 1).filter((a) => !a.startsWith('--'))
+  const styleId = argv.find((a, i) => /^\d+$/.test(a) && (onlyAt < 0 || i < onlyAt))
+  return { force: flags.has('--force'), changed: flags.has('--changed'), only, styleId: styleId === undefined ? undefined : Number(styleId) }
 }
 
-async function post(path, body) {
-  const res = await fetch(`${ENGINE}${path}`, {
-    method: 'POST',
-    headers: body ? { 'Content-Type': 'application/json' } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-  })
-  if (!res.ok) throw new Error(`音声エンジンがエラーを返しました: ${path} ${res.status} ${await res.text()}`)
-  return res
-}
-
-async function synthesize(text, styleId) {
-  const query = await (await post(`/audio_query?speaker=${styleId}&text=${encodeURIComponent(text)}`)).json()
-  const tuned = { ...query, speedScale: SPEED, pauseLengthScale: PAUSE_SCALE }
-  const wav = Buffer.from(await (await post(`/synthesis?speaker=${styleId}`, tuned)).arrayBuffer())
-  return { wav, kana: query.kana }
+/** 作る クリップを えらぶ */
+function selectClips(clips, overrides, built, options, styleId) {
+  if (options.only.length > 0) {
+    const unknown = options.only.filter((id) => !clips.some((c) => c.id === id))
+    if (unknown.length > 0) throw new Error(`知らないクリップ ID: ${unknown.join(', ')}`)
+    return clips.filter((c) => options.only.includes(c.id))
+  }
+  if (options.force) return clips
+  if (options.changed) {
+    return clips.filter((c) => {
+      const now = hasOverride(c, overrides) ? specHash(resolveSpec(c, overrides), styleId) : undefined
+      return now !== built[c.id]
+    })
+  }
+  return clips.filter((c) => !existsSync(mp3PathFor(c.id)))
 }
 
 async function main() {
-  const args = process.argv.slice(2)
-  const force = args.includes('--force')
-  const styleId = Number(args.find((a) => /^\d+$/.test(a)) ?? DEFAULT_STYLE_ID)
-  const narration = JSON.parse(readFileSync(join(root, 'src', 'data', 'narration.json'), 'utf8'))
-  const clips = listClips(narration)
-  mkdirSync(outDir, { recursive: true })
+  const options = parseArgs(process.argv.slice(2))
+  const clips = loadClips()
+  const overrides = loadOverrides(clips)
+  const styleId = options.styleId ?? loadStyleId()
+  const targets = selectClips(clips, overrides, loadBuilt(), options, styleId)
+  mkdirSync(paths.outDir, { recursive: true })
 
-  for (const clip of clips) {
-    const mp3 = join(outDir, `${clip.id}.mp3`)
-    if (existsSync(mp3) && !force) continue
-    const { wav, kana } = await synthesize(clip.text, styleId)
-    const tmp = join(outDir, `${clip.id}.wav`)
-    writeFileSync(tmp, wav)
-    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', tmp, '-ac', '1', '-b:a', '64k', mp3])
-    rmSync(tmp)
+  for (const clip of targets) {
+    const { kana } = await rebuildClip(clip, overrides, styleId)
     process.stdout.write(`${clip.id}\t${kana}\n`)
   }
 
   const manifest = { styleId, clips: clips.map((c) => c.id).sort() }
-  writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 1)}\n`)
-  process.stdout.write(`${clips.length} クリップ: ${outDir}\n`)
+  writeFileSync(paths.manifest, `${JSON.stringify(manifest, null, 1)}\n`)
+  process.stdout.write(`${targets.length} 本を作りました(全 ${clips.length} クリップ): ${paths.outDir}\n`)
 }
 
 main().catch((error) => {

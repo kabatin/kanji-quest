@@ -15,6 +15,7 @@ import './styles/learning.css'
 import './styles/parent.css'
 import './styles/rotate.css'
 import './styles/compact.css'
+import './styles/compact-map.css'
 import App from './App.tsx'
 import { registerServiceWorker } from './lib/pwa'
 import { startViewportFit } from './lib/viewportFit'
@@ -33,10 +34,19 @@ startViewportFit()
 //   ?scene=山&variant=sonnet  ためしに作った場面(trials/sonnet/)を見る
 //   ?compare                  ためしに作った場面を、同じ字どうし よこに ならべて見くらべる
 //   ?gallery                  ぜんぶの場面を 動いている すがた で ならべて、目で たしかめる(よい・なおしたい・メモ)
+//   ?voices                   ぜんぶの音声を 聞いて たしかめ、読みまちがい・アクセントを なおす(AivisSpeech が いると なおせる)
 const params = import.meta.env.DEV ? new URLSearchParams(window.location.search) : new URLSearchParams()
 const previewChar = params.get('scene')
 
-if (params.has('gallery')) {
+if (params.has('voices')) {
+  void import('./features/voicecheck/VoiceCheck').then(({ VoiceCheck }) => {
+    createRoot(root).render(
+      <StrictMode>
+        <VoiceCheck />
+      </StrictMode>,
+    )
+  })
+} else if (params.has('gallery')) {
   void import('./features/story/SceneGallery').then(({ SceneGallery }) => {
     createRoot(root).render(
       <StrictMode>

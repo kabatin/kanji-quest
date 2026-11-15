@@ -1,0 +1,199 @@
+/* 開発用の音声チェック画面(?voices)。アプリ本体の画面には 使わない。 */
+.vc {
+  min-height: 100vh;
+  background: #f6f4ee;
+  color: #222;
+  font: 15px/1.6 system-ui, 'Hiragino Sans', 'Yu Gothic', sans-serif;
+}
+.vc button {
+  font: inherit;
+  padding: 4px 10px;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+.vc button[aria-pressed='true'] {
+  background: #2d6a4f;
+  color: #fff;
+  border-color: #2d6a4f;
+}
+.vc button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.vc__bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 8px 16px;
+  background: #fff;
+  border-bottom: 1px solid #ccc;
+}
+.vc__bar h1 {
+  margin: 0;
+  font-size: 17px;
+}
+.vc__engine {
+  margin: 4px 0;
+}
+.vc__engine[data-on='false'] {
+  color: #9a3412;
+}
+.vc__engine[data-on='true'] {
+  color: #166534;
+}
+.vc__engine button {
+  margin-left: 8px;
+}
+.vc__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.vc__body {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  gap: 16px;
+  padding: 12px 16px;
+  align-items: start;
+}
+.vc__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: calc(100vh - 170px);
+  overflow-y: auto;
+}
+.vc__list button {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  width: 100%;
+  margin-bottom: 3px;
+  text-align: left;
+  border-left: 5px solid #ccc;
+}
+.vc__list button[data-state='ok'] {
+  border-left-color: #2d6a4f;
+}
+.vc__list button[data-state='flag'] {
+  border-left-color: #c2410c;
+}
+.vc__list button[aria-current='true'] {
+  outline: 2px solid #1d4ed8;
+}
+.vc__list em {
+  color: #b91c1c;
+  font-style: normal;
+  font-size: 12px;
+}
+.vc__kind {
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+}
+.vc__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.vc__report {
+  width: calc(100% - 32px);
+  margin: 0 16px 16px;
+}
+.vc-detail {
+  position: sticky;
+  top: 150px;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  max-height: calc(100vh - 170px);
+  overflow-y: auto;
+}
+.vc-detail h2 {
+  margin: 0;
+  font-size: 18px;
+}
+.vc-detail h3 {
+  margin: 16px 0 4px;
+  font-size: 15px;
+  border-top: 1px solid #ddd;
+  padding-top: 8px;
+}
+.vc-detail__text {
+  font-size: 18px;
+  margin: 4px 0 8px;
+}
+.vc-detail__row {
+  margin-right: 16px;
+}
+.vc-detail__memo,
+.vc-detail__kana input {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  padding: 4px 8px;
+}
+.vc-detail__kana {
+  display: block;
+  margin-top: 8px;
+}
+.vc-detail__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.vc-detail__warn {
+  color: #9a3412;
+}
+.vc-detail__hint code {
+  background: #eee;
+  padding: 0 4px;
+}
+.vc-tag {
+  margin-left: 8px;
+  padding: 0 8px;
+  background: #fde68a;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.pitch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 6px 0;
+}
+.pitch__phrase {
+  display: inline-flex;
+}
+.pitch__mora {
+  position: relative;
+  min-width: 1.6em;
+  padding: 4px 2px 14px;
+  text-align: center;
+  font-size: 20px;
+  border-top: 3px solid #1d4ed8;
+}
+.pitch__mora[data-high='false'] {
+  padding: 18px 2px 0;
+  border-top-color: transparent;
+  border-bottom: 3px solid #93c5fd;
+}
+.pitch__drop {
+  position: absolute;
+  right: -8px;
+  top: 0;
+  color: #b91c1c;
+  font-size: 14px;
+}
+.picker__phrase {
+  margin-bottom: 8px;
+}
+.picker__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
