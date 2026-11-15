@@ -1,0 +1,383 @@
+{
+ "styleId": 888753760,
+ "suggestions": [
+  {
+   "id": "word-4e00",
+   "char": "一",
+   "text": "いち。",
+   "plain": "イ'チ.",
+   "dict": "イチ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-53f3",
+   "char": "右",
+   "text": "みぎ。",
+   "plain": "ミ'ギ.",
+   "dict": "ミギ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-96e8",
+   "char": "雨",
+   "text": "あめ。",
+   "plain": "アメ'.",
+   "dict": "ア'メ.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-97f3",
+   "char": "音",
+   "text": "おと。",
+   "plain": "オ'ト.",
+   "dict": "オト'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-4e5d",
+   "char": "九",
+   "text": "きゅう。",
+   "plain": "キュウ'.",
+   "dict": "キュ'ウ.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-91d1",
+   "char": "金",
+   "text": "かね。",
+   "plain": "カネ'.",
+   "dict": "カ'ネ.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-6708",
+   "char": "月",
+   "text": "つき。",
+   "plain": "ツ'キ.",
+   "dict": "ツキ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-72ac",
+   "char": "犬",
+   "text": "いぬ。",
+   "plain": "イ'ヌ.",
+   "dict": "イヌ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-6821",
+   "char": "校",
+   "text": "こう。",
+   "plain": "コオ'.",
+   "dict": "コ'オ.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-56db",
+   "char": "四",
+   "text": "よん。",
+   "plain": "ヨン'.",
+   "dict": "ヨ'ン.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-6c34",
+   "char": "水",
+   "text": "みず。",
+   "plain": "ミ'ズ.",
+   "dict": "ミズ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-77f3",
+   "char": "石",
+   "text": "いし。",
+   "plain": "イ'シ.",
+   "dict": "イシ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-5343",
+   "char": "千",
+   "text": "せん。",
+   "plain": "セン'.",
+   "dict": "セ'ン.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-8db3",
+   "char": "足",
+   "text": "あし。",
+   "plain": "ア'シ.",
+   "dict": "アシ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-866b",
+   "char": "虫",
+   "text": "むし。",
+   "plain": "ム'シ.",
+   "dict": "ムシ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-767d",
+   "char": "白",
+   "text": "しろ。",
+   "plain": "シロ'.",
+   "dict": "シ'ロ.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-529b",
+   "char": "力",
+   "text": "ちから。",
+   "plain": "チ'カラ.",
+   "dict": "チカラ'.",
+   "plainAccent": "3:1",
+   "dictAccent": "3:3"
+  },
+  {
+   "id": "word-6797",
+   "char": "林",
+   "text": "はやし。",
+   "plain": "ハヤ'シ.",
+   "dict": "ハヤシ'.",
+   "plainAccent": "3:2",
+   "dictAccent": "3:3"
+  },
+  {
+   "id": "word-590f",
+   "char": "夏",
+   "text": "なつ。",
+   "plain": "ナ'ツ.",
+   "dict": "ナツ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-5bb6",
+   "char": "家",
+   "text": "いえ。",
+   "plain": "イ'エ.",
+   "dict": "イエ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-5f13",
+   "char": "弓",
+   "text": "ゆみ。",
+   "plain": "ユ'ミ.",
+   "dict": "ユミ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-725b",
+   "char": "牛",
+   "text": "うし。",
+   "plain": "ウ'シ.",
+   "dict": "ウシ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-539f",
+   "char": "原",
+   "text": "はら。",
+   "plain": "ハラ'.",
+   "dict": "ハ'ラ.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-5de5",
+   "char": "工",
+   "text": "こう。",
+   "plain": "コオ'.",
+   "dict": "コ'オ.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-7b97",
+   "char": "算",
+   "text": "さん。",
+   "plain": "サン'.",
+   "dict": "サ'ン.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-59c9",
+   "char": "姉",
+   "text": "あね。",
+   "plain": "ア'ネ.",
+   "dict": "アネ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-5bfa",
+   "char": "寺",
+   "text": "てら。",
+   "plain": "テ'ラ.",
+   "dict": "テラ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-6625",
+   "char": "春",
+   "text": "はる。",
+   "plain": "ハル'.",
+   "dict": "ハ'ル.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-5fc3",
+   "char": "心",
+   "text": "こころ。",
+   "plain": "ココ'ロ.",
+   "dict": "ココロ'.",
+   "plainAccent": "3:2",
+   "dictAccent": "3:3"
+  },
+  {
+   "id": "word-89aa",
+   "char": "親",
+   "text": "おや。",
+   "plain": "オ'ヤ.",
+   "dict": "オヤ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-897f",
+   "char": "西",
+   "text": "にし。",
+   "plain": "ニ'シ.",
+   "dict": "ニシ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-661f",
+   "char": "星",
+   "text": "ほし。",
+   "plain": "ホ'シ.",
+   "dict": "ホシ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-7dda",
+   "char": "線",
+   "text": "せん。",
+   "plain": "セン'.",
+   "dict": "セ'ン.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-524d",
+   "char": "前",
+   "text": "まえ。",
+   "plain": "マエ.'",
+   "dict": "マ'エ.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-663c",
+   "char": "昼",
+   "text": "ひる。",
+   "plain": "ヒ'ル.",
+   "dict": "ヒル'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-9ce5",
+   "char": "鳥",
+   "text": "とり。",
+   "plain": "ト'リ.",
+   "dict": "トリ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-70b9",
+   "char": "点",
+   "text": "てん。",
+   "plain": "テ'ン.",
+   "dict": "テン'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-51ac",
+   "char": "冬",
+   "text": "ふゆ。",
+   "plain": "フ'ユ.",
+   "dict": "フユ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-9053",
+   "char": "道",
+   "text": "みち。",
+   "plain": "ミ'チ.",
+   "dict": "ミチ'.",
+   "plainAccent": "2:1",
+   "dictAccent": "2:2"
+  },
+  {
+   "id": "word-59b9",
+   "char": "妹",
+   "text": "いもうと。",
+   "plain": "イモ'オト.",
+   "dict": "イモオト'.",
+   "plainAccent": "4:2",
+   "dictAccent": "4:4"
+  },
+  {
+   "id": "word-591c",
+   "char": "夜",
+   "text": "よる。",
+   "plain": "ヨル'.",
+   "dict": "ヨ'ル.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  },
+  {
+   "id": "word-53cb",
+   "char": "友",
+   "text": "とも。",
+   "plain": "トモ'.",
+   "dict": "ト'モ.",
+   "plainAccent": "2:2",
+   "dictAccent": "2:1"
+  }
+ ]
+}

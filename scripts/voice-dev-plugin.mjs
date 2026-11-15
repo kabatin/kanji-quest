@@ -8,7 +8,7 @@
 // 守り: localhost からの要求だけ。Host/Origin を 確かめる。POST は JSON だけ。ID は 一覧にある物だけ、
 //       spec は 決まった文字だけ(validateSpec)。ffmpeg は 引数の配列で呼ぶ(シェルを通さない)。
 import { existsSync, readFileSync } from 'node:fs'
-import { engineVersion, loadClips, loadOverrides, loadStyleId, paths, queryFor, rebuildClip, saveOverrides, synthesizeQuery } from './voice-engine.mjs'
+import { engineVersion, kanaOf, loadClips, loadOverrides, loadStyleId, paths, queryFor, rebuildClip, saveOverrides, synthesizeQuery } from './voice-engine.mjs'
 import { validateSpec } from './voice-logic.mjs'
 
 const PREFIX = '/__voice/'
@@ -82,7 +82,7 @@ const routes = {
   'POST query': async (body) => {
     const spec = readSpec(body)
     await requireEngine()
-    return { kana: (await queryFor(spec, loadStyleId())).kana }
+    return { kana: kanaOf(await queryFor(spec, loadStyleId())) }
   },
   'POST override': async (body) => {
     const clip = readClip(body)

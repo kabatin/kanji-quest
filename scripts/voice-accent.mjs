@@ -4,7 +4,7 @@
 // 「ひらがなで渡したとき」と くらべる。読みが同じで アクセントだけちがう語を、辞書のほうを候補にして
 // scripts/voice-suggestions.json に書く(勝手には 使わない。?voices の画面で 聞いて えらぶ)。
 // 漢字1字だけだと 読みが ちがう(音読みなど)ことがある。その語は「読みがちがう」として数えるだけで、候補に しない。
-import { engineVersion, loadClips, loadStyleId, paths, queryFor, writeJsonAtomic } from './voice-engine.mjs'
+import { engineVersion, kanaOf, loadClips, loadStyleId, paths, queryFor, writeJsonAtomic } from './voice-engine.mjs'
 import { accentSignature, compareAccent } from './voice-logic.mjs'
 
 async function main() {
@@ -15,8 +15,8 @@ async function main() {
   let sameAccent = 0
   let otherReading = 0
   for (const clip of words) {
-    const plain = (await queryFor({ kind: 'text', value: clip.text }, styleId)).kana
-    const dict = (await queryFor({ kind: 'text', value: `${clip.char}。` }, styleId)).kana
+    const plain = kanaOf(await queryFor({ kind: 'text', value: clip.text }, styleId))
+    const dict = kanaOf(await queryFor({ kind: 'text', value: `${clip.char}。` }, styleId))
     const result = compareAccent(dict, plain)
     if (!result.sameReading) otherReading += 1
     else if (result.sameAccent) sameAccent += 1

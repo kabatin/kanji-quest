@@ -5,7 +5,7 @@
 // 期待する読みと 比べる。語頭(、。のあと)の「は」「へ」を ワ・エ と読んだ物は 'particle-misread'(ほぼ確実なまちがい)、
 // それ以外のちがいは 'mismatch'(耳で たしかめる)。文の途中の「は」「へ」は 助詞のこともあるので、どちらでも よしとする。
 // 長音の書き方(オー / オウ)のちがいは 同じと みなす。
-import { engineVersion, loadClips, loadOverrides, loadStyleId, paths, queryFor, writeJsonAtomic } from './voice-engine.mjs'
+import { engineVersion, kanaOf, loadClips, loadOverrides, loadStyleId, paths, queryFor, writeJsonAtomic } from './voice-engine.mjs'
 import { compareReading, parseKana, resolveSpec } from './voice-logic.mjs'
 
 async function probe(styleId) {
@@ -20,7 +20,7 @@ async function probe(styleId) {
     }
   }
   const query = await queryFor({ kind: 'text', value: 'はいる。' }, styleId)
-  process.stdout.write(`text はいる。 → kana ${query.kana}(${JSON.stringify(parseKana(query.kana))})\n`)
+  process.stdout.write(`text はいる。 → 読み ${kanaOf(query)}\n`)
 }
 
 async function main() {
@@ -34,8 +34,9 @@ async function main() {
   const results = {}
   for (const clip of clips) {
     const query = await queryFor(resolveSpec(clip, overrides), styleId)
-    const comparison = compareReading(clip.text, query.kana)
-    results[clip.id] = { kana: query.kana, skipped: comparison.skipped, diffs: comparison.diffs }
+    const kana = kanaOf(query)
+    const comparison = compareReading(clip.text, kana)
+    results[clip.id] = { kana, skipped: comparison.skipped, diffs: comparison.diffs }
   }
   writeJsonAtomic(paths.report, { engineVersion: version, styleId, clips: results })
 

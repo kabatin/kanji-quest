@@ -1,4 +1,237 @@
 {
- "clips": {},
+ "clips": {
+  "word-5165": {
+   "kind": "text",
+   "value": "入る。"
+  },
+  "word-516b": {
+   "kind": "kana",
+   "value": "ハ'チ"
+  },
+  "word-529b": {
+   "kind": "kana",
+   "value": "チカラ'"
+  },
+  "explain-7af9": {
+   "kind": "text",
+   "value": "たけの、葉が、したに、たれているよ。かぜで、ゆれる。たけ。"
+  },
+  "explain-5165": {
+   "kind": "text",
+   "value": "さんかくの、いりぐち。そこから、なかに、入るよ。入る。"
+  },
+  "explain-516b": {
+   "kind": "text",
+   "value": "にほんの、せんが、みぎと、ひだりに、わかれるよ。八。"
+  },
+  "word-7fbd": {
+   "kind": "text",
+   "value": "羽。"
+  },
+  "explain-7fbd": {
+   "kind": "text",
+   "value": "とりの 羽が、にまい ならんで、ぱたぱた。羽。"
+  },
+  "explain-5712": {
+   "kind": "text",
+   "value": "ぐるりと かこった、にわや 畑。なかは、えんの おと。えん。"
+  },
+  "explain-5bb6": {
+   "kind": "text",
+   "value": "やねの したに、ぶたが 入って くる。みんなで くらす ところ。いえ。"
+  },
+  "explain-9593": {
+   "kind": "text",
+   "value": "もんの すきまから、ひかりが 入って くる。あいて いる ところ。あいだ。"
+  },
+  "explain-77e2": {
+   "kind": "text",
+   "value": "ゆみで とばす、やの かたちから できたよ。さきが とがって、うしろに 羽。や。"
+  },
+  "explain-5200": {
+   "kind": "text",
+   "value": "かたなの、かたちから、できたよ。刃が、すこし、そっている。かたな。"
+  },
+  "word-6bcd": {
+   "kind": "text",
+   "value": "母。"
+  },
+  "explain-6bcd": {
+   "kind": "text",
+   "value": "すわって、あかちゃんをだっこするひと。ふたつのてんは、おちち。母。"
+  },
+  "goal-8a71-0": {
+   "kind": "text",
+   "value": "話すを、つくろう。"
+  },
+  "goal-8cb7-0": {
+   "kind": "text",
+   "value": "買うを、つくろう。"
+  },
+  "word-4e00": {
+   "kind": "text",
+   "value": "一。"
+  },
+  "word-53f3": {
+   "kind": "text",
+   "value": "右。"
+  },
+  "word-96e8": {
+   "kind": "text",
+   "value": "雨。"
+  },
+  "word-97f3": {
+   "kind": "text",
+   "value": "音。"
+  },
+  "word-4e5d": {
+   "kind": "text",
+   "value": "九。"
+  },
+  "word-91d1": {
+   "kind": "text",
+   "value": "金。"
+  },
+  "word-6708": {
+   "kind": "text",
+   "value": "月。"
+  },
+  "word-72ac": {
+   "kind": "text",
+   "value": "犬。"
+  },
+  "word-6821": {
+   "kind": "text",
+   "value": "校。"
+  },
+  "word-56db": {
+   "kind": "text",
+   "value": "四。"
+  },
+  "word-6c34": {
+   "kind": "text",
+   "value": "水。"
+  },
+  "word-77f3": {
+   "kind": "text",
+   "value": "石。"
+  },
+  "word-5343": {
+   "kind": "text",
+   "value": "千。"
+  },
+  "word-8db3": {
+   "kind": "text",
+   "value": "足。"
+  },
+  "word-866b": {
+   "kind": "text",
+   "value": "虫。"
+  },
+  "word-767d": {
+   "kind": "text",
+   "value": "白。"
+  },
+  "word-6797": {
+   "kind": "text",
+   "value": "林。"
+  },
+  "word-590f": {
+   "kind": "text",
+   "value": "夏。"
+  },
+  "word-5bb6": {
+   "kind": "text",
+   "value": "家。"
+  },
+  "word-5f13": {
+   "kind": "text",
+   "value": "弓。"
+  },
+  "word-725b": {
+   "kind": "text",
+   "value": "牛。"
+  },
+  "word-539f": {
+   "kind": "text",
+   "value": "原。"
+  },
+  "word-5de5": {
+   "kind": "text",
+   "value": "工。"
+  },
+  "word-7b97": {
+   "kind": "text",
+   "value": "算。"
+  },
+  "word-59c9": {
+   "kind": "text",
+   "value": "姉。"
+  },
+  "word-5bfa": {
+   "kind": "text",
+   "value": "寺。"
+  },
+  "word-6625": {
+   "kind": "text",
+   "value": "春。"
+  },
+  "word-5fc3": {
+   "kind": "text",
+   "value": "心。"
+  },
+  "word-89aa": {
+   "kind": "text",
+   "value": "親。"
+  },
+  "word-897f": {
+   "kind": "text",
+   "value": "西。"
+  },
+  "word-661f": {
+   "kind": "text",
+   "value": "星。"
+  },
+  "word-7dda": {
+   "kind": "text",
+   "value": "線。"
+  },
+  "word-524d": {
+   "kind": "text",
+   "value": "前。"
+  },
+  "word-663c": {
+   "kind": "text",
+   "value": "昼。"
+  },
+  "word-9ce5": {
+   "kind": "text",
+   "value": "鳥。"
+  },
+  "word-70b9": {
+   "kind": "text",
+   "value": "点。"
+  },
+  "word-51ac": {
+   "kind": "text",
+   "value": "冬。"
+  },
+  "word-9053": {
+   "kind": "text",
+   "value": "道。"
+  },
+  "word-59b9": {
+   "kind": "text",
+   "value": "妹。"
+  },
+  "word-591c": {
+   "kind": "text",
+   "value": "夜。"
+  },
+  "word-53cb": {
+   "kind": "text",
+   "value": "友。"
+  }
+ },
  "words": {}
 }

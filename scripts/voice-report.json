@@ -1,0 +1,3021 @@
+{
+ "engineVersion": "1.1.0-dev",
+ "styleId": 888753760,
+ "clips": {
+  "word-4e00": {
+   "kana": "イチ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4e00": {
+   "kana": "ヨコニ',/ボ'ウガ,/イッポ'ン./ヒト'ツノ,/シルシ'./イ'チ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-53f3": {
+   "kana": "ミギ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-53f3": {
+   "kana": "ゴ'ハンオ,/ク'チニ,/ハコブ',/テ.'/ソノ',/テ'ガ,/ア'ル,/ホ'オ./ミ'ギ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-53f3-0": {
+   "kana": "ミ'ギオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-96e8": {
+   "kana": "ア'メ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-96e8": {
+   "kana": "ソ'ラノ,/ク'モカラ,/シズク'ガ,/ポ'ツポツ,/オ'チテクル./アメ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5186": {
+   "kana": "エ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5186": {
+   "kana": "マルイ',/オカネガ',/ピカ'リ./マルイ',/カタチノ',/コ'ト./エン.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-738b": {
+   "kana": "オ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-738b": {
+   "kana": "オ'オキナ,/オ'ノワ,/ツヨ'イ,/シルシ'./オ'ノオ,/モ'ツ,/ヒト'ガ,/オウ'サマ./オ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-97f3": {
+   "kana": "オト'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-97f3": {
+   "kana": "ア'サヒガ,/ノボル'./タ'ッテ,/ウタウ'ト,/コ'エガ,/ヒビ'ク./オ'ト.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-97f3-0": {
+   "kana": "オ'トオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4e0b": {
+   "kana": "シタ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4e0b": {
+   "kana": "ヨ'/コノ',/センオ',/ヒク'./ソノ',/シタニ',/シルシオ',/ツケ'ル./シタ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-706b": {
+   "kana": "ヒ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-706b": {
+   "kana": "タキギガ',/メ'ラメラ,/モエル'./ユレル',/ホノオノ',/カタチ'./ヒ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-82b1": {
+   "kana": "ハナ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-82b1": {
+   "kana": "クサ'ガ,/ノ'ビテ,/ツボミガ',/ヒラ'ク./シタワ',/オ'トノ,/シルシ'./ハナ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-82b1-0": {
+   "kana": "ハナオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8c9d": {
+   "kana": "カ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8c9d": {
+   "kana": "ウ'ミデ,/ヒロッタ',/カイガラ'./ムカシワ',/オカネノ',/カワリダ'ッタ./カ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5b66": {
+   "kana": "マナブ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5b66": {
+   "kana": "ヤ'ネノ,/シタニ',/コドモガ',/アツマ'ル./テ'オ,/ト'ッテ,/オソワル'./マナブ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6c17": {
+   "kana": "キ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6c17": {
+   "kana": "ゴ'ハンオ,/タク'ト,/ユ'ゲガ,/ユ'ラユラ,/ノボル'./メ'ニ,/ミエニク'イ,/モノ'./キ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4e5d": {
+   "kana": "キュ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4e5d": {
+   "kana": "ウデ'オ,/グット',/マゲタ',/カタチ'./ソノ',/ジオ,'/カリテ',/カ'ズニ,/シタ'./キュウ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4f11": {
+   "kana": "ヤス'ム.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4f11": {
+   "kana": "ヒト'ガ,/キ'ニ,/モタ'レテ,/ヒトヤ'スミ./ヤス'ム.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-4f11-0": {
+   "kana": "ヤスムオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7389": {
+   "kana": "タマ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7389": {
+   "kana": "キレ'エナ,/イ'シオ,/ヒモデ',/ツナグ'./テ'ンオ,/ヒト'ツ,/ツ'ケテ,/メジルシ'./タマ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-7389-0": {
+   "kana": "タマオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-91d1": {
+   "kana": "カ'ネ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-91d1": {
+   "kana": "ツチ'ノ,/ナ'カニ,/チ'イサナ,/ツブ.'/ホ'ルト,/キ'ラキラ,/ヒカ'ル./カネ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7a7a": {
+   "kana": "ソ'ラ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7a7a": {
+   "kana": "ア'ナノ,/ナ'カワ,/カラッポ'./ミアゲル'ト,/ウエモ',/ヒロ'クテ,/カラッポ'./ソ'ラ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-7a7a-0": {
+   "kana": "ソ'ラオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6708": {
+   "kana": "ツキ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6708": {
+   "kana": "ヨ'ルノ,/ソ'ラニ,/カ'ケタ,/ツ'キガ,/ヒカ'ル./ミカズキノ',/カタチ'./ツ'キ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-72ac": {
+   "kana": "イヌ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-72ac": {
+   "kana": "イヌ'オ,/ヨコカラ',/ミ'タ,/カタチ'./テ'ンワ,/ピント',/タッタ',/ミミ'./イ'ヌ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-72ac-0": {
+   "kana": "イヌ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-898b": {
+   "kana": "ミ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-898b": {
+   "kana": "オ'オキナ,/メ'ノ,/シタニ',/ア'シ./ヒト'ガ,/メ'オ,/アケテ',/ジット'./ミ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-898b-0": {
+   "kana": "ミルオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4e94": {
+   "kana": "ゴ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4e94": {
+   "kana": "ウ'エノ,/セント',/シタ'ノ,/セン'./アイダデ',/ナナ'メノ,/センガ',/マジワ'ル./ゴ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-53e3": {
+   "kana": "クチ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-53e3": {
+   "kana": "ア'アント,/オオキ'ク,/アケタ',/クチ'./ソノ',/カタチ'./クチ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6821": {
+   "kana": "コ'オ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6821": {
+   "kana": "キ'オ,/クンデ',/タテタ',/マナビヤ'./ミ'ギワ,/オ'トノ,/シルシ'./コ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6821-0": {
+   "kana": "コオオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5de6": {
+   "kana": "ヒダリ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5de6": {
+   "kana": "ド'オグオ,/シッカ'リ,/モ'ツ,/テ.'/ソノ',/テ'ガ,/ア'ル,/ホ'オ./ヒダリ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5de6-0": {
+   "kana": "ヒダリオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4e09": {
+   "kana": "サン'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4e09": {
+   "kana": "ヨコニ',/ボ'ウガ,/サンボン',/ナラブ'./ミ'ッツノ,/シルシ'./サン.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5c71": {
+   "kana": "ヤマ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5c71": {
+   "kana": "タカ'イ,/ミ'ネガ,/ミ'ッツ,/ナラブ'./マンナカガ',/イチ'バン,/タカ'イ./ヤマ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5b50": {
+   "kana": "コ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5b50": {
+   "kana": "アタ'マノ,/オ'オキナ,/ア'カチャン./リョオテオ',/ヒロゲテ',/イル'./コ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-56db": {
+   "kana": "ヨ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-56db": {
+   "kana": "シカク'ノ,/カ'ドオ,/カゾエ'ヨオ./イ'チ,/ニ,'/サン,'/シ.'/カ'ドワ,/ヨッツ'./ヨン'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7cf8": {
+   "kana": "イ'ト.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7cf8": {
+   "kana": "マ'ユカラ,/ホソ'イ,/イ'トオ,/ト'ル./ネジ'ッテ,/タバ'ネタ,/カタチ'./イ'ト.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5b57": {
+   "kana": "ジ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5b57": {
+   "kana": "ヤ'ネノ,/シタデ',/コドモガ',/ソダ'ツ./コドモノ',/ヨ'オニ,/フ'エテ,/イ'ク./ジ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5b57-0": {
+   "kana": "ジオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8033": {
+   "kana": "ミミ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8033": {
+   "kana": "オ'トオ,/キク',/ミミ'./ヒト'ノ,/ミミ'ノ,/カタチ'./ミミ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4e03": {
+   "kana": "ナ'ナ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4e03": {
+   "kana": "ヨ'/コノ',/ボ'ウオ,/タテノ',/センデ',/スパ'ット,/キ'ル./ソノ',/ジオ,'/カリタ'./ナ'ナ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8eca": {
+   "kana": "クルマ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8eca": {
+   "kana": "クルマオ',/ウエカラ',/ミ'タ,/カタチ'./リョオガワニ',/ワ.'/マンナカニ',/ハコ'./クルマ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-624b": {
+   "kana": "テ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-624b": {
+   "kana": "ゴ'/ホンノ',/ユビ'オ,/パ'ット,/ヒロゲル'./テ'ノ,/カタチ'./テ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5341": {
+   "kana": "ジュ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5341": {
+   "kana": "ボ'ウオ,/ジ'ッ/ポ'ン,/アツ'メテ,/ヒト'ツニ,/タバネ'ル./マトマリノ',/シルシ'./ジュ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-51fa": {
+   "kana": "デ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-51fa": {
+   "kana": "ア'ナノ,/ナ'カカラ,/ア'シガ,/ソ'トエ,/フミダ'ス./デ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5973": {
+   "kana": "オンナ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5973": {
+   "kana": "ヒザオ',/ツ'イテ,/テ'オ,/マエニ',/カサネル'./ソノ',/ス'ガタ./オンナ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5c0f": {
+   "kana": "チイサ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5c0f": {
+   "kana": "チ'イサナ,/ツブガ,'/ミ'ッツ,/パ'ラパラ./スナツ'ブ,/ミ'タイ./チイサ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4e0a": {
+   "kana": "ウエ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4e0a": {
+   "kana": "ヨ'/コノ',/センオ',/ヒク'./ソノ',/ウエニ',/シルシオ',/ツケ'ル./ウエ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-68ee": {
+   "kana": "モリ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-68ee": {
+   "kana": "キ'ガ,/イッポ'ン./ソコニ',/ハヤシガ',/クワワル'./キ'ガ,/タクサン'./モリ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-68ee-0": {
+   "kana": "モリオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4eba": {
+   "kana": "ヒト'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4eba": {
+   "kana": "ヒト'ガ,/ヨコオ'/ムイテ',/タ'ッテイルヨ./ウデ'オ,/マエニ',/ノバ'シテイル./ヒト'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6c34": {
+   "kana": "ミズ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6c34": {
+   "kana": "マンナカオ',/ミ'ズガ,/ナガレ'ルヨ./リョオガワニ',/シブキ'ガ,/トブ'./ミ'ズ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6b63": {
+   "kana": "タダシ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6b63": {
+   "kana": "ウエニ',/センガ',/イッポ'ン./ア'シガ,/センニ'/ムカッテ',/マッス'グ,/ススム'ヨ./タダシ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6b63-0": {
+   "kana": "タ'ダシ/イ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-751f": {
+   "kana": "ウマレル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-751f": {
+   "kana": "ツチ'カラ,/クサ'ノ/メ'ガ,/デ'テキタヨ./グ'ングン,/ノビ'ル./ウマレル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9752": {
+   "kana": "ア'オ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9752": {
+   "kana": "ウエワ',/クサ'/ノ'メ./シタワ',/イド'ノ,/キレ'エナ/ミ'ズ./ド'チラモ,/アオ'イヨ./ア'オ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5915": {
+   "kana": "ユウ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5915": {
+   "kana": "ユウガタ',/ソ'ラニ,/ミカズキガ',/デ'テキタヨ./ツ'キノ,/カタチ'./ユウ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-77f3": {
+   "kana": "イシ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-77f3": {
+   "kana": "ガケノ',/シタニ',/イ'シガ,/コロ'ント,/オ'チテイルヨ./イ'シ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8d64": {
+   "kana": "ア'カ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8d64": {
+   "kana": "ヒ'ガ,/オオキ'ク,/モエテイル'ヨ./マッカ'ナ,/イロ'./アカ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5343": {
+   "kana": "セ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5343": {
+   "kana": "ヒト'ノ,/カタチニ',/ヨコ'ボウオ,/イッポ'ン,/タス'ヨ./トテモ',/オ'オキナ,/カ'ズ./セン'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5ddd": {
+   "kana": "カワ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5ddd": {
+   "kana": "キ'シト,/キ'シノ,/アイダオ',/ミ'ズガ,/ナガレ'ルヨ./サンボンノ',/スジ.'/カワ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5148": {
+   "kana": "サキ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5148": {
+   "kana": "ヒト'ノ,/ウエニ',/ア'シガ,/ア'ルヨ./ア'シガ,/マエニ',/デ'ル./サキ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-65e9": {
+   "kana": "ハヤ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-65e9": {
+   "kana": "ア'サ,/オヒ'サマガ,/ジュ'ウジノ,/シルシノ',/ウエニ',/ノボル'ヨ./ハヤ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-65e9-0": {
+   "kana": "ハヤ'イオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8349": {
+   "kana": "クサ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8349": {
+   "kana": "ウエワ',/クサ'ノ,/シルシ'./カゼニ',/ユレル'./シタワ',/オ'トノ,/シルシダ'ヨ./クサ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-8349-0": {
+   "kana": "クサ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8db3": {
+   "kana": "アシ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8db3": {
+   "kana": "ウエワ',/マルイ',/ヒザ'./シタワ',/アル'ク,/アシア'トダヨ./ア'シ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-8db3-0": {
+   "kana": "ア'シオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6751": {
+   "kana": "ムラ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6751": {
+   "kana": "キ'ノ,/ア'ルトコロニ,/ヒト'ガ,/アツマ'ルヨ./ミ'ギワ,/オ'トノ,/シルシ'./ムラ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6751-0": {
+   "kana": "ムラオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5927": {
+   "kana": "オオキ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5927": {
+   "kana": "ヒト'ガ,/リョオテト',/リョオアシオ',/ヒロゲタ'ヨ./オオキ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7537": {
+   "kana": "オトコ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7537": {
+   "kana": "タンボデ',/チ'カラオ/ダ'シテ,/ツチ'オ,/タガヤ'スヨ./オトコ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-7537-0": {
+   "kana": "オトコ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7af9": {
+   "kana": "タケ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7af9": {
+   "kana": "タ'ケノ,/ハガ',/シタニ',/タ'レテイルヨ./カゼデ',/ユレル'./タケ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4e2d": {
+   "kana": "ナ'カ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4e2d": {
+   "kana": "ボ'ウガ,/イッポ'ン./シカク'ノ,/マンナカオ',/ト'オルヨ./ナ'カ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-866b": {
+   "kana": "ムシ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-866b": {
+   "kana": "チ'イサナ,/イキ'モノガ,/ク'ネクネ,/ウゴ'クヨ./ム'シ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-753a": {
+   "kana": "マチ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-753a": {
+   "kana": "タンボノ',/ア'イダノ,/ミ'チ./ミ'ギワ,/オ'トノ,/シルシダ'ヨ./マチ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-753a-0": {
+   "kana": "マチ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5929": {
+   "kana": "テ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5929": {
+   "kana": "テ'オ,/ヒロゲタ',/ヒト'./アタマ'ノ,/ウエニ',/センガ',/イッポ'ン./イチ'バン,/ウエダ'ヨ./テ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5929-0": {
+   "kana": "テ'ンオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7530": {
+   "kana": "タ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7530": {
+   "kana": "シカク'イ,/タンボ'./アゼ'ミチデ,/ヨッツニ',/クギ'ッタヨ./タ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-571f": {
+   "kana": "ツチ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-571f": {
+   "kana": "ジ'メンノ,/ウエニ',/ツチ'ガ,/モリアガ'ッテイルヨ./ツチ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4e8c": {
+   "kana": "ニ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4e8c": {
+   "kana": "ボ'ウガ,/ニホ'ン./ウエガ',/ミジカ'クテ,/シタ'ガ,/ナガ'イヨ./ニ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-65e5": {
+   "kana": "ヒ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-65e5": {
+   "kana": "マルイ',/オヒ'サマガ,/ピカピカ',/ヒカ'ルヨ./マルガ',/シカク'ク,/ナ'ッタ./ヒ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5165": {
+   "kana": "ハ'イル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5165": {
+   "kana": "サ'ンカクノ,/イリグチ'./ソコカラ',/ナ'カニ,/ハ'イルヨ./ハ'イル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5e74": {
+   "kana": "トシ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5e74": {
+   "kana": "ミノ'ッタ,/イ'ネオ,/ヒト'ガ,/カツ'イデ,/アル'クヨ./イ'ネガ,/ミノ'ルト,/イチネン'./トシ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-767d": {
+   "kana": "シ'ロ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-767d": {
+   "kana": "ド'ングリノ,/カラ'オ,/ムク'ヨ./ナ'カワ,/マッシ'ロ./シロ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-516b": {
+   "kana": "ハ'チ",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-516b": {
+   "kana": "ニ'/ホンノ',/センガ',/ミ'ギト,/ヒダリニ',/ワカレ'ルヨ./ハチ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-767e": {
+   "kana": "ヒャク'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-767e": {
+   "kana": "ウエニ',/ボ'ウガ,/イッポ'ン./シタノ',/シロ'ワ,/オ'トノ,/シルシダ'ヨ./ヒャク'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-767e-0": {
+   "kana": "ヒャク'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6587": {
+   "kana": "ブ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6587": {
+   "kana": "ヒト'ノ,/ムネ'ニ,/モヨオガ',/カイテア'ルヨ./モヨオカラ',/モ'ジニ,/ナ'ッタ./ブ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6728": {
+   "kana": "キ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6728": {
+   "kana": "キ'ガ,/イッポ'ン,/タ'ッテイルヨ./ミ'キト,/エダ'ト,/ネッコ'./キ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-672c": {
+   "kana": "ホ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-672c": {
+   "kana": "キ'ノ,/ネ'モトニ,/シルシオ',/イッポ'ン,/ツケ'ルヨ./ココガ',/ネ'モト./ホ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-672c-0": {
+   "kana": "ホ'ンオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-540d": {
+   "kana": "ナ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-540d": {
+   "kana": "ユウガタワ',/クラクテ',/カオガ',/ミエ'ナイ./クチデ',/ナマエオ',/イウ'ヨ./ナ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-540d-0": {
+   "kana": "ナ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-76ee": {
+   "kana": "メ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-76ee": {
+   "kana": "メ'ノ,/カタチ'./ヨコムキノ',/メオ,'/タテニ',/シタ'ヨ./メ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7acb": {
+   "kana": "タ'ツ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7acb": {
+   "kana": "ヒト'ガ,/リョオアシオ',/ヒラ'イテ,/ジ'メンノ,/ウエニ',/タ'ッテイルヨ./タ'ツ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-529b": {
+   "kana": "チカラ'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-529b": {
+   "kana": "ツチ'オ,/ホ'ル,/ド'オグノ,/カタチ'./チ'カラオ,/イレテ',/ホ'ルヨ./チ'カラ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6797": {
+   "kana": "ハヤシ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6797": {
+   "kana": "キ'ガ,/イッポ'ン./トナリニ',/モ'オイッ/ポ'ン./キ'ガ,/ナランデ',/ハヤシ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6797-0": {
+   "kana": "ハヤシオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-516d": {
+   "kana": "ロク'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-516d": {
+   "kana": "ヤ'ネノ,/ア'ル,/イエ'ノ,/カタチニ',/ニテイル'ヨ./ロク'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5f15": {
+   "kana": "ヒク'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5f15": {
+   "kana": "ユ'ミニ,/マッス'グナ/ツル'./グイ'ット,/ヒッパ'ルヨ./ヒク'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5f15-0": {
+   "kana": "ヒクオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7fbd": {
+   "kana": "ハネ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7fbd": {
+   "kana": "ト'リノ/ハネガ',/ニマ'/イナラ'ンデ,/パ'タパタ./ハネ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-7fbd-0": {
+   "kana": "ハネオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-96f2": {
+   "kana": "ク'モ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-96f2": {
+   "kana": "モクモクガ',/ソ'ラエ/ノボル'./ヤガテ',/アメオ'/フラセ'ルヨ./ク'モ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-96f2-0": {
+   "kana": "ク'モオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5712": {
+   "kana": "エ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5712": {
+   "kana": "グル'リトカ/コ'ッタ,/ニ'/ワヤハ'タケ./ナ'カワ,/エンノ'/オ'ト./エン.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5712-0": {
+   "kana": "エ'/ンオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9060": {
+   "kana": "トオイ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9060": {
+   "kana": "ミ'チオ,/ズットズ'ット/アル'イテイク./エンノ'/オ'トガ/ツ'クヨ./トオイ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-9060-0": {
+   "kana": "トオイオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4f55": {
+   "kana": "ナ'ニ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4f55": {
+   "kana": "ニ'モツオ/カツ'イダ/ヒト'ガ,/アル'イテクル./ソレ',/ナ'アニ./ナ'ニ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-4f55-0": {
+   "kana": "ナ'ニオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-79d1": {
+   "kana": "カ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-79d1": {
+   "kana": "イ'ネオ,/マス'ニ/イレテ'/ハカ'ル./シュルイゴトニ'/ワケ'ルヨ./カ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-79d1-0": {
+   "kana": "カオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-590f": {
+   "kana": "ナツ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-590f": {
+   "kana": "ヒト'ノ/アタマ'ノウエニ,/オヒ'サマガ/ギ'ラギラ./アツ'イ/キ'セツ./ナ'ツ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5bb6": {
+   "kana": "イエ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5bb6": {
+   "kana": "ヤ'ネノ/シタニ',/ブタガハ'イッテクル./ミンナ'デ/クラストコロ'./イ'エ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5bb6-0": {
+   "kana": "イ'エオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6b4c": {
+   "kana": "ウタ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6b4c": {
+   "kana": "オオキ'ク/クチオ'/アケテ',/コ'エオ/ダ'ス./カ'ノ/オ'トガ/ツ'クヨ./ウタ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6b4c-0": {
+   "kana": "ウタ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-753b": {
+   "kana": "ガ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-753b": {
+   "kana": "フデオモ'ッテ,/センオ'/ヒク'./シカク'ク/クギ'ッテ,/エオ'/カ'クヨ./ガ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-56de": {
+   "kana": "マワル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-56de": {
+   "kana": "ミ'ズガ,/グ'ルグル/ウ'ズオ/マク'./ソ'トモ,/ナ'カモ,/グ'ルグル./マワル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-56de-0": {
+   "kana": "マワ'ルオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4f1a": {
+   "kana": "ア'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4f1a": {
+   "kana": "ナ'ベノウエニ,/フタガオ'リテクル./ピッタ'リ,/カサナッタ'./ア'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-4f1a-0": {
+   "kana": "アウオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6d77": {
+   "kana": "ウ'ミ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6d77": {
+   "kana": "ミ'ズガ,/イッパイ'/アツマ'ッテ,/ヒロガル'./カ'イノ/オ'トガ/ツ'クヨ./ウ'ミ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6d77-0": {
+   "kana": "ウ'ミオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7d75": {
+   "kana": "エ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7d75": {
+   "kana": "ア'カヤ/ア'オノ/イ'トデ,/キレエナモヨオオヌ'ウ./エノ'/オ'トガ/ツ'クヨ./エ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-7d75-0": {
+   "kana": "エ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5916": {
+   "kana": "ソ'ト.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5916": {
+   "kana": "ユウガタ',/ツ'キガ/デ'タ./ソ'トニ/デ'テ,/ウラナイオスル'ヨ./ソ'ト.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5916-0": {
+   "kana": "ソ'トオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-89d2": {
+   "kana": "ツ'ノ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-89d2": {
+   "kana": "ドオブツノ'/アタマ'ニ/ハ'エタ,/カタイツ'ノ./ソノ'/カタチダ'ヨ./ツ'ノ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-697d": {
+   "kana": "タノシ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-697d": {
+   "kana": "キ'ニ,/イ'トオ/ハッタ'/ガッキ'./ポロ'ント/ナラス'ト,/ウキウキ'./タノシ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6d3b": {
+   "kana": "カ'ツ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6d3b": {
+   "kana": "ミ'ズガ,/ザ'アザア,/イキオ'イ/ヨ'ク/ナガレ'ル./ゲンキイ'ッパイ./カ'ツ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6d3b-0": {
+   "kana": "カツオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9593": {
+   "kana": "アイダ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9593": {
+   "kana": "モ'ンノ/スキマカラ',/ヒカリガハ'イッテクル./ア'イテイルトコロ./アイダ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-9593-0": {
+   "kana": "アイダオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4e38": {
+   "kana": "マル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4e38": {
+   "kana": "キュウノ'/ヨコニ',/マルイ'/タマガ',/コロ'ント/オ'チテキタ./マル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-4e38-0": {
+   "kana": "マルオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5ca9": {
+   "kana": "イワ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5ca9": {
+   "kana": "ヤマノウエ'ニ,/ゴロ'ント,/オ'オキナ/イ'シ./イワ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5ca9-0": {
+   "kana": "イワ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9854": {
+   "kana": "カオ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9854": {
+   "kana": "アタ'マノ,/マエノ'トコロ./メ'ヤ/ハナガア'ルヨ./ガ'ンノ/オ'トガ/ツ'ク./カオ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-9854-0": {
+   "kana": "カオオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6c7d": {
+   "kana": "キ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6c7d": {
+   "kana": "ミ'ズガ,/グ'ラグラ/アツ'クナル./ユ'ゲガ,/フ'ワフワ/ノボル'ヨ./キ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6c7d-0": {
+   "kana": "キ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8a18": {
+   "kana": "シルス'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8a18": {
+   "kana": "キ'イタ/コトバ'オ,/ワスレナ'イヨオニ,/カイテオク'./キ'ノ/オ'トガ/ツ'クヨ./シルス'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-8a18-0": {
+   "kana": "シルスオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5e30": {
+   "kana": "カ'エル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5e30": {
+   "kana": "テ'クテク,/アル'イテイク./ホ'オキノ/ア'ル,/ジブンノイ'エニ/ツ'クヨ./カ'エル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5e30-0": {
+   "kana": "カ'エルオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5f13": {
+   "kana": "ユミ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5f13": {
+   "kana": "ヤオ'/トバスド'オグ./グニャ'リト/マガッタ',/ソノ'/カタチダ'ヨ./ユ'ミ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-725b": {
+   "kana": "ウシ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-725b": {
+   "kana": "マ'エカラミタ,/ウシノアタマ'./ウエニ',/ツノ'ガ/ニホ'ン./ウ'シ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9b5a": {
+   "kana": "サカナ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9b5a": {
+   "kana": "ウエガ'/アタマ'./マンナカガ'/ウロコ'./シタ'ガ/オ'ビレ./ス'イスイ/オヨ'グ./サカナ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4eac": {
+   "kana": "キョ'オ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4eac": {
+   "kana": "タカ'イトコロニ/タ'ツ,/オ'オキナ/タテ'モノ./ミ'ヤコノ/シルシダ'ヨ./キョ'オ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5f37": {
+   "kana": "ツヨ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5f37": {
+   "kana": "ピント'/ハッタユ'ミ./カタイカラ'ノ/ム'シ./ド'ッチモ,/マケナ'イヨ./ツヨ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5f37-0": {
+   "kana": "ツヨ'イオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6559": {
+   "kana": "オシエル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6559": {
+   "kana": "センセイガ',/ボ'ウオ/フ'ッテ,/コドモニ'/マナバセル'./オシエル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6559-0": {
+   "kana": "オシエルオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8fd1": {
+   "kana": "チカ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8fd1": {
+   "kana": "ミ'チオ,/チョ'ット/アル'ケバ,/スグツクヨ'./キ'ンノ/オ'トガ/ツ'ク./チカ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-8fd1-0": {
+   "kana": "チカ'イオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5144": {
+   "kana": "ア'ニ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5144": {
+   "kana": "ア'シノウエニ,/オ'オキナ/クチ'./ミンナ'ニ/コエオ'/カケ'ル,/トシウエノ'/ヒト'./ア'ニ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5144-0": {
+   "kana": "ア'ニオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5f62": {
+   "kana": "カタチ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5f62": {
+   "kana": "シカク'イ/ワク'ニ,/キレエナモヨオオ'/ツケ'ル./ス'ガタガデキタヨ./カタチ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5f62-0": {
+   "kana": "カタチオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8a08": {
+   "kana": "ハカ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8a08": {
+   "kana": "イチ',/ニ,'/サント,'/コエニダ'シテ/カゾエ'ル./ジュ'ウデ/ヒト'マトメ./ハカ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-8a08-0": {
+   "kana": "ハカルオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5143": {
+   "kana": "モト'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5143": {
+   "kana": "ヒト'ノ/カラダノ',/イチ'バンウエワ/アタマ'./ココガ'/ハジマリダ'ヨ./モト'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5143-0": {
+   "kana": "モト'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8a00": {
+   "kana": "イウ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8a00": {
+   "kana": "シタ'/ニクチ'./ソコカラ',/コトバ'ガ/ツギ'ツギ/デ'テクルヨ./イウ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-539f": {
+   "kana": "ハ'ラ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-539f": {
+   "kana": "ガケノシタ'カラ,/ミズガ'/ワキデ'ル./カワ'ノ/ハジマリダ'ヨ./ハラ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-539f-0": {
+   "kana": "ハラオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6238": {
+   "kana": "ト.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6238": {
+   "kana": "モ'ンノ/トビラノ',/カタ'ホオダケ./パタ'ント/ヒラ'ク,/ソノ'/カタチダ'ヨ./ト.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-53e4": {
+   "kana": "フル'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-53e4": {
+   "kana": "ムカシノ'/ハナシ'ガ,/クチカラク'チエ,/ジュッカイモ'/ツタワッタ'./トテモ'/ムカシノ'/ハナシ'./フル'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-53e4-0": {
+   "kana": "フル'イオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5348": {
+   "kana": "ゴ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5348": {
+   "kana": "モチオツ'ク,/キ'ネノ/カタチカラ'デキタヨ./オ'/ヒルノ'/ジカンオ'/アラワ'ス./ゴ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5f8c": {
+   "kana": "ウシロ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5f8c": {
+   "kana": "ミ'チオ/アル'ク/ア'シニ,/ヒモガ'/カラマ'ッタ./ミンナ'ヨリ/オクレテシマウ'./ウシロ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8a9e": {
+   "kana": "ゴ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8a9e": {
+   "kana": "ヒダリワ',/コトバ'オイウ/シルシ'./ミ'ギワ,/ゴ'ノ/オ'トノ/シルシ'./コトバ'デ/カタル'./ゴ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-8a9e-0": {
+   "kana": "ゴ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5de5": {
+   "kana": "コ'オ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5de5": {
+   "kana": "ダ'イクサンガ/ツカウ',/ド'オグノ/カタチカラ'デキタヨ./モノ'オ/ツク'ル/シゴト'./コ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-516c": {
+   "kana": "コオ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-516c": {
+   "kana": "ヒトリジメノ'/ハコオ',/パカ'ット/ヒラ'ク./ミンナ'ノモノニスル./コ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-516c-0": {
+   "kana": "コオオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5e83": {
+   "kana": "ヒロ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5e83": {
+   "kana": "オ'オキナヤネノ/シタワ',/ヒロビ'ロ./ナ'カノ/カタチワ',/オ'トノ/シルシ'./ヒロ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5e83-0": {
+   "kana": "ヒロ'イオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4ea4": {
+   "kana": "マジワ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4ea4": {
+   "kana": "ヒト'ガ,/ア'シオ/バッテ'ンニ/クンデタ'ッテイル./ア'シト/ア'シガ,/マジワ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-4ea4-0": {
+   "kana": "マジワルオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5149": {
+   "kana": "ヒカリ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5149": {
+   "kana": "ヒト'ガ,/アタマ'ノウエニ,/ヒ'オ/カカゲテイル'./ア'タリオ/テラス'./ヒカリ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8003": {
+   "kana": "カンガ'エル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8003": {
+   "kana": "ナガイキノ'/オトシヨ'リワ,/モノシ'リ./シタワ',/コ'オノ/オ'トノ/シルシ'./ジック'リ,/カンガ'エル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-8003-0": {
+   "kana": "カンガエルオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-884c": {
+   "kana": "イク'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-884c": {
+   "kana": "ミ'チト/ミ'チガ/デア'ウ,/ジュウジロノ'/カタチ'./ヒト'ガ/アル'イテ,/イ'ク.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-884c-0": {
+   "kana": "イ'クオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9ad8": {
+   "kana": "タカ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9ad8": {
+   "kana": "ヤ'ネノ/ア'ル,/タカ'イ/タテ'モノノ/カタチカラ'デキタヨ./ミアゲルホド',/タカ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9ec4": {
+   "kana": "キ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9ec4": {
+   "kana": "ムカシノ'/ヒト'ガ,/コシニサ'ゲタ,/キイロイ'/タマノ'/カタチ'./ユ'ラユラ/ユレル'./キ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5408": {
+   "kana": "ア'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5408": {
+   "kana": "イレモノニ',/ウエカラ'/フタオ'/カブセ'ル./ピッタ'リ,/ア'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5408-0": {
+   "kana": "アウオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8c37": {
+   "kana": "タニ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8c37": {
+   "kana": "ヤマト'ヤマノ/ア'イダガ,/フカ'ク/ワレテイル'./ソコカラ'/ミズガ'/ナガレデ'ル./タニ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-56fd": {
+   "kana": "クニ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-56fd": {
+   "kana": "カコイノナ'カニ,/タイセツナ'/タカラノ'/タマ'./ミンナ'デ/マモ'ル./クニ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-56fd-0": {
+   "kana": "クニオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9ed2": {
+   "kana": "ク'ロ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9ed2": {
+   "kana": "シタデ',/ヒガモエル'./ウエノケ'ムダシニ,/ス'スガ/ツ'イテ,/マック'ロ./ク'ロ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-9ed2-0": {
+   "kana": "ク'ロオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4eca": {
+   "kana": "イ'マ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4eca": {
+   "kana": "フタオ',/パタ'ント/カブ'セテ/ツカマエル'./イ'マ,/コノト'キオ/ノガサ'ナイ./イ'マ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-624d": {
+   "kana": "サ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-624d": {
+   "kana": "ツチ'カラ,/チ'イサナ/メ'ガ/デ'テキタ./コレカラ'/ノビ'ル/チ'カラガ/ア'ル./サ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7d30": {
+   "kana": "ホソ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7d30": {
+   "kana": "ヒダリワ',/イ'ト./ホソ'クテ/ナガ'イ./ミ'ギワ,/サ'イノ/オ'トノ/シルシ'./ホソ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-7d30-0": {
+   "kana": "ホソ'イオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4f5c": {
+   "kana": "ツク'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4f5c": {
+   "kana": "ヒト'ガ,/テ'オ/ウゴカ'シテ,/モノ'オ/ツク'ル./ミ'ギワ,/サ'クノ/オ'トノ/シルシ'./ツク'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-4f5c-0": {
+   "kana": "ツクルオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7b97": {
+   "kana": "サ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7b97": {
+   "kana": "タケノ'ボウオ,/リョオテデ'/ナラベテ',/カ'ズオ/カゾエ'ル./ケイサンノ',/サン.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6b62": {
+   "kana": "トマル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6b62": {
+   "kana": "アシア'トノ/カタチカラ'デキタヨ./アル'イテキタ/ア'シガ,/ピタ'ット,/トマル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5e02": {
+   "kana": "イ'チ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5e02": {
+   "kana": "ヤ'ネノ/シタニ',/ヌノノ'/ハタ'オ/タテタ'./モノ'オ/ウル'/ヒト'ガ/アツマ'ル./イ'チ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5e02-0": {
+   "kana": "イ'チオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-77e2": {
+   "kana": "ヤ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-77e2": {
+   "kana": "ユ'ミデ/トバス',/ヤ'ノ/カタチカラ'デキタヨ./サキガ'/トガ'ッテ,/ウシロニ'/ハネ'./ヤ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-59c9": {
+   "kana": "アネ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-59c9": {
+   "kana": "ヒダリワ',/オンナ'ノ/ヒト'./ミ'ギワ,/シノオ'トノ/シルシ'./トシウエノ'/キョオダイ'./アネ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-59c9-0": {
+   "kana": "アネオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-601d": {
+   "kana": "オモ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-601d": {
+   "kana": "ウエワ',/アタマ'./シタワ',/ココ'ロ./アタマ'ト/ココ'ロオ/ツカッテ',/オモ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-601d-0": {
+   "kana": "オモウオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7d19": {
+   "kana": "カミ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7d19": {
+   "kana": "イ'トノヨオニ/ホソ'イ/セ'ンイオ/アツ'メテ/ツク'ル./ミ'ギワ,/シノオ'トノ/シルシ'./カ'ミ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-7d19-0": {
+   "kana": "カミオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5bfa": {
+   "kana": "テラ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5bfa": {
+   "kana": "ツチ'ノウエニ/タ'ツ,/オテラ'./テ'オ/アワ'セテ,/オマイリスル'./テラ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5bfa-0": {
+   "kana": "テラオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-81ea": {
+   "kana": "ジ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-81ea": {
+   "kana": "カオノ'/マンナカノ',/ハナノ'/カタチカラ'デキタヨ./ジブンノイ'ミデ/ツカウ'./ジ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6642": {
+   "kana": "ト'キ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6642": {
+   "kana": "オヒ'サマガ/ウゴ'クト,/ト'キガ/ススム'./ミ'ギワ,/ジノ'/オ'トノ/シルシ'./ト'キ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6642-0": {
+   "kana": "トキオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5ba4": {
+   "kana": "シツ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5ba4": {
+   "kana": "ヤ'ネノ/シタニア'ル,/ヘヤ'./シタワ',/シツ'ノ/オ'トノ/シルシ'./シツ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5ba4-0": {
+   "kana": "シツ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-793e": {
+   "kana": "シャ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-793e": {
+   "kana": "ツチ'オ/モリア'ゲテ,/トチノ'/カミサマオ'/マツル'./カミサマノ'/イル'/バショ'./シャ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-793e-0": {
+   "kana": "シャ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5f31": {
+   "kana": "ヨワ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5f31": {
+   "kana": "グニャ'リ/トマガ'ル,/ヤワラカ'イ/ユ'ミガ,/フタツ'./ヤオト'オクエ/トバセナ'イ./ヨワ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9996": {
+   "kana": "クビ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9996": {
+   "kana": "カミノ'ケノ/ハ'エタ,/アタマ'ノ/カタチカラ'デキタヨ./アタマ'オ/ササエルトコロ'./クビ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-79cb": {
+   "kana": "ア'キ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-79cb": {
+   "kana": "イ'ネガ/ミノ'ッタ./イ'ネニ/ツ'ク/ム'シオ,/ヒ'デ/オイハラ'ウ./シュウカクノキ'セツ./ア'キ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-79cb-0": {
+   "kana": "ア'キオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9031": {
+   "kana": "シュ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9031": {
+   "kana": "ミ'チオ/グル'リト,/ヒトマ'ワリ./ナノカデ',/ヒトマ'ワリスル./シュ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-9031-0": {
+   "kana": "シュ'ウオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6625": {
+   "kana": "ハ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6625": {
+   "kana": "オヒ'サマノ/ヒカリオ'/アビテ',/クサ'ノ/メ'ガ,/ニョ'キニョキ/ノビ'ル./ハル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-66f8": {
+   "kana": "カ'ク.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-66f8": {
+   "kana": "フデオテ'ニ/モ'ッテ,/モ'ジオ/カ'ク./シタワ',/オ'トノ/シルシデ',/オヒ'サマデワ/ナ'イヨ./カ'ク.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-66f8-0": {
+   "kana": "カ'クオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5c11": {
+   "kana": "スコ'シ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5c11": {
+   "kana": "チ'イ/サイ'ツブオ,/ナナ'メニ/ケズリト'ル./ノコ'ッタノワ,/ホンノ'/スコ'シ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5c11-0": {
+   "kana": "スコ'シオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5834": {
+   "kana": "バ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5834": {
+   "kana": "ツチ'ノ,/ナカマノ',/カンジ'./ヒロ'イ,/ツチ'ノ,/バショ'./ミ'ギワ,/ジョ'オノ,/オ'ト./バ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5834-0": {
+   "kana": "バ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8272": {
+   "kana": "イロ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8272": {
+   "kana": "アメノ',/ア'トニ,/ニジガ',/デ'タ./ア'カ,/キイロ',/ア'オ./イロガ',/イッパイ'./イロ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-98df": {
+   "kana": "タベ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-98df": {
+   "kana": "ウツワニ',/ゴ'ハンガ,/ヤマモリ'./オ'オキナ,/クチデ',/イタダキマ'ス./タベ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5fc3": {
+   "kana": "ココロ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5fc3": {
+   "kana": "シンゾオノ',/カタチカラ',/デ'キタヨ./ムネ'デ,/ド'キドキ,/ウゴ'ク./ココ'ロ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-65b0": {
+   "kana": "アタラシ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-65b0": {
+   "kana": "オ'ノオ,/フリオロ'シテ,/キ'オ,/キ'ル./キリタテノ',/キ'ワ,/キ'レイ./ヒダリワ',/シ'ンノ,/オ'ト./アタラシ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-65b0-0": {
+   "kana": "アタラシ'イオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-89aa": {
+   "kana": "オヤ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-89aa": {
+   "kana": "ミ'ルノ,/ナカマノ',/カンジ'./コドモオ',/ソ'バデ,/ミマモル'./ヒダリワ',/シ'ンノ,/オ'ト./オ'ヤ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-89aa-0": {
+   "kana": "オヤ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-56f3": {
+   "kana": "ズ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-56f3": {
+   "kana": "シカク'イ,/カコイノ',/ナ'カニ,/トチ'ノ,/ヨ'オスオ,/カ'ク./チ'ズガ,/デ'キタ./ズ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6570": {
+   "kana": "カ'ズ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6570": {
+   "kana": "ボ'ウオ,/テ'ニ,/モ'ツ./ヒト'ツ,/フタツト',/タタ'イテ,/カゾエ'ル./ヒダリワ',/スウ'ノ,/オ'ト./カ'ズ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6570-0": {
+   "kana": "カ'ズオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-897f": {
+   "kana": "ニシ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-897f": {
+   "kana": "ト'リノ,/スノ',/カタチ'./ユウガタ',/ト'リワ,/スニ',/カ'エル./オヒ'サマガ,/シズム',/ホ'オ./ニ'シ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-58f0": {
+   "kana": "コ'エ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-58f0": {
+   "kana": "ツルシタ',/イ'シノ,/ガッキオ',/タタ'ク./イイ',/オ'トガ,/ミミ'ニ,/ト'/ドク'./コ'エ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-661f": {
+   "kana": "ホシ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-661f": {
+   "kana": "ヨゾ'ラデ,/キ'ラキラ,/ヒカル',/ホ'シ./シタワ',/セ'イノ,/オ'ト./ホ'シ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-661f-0": {
+   "kana": "ホ'シオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6674": {
+   "kana": "ハレ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6674": {
+   "kana": "アオ'イ,/ソ'ラニ,/オヒ'サマガ,/デ'タ./ク'モガ,/ナ'クテ,/イイ',/テンキ'./ハレ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6674-0": {
+   "kana": "ハレオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5207": {
+   "kana": "キ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5207": {
+   "kana": "カタナノ',/ナカマノ',/カンジ'./カタナデ',/スパ'ット,/キ'ル./ヒダリワ',/オ'トノ,/シルシ'./キ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5207-0": {
+   "kana": "キルオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-96ea": {
+   "kana": "ユキ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-96ea": {
+   "kana": "ソ'ラカ/ラ',/フ'ワフワ,/オ'チテクル./テ'ノヒラニ,/ソット',/ノル'ヨ./ユキ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-96ea-0": {
+   "kana": "ユキ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8239": {
+   "kana": "フ'ネ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8239": {
+   "kana": "ミ'ズニ,/ウカブ',/フ'ネ./ナミデ',/ユ'ラユラ,/ユレル'./ミ'ギワ,/センノ',/オ'ト./フ'ネ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-8239-0": {
+   "kana": "フ'ネオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7dda": {
+   "kana": "セ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7dda": {
+   "kana": "イ'トノ,/ヨ'オニ,/ホソ'ク,/ナガ'ク,/ノビ'ル./ミ'ギノ,/イズミワ',/センノ',/オ'ト./セン'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-7dda-0": {
+   "kana": "イズミオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-7dda-1": {
+   "kana": "センオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-524d": {
+   "kana": "マ'エ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-524d": {
+   "kana": "フ'ネニ,/ア'シオ,/ノセル'./フ'ネワ,/ス'イスイ,/マ'エエ,/ススム'./マエ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7d44": {
+   "kana": "クミ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7d44": {
+   "kana": "イ'トオ,/ナ'ンボ/ンモ',/アワ'セテ,/ヒモオ',/ア'ム./ミ'ギワ,/オ'トノ,/シルシ'./クミ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-7d44-0": {
+   "kana": "クミ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8d70": {
+   "kana": "ハシ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8d70": {
+   "kana": "ウデ'オ,/オオキ'ク,/フ'ル,/ヒト'./シタワ',/ア'シ./ビュ'ンビュン,/カケ'ル./ハシ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-8d70-0": {
+   "kana": "ハシルオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-591a": {
+   "kana": "オ'オイ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-591a": {
+   "kana": "オニクオ',/イ'チマイ./ソノウエ'ニ,/モ'オ,/イ'チマイ./カサネテ',/タクサン'./オ'オイ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-591a-0": {
+   "kana": "オ'オイオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-592a": {
+   "kana": "フト'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-592a": {
+   "kana": "オオキ'イ,/ヒト'ニ,/テ'ンオ,/ヒト'ツ,/ツケ'ル./モ'ット,/ドッシ'リ./フト'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-592a-0": {
+   "kana": "フト'イオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4f53": {
+   "kana": "カラダ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4f53": {
+   "kana": "ヒト'ト,/キ'ノ,/ネ'モト./ネ'モトノ,/ヨ'オニ,/ヒト'オ,/ササエル'./カラダ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-4f53-0": {
+   "kana": "カラダオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-53f0": {
+   "kana": "ダ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-53f0": {
+   "kana": "シカク'イ,/ダ'イガ,/ア'ル./ウエニ',/サ'ンカクノ,/ツミキオ',/ノセル'./ダ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-53f0-0": {
+   "kana": "ダ'イオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5730": {
+   "kana": "チ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5730": {
+   "kana": "ツチ'ノ,/ナカマノ',/カンジ'./ド'コマデモ,/ヒロガル',/ツチ'./ミ'ギワ,/チ'ノ,/オ'ト./チ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5730-0": {
+   "kana": "チオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6c60": {
+   "kana": "イケ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6c60": {
+   "kana": "サ'ンズイワ,/ミ'ズノ,/シルシ'./ミ'ズガ,/タマッテ',/イケ'./ミ'ギワ,/チ'ノ,/オ'ト./イケ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6c60-0": {
+   "kana": "イケ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-77e5": {
+   "kana": "シル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-77e5": {
+   "kana": "ヤ'ガ,/ビュ'ント,/トブ'./ヤ'ノ,/ヨ'オニ,/ハヤ'ク,/クチデ',/コタエ'ル./ヨ'ク,/ワカ'ッテイル./シル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-77e5-0": {
+   "kana": "シ'ルオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8336": {
+   "kana": "チャ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8336": {
+   "kana": "ウエワ',/クサ'ノ,/シルシ'./オチャノ',/キ'ノ,/ハッパオ',/ツンデ',/ノ'ムヨ./チャ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-663c": {
+   "kana": "ヒル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-663c": {
+   "kana": "ヒノデカラ',/オヒ'サマガ,/グ'ングン,/ノボル'./モノサ'シデ,/ハカ'ルト,/イチ'バン,/タカ'イ./ヒ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-663c-0": {
+   "kana": "ヒルオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9577": {
+   "kana": "ナガ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9577": {
+   "kana": "カミノ',/ナガ'イ,/オジ'イサンガ,/ツ'エオ,/ツ'イテ,/タ'ッテイル./ナガ'イ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9ce5": {
+   "kana": "トリ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9ce5": {
+   "kana": "ト'リノ,/カタチカラ',/デ'キタヨ./クチバシト',/ハ'ネト,/ア'シ./ト'リ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-671d": {
+   "kana": "ア'サ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-671d": {
+   "kana": "クサ'ノ,/アイダカラ',/オヒ'サマガ,/ノボル'./ソ'ラニワ,/マ'ダ,/オツキサ'マ./アサ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-671d-0": {
+   "kana": "ア'/サオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-76f4": {
+   "kana": "ナオ'ス.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-76f4": {
+   "kana": "メ'デ,/マッス'グ,/ミ'ル./マガッタ',/モノ'オ,/マッス'グニ,/スル'./ナオ'ス.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-901a": {
+   "kana": "ト'オル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-901a": {
+   "kana": "ミ'チノ,/ナカマノ',/カンジ'./ミ'チオ,/マッス'グ,/ススンデ',/トオリヌケ'ル./ウエワ',/ツ'ウノ,/オ'ト./ト'オル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-901a-0": {
+   "kana": "トオルオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5f1f": {
+   "kana": "オトオト'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5f1f": {
+   "kana": "ボ'ウニ,/ヒモオ',/ジュンバンニ',/マク'./ジュンバンガ',/ア'トノ,/オトコ'ノコ./オトオト'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5e97": {
+   "kana": "ミセ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5e97": {
+   "kana": "ヤ'ネノ,/シタニ',/シナモノオ',/ナラベル'./ナ'カワ,/テ'ンノ,/オ'ト./ミセ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5e97-0": {
+   "kana": "ミセ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-70b9": {
+   "kana": "テン'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-70b9": {
+   "kana": "ヒ'ガ,/モエル'ト,/クロ'イ,/ス'スガ,/ツ'ク./チ'イサナ,/クロ'イ,/シルシ'./ウエワ',/テ'ンノ,/オ'ト./テ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-70b9-0": {
+   "kana": "テ'ンオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-96fb": {
+   "kana": "デ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-96fb": {
+   "kana": "アメノ',/ナ'カデ,/イナズマガ',/ピカ'ット,/ヒカ'ル./カミナ'リノ,/チ'カラ./デ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-96fb-0": {
+   "kana": "デ'/ンオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5200": {
+   "kana": "カタナ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5200": {
+   "kana": "カタナノ',/カタチカラ',/デ'キタヨ./ハ'ガ,/スコ'シ,/ソ'ッテイル./カタナ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-51ac": {
+   "kana": "フユ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-51ac": {
+   "kana": "ア'シノ,/シタニ',/コ'オリガ,/ハル'./ツ'ルツル,/スベ'ル,/サム'イ,/キ'セツ./フ'ユ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-51ac-0": {
+   "kana": "フ'ユオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5f53": {
+   "kana": "アタル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5f53": {
+   "kana": "サンボンノ',/ヤ'ガ,/マトニ',/ト'ンデイク./マンナカニ',/ピタ'ット./アタル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6771": {
+   "kana": "ヒガシ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6771": {
+   "kana": "キ'ノ/ムコ'オカラ,/オヒ'サマガ/ノボル'./オヒ'サマガ/ノボルホ'オガ,/ヒガシ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6771-0": {
+   "kana": "ヒガシオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7b54": {
+   "kana": "コタ'エ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7b54": {
+   "kana": "タケノ'フダニ,/ヘ'ンジオ/カ'ク./キカレタ'コトニ,/ピッタ'リ/ア'ウ./コタ'エ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-7b54-0": {
+   "kana": "コタ'エオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-982d": {
+   "kana": "アタマ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-982d": {
+   "kana": "オ'オキナ/アタマ'ノ/カタチガ',/アタマ'ノ/シルシ'./ヒダリノ'/マメワ',/オ'トノ/パ'アツ./アタマ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-982d-0": {
+   "kana": "アタマ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-540c": {
+   "kana": "オナジ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-540c": {
+   "kana": "ツ'ツト,/ツツ'オ,/カサネル'./フ'トサガ,/ピッタ'リ./ド'チラモ,/オナジ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9053": {
+   "kana": "ミチ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9053": {
+   "kana": "アタマ'オ,/マエニ'/ムケテ',/テ'クテク/ススム'./ヒト'ガ/ト'オルトコロガ,/ミ'チ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-9053-0": {
+   "kana": "ミ'チオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8aad": {
+   "kana": "ヨ'ム.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8aad": {
+   "kana": "コトバ'ノ/ナカマダ'ヨ./ミギガワワ',/オ'トノ/パ'アツ./コエニダ'シテ,/ホ'ンオ,/ヨ'ム.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-8aad-0": {
+   "kana": "ヨムオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5185": {
+   "kana": "ウチ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5185": {
+   "kana": "イ'エノ/イリグチカラ',/ナ'カニワイル./ハイッタ'/トコロ'ガ,/ウチ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5185-0": {
+   "kana": "ウチオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5357": {
+   "kana": "ミナミ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5357": {
+   "kana": "アタタカ'イ/コヤ'ノナカデ,/クサ'ノ/メ'ガ,/グ'ングン/ノビ'ル./アタタカ'イホオガ,/ミ'ナミ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8089": {
+   "kana": "ニク'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8089": {
+   "kana": "キリワ'ケタ,/オニクノ'/カタチ'./ナ'カノ/センワ',/オニクノス'ジ./ニク'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-99ac": {
+   "kana": "ウマ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-99ac": {
+   "kana": "タテ'ガミオ,/ナビカ'セテ,/ハシ'ル/ウマ'ノ/カタチ'./ヨ'/コノ'/センガ',/タテ'ガミダヨ./ウマ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-58f2": {
+   "kana": "ウル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-58f2": {
+   "kana": "カッタ'モノオ,/ミ'セノ/ソ'トニ/ダ'ス./ホシ'イ/ヒト'ニ,/ワタシテ',/ウル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8cb7": {
+   "kana": "カ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8cb7": {
+   "kana": "アミ'デ,/カ'イオ/アツメ'ル./カ'イワ,/ムカシノ'/オカネ'./オカネデ',/モノ'オ,/カ'ウ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-8cb7-0": {
+   "kana": "カウオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9ea6": {
+   "kana": "ム'ギ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9ea6": {
+   "kana": "ム'ギノ/ホ'ト,/シタ'/ニアシノ'/カタチ'./ア'シデ/フム'ト,/ツヨ'ク/ソダ'ツ./ム'ギ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-534a": {
+   "kana": "ハ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-534a": {
+   "kana": "オ'オキナ/ウ'シオ,/マンナカデ',/フタツニ'/ワケ'ル./ヒト'ツブンガ,/ハンブン'./ハン.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-756a": {
+   "kana": "バ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-756a": {
+   "kana": "タンボニ',/タ'ネオ,/パ'ラパラ/マク'./ヒトツズ'ツ,/ジュンバンニ'./バ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-756a-0": {
+   "kana": "バ'ンオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7236": {
+   "kana": "チ'チ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7236": {
+   "kana": "テ'ニ,/オ'ノオ/モ'ッテ,/ハタラク'/ヒト'./イ'エオ/マモ'ル,/オト'オサン./チ'チ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-98a8": {
+   "kana": "カゼ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-98a8": {
+   "kana": "フ'ネノ/ホ'ガ,/カゼオウ'ケテ,/フクラム'./ホ'ノナカニ,/ム'シガ/イッピキ'./カゼ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5206": {
+   "kana": "ワケ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5206": {
+   "kana": "カタナデ',/スパ'ット/キ'ル./ミ'ギト/ヒダリ',/フタツニ',/ワケ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-5206-0": {
+   "kana": "ワケルオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-805e": {
+   "kana": "キク'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-805e": {
+   "kana": "モ'ンノ/ムコ'オカラ,/オ'トガスル./ミミ'オ/チカズ'ケテ,/ヨ'ク/キク'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-805e-0": {
+   "kana": "キクオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7c73": {
+   "kana": "コメ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7c73": {
+   "kana": "イ'ネノ/ホ'ニ,/チ'イサナ/ツ'ブガ,/タクサン'/ナラブ'./ツ'ブノ/ヒトツヒト'ツガ,/コメ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6b69": {
+   "kana": "アル'ク.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6b69": {
+   "kana": "ミギアシ',/ヒダリ'アシ./アシア'トガ,/フタツ'/ナラブ'./マエニ'/ススンデ',/アル'ク.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-6b69-0": {
+   "kana": "アルクオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6bcd": {
+   "kana": "ハ'ハ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6bcd": {
+   "kana": "スワッテ',/ア'カチャンオ/ダ'ッコスル/ヒト'./フタツノテ'ンワ,/オチ'チ./ハ'ハ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-65b9": {
+   "kana": "ホ'オ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-65b9": {
+   "kana": "ツチ'オ/タガヤ'ス,/スキノ'/カタチ'./オシタ'ホオエ,/マッス'グ/ススム'./ホ'オ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-5317": {
+   "kana": "キタ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-5317": {
+   "kana": "フタリ'ガ,/セナカオ'/ムケア'ウ./オヒ'サマニ,/セナカオ'/ムケタ'ホオガ,/キタ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6bce": {
+   "kana": "マイ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6bce": {
+   "kana": "カミ'/カザリオツ'ケタ,/オカ'アサンノ/カタチ'./マ'イニチ,/キ'レイニ/ツケ'ルヨ./マイ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-59b9": {
+   "kana": "イモオト'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-59b9": {
+   "kana": "オンナ'ノ/コノ'/ナカマダ'ヨ./ミギガワワ',/マイ'ノ/オ'トノ/パ'アツ./トシシタノ',/イモ'オト.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-59b9-0": {
+   "kana": "イモ'オトオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-4e07": {
+   "kana": "マ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-4e07": {
+   "kana": "ムカシワ',/サソリノ'エ./オ'トガ/オナジダ'ッタカラ,/カ'ズニ/カリタ'./マン.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-660e": {
+   "kana": "アカルイ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-660e": {
+   "kana": "オヒ'サマト,/オツキサ'マ./フタツナ'ランデ,/ピカピカ'/ヒカ'ル./トテモ',/アカルイ'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-660e-0": {
+   "kana": "アカルイオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9cf4": {
+   "kana": "ナ'ク.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9cf4": {
+   "kana": "ニワトリガ',/クチオ'/オオキ'ク/アケテ',/コケ'コッコオ./ト'リガ,/ナ'ク.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-9cf4-0": {
+   "kana": "ナ'クオ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6bdb": {
+   "kana": "ケ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6bdb": {
+   "kana": "ドオブツノ'/カラダニ',/フ'サフサ/ハ'エテイル./ナガ'ク/ノ'ビタ,/ケ'ノ/カタチ'./ケ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-9580": {
+   "kana": "モ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-9580": {
+   "kana": "ミ'ギト/ヒダリニ',/トビラガ'/ニマ'イ./パタ'ント/ヒラ'ク,/モ'ンノ/カタチ'./モ'ン.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-591c": {
+   "kana": "ヨ'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-591c": {
+   "kana": "ウデ'オ/ヒロゲタ'/ヒト'ノ,/ワキ'ノ/シタニ',/オツキサ'マ./ツ'キガ/デ'タラ,/ヨル'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-91ce": {
+   "kana": "ノ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-91ce": {
+   "kana": "タンボト',/ツチ'ガ/ア'ル,/サト'./ソノ'/マワリニ',/ヒロ'イ/ノ'ハラ./ミ'ギワ,/オ'トノ/パ'アツ./ノ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-91ce-0": {
+   "kana": "ノオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-53cb": {
+   "kana": "ト'モ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-53cb": {
+   "kana": "ヒト'リノ/テ'ト,/モ'オ/ヒト'リノテ./テ'ト/テ'オ/ツナイデ',/ナカ'ヨシ./ト'モ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7528": {
+   "kana": "ヨ'オ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7528": {
+   "kana": "トッテノツ'イタ,/オケノ'/カタチ'./ミズオク'ムノニ/ツカウ',/ド'オグダヨ./ヨオ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-66dc": {
+   "kana": "ヨ'オ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-66dc": {
+   "kana": "オヒ'サマガ,/ピカピカ'/ヒカ'ル./ミギガワワ',/オ'トノ/パ'アツ./ニチヨ'オビノ,/ヨオ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-66dc-0": {
+   "kana": "ヨオオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-6765": {
+   "kana": "ク'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-6765": {
+   "kana": "ミ'ノ/ナ'ッタ,/ム'ギノ/カタチ'./ム'ギワ,/テ'ンカラ/キ'タ,/オクリモノ'./ク'ル.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-91cc": {
+   "kana": "サト'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-91cc": {
+   "kana": "ウエニ',/タンボ'./シタニ',/ツチ'./タンボノア'ルトコロニ,/ヒト'ガ/ス'ム./サト'.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-7406": {
+   "kana": "リ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-7406": {
+   "kana": "イ'シオ/ミガイテ',/キレエナ'スジオ/ダ'ス./タマノ'/ナカマ'./ミ'ギワ,/オ'トノ/パ'アツ./リ.'",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-7406-0": {
+   "kana": "リ'オ,/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  },
+  "word-8a71": {
+   "kana": "ハナ'ス.",
+   "skipped": false,
+   "diffs": []
+  },
+  "explain-8a71": {
+   "kana": "クチカラデル',/コトバ'./シタオ',/ペラペラ'/ウゴカ'シテ,/ハナ'ス.",
+   "skipped": false,
+   "diffs": []
+  },
+  "goal-8a71-0": {
+   "kana": "ハナスオ',/ツク'ロオ.",
+   "skipped": false,
+   "diffs": []
+  }
+ }
+}

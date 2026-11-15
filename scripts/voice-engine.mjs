@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { hasOverride, listClips, resolveSpec, validateOverrides } from './voice-logic.mjs'
+import { buildKana, hasOverride, listClips, readingOf, resolveSpec, validateOverrides } from './voice-logic.mjs'
 
 export const ENGINE = process.env.VOICE_ENGINE_URL ?? 'http://127.0.0.1:10101'
 export const DEFAULT_STYLE_ID = 888753760 // まお(ノーマル)
@@ -67,12 +67,28 @@ export async function engineVersion() {
   }
 }
 
+/**
+ * エンジンが 実際に どう読むか(AquesTalk 風記法)。
+ * AivisSpeech は audio_query の kana 欄に「読み上げる もとの文」を入れる(VOICEVOX と ちがう)ので、
+ * 読みと アクセントは accent_phrases から 組み立てる。
+ */
+export function kanaOf(query) {
+  const phrases = (query.accent_phrases ?? []).map((phrase, index, all) => ({
+    moras: phrase.moras.map((m) => m.text),
+    accent: phrase.accent,
+    pause: index > 0 && all[index - 1].pause_mora !== null && all[index - 1].pause_mora !== undefined,
+    question: phrase.is_interrogative === true,
+  }))
+  return buildKana(phrases)
+}
+
 /** 指定({ kind: 'text'|'kana', value })から audio_query を作る。kana は /accent_phrases(is_kana=true)で作って 入れかえる。 */
 export async function queryFor(spec, styleId) {
   if (spec.kind === 'text') return (await post(`/audio_query?speaker=${styleId}&text=${encodeURIComponent(spec.value)}`)).json()
   const phrases = await (await post(`/accent_phrases?speaker=${styleId}&is_kana=true&text=${encodeURIComponent(spec.value)}`)).json()
   const base = await (await post(`/audio_query?speaker=${styleId}&text=${encodeURIComponent('あ')}`)).json()
-  return { ...base, accent_phrases: phrases, kana: spec.value }
+  // kana 欄は AivisSpeech では「読み上げる文」。記号を のぞいた 読みを 入れる
+  return { ...base, accent_phrases: phrases, kana: readingOf(spec.value) }
 }
 
 export async function synthesizeQuery(query, styleId) {
@@ -82,7 +98,7 @@ export async function synthesizeQuery(query, styleId) {
 
 export async function synthesize(spec, styleId) {
   const query = await queryFor(spec, styleId)
-  return { wav: await synthesizeQuery(query, styleId), kana: query.kana }
+  return { wav: await synthesizeQuery(query, styleId), kana: kanaOf(query) }
 }
 
 /** wav を mp3 にして書く。ffmpeg は 引数の配列で呼ぶ(シェルを通さない)。 */
