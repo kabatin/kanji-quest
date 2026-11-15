@@ -1,6 +1,6 @@
 # 漢字クエスト
 
-![version](https://img.shields.io/badge/version-0.1.6-2f86b8) ![kanji](https://img.shields.io/badge/収録-240字(小1・小2)-3f9b5a)
+![version](https://img.shields.io/badge/version-0.2.0-2f86b8) ![kanji](https://img.shields.io/badge/収録-240字(小1・小2)-3f9b5a)
 
 漢字を「文字」ではなく「形と部位の組み合わせ」で覚えるための学習アプリの試作です。
 読み書きが苦手でも、形を見て考えるのが得意な子が、絵と物語から漢字の意味を想像できることを目指しています。

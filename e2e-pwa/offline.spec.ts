@@ -13,6 +13,8 @@ async function voiceProgress(page: Page): Promise<{ cached: number; total: numbe
 
 test('一度ひらけば、電波がなくても ひらけて、物語の音声も鳴らせる', async ({ page, context }) => {
   await page.goto('./')
+  // はじめての あんない は とばす
+  await page.getByRole('button', { name: 'あんないを とばす' }).click()
   await page.getByRole('dialog', { name: 'ログインボーナス' }).getByRole('button').click()
 
   // サービスワーカーが入り、アプリ本体と音声の保存が終わるまで待つ
@@ -39,6 +41,7 @@ test('一度ひらけば、電波がなくても ひらけて、物語の音声�
   const [a, b] = (question.match(/\d+/g) ?? ['0', '0']).map(Number)
   await page.getByRole('textbox', { name: '答え' }).fill(String(a * b))
   await page.getByRole('button', { name: 'ひらく' }).click()
-  await expect(page.getByRole('status')).toContainText('アプリ 保存済み ✓')
+  await page.getByRole('tab', { name: '設定' }).click()
+  await expect(page.getByRole('status')).toContainText('端末に保存済み')
   await expect(page.getByRole('status')).toContainText('音声 603 / 603')
 })
