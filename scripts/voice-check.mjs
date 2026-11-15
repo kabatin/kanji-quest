@@ -6,7 +6,7 @@
 // それ以外のちがいは 'mismatch'(耳で たしかめる)。文の途中の「は」「へ」は 助詞のこともあるので、どちらでも よしとする。
 // 長音の書き方(オー / オウ)のちがいは 同じと みなす。
 import { engineVersion, kanaOf, loadClips, loadOverrides, loadStyleId, paths, queryFor, writeJsonAtomic } from './voice-engine.mjs'
-import { compareReading, parseKana, resolveSpec } from './voice-logic.mjs'
+import { compareReading, resolveSpec } from './voice-logic.mjs'
 
 async function probe(styleId) {
   const tries = ["チカ'ラ", "ハイ'ル", "ハ'チ"]
