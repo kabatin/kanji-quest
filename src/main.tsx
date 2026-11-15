@@ -17,12 +17,16 @@ import './styles/rotate.css'
 import './styles/compact.css'
 import App from './App.tsx'
 import { registerServiceWorker } from './lib/pwa'
+import { startViewportFit } from './lib/viewportFit'
 
 const root = document.getElementById('root')
 if (!root) throw new Error('#root が見つかりません')
 
 // 公開した版では、電波がなくても あそべるよう準備する(開発中は なにもしない)
 void registerServiceWorker()
+
+// 画面が 小さすぎる端末では、ページぜんたいを ちぢめて 部品が かさならないようにする
+startViewportFit()
 
 // 開発中だけ(公開する版には 入らない):
 //   ?scene=休                 その字の場面を コマ送りで ならべて見る
