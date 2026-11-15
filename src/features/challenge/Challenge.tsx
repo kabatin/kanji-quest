@@ -1,69 +1,66 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { TopBar } from '../../components/Hud'
 import { KText } from '../../components/KText'
-import { KANJI } from '../../data/kanji'
-import { buildQuiz, CHALLENGE_SCOPES, pickChallengeKanji, type ChallengeScope, type Question } from '../../lib/quiz'
+import { getKanji, KANJI } from '../../data/kanji'
+import { dayKey } from '../../lib/date'
+import { challengeLevel, dailyCount, dailyQuiz, isChallengeDone, MIN_LEARNED_FOR_CHALLENGE } from '../../lib/dailyChallenge'
+import type { Question } from '../../lib/quiz'
 import type { QuizSummary } from '../../lib/rewards'
-import { bestKey, formatTime, LEVELS, QUESTION_COUNTS, type Level } from '../../lib/score'
+import { bestKey, formatTime, type Level } from '../../lib/score'
 import { useFeedback } from '../../lib/useFeedback'
+import { useProfiles } from '../../store/profiles'
 import { useProgress, type QuizGain } from '../../store/progress'
 import { QuizResult } from '../quiz/QuizResult'
 import { QuizRun } from '../quiz/QuizRun'
 
-/** レベルが上がるほどヒントが減る: 絵あり → 絵なし → カードの枠もなし */
+/** むずかしさが上がるほどヒントが減る: 絵あり → 絵なし → カードの枠もなし */
 const LEVEL_LABEL: Record<Level, string> = { 1: '{絵|え} あり', 2: '{絵|え} なし', 3: '{形|かたち} だけ' }
 
-const SCOPE_LABEL: Record<ChallengeScope, string> = {
-  mix: 'おすすめ',
-  learned: 'おぼえた',
-  grade1: '{1年生|1ねんせい}',
-  grade2: '{2年生|2ねんせい}',
-}
-
 type Phase =
-  | { readonly name: 'menu' }
-  | { readonly name: 'play'; readonly level: Level; readonly quiz: readonly Question[]; readonly run: number }
-  | { readonly name: 'result'; readonly level: Level; readonly summary: QuizSummary; readonly gain: QuizGain }
+  | { readonly name: 'intro' }
+  | { readonly name: 'play'; readonly quiz: readonly Question[]; readonly run: number }
+  | { readonly name: 'result'; readonly summary: QuizSummary; readonly gain: QuizGain; readonly firstOfDay: boolean }
 
 type Props = { readonly onHome: () => void }
 
-/** すきな数・範囲・ヒントの量でクイズに挑戦する。 */
+/** きょうの チャレンジ。出る字と むずかしさは アプリが決める。1日1回、おわったあとは ベストに挑戦できる。 */
 export function Challenge({ onHome }: Props) {
-  const [phase, setPhase] = useState<Phase>({ name: 'menu' })
+  const [phase, setPhase] = useState<Phase>({ name: 'intro' })
+  const [runCount, setRunCount] = useState(0)
+  const today = dayKey()
+  const profileId = useProfiles((s) => s.activeId)
+  const challengeDay = useProgress((s) => s.challengeDay)
+  const learnedCount = useProgress((s) => s.learned.length)
   const bests = useProgress((s) => s.bests)
-  const learned = useProgress((s) => s.learned)
-  const options = useProgress((s) => s.challenge)
-  const setOptions = useProgress((s) => s.setChallengeOptions)
+  const startChallenge = useProgress((s) => s.startChallenge)
   const finishQuiz = useProgress((s) => s.finishQuiz)
   const { play } = useFeedback()
-  // 前の回に出した漢字。次の回はなるべく違う字を出す
-  const lastChars = useRef<readonly string[]>([])
-  const runCount = useRef(0)
 
-  const hasLearned = learned.length > 0
-  // 「おぼえた」をえらんでいても、まだ1字も学んでいなければ「おすすめ」で出す
-  const scope: ChallengeScope = options.scope === 'learned' && !hasLearned ? 'mix' : options.scope
+  const level = challengeLevel(challengeDay, today)
+  const done = isChallengeDone(challengeDay, today)
 
-  const start = (level: Level) => {
+  const start = () => {
     play('tap')
-    const picked = pickChallengeKanji(KANJI, learned, options.count, Math.random, lastChars.current, scope)
-    lastChars.current = picked.map((k) => k.char)
-    runCount.current += 1
-    setPhase({ name: 'play', level, quiz: buildQuiz(picked, Math.random, KANJI), run: runCount.current })
+    const chars = startChallenge(profileId, today)
+    // 同じ日は、何度ひらいても(もう一回あそんでも)同じ問題
+    const quiz = dailyQuiz(chars.map(getKanji), KANJI, `${profileId}:${today}`)
+    setRunCount(runCount + 1)
+    setPhase({ name: 'play', quiz, run: runCount + 1 })
   }
 
   if (phase.name === 'play') {
-    const { level, quiz } = phase
+    const { quiz } = phase
     return (
       <QuizRun
         key={phase.run}
         questions={quiz}
         level={level}
-        onQuit={() => setPhase({ name: 'menu' })}
+        onQuit={() => setPhase({ name: 'intro' })}
         onFinish={(summary) => {
-          const gain = finishQuiz(summary, { level, bestKey: bestKey(level, quiz.length) })
+          const firstOfDay = !done
+          const gain = finishQuiz(summary, { level, bestKey: bestKey(level, quiz.length), daily: true }, today)
           play('fanfare')
-          setPhase({ name: 'result', level, summary, gain })
+          setPhase({ name: 'result', summary, gain, firstOfDay })
         }}
       />
     )
@@ -72,71 +69,50 @@ export function Challenge({ onHome }: Props) {
   if (phase.name === 'result') {
     return (
       <QuizResult summary={phase.summary} gain={phase.gain}>
-        <button type="button" className="btn btn--primary btn--big" onClick={() => start(phase.level)}>
-          <KText text="もう{一回|いっかい}" />
-        </button>
-        <button type="button" className="btn" onClick={() => setPhase({ name: 'menu' })}>
-          えらびなおす
-        </button>
-        <button type="button" className="btn" onClick={onHome}>
+        {!phase.firstOfDay && <p className="daily__tomorrow">2かいめからは ごほうびは ないよ。ベストに ちょうせんしよう！</p>}
+        <p className="daily__tomorrow">あしたも あたらしい チャレンジが あるよ</p>
+        <button type="button" className="btn btn--primary btn--big" onClick={onHome}>
           ホームへ
+        </button>
+        <button type="button" className="btn" onClick={start}>
+          <KText text="もう{一回|いっかい}" />
         </button>
       </QuizResult>
     )
   }
 
+  const count = challengeDay.day === today && challengeDay.chars.length > 0 ? challengeDay.chars.length : dailyCount(learnedCount)
+  const best = bests[bestKey(level, count)]
+
   return (
     <div className="screen challenge">
-      <TopBar onBack={onHome} backLabel="ホーム" title="チャレンジ" />
-      <div className="challenge__menu">
-        <div className="challenge__option" role="group" aria-label="もんだいの かず">
-          <span className="challenge__option-label">
-            <KText text="{数|かず}" />
-          </span>
-          {QUESTION_COUNTS.map((count) => (
-            <button
-              key={count}
-              type="button"
-              className={`btn chip ${options.count === count ? 'is-selected' : ''}`}
-              aria-pressed={options.count === count}
-              onClick={() => setOptions({ count })}
-            >
-              {count}もん
+      <TopBar onBack={onHome} backLabel="ホーム" title="きょうの チャレンジ" />
+      <div className="daily">
+        {learnedCount < MIN_LEARNED_FOR_CHALLENGE ? (
+          <p className="daily__note">
+            <KText text="まず かんじを 1つ おぼえると、チャレンジが できるよ" />
+          </p>
+        ) : (
+          <>
+            <div className="daily__card">
+              <span className="daily__stars" aria-label={`むずかしさ ${level}`}>
+                {'★'.repeat(level)}
+              </span>
+              <span className="daily__label">
+                <KText text={LEVEL_LABEL[level]} />
+              </span>
+              <span className="daily__count">{count}もん</span>
+              <span className="daily__best">{best ? `ベスト ${best.score}てん ${formatTime(best.timeMs)}` : 'まだ やってないよ'}</span>
+              {done && <span className="daily__done">きょうは できたよ！</span>}
+            </div>
+            <button type="button" className="btn btn--primary btn--big" onClick={start}>
+              {done ? 'もういちど ベストに ちょうせん' : 'はじめる'}
             </button>
-          ))}
-        </div>
-        <div className="challenge__option" role="group" aria-label="はんい">
-          <span className="challenge__option-label">はんい</span>
-          {CHALLENGE_SCOPES.map((value) => (
-            <button
-              key={value}
-              type="button"
-              className={`btn chip ${scope === value ? 'is-selected' : ''}`}
-              aria-pressed={scope === value}
-              disabled={value === 'learned' && !hasLearned}
-              onClick={() => setOptions({ scope: value })}
-            >
-              <KText text={SCOPE_LABEL[value]} />
-            </button>
-          ))}
-        </div>
-        <div className="challenge__levels">
-          {LEVELS.map((level) => {
-            const best = bests[bestKey(level, options.count)]
-            return (
-              <button key={level} type="button" className="level-card" onClick={() => start(level)}>
-                <span className="level-card__stars">{'★'.repeat(level)}</span>
-                <span className="level-card__label">
-                  <KText text={LEVEL_LABEL[level]} />
-                </span>
-                <span className="level-card__best">
-                  {best ? `ベスト ${best.score}てん ${formatTime(best.timeMs)}` : 'まだ やってないよ'}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-        <p className="challenge__note">★★ からは、1かいで せいかいすると「とく」の はんこ が もらえるよ</p>
+            <p className="daily__note">
+              <KText text={level >= 2 ? '1かいで せいかいすると「とく」の はんこ が もらえるよ' : '★★ に なると、1かいで せいかいして「とく」の はんこ が もらえるよ'} />
+            </p>
+          </>
+        )}
       </div>
     </div>
   )

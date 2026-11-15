@@ -8,7 +8,7 @@ export type Counters = {
   readonly learnNew: number
   /** 書けた漢字の数 */
   readonly write: number
-  /** クリアしたチャレンジの数 */
+  /** さいごまで やった きょうの チャレンジの数(もう一度あそんだ分も数える) */
   readonly challenge: number
   /** 1回で正解した問題の数 */
   readonly firstTry: number
@@ -34,7 +34,7 @@ export type Mission = {
 
 export const MISSION_POOL: readonly Mission[] = [
   { id: 'learn3', label: 'かんじを 3つ {学|まな}ぶ', counter: 'learn', target: 3, reward: 10 },
-  { id: 'challenge1', label: 'チャレンジを {1回|1かい} クリア', counter: 'challenge', target: 1, reward: 10 },
+  { id: 'challenge1', label: '{今日|きょう}の チャレンジを やる', counter: 'challenge', target: 1, reward: 10 },
   { id: 'new2', label: '{新|あたら}しい かんじを 2つ おぼえる', counter: 'learnNew', target: 2, reward: 15 },
   { id: 'firstTry5', label: '{1回|1かい}で せいかいを 5もん', counter: 'firstTry', target: 5, reward: 10 },
   { id: 'write3', label: 'かんじを 3つ {書|か}く', counter: 'write', target: 3, reward: 10 },

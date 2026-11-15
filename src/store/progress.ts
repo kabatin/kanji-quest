@@ -2,11 +2,20 @@ import { z } from 'zod'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { dayKey, isNextDay } from '../lib/date'
-import { backfillReviews, creditReviews, scheduleNew, type ReviewDone } from '../lib/review'
+import {
+  beginChallengeDay,
+  completeChallengeDay,
+  INITIAL_CHALLENGE_DAY,
+  isChallengeDone,
+  pickDailyChars,
+  type ChallengeDay,
+} from '../lib/dailyChallenge'
+import { answerDaysSchema, answerLogSchema, type AnswerInput } from '../lib/answerLog'
+import { backfillReviews, creditReviews, reviewAnswersOf, scheduleNew, type ReviewDone } from '../lib/review'
+import type { WriteReport } from '../lib/strokeHint'
 import { levelInfo } from '../lib/level'
 import { dailyMissions, EMPTY_COUNTERS, isMissionDone, type Counters } from '../lib/missions'
 import { loadProfiles, PROGRESS_KEY, storageKeyFor } from '../lib/profiles'
-import type { ChallengeScope } from '../lib/quiz'
 import {
   BOSS_REWARD,
   BOSS_TRIES_PER_DAY,
@@ -33,12 +42,13 @@ import {
   type BossKind,
   type QuizSummary,
 } from '../lib/rewards'
-import { DEFAULT_QUESTION_COUNT, isBetter, type Best, type Level } from '../lib/score'
+import { isBetter, type Best, type Level } from '../lib/score'
 import { canBuy, DEFAULT_EQUIPPED, DEFAULT_OWNED, findItem, ownedDecos, type Equipped } from '../lib/shop'
 import { AREAS } from '../data/areas'
+import { KANJI } from '../data/kanji'
 import { decoSpot, isDeco, isMovableDeco, settleDeco, TURN_STEPS, type DecoSpots, type DecoTurns, type Spot } from '../features/home/scene/layout'
 import { isCleared, migrateClears, triesLeft, type Clears, type Tries } from '../lib/stages'
-import { addPlayMinutes, applyReview, EMPTY_RECORDS, updateMisses, type Records } from './records'
+import { addPlayMinutes, applyReview, EMPTY_RECORDS, updateMisses, withAnswers, type Records } from './records'
 
 export type Settings = {
   readonly sound: boolean
@@ -48,8 +58,6 @@ export type Settings = {
   readonly icons: boolean
   readonly timer: boolean
 }
-
-export type ChallengeOptions = { readonly count: number; readonly scope: ChallengeScope }
 
 export type Daily = { readonly day: string; readonly counters: Counters; readonly claimed: readonly string[] }
 
@@ -87,7 +95,8 @@ type ProgressData = Records & {
   readonly zukanSeen: number
   /** 自己ベスト。キーは bestKey(ヒントの量, 問題の数) */
   readonly bests: Readonly<Record<string, Best>>
-  readonly challenge: ChallengeOptions
+  /** きょうの チャレンジ(その日の字・むずかしさ・やりおえたか) */
+  readonly challengeDay: ChallengeDay
   readonly settings: Settings
 }
 
@@ -108,7 +117,21 @@ export type QuizGain = Gain & {
   readonly newStamps: readonly string[]
 }
 
-export type QuizContext = { readonly level: Level; readonly bestKey?: string }
+/**
+ * daily = きょうの チャレンジ。その日の1回目だけ ごほうびが 満額で、2回目からは自己ベストに挑戦するだけ。
+ * answers = 問題ごとの正誤(えらぶ問題)。渡すと まちがえた字も きろく に のこる(省くと 1回で正解した字だけ)
+ */
+export type QuizContext = {
+  readonly level: Level
+  readonly bestKey?: string
+  readonly daily?: boolean
+  readonly answers?: readonly { readonly char: string; readonly ok: boolean }[]
+}
+
+/** 学ぶ(くみあわせ)の くわしい結果。mistakes = まちがえて えらんだ回数 */
+export type LearnDetail = { readonly mistakes: number }
+/** 学ぶ(見て書く)の くわしい結果。`<Kaku>` の onDone の 2つの引数 */
+export type WriteDetail = { readonly misses: number; readonly report?: WriteReport }
 
 /** ボスとの たたかい1回ぶんの結果 */
 export type BossResult = {
@@ -126,14 +149,18 @@ export type BossResult = {
   readonly missed?: readonly string[]
   /** まちがえずに できた漢字。苦手の回数が へる */
   readonly solved?: readonly string[]
+  /** 問題ごとの答え(種類・正誤・ヒントの段)。渡すと きろく に のこり、復習も 種類を見て進める */
+  readonly answers?: readonly AnswerInput[]
 }
 
-/** ふくしゅう 1回ぶんの結果 */
+/** ふくしゅう・にがて れんしゅう 1回ぶんの結果 */
 export type ReviewResult = {
   /** 1回で できた字 */
   readonly right: readonly string[]
   /** まちがえた字 */
   readonly wrong: readonly string[]
+  /** 問題ごとの答え(種類・正誤・ヒントの段)。渡すと、見ないで書く段で ヒントを使った正解は 進まない */
+  readonly answers?: readonly AnswerInput[]
 }
 
 export type BossGain = Gain & {
@@ -148,9 +175,11 @@ type ProgressActions = {
   /** その日はじめて開いたときに呼ぶ。れんぞく日数と ログインボーナス を用意する。 */
   checkIn: (today?: string) => void
   claimLoginBonus: () => number
-  completeKanji: (char: string, today?: string) => LearnGain
-  completeWriting: (char: string, today?: string) => WriteGain
+  completeKanji: (char: string, today?: string, detail?: LearnDetail) => LearnGain
+  completeWriting: (char: string, today?: string, detail?: WriteDetail) => WriteGain
   finishQuiz: (summary: QuizSummary, context: QuizContext, today?: string) => QuizGain
+  /** きょうの チャレンジを はじめる。その日の字が まだなら決めて、覚えておく(何度ひらいても同じ字)。字の一覧を返す */
+  startChallenge: (profileId: string, today?: string) => readonly string[]
   /** ボスに ちょうせん する(その日の回数を1つ使う)。もう回数がなければ false。limit で1日の回数を変えられる */
   startBoss: (id: string, kind: BossKind, today?: string, limit?: number) => boolean
   finishBoss: (result: BossResult, today?: string) => BossGain
@@ -174,7 +203,6 @@ type ProgressActions = {
   turnDeco: (name: string) => void
   /** 持っている かざり を しまう(stored = true)・しまに出す(false)。出すときは、ほかと重ならない場所に直す */
   storeDeco: (name: string, stored: boolean) => void
-  setChallengeOptions: (patch: Partial<ChallengeOptions>) => void
   updateSettings: (patch: Partial<Settings>) => void
   reset: () => void
 }
@@ -201,7 +229,7 @@ const INITIAL: ProgressData = {
   decoStored: [],
   zukanSeen: 0,
   bests: {},
-  challenge: { count: DEFAULT_QUESTION_COUNT, scope: 'mix' },
+  challengeDay: INITIAL_CHALLENGE_DAY,
   // タイマーは焦りのもとになるので、最初は見せない
   settings: { sound: true, music: true, speech: true, icons: true, timer: false },
 }
@@ -211,6 +239,12 @@ const decoSpotsSchema = z.record(z.string(), z.object({ x: z.number().finite(), 
 
 const decoTurnsSchema = z.record(z.string(), z.number().int().min(0).max(TURN_STEPS - 1)).catch({})
 const decoStoredSchema = z.array(z.string()).catch([])
+
+const levelSchema = z.union([z.literal(1), z.literal(2), z.literal(3)])
+/** 保存してあった きょうの チャレンジ。なかった・こわれていたら、はじめの状態 */
+const challengeDaySchema = z
+  .object({ day: z.string(), level: levelSchema, next: levelSchema, done: z.boolean(), chars: z.array(z.string()) })
+  .catch(() => ({ ...INITIAL_CHALLENGE_DAY, chars: [] }))
 
 /** しまに出ている、ほかの かざり(name を のぞく)の場所。置く場所が重ならないように使う */
 function otherDecoSpots(name: string, owned: readonly string[], decoSpots: DecoSpots, decoStored: readonly string[]): Spot[] {
@@ -246,7 +280,7 @@ const gainOf = (xpBefore: number, xp: number, coins: number): Gain => ({
   levelAfter: levelInfo(xpBefore + xp).level,
 })
 
-type OldState = { learned?: string[]; points?: number; skin?: string; settings?: Settings; challenge?: ChallengeOptions }
+type OldState = { learned?: string[]; points?: number; skin?: string; settings?: Settings }
 type V3State = Partial<Omit<ProgressData, 'clears' | 'tries' | 'seenLevel'>> & { stageStars?: Record<string, number> }
 
 export const STORAGE_VERSION = 6
@@ -301,7 +335,6 @@ function toV5(persisted: unknown, version: number): ProgressData {
     owned: hasSkin ? [...new Set([...DEFAULT_OWNED, skinId])] : DEFAULT_OWNED,
     equipped: hasSkin ? { ...DEFAULT_EQUIPPED, skin: skinId } : DEFAULT_EQUIPPED,
     settings: old.settings ?? INITIAL.settings,
-    challenge: old.challenge ?? INITIAL.challenge,
   }, dayKey())
 }
 
@@ -328,11 +361,13 @@ export const useProgress = create<ProgressState>()(
         return bonus.coins
       },
 
-      completeKanji: (char, today = dayKey()) => {
+      completeKanji: (char, today = dayKey(), detail) => {
         const before = get()
         const isNew = !before.learned.includes(char)
         const gain = gainOf(before.xp, isNew ? XP_LEARN_NEW : XP_LEARN_AGAIN, isNew ? COINS_LEARN_NEW : COINS_LEARN_AGAIN)
         set((state) => ({
+          // くみあわせ を さいごまで といた(まちがいの数が わかれば、1回も まちがえなかったか)
+          ...withAnswers(state, 'learn', [{ char, kind: 'select', ok: (detail?.mistakes ?? 0) === 0 }], today),
           learned: isNew ? [...state.learned, char] : state.learned,
           stamps: { ...state.stamps, [char]: (state.stamps[char] ?? 0) | STAMPS.learn },
           xp: state.xp + gain.xp,
@@ -345,11 +380,14 @@ export const useProgress = create<ProgressState>()(
         return { ...gain, isNew }
       },
 
-      completeWriting: (char, today = dayKey()) => {
+      completeWriting: (char, today = dayKey(), detail) => {
         const before = get()
         const isNew = !hasStamp(before.stamps[char], 'write')
         const gain = gainOf(before.xp, isNew ? XP_WRITE_FIRST : XP_WRITE_AGAIN, isNew ? COINS_WRITE_FIRST : 0)
+        const hint = detail?.report?.maxHint
+        const written: AnswerInput = { char, kind: 'model', ok: (detail?.misses ?? 0) === 0, ...(hint === undefined ? {} : { hint }) }
         set((state) => ({
+          ...withAnswers(state, 'learn', [written], today),
           stamps: { ...state.stamps, [char]: (state.stamps[char] ?? 0) | STAMPS.write },
           xp: state.xp + gain.xp,
           coins: state.coins + gain.coins,
@@ -366,16 +404,23 @@ export const useProgress = create<ProgressState>()(
           context.level >= QUIZ_STAMP_MIN_LEVEL
             ? [...new Set(summary.firstTryChars)].filter((c) => before.learned.includes(c) && !hasStamp(before.stamps[c], 'quiz'))
             : []
-        const gain = gainOf(before.xp, quizXp(summary), quizCoins(summary))
+        // きょうの チャレンジは、その日の1回目だけ ごほうびが出る(何度でも あそべるので、かせぎ放題にならないように)
+        const rewarded = !context.daily || !isChallengeDone(before.challengeDay, today)
+        const gain = rewarded ? gainOf(before.xp, quizXp(summary), quizCoins(summary)) : gainOf(before.xp, 0, 0)
+        // チャレンジは えらぶ問題だけ。書く段の字は、ここで 正解しても 復習が進まない
+        const answers = (context.answers ?? summary.firstTryChars.map((char) => ({ char, ok: true }))).map((a): AnswerInput => ({ char: a.char, ok: a.ok, kind: 'select' }))
+        const credited = summary.firstTryChars.map((char): AnswerInput => ({ char, ok: true, kind: 'select' }))
         set((state) => ({
+          ...withAnswers(state, 'challenge', answers, today),
           xp: state.xp + gain.xp,
           coins: state.coins + gain.coins,
           stamps: { ...state.stamps, ...Object.fromEntries(newStamps.map((c) => [c, (state.stamps[c] ?? 0) | STAMPS.quiz])) },
-          reviews: creditReviews(state.reviews, summary.firstTryChars, today),
+          reviews: creditReviews(state.reviews, summary.firstTryChars, today, credited),
           bests:
             improved && context.bestKey
               ? { ...state.bests, [context.bestKey]: { score: summary.score, timeMs: summary.timeMs } }
               : state.bests,
+          challengeDay: context.daily ? completeChallengeDay(state.challengeDay, context.level, summary, today) : state.challengeDay,
           daily: addCounters(dailyFor(state.daily, today), {
             challenge: 1,
             firstTry: summary.firstTry,
@@ -383,6 +428,15 @@ export const useProgress = create<ProgressState>()(
           }),
         }))
         return { ...gain, improved, newStamps }
+      },
+
+      startChallenge: (profileId, today = dayKey()) => {
+        const { challengeDay, learned, stamps, misses, reviews } = get()
+        if (challengeDay.day === today && challengeDay.chars.length > 0) return challengeDay.chars
+        const chars = pickDailyChars({ kanji: KANJI, learned, stamps, misses, reviews, today, seed: `${profileId}:${today}` })
+        const next = beginChallengeDay(challengeDay, chars, today)
+        set({ challengeDay: next })
+        return next.chars
       },
 
       startBoss: (id, kind, today = dayKey(), limit = BOSS_TRIES_PER_DAY[kind]) => {
@@ -402,43 +456,60 @@ export const useProgress = create<ProgressState>()(
         const revive = result.revive === true
         // ふっかつ で たおしたときは、コインが半分(いっぱつで たおす わけ を のこす)。にげられても、がんばり賞は 2回は出さない
         const gain = gainOf(before.xp, firstClear ? reward.xp : revive ? 0 : XP_BOSS_TRY, firstClear ? (revive ? Math.floor(reward.coins / 2) : reward.coins) : 0)
-        set((state) => ({
-          xp: state.xp + gain.xp,
-          coins: state.coins + gain.coins,
-          clears: firstClear ? { ...state.clears, [result.id]: today } : state.clears,
-          // ミッション「ボスと たたかう」は、さいごまで たたかえば(れんしゅうでも)数える
-          daily: revive ? state.daily : addCounters(dailyFor(state.daily, today), { stage: 1 }),
+        set((state) => {
           // ふっかつ戦で また まちがえても、苦手の回数は ふやさない(さっき 数えたので)
-          misses: updateMisses(state.misses, revive ? [] : (result.missed ?? []), result.solved ?? []),
-          reviews: creditReviews(state.reviews, result.solved ?? [], today),
-        }))
+          const misses = updateMisses(state.misses, revive ? [] : (result.missed ?? []), result.solved ?? [])
+          return {
+            // 問題の種類が わからない 古い呼び方では、答えは のこさない(苦手から ぬけた日 だけ)
+            ...withAnswers(state, 'boss', result.answers ?? [], today, misses),
+            xp: state.xp + gain.xp,
+            coins: state.coins + gain.coins,
+            clears: firstClear ? { ...state.clears, [result.id]: today } : state.clears,
+            // ミッション「ボスと たたかう」は、さいごまで たたかえば(れんしゅうでも)数える
+            daily: revive ? state.daily : addCounters(dailyFor(state.daily, today), { stage: 1 }),
+            misses,
+            reviews: creditReviews(state.reviews, result.solved ?? [], today, result.answers),
+          }
+        })
         return { ...gain, score, cleared, firstClear }
       },
 
       finishReview: (result, today = dayKey()) => {
         const before = get()
         const gain = gainOf(before.xp, result.right.length * XP_REVIEW_RIGHT, result.right.length * COINS_REVIEW_RIGHT + COINS_REVIEW_DONE)
-        set((state) => ({
-          xp: state.xp + gain.xp,
-          coins: state.coins + gain.coins,
-          reviews: applyReview(state.reviews, result.right, result.wrong, today),
-          reviewDone: { day: today, count: (state.reviewDone.day === today ? state.reviewDone.count : 0) + result.right.length + result.wrong.length },
-          misses: updateMisses(state.misses, result.wrong, result.right),
-          daily: addCounters(dailyFor(state.daily, today), { review: 1, firstTry: result.right.length }),
-        }))
+        set((state) => {
+          const misses = updateMisses(state.misses, result.wrong, result.right)
+          // 種類を渡さないときは、問題を決めた 復習の段から 種類が分かる
+          const answers = result.answers ?? reviewAnswersOf(state.reviews, result.right, result.wrong)
+          return {
+            ...withAnswers(state, 'review', answers, today, misses),
+            xp: state.xp + gain.xp,
+            coins: state.coins + gain.coins,
+            reviews: applyReview(state.reviews, result.right, result.wrong, today, result.answers),
+            reviewDone: { day: today, count: (state.reviewDone.day === today ? state.reviewDone.count : 0) + result.right.length + result.wrong.length },
+            misses,
+            daily: addCounters(dailyFor(state.daily, today), { review: 1, firstTry: result.right.length }),
+          }
+        })
         return gain
       },
 
       finishWeak: (result, today = dayKey()) => {
         const before = get()
         const gain = gainOf(before.xp, result.right.length * XP_REVIEW_RIGHT, result.right.length * COINS_REVIEW_RIGHT)
-        set((state) => ({
-          xp: state.xp + gain.xp,
-          coins: state.coins + gain.coins,
-          misses: updateMisses(state.misses, [], result.right),
-          reviews: creditReviews(state.reviews, result.right, today),
-          daily: addCounters(dailyFor(state.daily, today), { firstTry: result.right.length }),
-        }))
+        // 古い呼び方: 書けた字は 見て書く・見ないで書く の両方で まちがえなかった(どちらで まちがえたかは わからない)
+        const answers = result.answers ?? result.right.flatMap((char): AnswerInput[] => [{ char, kind: 'model', ok: true }, { char, kind: 'blind', ok: true }])
+        set((state) => {
+          const misses = updateMisses(state.misses, [], result.right)
+          return {
+            ...withAnswers(state, 'weak', answers, today, misses),
+            xp: state.xp + gain.xp,
+            coins: state.coins + gain.coins,
+            misses,
+            reviews: creditReviews(state.reviews, result.right, today, result.answers),
+            daily: addCounters(dailyFor(state.daily, today), { firstTry: result.right.length }),
+          }
+        })
         return gain
       },
 
@@ -514,7 +585,6 @@ export const useProgress = create<ProgressState>()(
         })
       },
 
-      setChallengeOptions: (patch) => set((state) => ({ challenge: { ...state.challenge, ...patch } })),
       updateSettings: (patch) => set((state) => ({ settings: { ...state.settings, ...patch } })),
       reset: () => set({ ...INITIAL }),
     }),
@@ -532,9 +602,13 @@ export const useProgress = create<ProgressState>()(
           ...saved,
           // あとから ふえた項目が、前の保存データに なくても こわれないようにする
           settings: { ...INITIAL.settings, ...saved.settings },
+          challengeDay: challengeDaySchema.parse(saved.challengeDay),
           decoSpots: decoSpotsSchema.parse(saved.decoSpots),
           decoTurns: decoTurnsSchema.parse(saved.decoTurns),
           decoStored: decoStoredSchema.parse(saved.decoStored),
+          // 答えの きろく は あとから ふえた。こわれていたら 読めるところだけ
+          answerLog: answerLogSchema.parse(saved.answerLog),
+          answerDays: answerDaysSchema.parse(saved.answerDays),
           // この しくみ が できる前から覚えていた字は、もう見たことにする
           zukanSeen: typeof saved.zukanSeen === 'number' ? saved.zukanSeen : (saved.learned?.length ?? 0),
           daily: saved.daily ? { ...saved.daily, counters: { ...EMPTY_COUNTERS, ...saved.daily.counters } } : INITIAL.daily,

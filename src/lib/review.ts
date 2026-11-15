@@ -58,14 +58,73 @@ export function todaysReview(dueCount: number, done: ReviewDone, today: string, 
   return { left, later: dueCount - left }
 }
 
+/** 答え方。select = えらぶ / model = 見本を見て書く / blind = 見本なしで書く */
+export type AnswerKind = 'select' | 'model' | 'blind'
+
+/** その段の ふくしゅう で出す 答え方(buildReviewQuestion と同じ きまり)。 */
+export function kindForStep(step: number): AnswerKind {
+  if (step === 1) return 'model'
+  if (step >= 3) return 'blind'
+  return 'select'
+}
+
+/** ヒントを使った と みなす段(3 = 1画を うごかして見せる。lib/strokeHint の MODEL_HINT と同じ) */
+export const HINTED_LEVEL = 3
+/** 見ないで書く段で、ヒントを使って書けた字を もう一度出すまでの日数 */
+export const HINT_RETRY_DAYS = 1
+
+/** 1問ぶんの答え。kind・hint は、わかるときだけ(古い呼び方では ない) */
+export type ReviewAnswer = { readonly ok: boolean; readonly kind?: AnswerKind; readonly hint?: number }
+export type CharAnswer = ReviewAnswer & { readonly char: string }
+
+export const isHinted = (hint: number | undefined): boolean => hint !== undefined && hint >= HINTED_LEVEL
+
+const KIND_RANK: Readonly<Record<AnswerKind, number>> = { select: 0, model: 1, blind: 2 }
+
+/**
+ * 1つの答えで、ふくしゅう の予定を決める。
+ * まちがい → 次の日から やりなおし。種類が わからない正解 → これまでどおり 1段進む。
+ * 段が求める答え方に 足りない正解(書く段で えらぶ など)→ 何も変えない(期日も そのまま)。
+ * 見ないで書く段で ヒントを使った正解 → 段は そのままで、みじかい間隔で もう一度出す。
+ */
+export function judgeReview(card: ReviewCard | undefined, answer: ReviewAnswer, today: string): ReviewCard {
+  if (!answer.ok) return afterReview(card, false, today)
+  if (answer.kind === undefined || card === undefined) return afterReview(card, true, today)
+  const need = kindForStep(card.step)
+  if (KIND_RANK[answer.kind] < KIND_RANK[need]) return card
+  if (need === 'blind' && isHinted(answer.hint)) return { due: addDays(today, HINT_RETRY_DAYS), step: card.step }
+  return afterReview(card, true, today)
+}
+
+/** 答えの強さ(見ないで書く・ヒントなし が いちばん強い) */
+const strength = (answer: ReviewAnswer): number => (answer.kind === undefined ? 3 : KIND_RANK[answer.kind]) * 2 + (isHinted(answer.hint) ? 0 : 1)
+
+/** 字ごとの、いちばん強い 正解(1回の あそびで 同じ字を 何問か といたとき)。 */
+export function bestAnswers(answers: readonly CharAnswer[]): Map<string, ReviewAnswer> {
+  const best = new Map<string, ReviewAnswer>()
+  for (const answer of answers) {
+    const before = best.get(answer.char)
+    if (answer.ok && (!before || strength(answer) > strength(before))) best.set(answer.char, answer)
+  }
+  return best
+}
+
 /**
  * ふくしゅう の日が来ている字を、ほかの あそび(ボス・チャレンジ・にがて れんしゅう)で まちがえずに できたら、
  * ふくしゅう したことにして 次の間隔へ すすめる(同じ日に 同じ字を 2回 やらせない)。
+ * answers を渡すと、答え方を見る(書く段の字は、えらぶ問題の正解では 進まない)。渡さなければ これまでどおり。
  */
-export function creditReviews(reviews: Reviews, chars: readonly string[], today: string): Reviews {
+export function creditReviews(reviews: Reviews, chars: readonly string[], today: string, answers?: readonly CharAnswer[]): Reviews {
   const due = [...new Set(chars)].filter((char) => reviews[char] !== undefined && daysBetween(reviews[char].due, today) >= 0)
   if (due.length === 0) return reviews
-  return { ...reviews, ...Object.fromEntries(due.map((char) => [char, afterReview(reviews[char], true, today)])) }
+  const best = bestAnswers(answers ?? [])
+  return { ...reviews, ...Object.fromEntries(due.map((char) => [char, judgeReview(reviews[char], best.get(char) ?? { ok: true }, today)])) }
+}
+
+/** ふくしゅう の画面が 種類を渡さないときの答え(問題は 段で決まるので、段から 答え方が分かる)。 */
+export function reviewAnswersOf(reviews: Reviews, right: readonly string[], wrong: readonly string[]): (CharAnswer & { readonly kind: AnswerKind })[] {
+  const of = (char: string, ok: boolean) => ({ char, ok, kind: kindForStep(reviews[char]?.step ?? 0) })
+  return [...right.map((char) => of(char, true)), ...wrong.map((char) => of(char, false))]
 }
 
 /**

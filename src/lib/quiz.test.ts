@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { getKanji, KANJI } from '../data/kanji'
 import { getPart } from '../data/parts'
 import { fullGlyph } from '../data/strokes'
-import { buildChoices, buildErabi, buildQuestion, buildQuiz, CHOICE_COUNT, pickChallengeKanji, questionFor, shuffle, type Rng } from './quiz'
+import { buildChoices, buildErabi, buildQuestion, buildQuiz, CHOICE_COUNT, questionFor, shuffle, type Rng } from './quiz'
 
 /** 再現できる乱数 */
 function seeded(seed: number): Rng {
@@ -12,8 +12,6 @@ function seeded(seed: number): Rng {
     return s / 4294967296
   }
 }
-
-const chars = (list: readonly { char: string }[]) => list.map((k) => k.char)
 
 describe('shuffle', () => {
   it('元の配列を変えず、同じ中身を返す', () => {
@@ -74,53 +72,5 @@ describe('えらびの問題', () => {
     const picked = [getKanji('山'), getKanji('海'), getKanji('線')]
     const quiz = buildQuiz(picked, seeded(3), KANJI)
     expect(quiz.map((q) => q.kanji.char)).toEqual(['山', '海', '線'])
-  })
-})
-
-describe('pickChallengeKanji', () => {
-  it('何も学んでいないときは、1年生の漢字から出す', () => {
-    const picked = pickChallengeKanji(KANJI, [], 5, seeded(1))
-    expect(picked).toHaveLength(5)
-    expect(new Set(chars(picked)).size).toBe(5)
-    for (const kanji of picked) expect(kanji.grade).toBe(1)
-  })
-
-  it('半分は学んだ漢字、残りはまだ学んでいない漢字になる', () => {
-    const learned = ['海', '池', '林', '森', '明', '花', '木', '日']
-    for (let seed = 1; seed <= 20; seed += 1) {
-      const picked = chars(pickChallengeKanji(KANJI, learned, 6, seeded(seed)))
-      expect(picked.filter((c) => learned.includes(c))).toHaveLength(3)
-    }
-  })
-
-  it('学んだ字が少なくても、回ごとに問題が変わる', () => {
-    const learned = ['海', '池', '林', '森', '明']
-    const rounds = Array.from({ length: 10 }, (_, i) => chars(pickChallengeKanji(KANJI, learned, 5, seeded(i + 1))).sort().join(''))
-    expect(new Set(rounds).size).toBeGreaterThan(5)
-  })
-
-  it('前の回に出た漢字は、次の回には出さない', () => {
-    const learned = ['海', '池', '林', '森', '明', '花']
-    const first = chars(pickChallengeKanji(KANJI, learned, 6, seeded(3)))
-    const second = chars(pickChallengeKanji(KANJI, learned, 6, seeded(3), first))
-    for (const char of second) expect(first).not.toContain(char)
-  })
-
-  it('2年生の漢字を学ぶまでは、2年生の新しい字は出さない', () => {
-    for (let seed = 1; seed <= 10; seed += 1) {
-      for (const kanji of pickChallengeKanji(KANJI, ['林'], 6, seeded(seed))) expect(kanji.grade).toBe(1)
-    }
-  })
-
-  it('範囲をえらぶと、その範囲の漢字だけが出る', () => {
-    const learned = ['海', '林']
-    expect(chars(pickChallengeKanji(KANJI, learned, 5, seeded(1), [], 'learned')).sort()).toEqual(['林', '海'].sort())
-    for (const kanji of pickChallengeKanji(KANJI, learned, 10, seeded(1), [], 'grade2')) expect(kanji.grade).toBe(2)
-    for (const kanji of pickChallengeKanji(KANJI, learned, 10, seeded(1), [], 'grade1')) expect(kanji.grade).toBe(1)
-    expect(pickChallengeKanji(KANJI, learned, 20, seeded(1), [], 'grade2')).toHaveLength(20)
-  })
-
-  it('全部学び終えて新しい字がないときは、学んだ字で埋める', () => {
-    expect(pickChallengeKanji(KANJI, chars(KANJI), 6, seeded(2))).toHaveLength(6)
   })
 })

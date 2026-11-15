@@ -1,5 +1,6 @@
+import { logAnswers, markWeakExits, type AnswerBook, type AnswerDays, type AnswerInput, type AnswerLog, type AnswerWhere } from '../lib/answerLog'
 import { addDays, daysBetween } from '../lib/date'
-import { afterReview, type Reviews } from '../lib/review'
+import { afterReview, bestAnswers, judgeReview, type CharAnswer, type Reviews } from '../lib/review'
 
 /**
  * おうちの かた向けの きろく と、ふくしゅう の きろく。
@@ -16,9 +17,13 @@ export type Records = {
   readonly playMinutes: Readonly<Record<string, number>>
   /** ごほうびを受け取った、コンプリートした パーツ */
   readonly partClaims: readonly string[]
+  /** 字ごとの 答えの きろく(lib/answerLog) */
+  readonly answerLog: AnswerLog
+  /** 日ごとの 答えの集計(lib/answerLog) */
+  readonly answerDays: AnswerDays
 }
 
-export const EMPTY_RECORDS: Records = { reviews: {}, learnedOn: {}, misses: {}, playMinutes: {}, partClaims: [] }
+export const EMPTY_RECORDS: Records = { reviews: {}, learnedOn: {}, misses: {}, playMinutes: {}, partClaims: [], answerLog: {}, answerDays: {} }
 
 /** あそんだ時間は、この日数ぶんだけ のこす */
 export const PLAY_LOG_DAYS = 60
@@ -35,11 +40,15 @@ export function updateMisses(misses: Readonly<Record<string, number>>, wrong: re
   return next
 }
 
-/** ふくしゅう の結果を、字ごとの予定に反映する。 */
-export function applyReview(reviews: Reviews, right: readonly string[], wrong: readonly string[], today: string): Reviews {
+/**
+ * ふくしゅう の結果を、字ごとの予定に反映する。
+ * answers を渡すと 答え方を見る(見ないで書く段で ヒントを使った正解は、段を進めず みじかい間隔で もう一度出す)。
+ */
+export function applyReview(reviews: Reviews, right: readonly string[], wrong: readonly string[], today: string, answers?: readonly CharAnswer[]): Reviews {
+  const best = bestAnswers(answers ?? [])
   return {
     ...reviews,
-    ...Object.fromEntries(right.map((char) => [char, afterReview(reviews[char], true, today)])),
+    ...Object.fromEntries(right.map((char) => [char, judgeReview(reviews[char], best.get(char) ?? { ok: true }, today)])),
     ...Object.fromEntries(wrong.map((char) => [char, afterReview(reviews[char], false, today)])),
   }
 }
@@ -49,4 +58,24 @@ export function addPlayMinutes(log: Readonly<Record<string, number>>, today: str
   const oldest = addDays(today, -PLAY_LOG_DAYS)
   const kept = Object.entries(log).filter(([day]) => daysBetween(oldest, day) > 0)
   return { ...Object.fromEntries(kept), [today]: (log[today] ?? 0) + minutes }
+}
+
+/** 答えを のこすときに読む、ストアの 前の状態 */
+export type LogState = Records & { readonly stamps: Readonly<Record<string, number>> }
+
+/**
+ * 1回の あそび ぶんの答えを のこす。missesAfter を渡すと、苦手から ぬけた字に その日を しるす。
+ * state は 変える前の状態(ログがない字は、ここの はんこ・ふくしゅう の段から 書く力を 引きつぐ)。
+ */
+export function withAnswers(
+  state: LogState,
+  where: AnswerWhere,
+  answers: readonly AnswerInput[],
+  today: string,
+  missesAfter?: Readonly<Record<string, number>>,
+): AnswerBook {
+  const seed = { stamps: state.stamps, reviews: state.reviews, learnedOn: state.learnedOn }
+  const book = logAnswers({ answerLog: state.answerLog, answerDays: state.answerDays }, where, answers, today, seed)
+  if (!missesAfter) return book
+  return { ...book, answerLog: markWeakExits(book.answerLog, state.misses, missesAfter, today, seed) }
 }

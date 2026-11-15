@@ -55,6 +55,9 @@ const stateSchema = z
     misses: numMap,
     playMinutes: numMap,
     partClaims: strList,
+    // 答えの きろく(字ごと)と 日ごとの集計
+    answerLog: z.record(str, z.record(str, z.union([num, str, z.array(z.string().max(20)).max(50)]))),
+    answerDays: z.record(str, z.array(num).max(10)),
     // 古い版(3 以前)の項目
     points: num,
     skin: str,
@@ -67,11 +70,16 @@ const stateSchema = z
 /** 保存データ1人ぶん。version は、そのとき保存した版(読みこみなおすときの移行に使う)。 */
 const storedSchema = z.object({ version: z.number().int().min(0), state: stateSchema }).strict()
 
+const childId = z.string().regex(/^p\d+$/)
+
 const parentSchema = z
   .object({
     bossSize: z.enum(['short', 'normal']),
     bossTries: z.union([z.literal(1), z.literal(3), z.literal(5)]),
     reviewPerDay: z.union([z.literal(5), z.literal(10), z.literal(15)]),
+    // 子どもごとの 1日の時間と きょうの延長(前の版の ファイルには ない)
+    playLimits: z.record(childId, z.literal([0, 15, 30, 45, 60])).optional(),
+    playExtra: z.record(childId, z.object({ day: str, minutes: num }).strict()).optional(),
   })
   .strict()
 

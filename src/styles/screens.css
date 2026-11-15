@@ -214,73 +214,6 @@
   line-height: 1.15;
 }
 
-/* チャレンジのメニュー */
-.challenge__menu {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-.challenge__option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.challenge__option-label {
-  min-width: 72px;
-  font-size: 1.15rem;
-  color: var(--muted);
-}
-
-.challenge__levels {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 260px));
-  gap: 20px;
-}
-
-.level-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 20px 16px;
-  background: var(--card-bg);
-  border: 4px solid var(--card-border);
-  border-radius: var(--radius);
-  box-shadow: 0 6px 0 var(--card-border);
-}
-
-.level-card:active {
-  transform: translateY(4px);
-  box-shadow: 0 2px 0 var(--card-border);
-}
-
-.level-card__stars {
-  font-size: 2rem;
-  color: var(--yamabuki);
-  -webkit-text-stroke: 1.5px var(--yamabuki-dark);
-}
-
-.level-card__label {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.4rem;
-}
-
-.level-card__best {
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
-.challenge__note {
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
 /* せってい(くわしくは settings.css) */
 .settings__reset {
   display: flex;
@@ -298,11 +231,6 @@
 @media (max-width: 760px) {
   .result {
     grid-template-columns: 1fr;
-  }
-
-  .challenge__levels {
-    grid-template-columns: 1fr;
-    width: 100%;
   }
 }
 

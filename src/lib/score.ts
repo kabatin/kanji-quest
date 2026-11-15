@@ -7,10 +7,6 @@ export type Level = (typeof LEVELS)[number]
 
 export type Best = { readonly score: number; readonly timeMs: number }
 
-/** チャレンジでえらべる問題の数 */
-export const QUESTION_COUNTS = [5, 10, 20] as const
-export const DEFAULT_QUESTION_COUNT = 5
-
 /** 自己ベストは「ヒントの量 x 問題の数」ごとに持つ(問題の数が違う記録はくらべられないため)。 */
 export function bestKey(level: Level, questionCount: number): string {
   return `${level}x${questionCount}`

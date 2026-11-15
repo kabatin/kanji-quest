@@ -367,13 +367,56 @@ describe('きせかえ', () => {
   })
 })
 
+describe('きょうの チャレンジ', () => {
+  const LEARNED = ['一', '二', '三', '四', '五']
+  const daily = (patch: Partial<QuizSummary> = {}) => state().finishQuiz(quiz({ score: 60, firstTry: 5, ...patch }), { level: 1, bestKey: bestKey(1, 5), daily: true }, DAY1)
+
+  it('その日の字は、何度ひらいても同じ。日がかわると新しくなる', () => {
+    useProgress.setState({ learned: LEARNED })
+    const first = state().startChallenge('p1', DAY1)
+    expect(first).toHaveLength(5)
+    expect(state().startChallenge('p1', DAY1)).toEqual(first)
+    expect(state().challengeDay).toMatchObject({ day: DAY1, level: 1, done: false })
+  })
+
+  it('1回目だけ ごほうびが出る。2回目からは自己ベストに挑戦するだけ', () => {
+    useProgress.setState({ learned: LEARNED })
+    state().startChallenge('p1', DAY1)
+    expect(daily()).toMatchObject({ xp: 20, coins: 6, improved: true })
+    const again = daily({ score: 80 })
+    expect(again).toMatchObject({ xp: 0, coins: 0, improved: true })
+    expect(state().xp).toBe(20)
+    expect(state().bests[bestKey(1, 5)]?.score).toBe(80)
+  })
+
+  it('全問1回で正解すると次の日は1つ上。その日のうちは かわらない。2回目の結果では かわらない', () => {
+    useProgress.setState({ learned: LEARNED })
+    state().startChallenge('p1', DAY1)
+    daily()
+    daily({ firstTry: 0 })
+    expect(state().challengeDay).toMatchObject({ day: DAY1, level: 1, next: 2, done: true })
+    state().startChallenge('p1', DAY2)
+    expect(state().challengeDay).toMatchObject({ day: DAY2, level: 2, done: false })
+  })
+
+  it('チャレンジの回数は、ミッション用に数える(古い きろくのまま 使える)', () => {
+    daily()
+    expect(state().daily.counters.challenge).toBe(1)
+  })
+})
+
 describe('保存', () => {
-  it('設定とチャレンジの選び方を覚えておく。タイマーは最初オフ', () => {
+  it('設定を覚えておく。タイマーは最初オフ', () => {
     expect(state().settings.timer).toBe(false)
     state().updateSettings({ sound: false })
-    state().setChallengeOptions({ count: 10 })
     expect(state().settings).toEqual({ sound: false, music: true, speech: true, icons: true, timer: false })
-    expect(state().challenge).toEqual({ count: 10, scope: 'mix' })
+  })
+
+  it('きょうの チャレンジの きろくは、なかった保存データでも はじめの状態から読める', async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ state: { learned: ['一'], bests: { '1x5': { score: 60, timeMs: 1 } }, challenge: { count: 10, scope: 'mix' } }, version: 6 }))
+    await useProgress.persist.rehydrate()
+    expect(state().challengeDay).toEqual({ day: '', level: 1, next: 1, done: false, chars: [] })
+    expect(state().bests).toEqual({ '1x5': { score: 60, timeMs: 1 } })
   })
 
   it('端末に保存され、リセットで最初にもどる', () => {
