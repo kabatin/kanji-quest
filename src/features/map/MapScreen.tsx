@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { TopBar } from '../../components/Hud'
 import { Mascot } from '../../components/Mascot'
 import { AREAS } from '../../data/areas'
@@ -29,6 +30,11 @@ const ROW_HIGH = [44, 40, 36, 42, 34, 38] as const
 
 /** そつぎょうしけん の場所(学年の さいごの エリアだけ) */
 const EXAM_SPOT = { x: 90, y: 64 } as const
+
+/** スマホの よこ向き(compact-map.css)では、丸を上下 2だんに ならべる。道の線も それに合わせる。 */
+const COMPACT_HIGH = 22
+const COMPACT_LOW = 78
+const compactY = (i: number): number => (i % 2 === 0 ? COMPACT_LOW : COMPACT_HIGH)
 
 type Spot = { readonly x: number; readonly y: number }
 
@@ -77,7 +83,9 @@ export function MapScreen({ area, onArea, onStage, onBoss, onExam, onBack }: Pro
   const hereId = here?.kind === 'learn' ? here.stage.id : here?.kind === 'boss' ? here.boss.id : undefined
   const nodes = nodesOf(current)
   const spots = spotsFor(nodes.length, isLastOfGrade)
-  const path = [...spots, ...(isLastOfGrade ? [EXAM_SPOT] : [])].map((spot, i) => `${i === 0 ? 'M' : 'L'}${spot.x} ${spot.y}`).join(' ')
+  const pathOf = (points: readonly Spot[]): string => points.map((spot, i) => `${i === 0 ? 'M' : 'L'}${spot.x} ${spot.y}`).join(' ')
+  const path = pathOf([...spots, ...(isLastOfGrade ? [EXAM_SPOT] : [])])
+  const compactPath = pathOf([...spots.map((spot, i) => ({ x: spot.x, y: compactY(i) })), ...(isLastOfGrade ? [{ x: EXAM_SPOT.x, y: COMPACT_LOW }] : [])])
   const mascot = <Mascot stage={mascotStage(levelInfo(xp).level)} hat={itemName(hat)} className="map-node__mascot" />
 
   return (
@@ -105,10 +113,11 @@ export function MapScreen({ area, onArea, onStage, onBoss, onExam, onBack }: Pro
       </div>
       <div className="map__field">
         <svg className="map__path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <path d={path} />
+          <path className="map__path-wide" d={path} />
+          <path className="map__path-compact" d={compactPath} />
         </svg>
         {nodes.map((node, i) => {
-          const style = { left: `${spots[i].x}%`, top: `${spots[i].y}%` }
+          const style = { left: `${spots[i].x}%`, top: `${spots[i].y}%`, '--top-compact': `${compactY(i)}%` } as CSSProperties
           if (node.kind === 'boss') {
             const { boss } = node
             const cleared = isCleared(clears, boss.id)
@@ -171,7 +180,7 @@ export function MapScreen({ area, onArea, onStage, onBoss, onExam, onBack }: Pro
           <button
             type="button"
             className={`map-node map-node--exam is-${examCleared ? 'cleared' : examOpen ? 'open' : 'locked'}`}
-            style={{ left: `${EXAM_SPOT.x}%`, top: `${EXAM_SPOT.y}%` }}
+            style={{ left: `${EXAM_SPOT.x}%`, top: `${EXAM_SPOT.y}%`, '--top-compact': `${COMPACT_LOW}%` } as CSSProperties}
             disabled={!examOpen}
             onClick={() => onExam(current.grade)}
             aria-label={`${current.grade}ねんせいの そつぎょうしけん${examOpen ? '' : ' まだ あかない'}`}

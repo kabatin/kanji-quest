@@ -203,6 +203,8 @@
 }
 
 .map-node .map-node__stars {
+  /* 字の名札と 6px あける */
+  margin-top: 4px;
   color: #ffffff;
   font-size: 0.8rem;
   white-space: nowrap;

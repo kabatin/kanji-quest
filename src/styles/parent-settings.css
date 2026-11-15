@@ -54,7 +54,7 @@
 .ptime__extend {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 /* この7日の 遊んだ時間 */

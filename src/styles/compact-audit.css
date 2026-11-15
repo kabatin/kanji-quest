@@ -1,0 +1,126 @@
+/* ───────── スマホの よこ向き: 点検(e2e/layoutAudit.ts)で 見つけた「キツキツ」の直し ─────────
+   押す物どうしは 8px 以上、部品どうしは 6px 以上 あける。名前は 言葉の切れ目(スペース)で折り、言葉の とちゅうでは 折らない。
+   compact.css の あとに 読みこむ。 */
+@media (max-height: 500px) and (orientation: landscape) {
+  /* ── 名前・見出し: 言葉の切れ目で 2行に ── */
+  .settings__form,
+  .settings__stats dt,
+  .settings__me .btn,
+  .shop-item__label,
+  .map-node__kanji,
+  .parts-card__label,
+  .profile-card__name {
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    line-break: strict;
+  }
+
+  .settings__form,
+  .settings__me .btn,
+  .shop-item__label {
+    text-wrap: balance;
+  }
+
+  /* ── ホーム ── */
+  .dock__buttons {
+    gap: 8px;
+  }
+
+  .dock__group {
+    padding-top: 18px;
+  }
+
+  .missions__list {
+    gap: 6px;
+  }
+
+  .grow {
+    gap: 6px;
+  }
+
+  /* ── せってい: 左の「あそんでいる ひと」 ── */
+  .settings__me {
+    gap: 6px;
+  }
+
+  .settings__mascot {
+    width: 52px;
+  }
+
+  .settings__form {
+    font-size: 0.8rem;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .settings__stats {
+    gap: 6px;
+    margin: 2px 0 0;
+  }
+
+  .settings__stats div {
+    padding: 4px 2px;
+  }
+
+  .settings__stats dd {
+    white-space: nowrap;
+  }
+
+  .settings__me .btn {
+    min-height: 44px;
+    padding: 2px 6px;
+    font-size: 0.8rem;
+  }
+
+  /* ── きせかえ ── */
+  .shop__tabs {
+    gap: 8px;
+  }
+
+  .shop-item {
+    gap: 6px;
+  }
+
+  /* ── あそぶ人の名前(8もじ)が 入力らんに おさまる ── */
+  .name-form input {
+    padding: 0 10px;
+    font-size: 1.05rem;
+  }
+
+  /* ── 結果の画面 ── */
+  .boss-result__actions,
+  .quiz-result__actions,
+  .result__side .result__actions {
+    gap: 8px;
+  }
+
+  .gains {
+    gap: 8px;
+  }
+
+  .nakama {
+    gap: 6px;
+  }
+
+  .result__main,
+  .result__side {
+    gap: 8px;
+  }
+
+  .quiz-result__main {
+    gap: 10px;
+  }
+
+  .boss-rules,
+  .review-list {
+    gap: 6px;
+  }
+
+  .review__how {
+    gap: 6px;
+  }
+
+  .review__chars {
+    margin-bottom: 6px;
+  }
+}

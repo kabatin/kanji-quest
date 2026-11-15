@@ -258,7 +258,8 @@
   grid-template-columns: auto minmax(0, 1fr);
   align-items: start;
   gap: 14px;
-  padding-right: 76px;
+  /* 右上の「閉じる」ボタン(幅 79px)に かさならない */
+  padding-right: 90px;
 }
 
 .cdetail__close {
