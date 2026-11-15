@@ -1,27 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
-  <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#6ec3f0" />
-      <stop offset="1" stop-color="#d9f1fb" />
-    </linearGradient>
-  </defs>
-  <rect width="120" height="120" fill="url(#sky)" />
-  <circle cx="96" cy="22" r="11" fill="#ffd95a" />
-  <path d="M8 28 a7 7 0 0 1 3 -13 a9 9 0 0 1 17 -2 a8 8 0 0 1 5 15 Z" fill="#ffffff" opacity="0.9" />
-  <path d="M-4 100 Q30 82 62 92 T124 88 V124 H-4 Z" fill="#58b56b" />
-  <path d="M-4 108 Q40 96 80 104 T124 102 V124 H-4 Z" fill="#3a8f4f" />
-  <g transform="translate(60 100) scale(0.82) translate(-60 -100)">
-    <ellipse cx="60" cy="110" rx="28" ry="5" fill="rgba(0,0,0,0.18)" />
-    <path d="M94 74 Q106 66 104 50" stroke="#27336b" stroke-width="8" stroke-linecap="round" fill="none" />
-    <path d="M104 52 V18" stroke="#b07a48" stroke-width="5" stroke-linecap="round" />
-    <path d="M100 20 Q104 0 108 20 Z" fill="#27336b" />
-    <path d="M60 18 C82 44 96 58 96 78 A36 34 0 0 1 24 78 C24 58 38 44 60 18 Z" fill="#27336b" />
-    <path d="M44 56 Q36 68 38 80" stroke="#4a5aa8" stroke-width="6" stroke-linecap="round" fill="none" />
-    <path d="M60 20 Q52 6 60 2 Q68 6 60 20 Z" fill="#4a5aa8" />
-    <path d="M41 72 Q47 64 53 72 M67 72 Q73 64 79 72" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" fill="none" />
-    <ellipse cx="38" cy="84" rx="5" ry="3.5" fill="#ff8fa3" />
-    <ellipse cx="82" cy="84" rx="5" ry="3.5" fill="#ff8fa3" />
-    <path d="M52 86 Q60 97 68 86 Z" fill="#ff8fa3" stroke="#ffffff" stroke-width="3" stroke-linejoin="round" />
-    <path d="M30 98 Q60 108 90 98" stroke="#e8452c" stroke-width="7" stroke-linecap="round" fill="none" />
-  </g>
-</svg>
+  <!-- アプリのアイコンの もと。scripts/build-icons.mjs で PNG に書き出す。
+       はんこの「漢」は 書体(Yu Gothic)で えがくので、書き出しは Windows で行う。ブラウザのタブには PNG を使う。 -->
+  <rect x="-40" y="-40" width="200" height="200" fill="#ffc233"/><g fill="#ffd866"><path d="M44 56 L212.7 35.3 L212.7 76.7 Z"/><path d="M44 56 L200.5 122.4 L179.8 158.3 Z"/><path d="M44 56 L146.3 191.8 L110.4 212.5 Z"/><path d="M44 56 L64.7 224.7 L23.3 224.7 Z"/><path d="M44 56 L-22.4 212.5 L-58.3 191.8 Z"/><path d="M44 56 L-91.8 158.3 L-112.5 122.4 Z"/><path d="M44 56 L-124.7 76.7 L-124.7 35.3 Z"/><path d="M44 56 L-112.5 -10.4 L-91.8 -46.3 Z"/><path d="M44 56 L-58.3 -79.8 L-22.4 -100.5 Z"/><path d="M44 56 L23.3 -112.7 L64.7 -112.7 Z"/><path d="M44 56 L110.4 -100.5 L146.3 -79.8 Z"/><path d="M44 56 L179.8 -46.3 L200.5 -10.4 Z"/></g><ellipse cx="44" cy="95.6" rx="27.0" ry="5" fill="rgba(140,80,0,0.22)"/><g transform="translate(44 56) scale(0.9) translate(-60 -64)"><g transform="rotate(38 84 50)"><rect x="80.5" y="18" width="7" height="62" rx="3.5" fill="#c98f52" stroke="#8a5a2b" stroke-width="1.2"/><rect x="79.5" y="16" width="9" height="6" rx="1.5" fill="#ffc233" stroke="#c98a00" stroke-width="1"/><path d="M79.5 16 Q84 -6 88.5 16 Z" fill="#1c2452"/></g><path d="M60 18 Q52 7 60 3 Q68 7 60 18 Z" fill="#4a5aa8"/><path d="M60 16 C82 43 97 58 97 79 A37 35 0 0 1 23 79 C23 58 38 43 60 16 Z" fill="#27336b"/><path d="M43 55 Q35 67 37 80" stroke="#4a5aa8" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M41 72 Q47 63 53 72 M67 72 Q73 63 79 72" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/><ellipse cx="37" cy="85" rx="5.5" ry="3.8" fill="#ff8fa3"/><ellipse cx="83" cy="85" rx="5.5" ry="3.8" fill="#ff8fa3"/><path d="M51 86 Q60 98 69 86 Z" fill="#ff8fa3" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M31 99 Q10 90 -2 101 Q9 100 12 109 Q20 100 31 104 Z" fill="#e8452c" stroke="#b8301c" stroke-width="1.5" stroke-linejoin="round"/><path d="M28 98 Q60 109 92 98" stroke="#e8452c" stroke-width="8" stroke-linecap="round" fill="none"/></g><g transform="rotate(-8 92.0 92.0)"><rect x="71" y="71" width="42" height="42" rx="9.2" fill="#e8452c" stroke="#fff" stroke-width="3.6"/><text x="92.0" y="103.55000000000001" text-anchor="middle" font-family="'Yu Gothic','Meiryo',sans-serif" font-weight="900" font-size="31.08" fill="#fff">漢</text></g><path d="M17 90.5l1.6 3.8 3.8 1.6-3.8 1.6-1.6 3.8-1.6-3.8-3.8-1.6 3.8-1.6z" fill="#fff" opacity="0.9"/><path d="M105 45.5l1.3 3.1 3.1 1.3-3.1 1.3-1.3 3.1-1.3-3.1-3.1-1.3 3.1-1.3z" fill="#fff" opacity="0.9"/></svg>
