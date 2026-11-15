@@ -409,7 +409,7 @@ describe('保存', () => {
   it('設定を覚えておく。タイマーは最初オフ', () => {
     expect(state().settings.timer).toBe(false)
     state().updateSettings({ sound: false })
-    expect(state().settings).toEqual({ sound: false, music: true, speech: true, icons: true, timer: false })
+    expect(state().settings).toMatchObject({ sound: false, music: true, speech: true, icons: true, timer: false, handed: 'right', reduceMotion: false })
   })
 
   it('きょうの チャレンジの きろくは、なかった保存データでも はじめの状態から読める', async () => {

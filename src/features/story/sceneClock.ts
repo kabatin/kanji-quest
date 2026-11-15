@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
+import { prefersReducedMotion } from '../../lib/motion'
 
 /** 動きを へらす設定の人・動かせない環境では、できあがりの絵を はじめから見せる。 */
 export function canAnimate(): boolean {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function' || typeof requestAnimationFrame !== 'function') return false
-  return !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  return !prefersReducedMotion()
 }
 
 /**

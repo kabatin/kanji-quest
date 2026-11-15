@@ -145,8 +145,10 @@ let session: Session | undefined
 let timer: ReturnType<typeof setInterval> | undefined
 let ducked = false
 let unlockBound = false
+/** 設定の「おんがく」の大きさ(1 = ふつう) */
+let volumeScale = 1
 
-const level = (): number => MUSIC_VOLUME * (ducked ? DUCKED : 1)
+const level = (): number => MUSIC_VOLUME * volumeScale * (ducked ? DUCKED : 1)
 
 /** ブラウザは、画面を さわるまで音を出させてくれない。さいしょに さわったときに 起こす。 */
 function unlockOnTouch(ctx: AudioContext): void {
@@ -233,4 +235,36 @@ export function duckMusic(on: boolean): void {
   session.gain.gain.cancelScheduledValues(now)
   session.gain.gain.setValueAtTime(Math.max(session.gain.gain.value, 0.0001), now)
   session.gain.gain.exponentialRampToValueAtTime(level(), now + 0.25)
+}
+
+/** 設定の大きさ(1 = ふつう)を うけとる。流れている曲は、すっと その大きさに かわる。 */
+export function setMusicVolume(scale: number): void {
+  if (volumeScale === scale) return
+  volumeScale = scale
+  const ctx = audioContext()
+  if (!ctx || !session) return
+  const now = ctx.currentTime
+  session.gain.gain.cancelScheduledValues(now)
+  session.gain.gain.setValueAtTime(Math.max(session.gain.gain.value, 0.0001), now)
+  session.gain.gain.exponentialRampToValueAtTime(Math.max(level(), 0.0001), now + 0.15)
+}
+
+const PREVIEW_NOTES: readonly { readonly midi: number; readonly len: number }[] = [
+  { midi: 72, len: 0.2 },
+  { midi: 76, len: 0.2 },
+  { midi: 79, len: 0.5 },
+]
+
+/** 見本の音楽(ド・ミ・ソ)を、その大きさで ならす。設定で大きさを えらんだときに使う。 */
+export function previewMusic(scale: number): boolean {
+  const ctx = audioContext()
+  if (!ctx || typeof ctx.createGain !== 'function') return false
+  if (ctx.state === 'suspended') void ctx.resume()
+  const out = ctx.createGain()
+  out.gain.value = MUSIC_VOLUME * scale
+  out.connect(ctx.destination)
+  const start = ctx.currentTime
+  PREVIEW_NOTES.forEach(({ midi, len }, i) => playTone(ctx, out, { freq: midiToFreq(midi), at: i * 0.22, len, wave: 'triangle' }, start, 1))
+  setTimeout(() => out.disconnect(), 1200)
+  return true
 }

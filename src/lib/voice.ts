@@ -25,6 +25,8 @@ let player: HTMLAudioElement | undefined
 // iPad は Audio 要素の音量を変えられないので、音量は Web Audio の GainNode で下げる
 let gain: GainNode | undefined
 let fadeTimer: ReturnType<typeof setInterval> | undefined
+/** 設定の こえ の大きさ(1 = ふつう)。さいごに 鳴らしたときの値 */
+let voiceScale = 1
 
 /** 音声を GainNode につなぐ(1回だけ)。AudioContext が動いていないうちは つながない(音が出なくなるため)。 */
 function connectGain(element: HTMLAudioElement): void {
@@ -50,9 +52,11 @@ function createPlayer(): HTMLAudioElement {
   return element
 }
 
+/** volume は 0〜1 の ふえーど の割合。設定の大きさを かけて、Audio 要素は 1 までに おさえる。 */
 function setVolume(element: HTMLAudioElement, volume: number): void {
-  if (gain) gain.gain.value = volume
-  else element.volume = volume
+  const level = volume * voiceScale
+  if (gain) gain.gain.value = level
+  else element.volume = Math.min(1, level)
 }
 
 function cancelFade(): void {
@@ -65,10 +69,11 @@ function cancelFade(): void {
  * 事前に作った音声を再生する。クリップがないときはブラウザの読み上げで代わりに読む。
  * どの方法で鳴らしたかを返す。
  */
-export function playVoice(clipId: string, fallbackText: string, enabled: boolean): VoiceResult {
+export function playVoice(clipId: string, fallbackText: string, enabled: boolean, scale = 1): VoiceResult {
   if (!enabled) return 'none'
+  voiceScale = scale
   if (!CLIPS.has(clipId) || typeof Audio === 'undefined') {
-    return speak(fallbackText, true) ? 'speech' : 'none'
+    return speak(fallbackText, true, scale) ? 'speech' : 'none'
   }
   player ??= createPlayer()
   cancelFade()
@@ -79,7 +84,7 @@ export function playVoice(clipId: string, fallbackText: string, enabled: boolean
   player.play()?.catch((error: unknown) => {
     // 次の音声に切り替わって中断されたとき(AbortError)などは何もしない。
     // ファイルを読めなかったときだけ、読み上げで代わりに読む。
-    if (error instanceof DOMException && error.name === 'NotSupportedError') speak(fallbackText, true)
+    if (error instanceof DOMException && error.name === 'NotSupportedError') speak(fallbackText, true, scale)
   })
   return 'clip'
 }

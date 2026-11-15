@@ -7,17 +7,21 @@ import { KANJI } from '../../data/kanji'
 import { levelInfo, MASCOT_FORMS, mascotStage } from '../../lib/level'
 import { stampCount } from '../../lib/rewards'
 import { itemName } from '../../lib/shop'
-import { useFeedback } from '../../lib/useFeedback'
-import { voiceId } from '../../lib/voice'
+import { choiceOf, volumePatch, type Channel } from '../../lib/volume'
+import { HandedRow, VolumeRow } from './SettingChoices'
 import { useProfiles } from '../../store/profiles'
 import { useProgress, type Settings } from '../../store/progress'
 
-type Toggle = { readonly key: keyof Settings; readonly label: string; readonly note: string; readonly icon: string }
+type BoolKey = { [K in keyof Settings]: Settings[K] extends boolean ? K : never }[keyof Settings]
 
-const SOUND_TOGGLES: readonly Toggle[] = [
-  { key: 'sound', label: 'おと', note: 'せいかい や タップの おと', icon: '🔔' },
-  { key: 'music', label: 'おんがく', note: 'うしろで ながれる きょく', icon: '🎵' },
-  { key: 'speech', label: 'よみあげ', note: 'よみ や ものがたり を こえで きく', icon: '🗣️' },
+type Toggle = { readonly key: BoolKey; readonly label: string; readonly note: string; readonly icon: string }
+
+type VolumeSetting = { readonly channel: Channel; readonly volKey: 'soundVol' | 'musicVol' | 'speechVol'; readonly label: string; readonly note: string; readonly icon: string }
+
+const VOLUMES: readonly VolumeSetting[] = [
+  { channel: 'sound', volKey: 'soundVol', label: 'おと', note: 'せいかい や タップの おと', icon: '🔔' },
+  { channel: 'music', volKey: 'musicVol', label: 'おんがく', note: 'うしろで ながれる きょく', icon: '🎵' },
+  { channel: 'speech', volKey: 'speechVol', label: 'よみあげ', note: 'よみ や ものがたり を こえで きく', icon: '🗣️' },
 ]
 
 const PLAY_TOGGLES: readonly Toggle[] = [
@@ -25,9 +29,7 @@ const PLAY_TOGGLES: readonly Toggle[] = [
   { key: 'timer', label: 'タイマー', note: 'チャレンジで じかんを はかる', icon: '⏱️' },
 ]
 
-/** ためしに読み上げる漢字 */
-const SAMPLE_CHAR = '木'
-const SAMPLE_YOMI = 'き'
+const EASE_TOGGLES: readonly Toggle[] = [{ key: 'reduceMotion', label: 'うごきを へらす', note: 'えが ゆれたり とんだり しなくなる', icon: '🐢' }]
 
 type RowProps = { readonly toggle: Toggle; readonly checked: boolean; readonly onChange: (checked: boolean) => void }
 
@@ -64,7 +66,7 @@ function Group({ title, children }: { readonly title: string; readonly children:
 
 type Props = { readonly onHome: () => void; readonly onProfiles: () => void; readonly onParent: () => void }
 
-/** せってい: あそんでいる人の きろく、音・ヒント・タイマーの切り替え、データのリセット。 */
+/** せってい: あそんでいる人の きろく、音の大きさ・ききて・ヒント・タイマーの切り替え、データのリセット。 */
 export function SettingsScreen({ onHome, onProfiles, onParent }: Props) {
   const settings = useProgress((s) => s.settings)
   const updateSettings = useProgress((s) => s.updateSettings)
@@ -76,7 +78,6 @@ export function SettingsScreen({ onHome, onProfiles, onParent }: Props) {
   const clearCount = useProgress((s) => Object.keys(s.clears).length)
   const hat = useProgress((s) => s.equipped.hat)
   const playerName = useProfiles((s) => s.profiles.find((p) => p.id === s.activeId)?.name ?? '')
-  const { play, say } = useFeedback()
   const [confirming, setConfirming] = useState(false)
 
   const { level } = levelInfo(xp)
@@ -140,18 +141,26 @@ export function SettingsScreen({ onHome, onProfiles, onParent }: Props) {
 
         <div className="settings__main">
           <Group title="おと">
-            <ul className="settings__list">{rows(SOUND_TOGGLES)}</ul>
-            <div className="settings__try">
-              <button type="button" className="btn" disabled={!settings.sound} onClick={() => play('fanfare')}>
-                🔔 おとを ためす
-              </button>
-              <button type="button" className="btn" disabled={!settings.speech} onClick={() => say(voiceId.word(SAMPLE_CHAR), SAMPLE_YOMI)}>
-                🗣️ こえを ためす
-              </button>
-            </div>
+            <ul className="settings__list settings__list--volume">
+              {VOLUMES.map(({ channel, volKey, label, note, icon }) => (
+                <VolumeRow
+                  key={channel}
+                  channel={channel}
+                  name={label}
+                  note={note}
+                  icon={icon}
+                  value={choiceOf(settings[channel], settings[volKey])}
+                  onChange={(choice) => updateSettings(volumePatch(channel, choice))}
+                />
+              ))}
+            </ul>
           </Group>
           <Group title="あそびかた">
-            <ul className="settings__list">{rows(PLAY_TOGGLES)}</ul>
+            <ul className="settings__list">
+              <HandedRow value={settings.handed} onChange={(handed) => updateSettings({ handed })} />
+              {rows(EASE_TOGGLES)}
+              {rows(PLAY_TOGGLES)}
+            </ul>
           </Group>
           <Group title="データ">
             <div className="settings__reset">

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent } from 'react'
+import { prefersReducedMotion } from '../../lib/motion'
 import { ForestScene } from './ForestScene'
 import type { DecoDrop, IslandScene, IslandState } from './scene/islandScene'
 
@@ -59,7 +60,7 @@ export function IslandCanvas({ onPoke, editing = false, onReady, onGrab, onPlace
     import('./scene/islandScene')
       .then(({ createIslandScene }) => {
         if (disposed) return
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        const reducedMotion = prefersReducedMotion()
         const scene = createIslandScene(canvas, stateRef.current, reducedMotion)
         sceneRef.current = scene
         observer = new ResizeObserver(() => scene.resize(canvas.clientWidth, canvas.clientHeight))

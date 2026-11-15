@@ -2,6 +2,7 @@ import { motion } from 'motion/react'
 import { KText } from '../../components/KText'
 import type { Stroke } from '../../data/strokes'
 import type { StrokeTrace } from '../../lib/kakuSession'
+import { prefersReducedMotion } from '../../lib/motion'
 import { endArrowHead, toPathD, toPolyline } from '../../lib/strokeGuide'
 
 /** 自分の線を 1画 書いて見せる時間と、次の画まで の間(秒) */
@@ -11,7 +12,7 @@ const STEP_S = 0.65
 /** 動きを へらす設定の人・動かせない環境では、さいごの すがた を すぐ見せる。 */
 function canAnimate(): boolean {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false
-  return !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  return !prefersReducedMotion()
 }
 
 type LayerProps = {

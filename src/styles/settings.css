@@ -324,3 +324,87 @@
 .setting__text small {
   word-break: keep-all;
 }
+
+/* 大きさ・ききての えらびかた: 大きなボタンの ならび */
+.settings .settings__list--volume {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.setting--choice {
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  min-height: 62px;
+}
+
+.setting--choice .setting__text {
+  min-width: 150px;
+}
+
+.choice {
+  display: flex;
+  gap: 6px;
+}
+
+.choice__item {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 84px;
+  min-height: 48px;
+  padding: 0 10px;
+  background: #eef2f6;
+  border: 3px solid #a9b6c4;
+  border-radius: 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.choice__item input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.choice__item.is-on {
+  background: var(--wakaba);
+  border-color: var(--wakaba-dark);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.choice__item:focus-within {
+  outline: 4px solid var(--ai);
+  outline-offset: 2px;
+}
+
+/* 項目がふえても、ページぜんたいは うごかさない。中だけ スクロールする */
+.settings__main {
+  overflow-y: auto;
+  padding: 14px 6px 8px 0;
+  margin-top: -14px;
+}
+
+@media (max-width: 760px) {
+  .setting--choice {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .setting--choice .choice {
+    grid-column: 1 / -1;
+    justify-content: stretch;
+  }
+
+  .choice__item {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.settings .setting--choice {
+  grid-column: 1 / -1;
+}

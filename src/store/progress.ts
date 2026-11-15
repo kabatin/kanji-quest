@@ -42,6 +42,9 @@ import {
   type BossKind,
   type QuizSummary,
 } from '../lib/rewards'
+import { bindAppearance } from '../lib/appearance'
+import { sanitizeHanded, type Handed } from '../lib/handed'
+import { sanitizeVolume, type Volume } from '../lib/volume'
 import { isBetter, type Best, type Level } from '../lib/score'
 import { canBuy, DEFAULT_EQUIPPED, DEFAULT_OWNED, findItem, ownedDecos, type Equipped } from '../lib/shop'
 import { AREAS } from '../data/areas'
@@ -55,8 +58,16 @@ export type Settings = {
   /** うしろで流れる音楽 */
   readonly music: boolean
   readonly speech: boolean
+  /** おと・おんがく・よみあげ の大きさ(ON のとき。OFF は「なし」) */
+  readonly soundVol: Volume
+  readonly musicVol: Volume
+  readonly speechVol: Volume
   readonly icons: boolean
   readonly timer: boolean
+  /** ききて。書く画面の 左右の並びが かわる */
+  readonly handed: Handed
+  /** 「うごきを へらす」(OS の設定が オンのときも へらす) */
+  readonly reduceMotion: boolean
 }
 
 export type Daily = { readonly day: string; readonly counters: Counters; readonly claimed: readonly string[] }
@@ -231,7 +242,7 @@ const INITIAL: ProgressData = {
   bests: {},
   challengeDay: INITIAL_CHALLENGE_DAY,
   // タイマーは焦りのもとになるので、最初は見せない
-  settings: { sound: true, music: true, speech: true, icons: true, timer: false },
+  settings: { sound: true, music: true, speech: true, soundVol: 'normal', musicVol: 'normal', speechVol: 'normal', icons: true, timer: false, handed: 'right', reduceMotion: false },
 }
 
 /** 保存してあった かざり の場所。こわれた値(数でない など)は すてる */
@@ -282,6 +293,18 @@ const gainOf = (xpBefore: number, xp: number, coins: number): Gain => ({
 
 type OldState = { learned?: string[]; points?: number; skin?: string; settings?: Settings }
 type V3State = Partial<Omit<ProgressData, 'clears' | 'tries' | 'seenLevel'>> & { stageStars?: Record<string, number> }
+
+/** 保存してあった設定の、あとから ふえた項目(大きさ・ききて・うごき)が こわれていても つかえる形にする。 */
+function normalizeSettings(settings: Settings): Settings {
+  return {
+    ...settings,
+    soundVol: sanitizeVolume(settings.soundVol),
+    musicVol: sanitizeVolume(settings.musicVol),
+    speechVol: sanitizeVolume(settings.speechVol),
+    handed: sanitizeHanded(settings.handed),
+    reduceMotion: settings.reduceMotion === true,
+  }
+}
 
 export const STORAGE_VERSION = 6
 
@@ -601,7 +624,7 @@ export const useProgress = create<ProgressState>()(
           ...INITIAL,
           ...saved,
           // あとから ふえた項目が、前の保存データに なくても こわれないようにする
-          settings: { ...INITIAL.settings, ...saved.settings },
+          settings: normalizeSettings({ ...INITIAL.settings, ...saved.settings }),
           challengeDay: challengeDaySchema.parse(saved.challengeDay),
           decoSpots: decoSpotsSchema.parse(saved.decoSpots),
           decoTurns: decoTurnsSchema.parse(saved.decoTurns),
@@ -627,3 +650,6 @@ export function loadProgressFrom(key: string): void {
   if (localStorage.getItem(key) !== null) void useProgress.persist.rehydrate()
   else useProgress.setState({ ...INITIAL })
 }
+
+// 設定の「うごきを へらす」「おんがくの大きさ」を、アプリぜんたいに ききめがあるようにする
+bindAppearance(useProgress)

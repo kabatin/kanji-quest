@@ -1084,3 +1084,44 @@
   border-radius: 8px;
   font-size: 13px;
 }
+
+/* ───────── ききて: 書く場所(と ものがたりの絵)の左右 ─────────
+   みぎ(はじめ)は、書く場所が みぎ・せつめいと ボタンが ひだり。ひだり は その逆。
+   入れかえるのは 領域の並びだけ(順番 order と 列の幅)。字の形・筆順・画の座標・絵の中は そのまま。
+   せまくて 1列のとき(760px 以下)は、上から 絵・せつめい の順のまま。 */
+.kaku[data-handed='right'],
+.story[data-handed='right'] {
+  grid-template-columns: 1fr auto;
+}
+
+.kaku[data-handed='right'] > .kaku__board,
+.story[data-handed='right'] > .story__stage {
+  order: 2;
+}
+
+.kaku[data-handed='right'] > .kaku__side,
+.story[data-handed='right'] > .story__text {
+  order: 1;
+}
+
+@media (max-width: 760px) {
+  .kaku[data-handed],
+  .story[data-handed] {
+    grid-template-columns: 1fr;
+  }
+
+  .kaku[data-handed] > .kaku__board,
+  .kaku[data-handed] > .kaku__side,
+  .story[data-handed] > .story__stage,
+  .story[data-handed] > .story__text {
+    order: 0;
+  }
+}
+
+/* ───────── うごきを へらす(アプリの設定) ─────────
+   OS の設定(prefers-reduced-motion)と同じように、動く絵を止める。 */
+[data-motion='reduce'] *,
+[data-motion='reduce'] *::before,
+[data-motion='reduce'] *::after {
+  animation: none !important;
+}

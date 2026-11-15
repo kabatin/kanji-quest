@@ -222,8 +222,8 @@ export function playNoise(ctx: AudioContext, out: AudioNode, noise: Noise, start
   source.stop(from + noise.len + 0.02)
 }
 
-/** 効果音を鳴らす。鳴らせたら true。音が出せない環境では何もしない。 */
-export function playSound(name: SoundName, enabled: boolean): boolean {
+/** 効果音を鳴らす。scale は設定の大きさ(1 = ふつう)。鳴らせたら true。音が出せない環境では何もしない。 */
+export function playSound(name: SoundName, enabled: boolean, scale = 1): boolean {
   if (!enabled) return false
   const ctx = audioContext()
   if (!ctx) return false
@@ -231,7 +231,7 @@ export function playSound(name: SoundName, enabled: boolean): boolean {
   if (ctx.state === 'suspended') void ctx.resume()
   const start = ctx.currentTime
   const sound = SOUNDS[name]
-  for (const tone of sound.tones) playTone(ctx, ctx.destination, tone, start, VOLUME)
-  for (const noise of sound.noises ?? []) playNoise(ctx, ctx.destination, noise, start, NOISE_VOLUME)
+  for (const tone of sound.tones) playTone(ctx, ctx.destination, tone, start, VOLUME * scale)
+  for (const noise of sound.noises ?? []) playNoise(ctx, ctx.destination, noise, start, NOISE_VOLUME * scale)
   return true
 }

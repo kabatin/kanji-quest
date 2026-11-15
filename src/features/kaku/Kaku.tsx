@@ -5,6 +5,7 @@ import { toPolyline } from '../../lib/strokeGuide'
 import { guideParts } from '../../lib/strokeHint'
 import { strokeTones } from '../../lib/strokeTones'
 import { useFeedback } from '../../lib/useFeedback'
+import { useHanded } from '../../lib/useHanded'
 import { voiceId } from '../../lib/voice'
 import { CompareLayer, ComparePanel } from './KakuCompare'
 import { StrokeGuide } from './StrokeGuide'
@@ -49,6 +50,7 @@ export function Kaku({ kanji, strokes: strokeNumbers, given = [], model = true, 
   const targets = numbers.map((n) => allStrokes[n - 1])
   const tones = strokeTones(kanji)
   const { say } = useFeedback()
+  const handed = useHanded()
   const svgRef = useRef<SVGSVGElement>(null)
   const writing = useKakuWriting({ targets, strict, onDone })
   const { state, finished, replay } = writing
@@ -69,7 +71,7 @@ export function Kaku({ kanji, strokes: strokeNumbers, given = [], model = true, 
   const missLine = !finished && input.drawing.length === 0 ? state.missLine : null
 
   return (
-    <div className="kaku" data-strict={strict} data-model={model} data-finished={finished} data-hint={strict ? state.hint : Math.max(state.hint, 1)} data-compare={replay !== null || undefined}>
+    <div className="kaku" data-handed={handed} data-strict={strict} data-model={model} data-finished={finished} data-hint={strict ? state.hint : Math.max(state.hint, 1)} data-compare={replay !== null || undefined}>
       <div className="kaku__board">
         <svg ref={svgRef} className="kaku__svg" viewBox={`0 0 ${GLYPH_SIZE} ${GLYPH_SIZE}`} role="img" aria-label={`${kanji.yomi} を かく ところ`} data-strokes={numbers.join(',')} {...input.handlers}>
           <path className="kaku__grid" d={GRID} />

@@ -4,6 +4,7 @@ import { getKanji } from '../../data/kanji'
 import { fullGlyph, getStrokes } from '../../data/strokes'
 import type { WriteReport } from '../../lib/strokeHint'
 import type { Point } from '../../lib/strokeMatch'
+import { useProgress } from '../../store/progress'
 import { Kaku, LEARN_DONE_MS, WRITE_DONE_MS } from './Kaku'
 
 const yama = getKanji('山')
@@ -190,5 +191,26 @@ describe('Kaku: 書きおわったあと', () => {
     fireEvent.click(screen.getByRole('button', { name: 'くらべる' }))
     expect(screen.queryByText('まちがえた せん')).not.toBeInTheDocument()
     expect(screen.getByText('ぜんぶ 1かいで かけたね！')).toBeInTheDocument()
+  })
+})
+
+describe('Kaku: ききて', () => {
+  const regions = (root: HTMLElement) => Array.from(root.children).map((el) => el.className)
+
+  it('設定で ききて を かえても、領域の並びの目印だけが かわり、画の座標は かわらない', () => {
+    useProgress.getState().reset()
+    const right = setup()
+    expect(right.board).toHaveAttribute('data-handed', 'right')
+    const pathsRight = Array.from(right.svg.querySelectorAll('path')).map((p) => p.getAttribute('d'))
+    expect(regions(right.board)).toEqual(['kaku__board', 'kaku__side'])
+    right.unmount()
+
+    act(() => useProgress.getState().updateSettings({ handed: 'left' }))
+    const left = setup()
+    expect(left.board).toHaveAttribute('data-handed', 'left')
+    expect(Array.from(left.svg.querySelectorAll('path')).map((p) => p.getAttribute('d'))).toEqual(pathsRight)
+    expect(left.svg).toHaveAttribute('viewBox', right.svg.getAttribute('viewBox'))
+    expect(left.board.innerHTML.includes('scaleX(-1)')).toBe(false)
+    useProgress.getState().reset()
   })
 })

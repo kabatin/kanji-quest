@@ -8,6 +8,7 @@ import { getPart } from '../../data/parts'
 import type { GlyphRef, Kanji } from '../../data/schema'
 import { fullGlyph, getStrokes, GLYPH_SIZE, unionBBox } from '../../data/strokes'
 import { useFeedback, useStopVoiceOnLeave } from '../../lib/useFeedback'
+import { useHanded } from '../../lib/useHanded'
 import { voiceId } from '../../lib/voice'
 import { useSceneClock } from './sceneClock'
 import type { SceneModule } from './sceneKit'
@@ -117,6 +118,7 @@ function useBeatSounds(scene: SceneModule | undefined, t: number, round: number)
  */
 function ScenePlayer({ kanji, onDone, scene }: Props & { readonly scene: SceneModule | undefined }) {
   const { say } = useFeedback()
+  const handed = useHanded()
   const [round, setRound] = useState(0)
   const duration = scene?.duration ?? 0
   // 読みこみが おわってから 時計を はじめる(scene が とどくと、duration が変わって はじめから進む)
@@ -132,7 +134,7 @@ function ScenePlayer({ kanji, onDone, scene }: Props & { readonly scene: SceneMo
   const lastBeat = scene?.beats[scene.beats.length - 1]?.at ?? duration
   const label = `${kanji.char} の ものがたり`
   return (
-    <div className="story">
+    <div className="story" data-handed={handed}>
       <div className="story__stage story__stage--scene">
         {scene ? (
           <SceneStage scene={scene} t={Math.min(t, duration)} label={label} />
@@ -159,6 +161,7 @@ export function StoryPlayer({ kanji, onDone }: Props) {
  * 部位の絵が、その部位のある場所に出てきて動き、そのまま筆画に変わって漢字になる。
  */
 function SimpleStory({ kanji, onDone }: Props) {
+  const handed = useHanded()
   const narration = getNarration(kanji.char)
   const cast = castOf(kanji, narration.actors)
   const { say } = useFeedback()
@@ -195,7 +198,7 @@ function SimpleStory({ kanji, onDone }: Props) {
   }
 
   return (
-    <div className="story">
+    <div className="story" data-handed={handed}>
       <div className="story__stage" data-phase={phase}>
         <svg key={round} className="story__svg" viewBox={`0 0 ${GLYPH_SIZE} ${GLYPH_SIZE}`} role="img" aria-label={`${kanji.char} の ものがたり`}>
           {drawOrder.map(({ member, i }) => {
