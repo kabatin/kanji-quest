@@ -11,8 +11,9 @@ type Props = {
 }
 
 const CHOICES: readonly { readonly handed: Handed; readonly label: string; readonly hint: string }[] = [
-  { handed: 'right', label: 'みぎて', hint: '🤚' },
-  { handed: 'left', label: 'ひだりて', hint: '✋' },
+  // 画面の左に「ひだりて」、右に「みぎて」(手の ならび と 同じ)
+  { handed: 'left', label: 'ひだりて', hint: '🤚' },
+  { handed: 'right', label: 'みぎて', hint: '✋' },
 ]
 
 /** はじめて あそぶ子の さいしょの画面。すみまるの あいさつと、どっちの手で かくか。 */

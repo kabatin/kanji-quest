@@ -58,6 +58,12 @@ test('スマホの よこ向き(844x390): ホーム → 学ぶ → 書く → �
   expect(panel?.y).toBeGreaterThanOrEqual(0)
   expect((panel?.y ?? 0) + (panel?.height ?? 0)).toBeLessThanOrEqual(HEIGHT)
   await bonus.getByRole('button').click()
+  // がめんを 大きく する あんない(1回だけ)も 画面に おさまり、とじられる
+  const big = page.getByRole('dialog', { name: 'がめんを 大きく' })
+  await expect(big).toBeVisible()
+  const bigPanel = await big.locator('.modal__panel').boundingBox()
+  expect((bigPanel?.y ?? 0) + (bigPanel?.height ?? 0)).toBeLessThanOrEqual(HEIGHT)
+  await big.getByRole('button', { name: 'あとで' }).click()
   await expect(page.getByRole('dialog')).toHaveCount(0)
 
   // ホーム: 下のメニューと 大きなボタンが 見える

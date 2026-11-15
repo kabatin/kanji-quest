@@ -28,6 +28,7 @@ import { useLearnedSet } from '../../lib/useKanjiText'
 import { GrowPanel } from './GrowPanel'
 import { IslandCanvas } from './IslandCanvas'
 import { LevelUpModal } from './LevelUpModal'
+import { BigScreenHint } from './BigScreenGuide'
 import { LoginBonusModal } from './LoginBonusModal'
 import { MissionPanel } from './MissionPanel'
 import { FIXED_DECOS, isMovableDeco } from './scene/layout'
@@ -161,6 +162,8 @@ function EditGuide({ kind, onClose, onShop }: EditGuideProps) {
 /** マイページ: 空にうかぶ しま と すみまる、つづきから、きょうのミッション、各画面への入り口。 */
 export function Home({ onGo }: Props) {
   const learned = useProgress((s) => s.learned)
+  // ログインボーナスの まどが 出ている間は、ほかの あんない を 重ねない
+  const bonusWaiting = useProgress((s) => s.loginBonus !== null && s.loginBonus !== undefined && !s.loginBonus.claimed)
   const stamps = useProgress((s) => s.stamps)
   const clears = useProgress((s) => s.clears)
   const xp = useProgress((s) => s.xp)
@@ -424,6 +427,7 @@ export function Home({ onGo }: Props) {
         />
       )}
       <LoginBonusModal />
+      <BigScreenHint hold={bonusWaiting} />
       <LevelUpModal />
     </div>
   )

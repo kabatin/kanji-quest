@@ -1,3 +1,4 @@
+import { BigScreenButton } from '../home/BigScreenGuide'
 import { useId, useState, type ReactNode } from 'react'
 import { AppLogo } from '../../components/AppLogo'
 import { TopBar } from '../../components/Hud'
@@ -189,6 +190,7 @@ export function SettingsScreen({ onHome, onProfiles, onParent }: Props) {
       <footer className="settings__about">
         <AppLogo className="settings__logo" />
         <span className="settings__version">バージョン {__APP_VERSION__}</span>
+        <BigScreenButton />
         <button type="button" className="btn settings__parent" onClick={onParent}>
           <MiniIcon name="kagi" /> おうちの かたへ
         </button>
