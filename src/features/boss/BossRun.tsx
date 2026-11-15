@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import type { BossDef, BossQuestion } from '../../lib/boss'
 import { useFeedback } from '../../lib/useFeedback'
 import { BossMonster, type BossMood } from './BossMonster'
-import { hitLabel, roundOf } from '../../lib/boss'
+import { hitLabel, missNotice, REVIVE_MAX_MISSES, reviveLeft, roundOf } from '../../lib/boss'
 import { QuestionView } from './QuestionView'
 
 /** こうげきが当たった・よけられた の顔を見せておく時間 */
@@ -41,15 +41,44 @@ type Props = {
   readonly onFinish: (outcome: BossOutcome) => void
   /** ふっかつ戦(まちがえた問題だけ。ボスの HP は その数だけ のこっている) */
   readonly revive?: boolean
+  /** まちがいの わく(ふっかつ できる回数)を 見せる。ほんばんの 通しの たたかい だけ */
+  readonly showLives?: boolean
+}
+
+/** ひとことを 出しておく時間 */
+const NOTICE_MS = 3200
+
+type Notice = { readonly key: number; readonly text: string }
+
+/** まちがいの わく: 3つ(REVIVE_MAX_MISSES)の中に、まちがえた問題の数だけ × が入る */
+function MissLives({ missed }: { readonly missed: number }) {
+  const over = missed > REVIVE_MAX_MISSES
+  const left = reviveLeft(missed)
+  return (
+    <span
+      className="boss-lives"
+      data-over={over || undefined}
+      role="img"
+      aria-label={over ? 'ふっかつは できません' : `まちがい ${missed}もん。あと ${left}もん まで ふっかつ できます`}
+    >
+      <span className="boss-lives__label">{over ? 'ふっかつ なし' : 'ふっかつ'}</span>
+      {Array.from({ length: REVIVE_MAX_MISSES }, (_, i) => (
+        <span key={i} className={i < missed ? 'boss-lives__box is-x' : 'boss-lives__box'} aria-hidden="true">
+          {i < missed ? '×' : ''}
+        </span>
+      ))}
+    </span>
+  )
 }
 
 /**
  * ボスとの たたかい。問題を まちがえずに とくと、ボスの HP が1つ へる。
  * まちがえた問題では HP が へらないので、全部できたときだけ HP が 0 になる(= 100点)。
  */
-export function BossRun({ boss, questions, onQuit, onFinish, revive = false }: Props) {
+export function BossRun({ boss, questions, onQuit, onFinish, revive = false, showLives = false }: Props) {
   const [tally, setTally] = useState<Tally>(START)
   const [mood, setMood] = useState<BossMood>('idle')
+  const [notice, setNotice] = useState<Notice | null>(null)
   const { play } = useFeedback()
   const question = questions[tally.index]
   const total = questions.length
@@ -60,6 +89,12 @@ export function BossRun({ boss, questions, onQuit, onFinish, revive = false }: P
     const timer = setTimeout(() => setMood('idle'), MOOD_MS)
     return () => clearTimeout(timer)
   }, [mood, tally.index])
+
+  useEffect(() => {
+    if (!notice) return
+    const timer = setTimeout(() => setNotice(null), NOTICE_MS)
+    return () => clearTimeout(timer)
+  }, [notice])
 
   const handleSolved = useCallback(
     (mistakes: number) => {
@@ -79,9 +114,11 @@ export function BossRun({ boss, questions, onQuit, onFinish, revive = false }: P
         return
       }
       setMood(isPerfect ? 'hit' : 'phew')
+      const text = showLives && !isPerfect ? missNotice(next.missedAt.length) : null
+      setNotice(text ? { key: next.index, text } : null)
       setTally(next)
     },
-    [tally, question, questions, total, play, onFinish],
+    [tally, question, questions, total, play, onFinish, showLives],
   )
 
   return (
@@ -109,6 +146,7 @@ export function BossRun({ boss, questions, onQuit, onFinish, revive = false }: P
             HP {hp} / {total}
           </span>
         </div>
+        {showLives && <MissLives missed={tally.missedAt.length} />}
         <span className="boss-run__round">{revive ? `ふっかつ: ${ROUND_LABEL[roundOf(question)]}` : ROUND_LABEL[roundOf(question)]}</span>
         <span className="bar__step">
           {tally.index + 1} / {total}
@@ -117,6 +155,11 @@ export function BossRun({ boss, questions, onQuit, onFinish, revive = false }: P
       {mood !== 'idle' && (
         <p key={`banner-${tally.index}`} className={`boss-banner boss-banner--${mood}`} aria-hidden="true">
           {mood === 'hit' ? hitLabel(tally.streak) : 'おしい！ よけられた'}
+        </p>
+      )}
+      {notice && (
+        <p key={`notice-${notice.key}`} className="boss-notice" role="status" data-lives-notice>
+          {notice.text}
         </p>
       )}
       <QuestionView key={tally.index} question={question} onSolved={handleSolved} />

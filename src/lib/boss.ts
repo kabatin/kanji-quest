@@ -205,6 +205,23 @@ export function canRevive(result: { readonly practice: boolean; readonly revived
   return !result.practice && !result.revived && result.missedQuestions > 0 && result.missedQuestions <= REVIVE_MAX_MISSES
 }
 
+/** まちがえた問題が missed 問のとき、あと なん問 まちがえても ふっかつ できるか */
+export function reviveLeft(missed: number): number {
+  return Math.max(REVIVE_MAX_MISSES - missed, 0)
+}
+
+/**
+ * 問題を まちがえた ときに 出す、やさしい ひとこと。missed = ここまでに まちがえた問題の数。
+ * 数え方は canRevive と おなじ(1問の中で なんど まちがえても 1つ)。
+ */
+export function missNotice(missed: number): string | null {
+  if (missed <= 0) return null
+  if (missed === 1) return `だいじょうぶ！ ${REVIVE_MAX_MISSES}もん までは ふっかつ できるよ`
+  if (missed < REVIVE_MAX_MISSES) return `まだ だいじょうぶ！ あと ${reviveLeft(missed)}もん まで ふっかつ できるよ`
+  if (missed === REVIVE_MAX_MISSES) return 'ふっかつ できるよ！ ここから ぜんぶ せいかい で いこう'
+  return 'ふっかつ は できないけど、さいごまで やれば にがて れんしゅう に つながるよ'
+}
+
 /** ボスの画面の上に出す、問題の くぎり(えらぶ・みて かく・みないで かく) */
 export function roundOf(question: BossQuestion): 'select' | 'model' | 'blind' {
   if (question.type !== 'write') return 'select'

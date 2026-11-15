@@ -90,6 +90,7 @@ export function BossScreen({ boss, onBack, next, onReview, onWeak }: Props) {
         boss={boss}
         questions={phase.questions}
         revive={revive}
+        showLives={!practice && !revive}
         onQuit={() => setPhase({ name: 'intro' })}
         onFinish={(outcome) => {
           const gain = finishBoss({ id: boss.id, kind: boss.kind, perfect: outcome.perfect, total: outcome.total, practice, revive, missed: outcome.missed, solved: outcome.solved })
@@ -213,7 +214,7 @@ export function BossScreen({ boss, onBack, next, onReview, onWeak }: Props) {
             <li>
               <span aria-hidden="true">🔥</span>
               <span>
-                まちがいが <strong>{REVIVE_MAX_MISSES}もん</strong> までなら、れんしゅう して ふっかつ できる！
+                まちがえても <strong>{REVIVE_MAX_MISSES}もん</strong> までは だいじょうぶ！ れんしゅう して、1かいだけ ふっかつ できるよ
               </span>
             </li>
             <li>

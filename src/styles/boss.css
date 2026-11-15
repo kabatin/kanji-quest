@@ -382,6 +382,110 @@
   white-space: nowrap;
 }
 
+/* まちがいの わく: 3つの わく に、まちがえるたび × が入る(色だけに たよらない) */
+.boss-lives {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  padding: 4px 10px;
+  background: #ffffff;
+  border: 3px solid #2b2350;
+  border-radius: 999px;
+  color: #2b2350;
+  white-space: nowrap;
+}
+
+.boss-lives__label {
+  margin-right: 2px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.boss-lives__box {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 3px solid #2b2350;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.boss-lives__box.is-x {
+  background: #fdecea;
+  border-color: #c0341d;
+  color: #c0341d;
+  animation: boss-lives-pop 0.35s ease-out;
+}
+
+.boss-lives[data-over] {
+  border-color: #8d99a8;
+  color: #4a5568;
+}
+
+.boss-lives[data-over] .boss-lives__box {
+  border-color: #8d99a8;
+  color: #4a5568;
+  background: #eef0f3;
+  animation: none;
+}
+
+@keyframes boss-lives-pop {
+  0% {
+    transform: scale(1.6);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* まちがえた ときの、やさしい ひとこと(流れを止めない: タップを じゃましない) */
+.boss-notice {
+  position: absolute;
+  left: 50%;
+  top: 140px;
+  z-index: 4;
+  width: max-content;
+  max-width: 96%;
+  padding: 6px 20px;
+  background: #fff8e1;
+  border: 4px solid var(--yamabuki-dark);
+  border-radius: 999px;
+  color: #2b2350;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-align: center;
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: boss-notice 3.2s ease-out forwards;
+}
+
+@keyframes boss-notice {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  8%,
+  80% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boss-lives__box.is-x,
+  .boss-notice {
+    animation: none;
+  }
+}
+
 /* ボス: けっか */
 .boss-result__main,
 .boss-result__side {

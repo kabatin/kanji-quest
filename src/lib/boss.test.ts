@@ -20,7 +20,7 @@ import {
   treeSpots,
   yieldToDecos,
 } from '../features/home/scene/layout'
-import { AREA_BOSS_PLAN, areaBoss, bossName, buildBoss, buildParts, buildWrite, canRevive, EXAM_PLAN, cheerLine, REVIVE_MAX_MISSES, examBoss, leafParts, PARTS_CHOICE_COUNT, pickForBoss } from './boss'
+import { AREA_BOSS_PLAN, areaBoss, bossName, buildBoss, buildParts, buildWrite, canRevive, EXAM_PLAN, cheerLine, REVIVE_MAX_MISSES, examBoss, leafParts, missNotice, PARTS_CHOICE_COUNT, pickForBoss, reviveLeft } from './boss'
 import { SHOP_ITEMS, itemName } from './shop'
 import { buildWeakQuestions, weakChars, weakOutcome } from './weak'
 import { playVoice, stopVoice, VOICE_FADE_MS, voiceId } from './voice'
@@ -111,6 +111,23 @@ describe('ボスの問題', () => {
     expect(cheerLine({ cleared: false, won: false, practice: false, missed: 1 })).toBe('おしい！ あと 1{字|じ}。れんしゅう すれば たおせるよ')
     expect(cheerLine({ cleared: false, won: false, practice: false, missed: 5 })).toContain('また ちょうせん')
     expect(cheerLine({ cleared: false, won: false, practice: true, missed: 5 })).toContain('れんしゅう してみよう')
+  })
+
+  it('まちがいの わく: ふっかつ できる数(REVIVE_MAX_MISSES)に 合わせて、のこりと ひとことを 出す', () => {
+    expect(reviveLeft(0)).toBe(REVIVE_MAX_MISSES)
+    expect(reviveLeft(1)).toBe(REVIVE_MAX_MISSES - 1)
+    expect(reviveLeft(REVIVE_MAX_MISSES)).toBe(0)
+    expect(reviveLeft(REVIVE_MAX_MISSES + 2)).toBe(0)
+    // 数が わく の中なら、canRevive と おなじ答え
+    for (let n = 0; n <= 6; n++) expect(n <= REVIVE_MAX_MISSES).toBe(n === 0 || canRevive({ practice: false, revived: false, missedQuestions: n }))
+    expect(missNotice(0)).toBeNull()
+    expect(missNotice(1)).toContain('だいじょうぶ')
+    expect(missNotice(1)).toContain(`${REVIVE_MAX_MISSES}もん`)
+    expect(missNotice(2)).toContain('あと 1もん')
+    expect(missNotice(REVIVE_MAX_MISSES)).toContain('ふっかつ できるよ')
+    const over = missNotice(REVIVE_MAX_MISSES + 1)
+    expect(over).toContain('さいごまで')
+    expect(over).not.toMatch(/だめ|ざんねん|しっぱい/)
   })
 
   it('にがて れんしゅう: 回数の多い字から。見て書く → 見ないで書く の順に出し、2回とも書けた字だけ できた になる', () => {
