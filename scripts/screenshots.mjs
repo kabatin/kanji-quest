@@ -1,7 +1,8 @@
 /*
  * README に のせる 画面写真(docs/screenshots/*.png)を 撮りなおす。
  *
- *   node scripts/screenshots.mjs
+ *   node scripts/screenshots.mjs           README 用(docs/screenshots/)
+ *   node scripts/screenshots.mjs --post    投稿・紹介用(.scene-sheets/post/。2倍の こまかさ で、物語の うつりかわり と 書き取り も写す)
  *
  * 開発サーバーを 自分で立ち上げ、しばらく あそんだ人の きろく(47字を学び、中ボスを たおした)を作ってから、
  * ホーム・なりたちの物語・ぼうけん・パーツずかん・保護者の方へ の5まいを 1024×768 で写す。
@@ -13,7 +14,8 @@ import { chromium } from '@playwright/test'
 import { createServer } from 'vite'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const outDir = join(root, 'docs', 'screenshots')
+const POST = process.argv.includes('--post')
+const outDir = POST ? join(root, '.scene-sheets', 'post') : join(root, 'docs', 'screenshots')
 /** 学んだことにする字の数(1つめのエリアと、2つめのエリアの とちゅうまで) */
 const LEARNED = 47
 /** 物語は、絵が まだ見えていて 字も書きはじめている ところで写す(秒) */
@@ -27,11 +29,13 @@ const browser = await chromium.launch()
 
 try {
   mkdirSync(outDir, { recursive: true })
-  const page = await browser.newPage({ viewport: { width: 1024, height: 768 }, deviceScaleFactor: 1, hasTouch: true })
+  const page = await browser.newPage({ viewport: { width: 1024, height: 768 }, deviceScaleFactor: POST ? 2 : 1, hasTouch: true })
   const shot = (name) => page.screenshot({ path: join(outDir, `${name}.png`) })
   const home = () => page.getByRole('button', { name: '← ホーム' }).click()
 
   await page.goto(`http://localhost:${port}/`)
+  // はじめての あんない は とばす
+  await page.getByRole('button', { name: 'あんないを とばす' }).click()
   await page.getByRole('dialog', { name: 'ログインボーナス' }).getByRole('button').click()
 
   // この1週間で 少しずつ学んだ きろく を作る(アプリの ふだんの しくみ を そのまま使う)
@@ -75,10 +79,47 @@ try {
   await page.getByRole('tab', { name: '1ねんせい' }).click()
   await page.getByRole('button', { name: /^休/ }).click()
   await page.locator('.scene[data-scene="休"]').waitFor()
-  await page.waitForTimeout(STORY_AT_MS)
-  await shot('story')
+  if (POST) {
+    // 絵が 字に なっていく ようす を 3まい
+    await page.waitForTimeout(2600)
+    await shot('story-1')
+    await page.waitForTimeout(STORY_AT_MS - 2600)
+    await shot('story-2')
+    await page.waitForTimeout(5200)
+    await shot('story-3')
+  } else {
+    await page.waitForTimeout(STORY_AT_MS)
+    await shot('story')
+  }
   await page.getByRole('button', { name: '← もどる' }).click()
   await home()
+
+  if (POST) {
+    // 書き取り(山): 1画目を ぎゃく向きに 書いて、「どこを なおすか」の しるし が出た ところ
+    await page.getByRole('button', { name: /^ずかん/ }).click()
+    await page.getByRole('tab', { name: '1ねんせい' }).click()
+    await page.getByRole('button', { name: /^山/ }).click()
+    await page.locator('.scene[data-scene="山"]').waitFor()
+    await page.getByRole('button', { name: 'つぎへ' }).click()
+    const board = page.locator('.kaku__svg')
+    await board.waitFor()
+    await page.waitForTimeout(700)
+    await shot('kaku-1')
+    const box = await board.boundingBox()
+    const first = await page.evaluate(async () => {
+      const data = await import(/* @vite-ignore */ '/src/data/strokes.ts')
+      return data.getStrokes(data.fullGlyph('山'))[0].pts
+    })
+    const points = [...first].reverse().map(([x, y]) => [box.x + (x / 109) * box.width, box.y + (y / 109) * box.height])
+    await page.mouse.move(points[0][0], points[0][1])
+    await page.mouse.down()
+    for (const [x, y] of points.slice(1)) await page.mouse.move(x, y, { steps: 4 })
+    await page.mouse.up()
+    await page.waitForTimeout(900)
+    await shot('kaku-2')
+    await page.getByRole('button', { name: '← もどる' }).click()
+    await home()
+  }
 
   // ぼうけん
   await page.getByRole('button', { name: /^ぼうけん/ }).click()
@@ -104,8 +145,9 @@ try {
   await page.keyboard.press('Enter')
   await page.locator('.parent-gate').waitFor({ state: 'detached' })
   await page.waitForTimeout(800)
+  await page.waitForTimeout(1200)
   await shot('parent')
-  console.info(`○ 5まい 撮りました: ${outDir}`)
+  console.info(`○ 撮りました: ${outDir}`)
 } finally {
   await browser.close()
   await server.close()
