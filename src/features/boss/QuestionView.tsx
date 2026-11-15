@@ -1,4 +1,5 @@
 import type { BossQuestion } from '../../lib/boss'
+import type { WriteReport } from '../../lib/strokeHint'
 import { Kaku } from '../kaku/Kaku'
 import { Kumiawase } from '../kumiawase/Kumiawase'
 import { Erabi } from '../quiz/Erabi'
@@ -6,8 +7,8 @@ import { PartsPick } from './PartsPick'
 
 type Props = {
   readonly question: BossQuestion
-  /** とけたときに、まちがえた回数つきで呼ばれる */
-  readonly onSolved: (mistakes: number) => void
+  /** とけたときに、まちがえた回数つきで呼ばれる。書く問題では ヒントの くわしい結果(report)も つく */
+  readonly onSolved: (mistakes: number, report?: WriteReport) => void
 }
 
 /** ボス・ふくしゅう の問題1つ(つくり・ぜんぶの部位・なりたち/絵・書く)を出す。 */

@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
+import { answerOf } from '../../lib/answerInput'
+import type { AnswerInput } from '../../lib/answerLog'
 import type { BossDef, BossQuestion } from '../../lib/boss'
+import type { WriteReport } from '../../lib/strokeHint'
 import { useFeedback } from '../../lib/useFeedback'
 import { BossMonster, type BossMood } from './BossMonster'
 import { hitLabel, missNotice, REVIVE_MAX_MISSES, reviveLeft, roundOf } from '../../lib/boss'
@@ -18,6 +21,8 @@ export type BossOutcome = {
   readonly solved: readonly string[]
   /** まちがえた問題(ふっかつ戦で、これだけを もう一度出す) */
   readonly missedQuestions: readonly BossQuestion[]
+  /** 問題ごとの答え(種類・正誤・ヒントの段) */
+  readonly answers: readonly AnswerInput[]
 }
 
 type Tally = {
@@ -28,9 +33,10 @@ type Tally = {
   readonly missedAt: readonly number[]
   /** つづけて まちがえずに できた数(えんしゅつ に使う) */
   readonly streak: number
+  readonly answers: readonly AnswerInput[]
 }
 
-const START: Tally = { index: 0, perfect: 0, missed: [], missedAt: [], streak: 0 }
+const START: Tally = { index: 0, perfect: 0, missed: [], missedAt: [], streak: 0, answers: [] }
 
 const ROUND_LABEL: Record<string, string> = { select: 'えらぶ', model: 'みて かく', blind: 'みないで かく' }
 
@@ -97,7 +103,7 @@ export function BossRun({ boss, questions, onQuit, onFinish, revive = false, sho
   }, [notice])
 
   const handleSolved = useCallback(
-    (mistakes: number) => {
+    (mistakes: number, report?: WriteReport) => {
       const isPerfect = mistakes === 0
       const char = question.kanji.char
       const next: Tally = {
@@ -106,11 +112,12 @@ export function BossRun({ boss, questions, onQuit, onFinish, revive = false, sho
         missed: isPerfect || tally.missed.includes(char) ? tally.missed : [...tally.missed, char],
         missedAt: isPerfect ? tally.missedAt : [...tally.missedAt, tally.index],
         streak: isPerfect ? tally.streak + 1 : 0,
+        answers: [...tally.answers, answerOf(question, mistakes, report)],
       }
       play(isPerfect ? 'hit' : 'miss')
       if (next.index >= total) {
         const solved = [...new Set(questions.map((q) => q.kanji.char))].filter((c) => !next.missed.includes(c))
-        onFinish({ perfect: next.perfect, total, missed: next.missed, solved, missedQuestions: next.missedAt.map((i) => questions[i]) })
+        onFinish({ perfect: next.perfect, total, missed: next.missed, solved, missedQuestions: next.missedAt.map((i) => questions[i]), answers: next.answers })
         return
       }
       setMood(isPerfect ? 'hit' : 'phew')

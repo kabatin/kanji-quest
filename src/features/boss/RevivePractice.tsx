@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { getKanji } from '../../data/kanji'
+import { answerOf } from '../../lib/answerInput'
+import type { AnswerInput } from '../../lib/answerLog'
 import { roundOf } from '../../lib/boss'
+import type { WriteReport } from '../../lib/strokeHint'
 import { useFeedback } from '../../lib/useFeedback'
 import { buildWeakQuestions } from '../../lib/weak'
 import { QuestionView } from './QuestionView'
@@ -11,7 +14,8 @@ type Props = {
   /** ボスで まちがえた漢字 */
   readonly chars: readonly string[]
   readonly onQuit: () => void
-  readonly onDone: () => void
+  /** 書きおえたとき。れんしゅうの答え(ふっかつ戦の きろくに 足す)つき */
+  readonly onDone: (answers: readonly AnswerInput[]) => void
 }
 
 /**
@@ -21,14 +25,19 @@ type Props = {
 export function RevivePractice({ chars, onQuit, onDone }: Props) {
   const [questions] = useState(() => buildWeakQuestions(chars.map(getKanji)))
   const [index, setIndex] = useState(0)
+  const [answers, setAnswers] = useState<readonly AnswerInput[]>([])
   const { play } = useFeedback()
   const question = questions[index]
   const round = roundOf(question)
 
-  const handleSolved = (mistakes: number) => {
+  const handleSolved = (mistakes: number, report?: WriteReport) => {
     play(mistakes === 0 ? 'hit' : 'miss')
-    if (index + 1 >= questions.length) onDone()
-    else setIndex(index + 1)
+    const next = [...answers, answerOf(question, mistakes, report)]
+    if (index + 1 >= questions.length) onDone(next)
+    else {
+      setAnswers(next)
+      setIndex(index + 1)
+    }
   }
 
   return (

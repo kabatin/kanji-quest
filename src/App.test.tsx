@@ -7,6 +7,7 @@ import { ALL_STAGES, AREAS } from './data/areas'
 import { getKanji, kanjiOfGrade } from './data/kanji'
 import { fullGlyph, getStrokes } from './data/strokes'
 import { hitLabel, leafParts } from './lib/boss'
+import { TALLY } from './lib/answerLog'
 import { dayKey } from './lib/date'
 import { levelInfo } from './lib/level'
 import { hasStamp } from './lib/rewards'
@@ -320,7 +321,7 @@ describe('えんしゅつ', () => {
     render(<App />)
     await user.click(screen.getByRole('button', { name: 'せってい' }))
     expect(state().settings.music).toBe(true)
-    await user.click(screen.getByRole('checkbox', { name: 'おんがく' }))
+    await user.click(within(screen.getByRole('radiogroup', { name: 'おんがく' })).getByRole('radio', { name: 'なし' }))
     expect(state().settings.music).toBe(false)
   })
 })
@@ -510,6 +511,9 @@ describe('ぼうけん: ボス', () => {
     expect(screen.getByText('100')).toBeInTheDocument()
     expect(screen.getByText('けいけんち ＋300')).toBeInTheDocument()
     expect(state().clears[mid.id]).toBe(dayKey())
+    // 問題ごとの答え(種類つき)が きろく に のこる
+    expect(Object.keys(state().answerLog).sort()).toEqual([...asked].sort())
+    expect(state().answerDays[dayKey()][TALLY.answers]).toBe(BOSS_QUESTIONS)
 
     await user.click(screen.getByRole('button', { name: 'つぎの ステージへ' }))
     expect(screen.getByRole('heading', { name: `ステージ ${s5.number}` })).toBeInTheDocument()
@@ -739,7 +743,7 @@ describe('パーツずかん・きせかえ・せってい', () => {
     const user = userEvent.setup()
     render(<App />)
     await user.click(screen.getByRole('button', { name: 'せってい' }))
-    await user.click(screen.getByRole('checkbox', { name: 'おと' }))
+    await user.click(within(screen.getByRole('radiogroup', { name: 'おと' })).getByRole('radio', { name: 'なし' }))
     expect(state().settings.sound).toBe(false)
 
     await user.click(screen.getByRole('button', { name: 'データを リセット' }))

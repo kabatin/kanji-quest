@@ -1,9 +1,10 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { TopBar } from '../../components/Hud'
 import { KText } from '../../components/KText'
 import { KANJI } from '../../data/kanji'
 import type { Kanji } from '../../data/schema'
 import { buildQuestion } from '../../lib/quiz'
+import type { WriteReport } from '../../lib/strokeHint'
 import { useFeedback } from '../../lib/useFeedback'
 import { useProgress, type LearnGain, type WriteGain } from '../../store/progress'
 import { Kaku } from '../kaku/Kaku'
@@ -47,6 +48,9 @@ export function Learn({ kanji, onBack, backLabel, onOpen, next }: Props) {
   const completeWriting = useProgress((s) => s.completeWriting)
   const { play } = useFeedback()
 
+  // くみあわせで まちがえて えらんだ回数(ぜんぶの問題の合計)
+  const kumiMistakes = useRef(0)
+
   const questions = useMemo(() => kanji.steps.map((_, i) => buildQuestion(kanji, i, KANJI)), [kanji])
   const hasKumi = kanji.steps.length > 0
   const labels = STEP_LABELS.filter((s) => hasKumi || s.name !== 'kumi')
@@ -54,7 +58,7 @@ export function Learn({ kanji, onBack, backLabel, onOpen, next }: Props) {
   /** 「まなぶ」の はんこ を押して、書く練習へ進む。 */
   const finishLearning = useCallback(() => {
     // ものがたりを見なおして もう一度ここに来たときは、二重に数えない
-    if (!learnGain) setLearnGain(completeKanji(kanji.char))
+    if (!learnGain) setLearnGain(completeKanji(kanji.char, undefined, { mistakes: kumiMistakes.current }))
     setStep({ name: 'kaku' })
   }, [learnGain, completeKanji, kanji.char])
 
@@ -64,20 +68,27 @@ export function Learn({ kanji, onBack, backLabel, onOpen, next }: Props) {
   }, [hasKumi, finishLearning])
 
   const kumiIndex = step.name === 'kumi' ? step.index : 0
-  const handleKumiSolved = useCallback(() => {
-    if (kumiIndex + 1 < kanji.steps.length) setStep({ name: 'kumi', index: kumiIndex + 1 })
-    else finishLearning()
-  }, [kumiIndex, kanji.steps.length, finishLearning])
+  const handleKumiSolved = useCallback(
+    (mistakes: number) => {
+      kumiMistakes.current += mistakes
+      if (kumiIndex + 1 < kanji.steps.length) setStep({ name: 'kumi', index: kumiIndex + 1 })
+      else finishLearning()
+    },
+    [kumiIndex, kanji.steps.length, finishLearning],
+  )
 
   const showResult = useCallback(() => {
     play('fanfare')
     setStep({ name: 'result' })
   }, [play])
 
-  const handleWritten = useCallback(() => {
-    setWriteGain(completeWriting(kanji.char))
-    showResult()
-  }, [completeWriting, kanji.char, showResult])
+  const handleWritten = useCallback(
+    (misses: number, report: WriteReport) => {
+      setWriteGain(completeWriting(kanji.char, undefined, { misses, report }))
+      showResult()
+    },
+    [completeWriting, kanji.char, showResult],
+  )
 
   return (
     <div className="screen learn">

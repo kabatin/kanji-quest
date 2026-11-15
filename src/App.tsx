@@ -1,9 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ALL_STAGES, AREAS } from './data/areas'
 import { getKanji, KANJI } from './data/kanji'
 import { BossScreen, type BossNext } from './features/boss/BossScreen'
 import { Challenge } from './features/challenge/Challenge'
 import { Home } from './features/home/Home'
+import { ExtendPlay } from './features/limit/ExtendPlay'
+import { LimitScreen } from './features/limit/LimitScreen'
+import { SoonNotice } from './features/limit/SoonNotice'
+import { useLimitGate } from './features/limit/useLimitGate'
 import { Learn, type NextAction } from './features/learn/Learn'
 import { MapScreen } from './features/map/MapScreen'
 import { ParentGate } from './features/parent/ParentGate'
@@ -18,6 +22,7 @@ import { WeakScreen } from './features/weak/WeakScreen'
 import { Zukan, type ZukanView } from './features/zukan/Zukan'
 import { areaBoss, examBoss } from './lib/boss'
 import { setMusic } from './lib/music'
+import { countsAsPlay } from './lib/playGate'
 import { itemName } from './lib/shop'
 import { bossAfter, findBoss, findStage, isCleared, type AreaBoss, type Stage } from './lib/stages'
 import { useStopVoiceOnLeave } from './lib/useFeedback'
@@ -36,10 +41,15 @@ const firstStack = (): readonly Screen[] => (useProfiles.getState().profiles.len
 /** 画面が見えている間、1分ごとに「あそんだ時間」を ふやす(保護者向けの画面で見る)。 */
 export const PLAY_TICK_MS = 60_000
 
-function usePlayTime() {
+function usePlayTime(screenName: Screen['name']) {
+  const current = useRef(screenName)
+  useEffect(() => {
+    current.current = screenName
+  }, [screenName])
   useEffect(() => {
     const timer = setInterval(() => {
-      if (document.visibilityState === 'visible') useProgress.getState().addPlayMinute()
+      // おうちの かた・せってい・だれが あそぶ の間は 数えない
+      if (document.visibilityState === 'visible' && countsAsPlay(current.current)) useProgress.getState().addPlayMinute()
     }, PLAY_TICK_MS)
     return () => clearInterval(timer)
   }, [])
@@ -62,9 +72,10 @@ export default function App() {
   const learned = useProgress((s) => s.learned)
   const clears = useProgress((s) => s.clears)
   const bossRules = useBossRules()
-  usePlayTime()
-
+  const profileCount = useProfiles((s) => s.profiles.length)
   const screen = stack[stack.length - 1]
+  usePlayTime(screen.name)
+  const { soon, dismissSoon } = useLimitGate(stack, setStack)
   // 「もどる」などで画面をはなれたら、流れている音声をフェードアウトで止める
   useStopVoiceOnLeave(screen)
   useMusic(screen.name)
@@ -162,7 +173,12 @@ export default function App() {
       {screen.name === 'settings' && <SettingsScreen onHome={goHome} onProfiles={() => go(PROFILES)} onParent={() => go({ name: 'parent-gate' })} />}
       {screen.name === 'review' && <ReviewScreen onHome={goHome} onOpen={review} />}
       {screen.name === 'weak' && <WeakScreen onBack={back} onOpen={review} />}
-      {screen.name === 'parent-gate' && <ParentGate onBack={back} onPass={() => replace({ name: 'parent' })} />}
+      {screen.name === 'parent-gate' && (
+        <ParentGate onBack={back} onPass={() => replace({ name: stack[stack.length - 2]?.name === 'limit' ? 'extend' : 'parent' })} />
+      )}
+      {screen.name === 'extend' && <ExtendPlay onBack={back} onDone={goHome} />}
+      {screen.name === 'limit' && <LimitScreen onParent={() => go({ name: 'parent-gate' })} onSwitch={profileCount > 1 ? () => go(PROFILES) : undefined} />}
+      {screen.name === 'home' && soon !== null && <SoonNotice left={soon} onClose={dismissSoon} />}
       {screen.name === 'parent' && <ParentScreen onBack={back} onOpen={review} />}
       {screen.name === 'profiles' && <ProfilesScreen onDone={goHome} canGoBack={stack.length > 1} />}
     </div>

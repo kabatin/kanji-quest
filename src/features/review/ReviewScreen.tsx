@@ -5,12 +5,15 @@ import { KText } from '../../components/KText'
 import { Mascot } from '../../components/Mascot'
 import { MiniIcon } from '../../components/MiniIcon'
 import { getKanji, KANJI } from '../../data/kanji'
+import { answerOf } from '../../lib/answerInput'
+import type { AnswerInput } from '../../lib/answerLog'
 import type { BossQuestion } from '../../lib/boss'
 import { dayKey } from '../../lib/date'
 import { levelInfo, mascotStage } from '../../lib/level'
 import { buildReviewQuestion, dueChars, isMastered, nextReviewLabel, REVIEW_INTERVALS, REVIEW_SIZE, todaysReview } from '../../lib/review'
 import { useParent } from '../../store/parent'
 import { itemName } from '../../lib/shop'
+import type { WriteReport } from '../../lib/strokeHint'
 import { useFeedback } from '../../lib/useFeedback'
 import { useProgress, type Gain } from '../../store/progress'
 import { QuestionView } from '../boss/QuestionView'
@@ -19,7 +22,7 @@ type Outcome = { readonly char: string; readonly ok: boolean }
 
 type Phase =
   | { readonly name: 'intro' }
-  | { readonly name: 'play'; readonly questions: readonly BossQuestion[]; readonly index: number; readonly outcomes: readonly Outcome[] }
+  | { readonly name: 'play'; readonly questions: readonly BossQuestion[]; readonly index: number; readonly outcomes: readonly Outcome[]; readonly answers: readonly AnswerInput[] }
   | { readonly name: 'result'; readonly outcomes: readonly Outcome[]; readonly gain: Gain }
 
 type Props = { readonly onHome: () => void; readonly onOpen: (char: string) => void }
@@ -60,19 +63,21 @@ export function ReviewScreen({ onHome, onOpen }: Props) {
   const start = () => {
     play('tap')
     const chars = due.slice(0, batch)
-    setPhase({ name: 'play', questions: chars.map((char) => buildReviewQuestion(getKanji(char), reviews[char], KANJI)), index: 0, outcomes: [] })
+    setPhase({ name: 'play', questions: chars.map((char) => buildReviewQuestion(getKanji(char), reviews[char], KANJI)), index: 0, outcomes: [], answers: [] })
   }
 
   const handleSolved = useCallback(
-    (mistakes: number) => {
+    (mistakes: number, report?: WriteReport) => {
       if (phase.name !== 'play') return
-      const outcomes = [...phase.outcomes, { char: phase.questions[phase.index].kanji.char, ok: mistakes === 0 }]
+      const question = phase.questions[phase.index]
+      const outcomes = [...phase.outcomes, { char: question.kanji.char, ok: mistakes === 0 }]
+      const answers = [...phase.answers, answerOf(question, mistakes, report)]
       if (phase.index + 1 < phase.questions.length) {
         play(mistakes === 0 ? 'hit' : 'miss')
-        setPhase({ ...phase, index: phase.index + 1, outcomes })
+        setPhase({ ...phase, index: phase.index + 1, outcomes, answers })
         return
       }
-      const gain = finishReview({ right: outcomes.filter((o) => o.ok).map((o) => o.char), wrong: outcomes.filter((o) => !o.ok).map((o) => o.char) })
+      const gain = finishReview({ right: outcomes.filter((o) => o.ok).map((o) => o.char), wrong: outcomes.filter((o) => !o.ok).map((o) => o.char), answers })
       play('fanfare')
       setPhase({ name: 'result', outcomes, gain })
     },

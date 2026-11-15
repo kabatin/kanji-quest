@@ -15,16 +15,20 @@ type Tally = {
   readonly combo: number
   readonly maxCombo: number
   readonly firstTryChars: readonly string[]
+  readonly answers: readonly QuizAnswer[]
 }
 
-const START: Tally = { index: 0, score: 0, mistakes: 0, firstTry: 0, combo: 0, maxCombo: 0, firstTryChars: [] }
+/** 問題ごとの正誤(1回で できたか) */
+export type QuizAnswer = { readonly char: string; readonly ok: boolean }
+
+const START: Tally = { index: 0, score: 0, mistakes: 0, firstTry: 0, combo: 0, maxCombo: 0, firstTryChars: [], answers: [] }
 
 type Props = {
   readonly questions: readonly Question[]
   /** ヒントの量。1 = 絵あり / 2 = 絵なし / 3 = 形だけ */
   readonly level: Level
   readonly onQuit: () => void
-  readonly onFinish: (summary: QuizSummary) => void
+  readonly onFinish: (summary: QuizSummary, answers: readonly QuizAnswer[]) => void
 }
 
 /** 問題を順番に出して、点数・れんぞく正解・タイムを数える。チャレンジと ステージの まとめ で使う。 */
@@ -46,20 +50,24 @@ export function QuizRun({ questions, level, onQuit, onFinish }: Props) {
         combo,
         maxCombo: Math.max(tally.maxCombo, combo),
         firstTryChars: isFirstTry ? [...tally.firstTryChars, question.kanji.char] : tally.firstTryChars,
+        answers: [...tally.answers, { char: question.kanji.char, ok: isFirstTry }],
       }
       if (next.index < questions.length) {
         setTally(next)
         return
       }
-      onFinish({
-        score: next.score,
-        questionCount: questions.length,
-        mistakes: next.mistakes,
-        firstTry: next.firstTry,
-        maxCombo: next.maxCombo,
-        timeMs: Date.now() - startedAt,
-        firstTryChars: next.firstTryChars,
-      })
+      onFinish(
+        {
+          score: next.score,
+          questionCount: questions.length,
+          mistakes: next.mistakes,
+          firstTry: next.firstTry,
+          maxCombo: next.maxCombo,
+          timeMs: Date.now() - startedAt,
+          firstTryChars: next.firstTryChars,
+        },
+        next.answers,
+      )
     },
     [tally, question, questions.length, onFinish, startedAt],
   )

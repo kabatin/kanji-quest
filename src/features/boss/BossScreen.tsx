@@ -4,6 +4,7 @@ import { TopBar } from '../../components/Hud'
 import { KText } from '../../components/KText'
 import { MascotSays } from '../../components/MascotSays'
 import { getKanji, KANJI } from '../../data/kanji'
+import type { AnswerInput } from '../../lib/answerLog'
 import { buildBoss, canRevive, cheerLine, REVIVE_MAX_MISSES, type BossDef, type BossQuestion } from '../../lib/boss'
 import { dayKey } from '../../lib/date'
 import { BOSS_CLEAR_SCORE, BOSS_REWARD } from '../../lib/rewards'
@@ -18,7 +19,7 @@ export type BossNext = { readonly label: string; readonly onNext: () => void }
 
 type Phase =
   | { readonly name: 'intro' }
-  | { readonly name: 'play'; readonly practice: boolean; readonly questions: readonly BossQuestion[]; readonly run: number; readonly revive?: boolean }
+  | { readonly name: 'play'; readonly practice: boolean; readonly questions: readonly BossQuestion[]; readonly run: number; readonly revive?: boolean; readonly carry?: readonly AnswerInput[] }
   /** ふっかつ の前の れんしゅう(まちがえた字を書く) */
   | { readonly name: 'revive-practice'; readonly outcome: BossOutcome }
   /** revived: この ちょうせん で、もう ふっかつ を使った */
@@ -74,16 +75,16 @@ export function BossScreen({ boss, onBack, next, onReview, onWeak }: Props) {
       <RevivePractice
         chars={outcome.missed}
         onQuit={() => setPhase({ name: 'intro' })}
-        onDone={() => {
+        onDone={(carry) => {
           play('bossAppear')
-          setPhase({ name: 'play', practice: false, questions: outcome.missedQuestions, run: Date.now(), revive: true })
+          setPhase({ name: 'play', practice: false, questions: outcome.missedQuestions, run: Date.now(), revive: true, carry })
         }}
       />
     )
   }
 
   if (phase.name === 'play') {
-    const { practice, revive = false } = phase
+    const { practice, revive = false, carry = [] } = phase
     return (
       <BossRun
         key={phase.run}
@@ -93,7 +94,7 @@ export function BossScreen({ boss, onBack, next, onReview, onWeak }: Props) {
         showLives={!practice && !revive}
         onQuit={() => setPhase({ name: 'intro' })}
         onFinish={(outcome) => {
-          const gain = finishBoss({ id: boss.id, kind: boss.kind, perfect: outcome.perfect, total: outcome.total, practice, revive, missed: outcome.missed, solved: outcome.solved })
+          const gain = finishBoss({ id: boss.id, kind: boss.kind, perfect: outcome.perfect, total: outcome.total, practice, revive, missed: outcome.missed, solved: outcome.solved, answers: [...carry, ...outcome.answers] })
           play(gain.cleared ? 'bossDown' : gain.score === BOSS_CLEAR_SCORE ? 'fanfare' : 'retry')
           setPhase({ name: 'result', practice, outcome, gain, revived: revive })
         }}

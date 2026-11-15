@@ -43,10 +43,12 @@ export function QuizResult({ summary, gain, children }: Props) {
       <div className="quiz-result__side">
         <Mascot stage={mascotStage(levelInfo(xp).level)} hat={itemName(hat)} happy className="quiz-result__mascot" />
         <ul className="gains">
-          <li className="gains__xp">けいけんち ＋{gain.xp}</li>
-          <li className="gains__coin">
-            <span className="coin" aria-hidden="true" /> ＋{gain.coins}
-          </li>
+          {gain.xp > 0 && <li className="gains__xp">けいけんち ＋{gain.xp}</li>}
+          {gain.coins > 0 && (
+            <li className="gains__coin">
+              <span className="coin" aria-hidden="true" /> ＋{gain.coins}
+            </li>
+          )}
           {leveledUp && <li className="gains__level">レベル {gain.levelAfter} に アップ！</li>}
           {gain.newStamps.length > 0 && (
             <li className="gains__stamps">

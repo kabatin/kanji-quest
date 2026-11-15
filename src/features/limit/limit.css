@@ -1,0 +1,122 @@
+/* 1日の時間の上限: 「きょうは ここまで」・延長・あと5ふん */
+.limit {
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #fdeccf 0%, var(--sky) 70%);
+}
+
+.limit__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: min(100%, 640px);
+  padding: 28px 32px;
+  background: var(--paper);
+  border: 3px solid var(--line-dark);
+  border-radius: 28px;
+  text-align: center;
+}
+
+.limit__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--ink);
+}
+
+.limit__tomorrow {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.limit__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* おうちの かた向けは めだたせない */
+.limit__parent {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.limit-extend__card {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: min(100%, 560px);
+  margin: auto 0;
+  padding: 28px;
+  background: #ffffff;
+  border: 3px solid var(--line-dark);
+  border-radius: 24px;
+}
+
+.limit-extend__lead,
+.limit-extend__note {
+  margin: 0;
+  text-align: center;
+}
+
+.limit-extend__note {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.limit-extend__choices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.limit-soon {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(92vw, 620px);
+  padding: 10px 16px;
+  transform: translateX(-50%);
+  background: var(--paper);
+  border: 3px solid var(--yamabuki-dark);
+  border-radius: 24px;
+  box-shadow: 0 6px 18px rgba(39, 51, 107, 0.25);
+}
+
+.limit-soon__says {
+  flex: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .limit__card {
+    animation: limit-rise 0.5s ease-out both;
+  }
+  .limit-soon {
+    animation: limit-soon-in 0.35s ease-out both;
+  }
+}
+
+@keyframes limit-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes limit-soon-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 14px);
+  }
+}

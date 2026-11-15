@@ -18,6 +18,9 @@ export type Screen =
   | { readonly name: 'weak' }
   | { readonly name: 'parent-gate' }
   | { readonly name: 'parent' }
+  /** 1日の時間の上限に来た「きょうは ここまで」と、おうちの かた向けの延長 */
+  | { readonly name: 'limit' }
+  | { readonly name: 'extend' }
 
 export const HOME: Screen = { name: 'home' }
 
@@ -27,6 +30,6 @@ export const HOME: Screen = { name: 'home' }
 export function trackFor(name: Screen['name']): TrackName | undefined {
   if (name === 'boss' || name === 'exam') return 'boss'
   if (name === 'map' || name === 'stage' || name === 'challenge') return 'adventure'
-  if (name === 'learn' || name === 'review' || name === 'weak' || name === 'parent' || name === 'parent-gate' || name === 'profiles') return undefined
+  if (name === 'learn' || name === 'review' || name === 'weak' || name === 'parent' || name === 'parent-gate' || name === 'profiles' || name === 'limit' || name === 'extend') return undefined
   return 'home'
 }

@@ -56,9 +56,9 @@ export function Challenge({ onHome }: Props) {
         questions={quiz}
         level={level}
         onQuit={() => setPhase({ name: 'intro' })}
-        onFinish={(summary) => {
+        onFinish={(summary, answers) => {
           const firstOfDay = !done
-          const gain = finishQuiz(summary, { level, bestKey: bestKey(level, quiz.length), daily: true }, today)
+          const gain = finishQuiz(summary, { level, bestKey: bestKey(level, quiz.length), daily: true, answers }, today)
           play('fanfare')
           setPhase({ name: 'result', summary, gain, firstOfDay })
         }}

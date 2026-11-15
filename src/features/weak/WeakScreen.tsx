@@ -5,7 +5,10 @@ import { KText } from '../../components/KText'
 import { MascotSays } from '../../components/MascotSays'
 import { MiniIcon } from '../../components/MiniIcon'
 import { getKanji } from '../../data/kanji'
+import { answerOf } from '../../lib/answerInput'
+import type { AnswerInput } from '../../lib/answerLog'
 import type { BossQuestion } from '../../lib/boss'
+import type { WriteReport } from '../../lib/strokeHint'
 import { useFeedback } from '../../lib/useFeedback'
 import { buildWeakQuestions, WEAK_SIZE, weakChars, weakOutcome } from '../../lib/weak'
 import { useProgress, type Gain } from '../../store/progress'
@@ -13,7 +16,7 @@ import { QuestionView } from '../boss/QuestionView'
 
 type Phase =
   | { readonly name: 'intro' }
-  | { readonly name: 'play'; readonly questions: readonly BossQuestion[]; readonly mistakes: readonly number[] }
+  | { readonly name: 'play'; readonly questions: readonly BossQuestion[]; readonly mistakes: readonly number[]; readonly answers: readonly AnswerInput[] }
   | { readonly name: 'result'; readonly right: readonly string[]; readonly wrong: readonly string[]; readonly gain: Gain }
 
 type Props = {
@@ -38,20 +41,21 @@ export function WeakScreen({ onBack, onOpen }: Props) {
 
   const start = () => {
     play('tap')
-    setPhase({ name: 'play', questions: buildWeakQuestions(weak.slice(0, WEAK_SIZE).map(getKanji)), mistakes: [] })
+    setPhase({ name: 'play', questions: buildWeakQuestions(weak.slice(0, WEAK_SIZE).map(getKanji)), mistakes: [], answers: [] })
   }
 
   const handleSolved = useCallback(
-    (count: number) => {
+    (count: number, report?: WriteReport) => {
       if (phase.name !== 'play') return
       const mistakes = [...phase.mistakes, count]
+      const answers = [...phase.answers, answerOf(phase.questions[phase.mistakes.length], count, report)]
       if (mistakes.length < phase.questions.length) {
         play(count === 0 ? 'hit' : 'miss')
-        setPhase({ ...phase, mistakes })
+        setPhase({ ...phase, mistakes, answers })
         return
       }
       const outcome = weakOutcome(phase.questions, mistakes)
-      const gain = finishWeak(outcome)
+      const gain = finishWeak({ ...outcome, answers })
       play('fanfare')
       setPhase({ name: 'result', ...outcome, gain })
     },
