@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { TopBar } from '../../components/Hud'
+import { DecoIcon } from '../../components/DecoIcon'
 import { Mascot } from '../../components/Mascot'
 import { PartCard } from '../../components/PartCard'
 import { getPart } from '../../data/parts'
@@ -23,7 +24,7 @@ function ItemPreview({ item, stage }: { readonly item: ShopItem; readonly stage:
   if (item.kind === 'deco') {
     return (
       <span className="shop-item__emoji" aria-hidden="true">
-        {item.emoji}
+        <DecoIcon name={itemName(item.id)} />
       </span>
     )
   }

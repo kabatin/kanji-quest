@@ -5,6 +5,7 @@ import iconHanko from '../../assets/art/icon-hanko.webp'
 import iconKisekae from '../../assets/art/icon-kisekae.webp'
 import iconParts from '../../assets/art/icon-parts.webp'
 import iconZukan from '../../assets/art/icon-zukan.webp'
+import { DecoIcon } from '../../components/DecoIcon'
 import { CoinCount, PlayerCard, StreakCount } from '../../components/Hud'
 import { KText } from '../../components/KText'
 import { AREAS } from '../../data/areas'
@@ -260,7 +261,7 @@ export function Home({ onGo }: Props) {
                       play('tap')
                     }}
                   >
-                    <span aria-hidden="true">{findItem(`deco:${name}`)?.emoji}</span>
+                    <DecoIcon name={name} />
                     <small>しまう</small>
                   </button>
                 </li>
@@ -281,7 +282,7 @@ export function Home({ onGo }: Props) {
                       play('pop')
                     }}
                   >
-                    <span aria-hidden="true">{findItem(`deco:${name}`)?.emoji}</span>
+                    <DecoIcon name={name} />
                     <small>だす</small>
                   </button>
                 </li>
@@ -292,7 +293,7 @@ export function Home({ onGo }: Props) {
             {picked && pickedItem && decos.includes(picked) ? (
               <>
                 <p className="edit-bar__picked">
-                  <span aria-hidden="true">{pickedItem.emoji}</span> {pickedItem.label}
+                  <DecoIcon name={picked} /> {pickedItem.label}
                 </p>
                 <button
                   type="button"

@@ -53,7 +53,7 @@ export const SHOP_ITEMS: readonly ShopItem[] = [
   { id: 'deco:kinoko', kind: 'deco', label: 'きのこの いえ', price: 300, minLevel: 8, emoji: '🍄' },
   { id: 'deco:tourou', kind: 'deco', label: 'とうろう', price: 450, minLevel: 13, emoji: '🏮' },
   { id: 'deco:tent', kind: 'deco', label: 'テント', price: 650, minLevel: 19, emoji: '⛺' },
-  { id: 'deco:kazaguruma', kind: 'deco', label: 'ふうしゃ', price: 900, minLevel: 25, emoji: '🎡' },
+  { id: 'deco:kazaguruma', kind: 'deco', label: 'ふうしゃ', price: 900, minLevel: 25 },
   { id: 'deco:yukidaruma', kind: 'deco', label: 'ゆきだるま', price: 1100, minLevel: 32, emoji: '⛄' },
   { id: 'deco:torii', kind: 'deco', label: 'とりい', price: 1500, minLevel: 42, emoji: '⛩️' },
   { id: 'deco:niji', kind: 'deco', label: 'にじ', price: 2000, minLevel: 52, emoji: '🌈' },
