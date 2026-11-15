@@ -34,43 +34,64 @@ export function viewportContent(width: number | null): string {
   return width === null ? BASE : `width=${width}, viewport-fit=cover`
 }
 
-/** たてよこ の比が これ以上 かわったら、はかりなおす(ブラウザの バーが 出入りした・むきが かわった) */
-const ASPECT_TOLERANCE = 0.02
+/**
+ * 端末の ほんとうの幅(viewport を いじる前の device-width)と、今の たてよこ の比から、名のる幅を決める。
+ * たてよこ の比は viewport を かえても かわらないので、ブラウザの バーが 出入りしても、もとに もどさずに 計算できる。
+ */
+export function fitFromAspect(naturalWidth: number, innerWidth: number, innerHeight: number): number | null {
+  if (!(naturalWidth > 0) || !(innerWidth > 0) || !(innerHeight > 0)) return null
+  return fitViewportWidth({ width: naturalWidth, height: (naturalWidth * innerHeight) / innerWidth })
+}
+
+/** バーの 出入りの とちゅうで 何度も かえないよう、うごきが おさまってから なおす */
+const SETTLE_MS = 150
 
 /** 画面の大きさに合わせて viewport を なおし、かわるたびに やりなおす。 */
 export function startViewportFit(): void {
   if (typeof window === 'undefined' || typeof document === 'undefined') return
   const meta = document.querySelector<HTMLMetaElement>('meta[name="viewport"]')
   if (!meta) return
-  let lastAspect = 0
-  let busy = false
+  let naturalWidth = 0
+  let landscape = false
+  let timer: number | undefined
+  let measuring = false
 
   const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+  const isLandscape = () => window.innerWidth > window.innerHeight
 
+  /** 今の たてよこ の比に合わせて なおす(もとの大きさには もどさない = 画面が ちらつかない) */
+  const apply = () => {
+    const content = viewportContent(fitFromAspect(naturalWidth, window.innerWidth, window.innerHeight))
+    if (meta.content !== content) meta.content = content
+  }
+
+  /** いったん もとの大きさに もどして、端末の ほんとうの幅を はかりなおす(はじめ と、むきが かわったとき だけ) */
   const measure = async () => {
-    if (busy) return
-    const aspect = window.innerWidth / Math.max(1, window.innerHeight)
-    if (lastAspect > 0 && Math.abs(aspect - lastAspect) / lastAspect < ASPECT_TOLERANCE) return
-    busy = true
+    if (measuring) return
+    measuring = true
     try {
-      // いったん もとの大きさに もどして、ほんとうの 大きさを はかる
       if (meta.content !== BASE) {
         meta.content = BASE
         await nextFrame()
       }
-      const natural = { width: window.innerWidth, height: window.innerHeight }
-      lastAspect = natural.width / Math.max(1, natural.height)
-      const width = fitViewportWidth(natural)
-      if (width !== null) {
-        meta.content = viewportContent(width)
-        await nextFrame()
-      }
+      naturalWidth = window.innerWidth
+      landscape = isLandscape()
+      apply()
     } finally {
-      busy = false
+      measuring = false
     }
   }
 
+  const onChange = () => {
+    window.clearTimeout(timer)
+    timer = window.setTimeout(() => {
+      if (measuring) return
+      if (naturalWidth === 0 || isLandscape() !== landscape) void measure()
+      else apply()
+    }, SETTLE_MS)
+  }
+
   void measure()
-  window.addEventListener('resize', () => void measure())
-  window.addEventListener('orientationchange', () => void measure())
+  window.addEventListener('resize', onChange)
+  window.addEventListener('orientationchange', onChange)
 }

@@ -528,3 +528,9 @@ a:focus-visible {
     animation: none !important;
   }
 }
+
+/* 中が スクロールする入れもの: はしまで行っても、ページ(ブラウザの バー)を うごかさない */
+.missions__list,
+.modal__panel {
+  overscroll-behavior: contain;
+}

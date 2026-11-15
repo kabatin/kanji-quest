@@ -43,3 +43,21 @@ test('高さが 足りない画面では ページぜんたいを ちぢめ、�
   expect(clashes).toEqual([])
   for (const box of Object.values(boxes)) expect(box.y + box.height).toBeLessThanOrEqual(size.h + 1)
 })
+
+test('ブラウザの バーが ひっこんで 高さが かわっても、ちぢめかたが ついてくる(くずれない)', async ({ page }) => {
+  await page.goto('/')
+  await skipIntro(page)
+  await expect.poll(() => page.evaluate(() => window.innerHeight)).toBeGreaterThanOrEqual(430)
+  // バーが ひっこむ: 見える高さが 280 → 340 に ふえる
+  await page.setViewportSize({ width: 844, height: 340 })
+  // ちぢめた後の大きさは 整数に まるまるので、少しの ずれは ゆるす
+  const near = (target: number) => expect.poll(async () => Math.abs((await page.evaluate(() => window.innerWidth)) - target)).toBeLessThanOrEqual(6)
+  await near(Math.ceil((430 * 844) / 340))
+  // バーが もどる
+  await page.setViewportSize({ width: 844, height: 280 })
+  await near(Math.ceil((430 * 844) / 280))
+  const size = await page.evaluate(() => ({ h: window.innerHeight, sh: document.documentElement.scrollHeight, sw: document.documentElement.scrollWidth, w: window.innerWidth }))
+  expect(size.h).toBeGreaterThanOrEqual(426)
+  expect(size.sh).toBeLessThanOrEqual(size.h)
+  expect(size.sw).toBeLessThanOrEqual(size.w)
+})

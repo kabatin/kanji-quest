@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fitViewportWidth, viewportContent } from './viewportFit'
+import { fitFromAspect, fitViewportWidth, viewportContent } from './viewportFit'
 
 describe('小さい画面では ページぜんたいを ちぢめる', () => {
   it('スマホの よこ向きで、ブラウザの バーに 高さを とられたら、高さ 430 ぶんに なるよう 幅を 広く名のる', () => {
@@ -28,5 +28,16 @@ describe('小さい画面では ページぜんたいを ちぢめる', () => {
   it('viewport の書き方', () => {
     expect(viewportContent(null)).toBe('width=device-width, initial-scale=1.0, viewport-fit=cover')
     expect(viewportContent(1086)).toBe('width=1086, viewport-fit=cover')
+  })
+  it('ちぢめた後でも、たてよこ の比から 同じ答えが出る(バーが 出入りしても もとに もどさずに 計算できる)', () => {
+    const first = fitViewportWidth({ width: 844, height: 280 })
+    // ちぢめた後の 見かけの大きさ(幅 first、高さ 430 ぶん)から 計算しても 同じ
+    expect(fitFromAspect(844, first ?? 0, ((first ?? 0) * 280) / 844)).toBe(first)
+    // バーが ひっこんで 高さが 340 に ふえたら、ちぢめかたは ゆるくなる
+    const wider = fitFromAspect(844, first ?? 0, ((first ?? 0) * 340) / 844)
+    expect(wider).toBe(Math.ceil((430 * 844) / 340))
+    // 高さが 足りるように なったら、そのまま
+    expect(fitFromAspect(844, 844, 440)).toBeNull()
+    expect(fitFromAspect(0, 844, 280)).toBeNull()
   })
 })
