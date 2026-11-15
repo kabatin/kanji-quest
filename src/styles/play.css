@@ -363,6 +363,162 @@
   gap: 10px;
 }
 
+/* かく: まちがいの わけ と だんかい ヒント */
+/* わけ(1行目)と 直しかた(2行目)が出ても、ボタンの位置が ずれないように 2行ぶん とっておく */
+.kaku__side .kaku__note {
+  min-height: 3.2em;
+  line-height: 1.4;
+}
+
+.kaku__note-fix {
+  display: block;
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+/* さっき まちがえた線: 点線で うすく のこす */
+.kaku__miss {
+  stroke: var(--shu);
+  stroke-width: 3;
+  stroke-dasharray: 2.5 3.5;
+  opacity: 0.55;
+  animation: kaku-miss-fade 1.8s ease-out forwards;
+}
+
+@keyframes kaku-miss-fade {
+  to {
+    opacity: 0.25;
+  }
+}
+
+/* うすい お手本(4段目): なぞれる ように 太く */
+.kaku__trace {
+  stroke: var(--yamabuki);
+  stroke-width: 9;
+  opacity: 0.5;
+}
+
+/* 書きおわりの わっか */
+.kaku__end {
+  fill: rgba(255, 253, 247, 0.75);
+  stroke: var(--shu);
+  stroke-width: 1.5;
+}
+
+/* 書きはじめの むきの やじるし */
+.kaku__arrow line {
+  stroke: var(--shu);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.kaku__arrow polygon {
+  fill: var(--shu);
+  stroke: var(--shu);
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+}
+
+/* 直すところ を、ぽん ぽん と ゆらして 目を引く */
+.kaku__guide .is-focus {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: kaku-focus 1.1s ease-in-out 3;
+}
+
+@keyframes kaku-focus {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.4);
+  }
+}
+
+/* 書きおわったあと、次へ進むまでの のこり時間 */
+.kaku__wait {
+  display: block;
+  inline-size: 180px;
+  block-size: 6px;
+  border-radius: 3px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.kaku__wait span {
+  display: block;
+  block-size: 100%;
+  background: var(--yamabuki-dark);
+  animation: kaku-wait linear forwards;
+}
+
+@keyframes kaku-wait {
+  from {
+    inline-size: 100%;
+  }
+  to {
+    inline-size: 0;
+  }
+}
+
+/* かく: くらべる(お手本の上に 自分の線) */
+.kaku__model {
+  stroke: #dfe6ee;
+  stroke-width: 5.5;
+}
+
+.kaku__model--miss {
+  stroke: #ffe19a;
+}
+
+.kaku__replay {
+  stroke: var(--ai);
+  stroke-width: 3.2;
+}
+
+.kaku__replay--miss {
+  stroke: var(--shu);
+}
+
+.kaku__replay-head {
+  fill: var(--shu);
+  stroke: var(--shu);
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+}
+
+.kaku__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1.1rem;
+}
+
+.kaku__legend li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kaku__swatch {
+  inline-size: 34px;
+  block-size: 8px;
+  border-radius: 4px;
+  background: var(--ai);
+}
+
+.kaku__swatch--miss {
+  background: var(--shu);
+}
+
+.kaku__compare-note {
+  font-size: 1.1rem;
+}
+
 /* パーツずかん */
 .parts__body {
   flex: 1;
